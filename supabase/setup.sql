@@ -49,9 +49,15 @@ create policy "reviews: read own" on public.reviews
   for select to authenticated
   using (user_id = (select auth.uid()));
 
+-- ผู้ใช้ชั่วคราว (ลองใช้แบบไม่สมัคร / anonymous sign-in) เพิ่มรีวิวไม่ได้ ต้องผูกอีเมลก่อน
+-- Guest users (anonymous sign-ins) can't add reviews until they add an email.
 create policy "reviews: insert own" on public.reviews
   for insert to authenticated
-  with check (user_id = (select auth.uid()) and status = 'pending');
+  with check (
+    user_id = (select auth.uid())
+    and status = 'pending'
+    and (select (auth.jwt() ->> 'is_anonymous')::boolean) is not true
+  );
 
 create policy "reviews: update own" on public.reviews
   for update to authenticated
@@ -135,6 +141,10 @@ grant select on public.approved_reviews to anon, authenticated;
 --                  https://*.maadoo.pages.dev/**   (preview deploys)
 --                  http://localhost:*/**           (local testing)
 --   Authentication → Sign In / Providers → Email ต้องเปิดอยู่ / must be enabled.
+--   ปุ่ม "ลองใช้แบบไม่สมัคร" ต้องเปิด Allow anonymous sign-ins
+--   The "Try it without signing up" button needs "Allow anonymous sign-ins" enabled.
+--   ถ้ามีคนใช้จริงเยอะ ควรเปิด CAPTCHA (Attack Protection) กันสร้างบัญชีชั่วคราวรัว ๆ
+--   With real traffic, turn on CAPTCHA (Attack Protection) to stop mass guest sign-ups.
 --
 -- ห้ามใส่ service_role key หรือ secret key ในหน้าเว็บ เว็บใช้แค่ publishable key
 -- Never put the service_role or secret key in the website; it only uses the publishable key.

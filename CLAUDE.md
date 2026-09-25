@@ -16,8 +16,9 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Everything user-facing is **bilingual Thai + English**. Use `t('ไทย','English')` for UI strings and `[th, en]` pairs with `x(...)` for data. Never add a string in only one language.
 - **All companies, people, reviews and salaries are fictional.** Never use real company names or real people.
 - Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme and effect toggles (always wrapped in try/catch).
-- Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: email magic-link login and the `reviews` table. supabase-js keeps its auth session in `localStorage`.
+- Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email magic link, or "try without signing up" anonymous guest) and the `reviews` table. supabase-js keeps its auth session in `localStorage`.
   - New reviews are `pending`; the public sees only `approved` ones via the `approved_reviews` view (no `user_id`, no `salary`). Users can never set or change `status`; moderation happens in the Supabase dashboard.
+  - Guests (anonymous users) can browse, swipe and apply, but can't add reviews (blocked in the UI and by RLS); they can keep their account by adding an email (`updateUser`).
   - Only the publishable key goes in `index.html`. Never add a secret / `service_role` key.
   - If Supabase can't load (`SB` is `null`), everything must keep working as the in-memory demo.
 - Paying can **never** remove, hide or edit reviews, not even with Plus or employer plans. Companies may only reply publicly.
