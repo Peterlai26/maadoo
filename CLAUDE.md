@@ -42,7 +42,9 @@ Open the page at 360px, 768px and 1280px widths, in Thai and English, and in at 
 ## Workflow กับ Hb
 - ทุกครั้งที่แก้เสร็จ ให้ push ขึ้น branch ของ session แล้วส่งลิงก์ Preview ของ Cloudflare ให้ Hb
   (รูปแบบ: ชื่อ branch เปลี่ยน / เป็น - แล้วต่อด้วย .maadoo.pages.dev
-  เช่น claude/abc-xyz → https://claude-abc-xyz.maadoo.pages.dev)
+  เช่น claude/abc-xyz → https://claude-abc-xyz.maadoo.pages.dev
+  ⚠️ Cloudflare ตัดชื่อให้เหลือไม่เกิน 28 ตัวอักษร ถ้ายาวกว่านั้นให้ตัดท้ายทิ้ง (และตัด - ท้ายสุดออก)
+  เช่น claude/charming-ptolemy-ljj70z → https://claude-charming-ptolemy-ljj7.maadoo.pages.dev)
   บอกให้รอประมาณ 1 นาทีก่อนเปิด และสรุปสั้นๆ เป็นภาษาไทยว่าแก้อะไรบ้าง
 - ห้าม merge เข้า main จนกว่า Hb จะพิมพ์ว่า "ยืนยัน"
 - พอ Hb ยืนยันแล้ว ให้ merge branch เข้า main แล้ว push เอง
