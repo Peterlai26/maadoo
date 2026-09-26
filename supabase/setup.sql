@@ -157,6 +157,105 @@ grant select on public.approved_reviews to anon, authenticated;
 -- Never put the service_role or secret key in the website; it only uses the publishable key.
 -- =====================================================================
 
+-- =====================================================================
+-- 5) รีวิวรุ่นพี่หลังปรึกษา / Mentor reviews after a session
+--    1 การจอง = 1 รีวิว (unique user_id + booking_id) แก้/ลบได้เฉพาะของตัวเอง
+--    One booking = one review; people can edit/delete only their own.
+--    ทุกคนอ่านรีวิวได้ผ่าน view mentor_reviews_public (ไม่มี user_id / booking_id เพื่อไม่ให้โยงกลับหาคนเขียน)
+--    Everyone reads reviews through the mentor_reviews_public view (no user_id / booking_id,
+--    so reviews can't be traced back to their author).
+--    reply = คำตอบจากรุ่นพี่ ใส่ได้เฉพาะแอดมินใน Table Editor / SQL Editor ผู้ใช้เขียนช่องนี้ไม่ได้
+--    reply = the mentor's public answer; only admins set it (Table/SQL Editor), users can't write it.
+--    รุ่นพี่ตอบรีวิวได้ แต่ลบหรือซ่อนรีวิวไม่ได้ / Mentors may reply but never delete or hide reviews.
+-- =====================================================================
+create table if not exists public.mentor_reviews (
+  id          uuid primary key default gen_random_uuid(),
+  mentor_id   text not null check (mentor_id ~ '^[a-z0-9_-]{1,40}$'),
+  user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  booking_id  text not null check (char_length(booking_id) between 1 and 80),
+  stars       smallint not null check (stars between 1 and 5),
+  tags        text[] not null default '{}'
+              check (cardinality(tags) <= 6
+                     and tags <@ array['direct','kind','real','ontime','resume','recommend']::text[]),
+  comment     text check (char_length(comment) <= 300),
+  reply       text check (char_length(reply) <= 500),
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  unique (user_id, booking_id)
+);
+
+create index if not exists mentor_reviews_mentor_idx on public.mentor_reviews (mentor_id, created_at desc);
+
+alter table public.mentor_reviews enable row level security;
+
+drop policy if exists "mentor_reviews: read own"   on public.mentor_reviews;
+drop policy if exists "mentor_reviews: insert own" on public.mentor_reviews;
+drop policy if exists "mentor_reviews: update own" on public.mentor_reviews;
+drop policy if exists "mentor_reviews: delete own" on public.mentor_reviews;
+
+-- ตารางจริง: เห็นเฉพาะแถวของตัวเอง (ใช้ตอนแก้/ลบ) / Base table: only your own rows (for edit/delete)
+create policy "mentor_reviews: read own" on public.mentor_reviews
+  for select to authenticated
+  using (user_id = (select auth.uid()));
+
+-- ผู้ใช้ชั่วคราว (anonymous) รีวิวไม่ได้ ต้องผูกอีเมลก่อน / Guests must add an email first
+create policy "mentor_reviews: insert own" on public.mentor_reviews
+  for insert to authenticated
+  with check (
+    user_id = (select auth.uid())
+    and (select (auth.jwt() ->> 'is_anonymous')::boolean) is not true
+  );
+
+create policy "mentor_reviews: update own" on public.mentor_reviews
+  for update to authenticated
+  using (user_id = (select auth.uid()))
+  with check (user_id = (select auth.uid()));
+
+create policy "mentor_reviews: delete own" on public.mentor_reviews
+  for delete to authenticated
+  using (user_id = (select auth.uid()));
+
+-- สิทธิ์รายคอลัมน์: ผู้ใช้เขียน user_id / reply / created_at เองไม่ได้
+-- Column privileges: users can't write user_id, reply or created_at themselves.
+revoke all on public.mentor_reviews from anon, authenticated;
+grant select, delete on public.mentor_reviews to authenticated;
+grant insert (mentor_id, booking_id, stars, tags, comment) on public.mentor_reviews to authenticated;
+grant update (stars, tags, comment) on public.mentor_reviews to authenticated;
+
+create or replace function public.mentor_reviews_before_update()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at := now();
+  -- ผู้ใช้แก้คำตอบของรุ่นพี่ไม่ได้ / users can never change the mentor's reply
+  if current_user in ('authenticated', 'anon') then
+    new.reply := old.reply;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists mentor_reviews_before_update on public.mentor_reviews;
+create trigger mentor_reviews_before_update
+  before update on public.mentor_reviews
+  for each row execute function public.mentor_reviews_before_update();
+
+-- รีวิวสาธารณะ ทุกคนอ่านได้ (รวมคนที่ไม่ได้ล็อกอิน) / Public reviews, readable by everyone (logged in or not)
+-- Supabase linter จะเตือน "Security Definer View" — ตั้งใจแบบนี้ เหมือน approved_reviews
+-- The linter flags "Security Definer View"; intended, same as approved_reviews.
+create or replace view public.mentor_reviews_public
+with (security_invoker = false) as
+  select id, mentor_id, stars, tags, comment, reply, created_at
+  from public.mentor_reviews;
+
+revoke all on public.mentor_reviews_public from anon, authenticated;
+grant select on public.mentor_reviews_public to anon, authenticated;
+
+-- ตอบรีวิวในฐานะรุ่นพี่ (แอดมิน) / Reply as the mentor (admin):
+--   update public.mentor_reviews set reply = 'ขอบคุณมากนะ!' where id = '<review id>';
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';
