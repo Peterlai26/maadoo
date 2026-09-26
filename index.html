@@ -36,19 +36,19 @@
   --sky:#CFEAFF; --sky-2:#EAF5FF; --orange:#FF9A1F; --orange-ink:#FFFFFF; --orange-soft:#FFE7C7; --blush:#FFB9B3;
   --good:#1C9D7F; --good-bg:#DCF5EC; --mid:#C27A12; --mid-bg:#FFF1D3; --bad:#E0506A; --bad-bg:#FFE3E8;
   --shadow:0 2px 0 rgba(13,60,148,.06),0 10px 24px rgba(47,111,214,.10);
-  --star:#FFB800; --tag:#FF9A1F; --tag-shade:#D97A08; --tag-ink:#FFFFFF; --logo-bg:transparent;
+  --star:#FFB800; --tag:#FF9A1F; --tag-shade:#D97A08; --tag-ink:#FFFFFF; --logo-bg:transparent; --logo-ink:#0D3C94;
   --display:"Mali",system-ui,sans-serif; --body:"Anuphan",system-ui,sans-serif; --mono:"Anuphan",system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   color-scheme:dark;--bg:#0C1630;--surface:#132248;--surface-2:#1B2D5A;--ink:#EAF1FF;--ink-2:#B1C2E4;--ink-3:#8292B8;
   --line:#26396B;--accent:#FFC94D;--accent-ink:#0D2A66;--blue:#5B93F5;--blue-ink:#08162F;--navy:#A9C8FF;--sky:#1A3470;--sky-2:#15285A;--orange:#FFA940;--orange-ink:#2A1600;--orange-soft:#4A3312;--blush:#F59C95;
   --good:#4CCBAA;--good-bg:#153B35;--mid:#EAB04E;--mid-bg:#3A2E14;--bad:#F57A90;--bad-bg:#40202B;
-  --shadow:0 2px 0 rgba(0,0,0,.2),0 10px 24px rgba(0,0,0,.3);--logo-bg:#EAF3FF;}}
+  --shadow:0 2px 0 rgba(0,0,0,.2),0 10px 24px rgba(0,0,0,.3);--logo-bg:#EAF3FF;--logo-ink:#A9C8FF;}}
 :root[data-theme="dark"]{
   color-scheme:dark;--bg:#0C1630;--surface:#132248;--surface-2:#1B2D5A;--ink:#EAF1FF;--ink-2:#B1C2E4;--ink-3:#8292B8;
   --line:#26396B;--accent:#FFC94D;--accent-ink:#0D2A66;--blue:#5B93F5;--blue-ink:#08162F;--navy:#A9C8FF;--sky:#1A3470;--sky-2:#15285A;--orange:#FFA940;--orange-ink:#2A1600;--orange-soft:#4A3312;--blush:#F59C95;
   --good:#4CCBAA;--good-bg:#153B35;--mid:#EAB04E;--mid-bg:#3A2E14;--bad:#F57A90;--bad-bg:#40202B;
-  --shadow:0 2px 0 rgba(0,0,0,.2),0 10px 24px rgba(0,0,0,.3);--logo-bg:#EAF3FF;}
+  --shadow:0 2px 0 rgba(0,0,0,.2),0 10px 24px rgba(0,0,0,.3);--logo-bg:#EAF3FF;--logo-ink:#A9C8FF;}
 *{box-sizing:border-box}
 body{overscroll-behavior-x:none;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 100px;
   background-image:radial-gradient(circle at 12% 0%,var(--sky-2) 0,transparent 40%),radial-gradient(circle at 100% 30%,var(--sky-2) 0,transparent 35%)}
@@ -553,7 +553,7 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
  .segs{max-width:100%}.segs button{padding:7px 11px;font-size:13.5px}}
 /* Maadoo Job logo: pup + "Maadoo" + orange JOB tag hung through the last o */
 .logo{position:relative}
-.lw{position:relative;display:inline-block;line-height:1;padding-right:1.3em;color:var(--navy)}
+.lw{position:relative;display:inline-block;line-height:1;padding-right:1.3em;color:var(--logo-ink)}
 .lo{position:relative;display:inline-block}
 .lo-c{position:relative;z-index:1}
 .lo-s{position:absolute;left:0;top:0;width:2em;height:2em;overflow:visible;pointer-events:none}
@@ -1187,7 +1187,6 @@ function applyPrefs(){
  r.setAttribute('data-theme',S.skin==='night'?'dark':'light');
  if(S.skin==='default'||S.skin==='night')r.removeAttribute('data-skin');else r.setAttribute('data-skin',S.skin);
  r.lang=S.lang;document.title=t('มาดูจ็อบ · ก่อนไปทำงาน มาดูก่อน','Maadoo Job · Before you go, Maadoo first');
- const li=document.getElementById('logoImg');if(li&&li.getAttribute('src')!==PUP())li.setAttribute('src',PUP());
  $('#themeBtn').innerHTML=PALETTE+`<span class="tlabel">${t('ธีม','Theme')}</span>`;
  $('#themeBtn').setAttribute('aria-label',t('เลือกธีม','Choose a theme'));
  renderThemePop();renderCoach();try{FX.setSkin(S.skin)}catch(e){}try{SND.setSkin(S.skin)}catch(e){}

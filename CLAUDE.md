@@ -7,7 +7,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 
 ## Files
 - `index.html` — the whole app in one file: HTML + CSS + vanilla JS, no build step, no framework.
-- Header logo = mascot circle + "Maadoo" wordmark + an orange "JOB" tag hung through the last "o", built in HTML/CSS/SVG (no image). Tag colors come from `--tag`, `--tag-shade`, `--tag-ink`. At ≤350px only the circle and a small JOB badge show.
+- Header logo = mascot circle + "Maadoo" wordmark + an orange "JOB" tag hung through the last "o", built in HTML/CSS/SVG (no image). It is a fixed brand mark: always the Classic pup (`maadoo-icon.webp`) and `--logo-ink` (brand navy; light blue only in the night theme for readability) — it does not follow the theme. Tag colors come from `--tag`, `--tag-shade`, `--tag-ink`. At ≤350px only the circle and a small JOB badge show.
 - Home hero mascot (theme image) has a "JOB!" speech bubble in inline SVG (`.m-say`, colors from `--surface`, `--navy`, `--tag`).
 - `maadoo-job-icon-512.png` — favicon and apple-touch-icon.
 - `maadoo-job-round.png` — round Maadoo Job logo shown in the first-visit welcome popup (on a light `--logo-bg` panel in the night theme).
