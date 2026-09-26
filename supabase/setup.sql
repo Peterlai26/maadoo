@@ -698,6 +698,527 @@ grant execute on function public.early_bird_left() to anon, authenticated;
 -- ให้ผู้ใช้อ่านโค้ดชวน + ใครชวนตัวเองได้ (เขียนเองไม่ได้) / users can read their invite code (not write it)
 grant select on public.profiles to authenticated;
 
+-- =====================================================================
+-- 8) คุยกับรุ่นพี่จริง ขั้นที่ 1 / Real mentors, step 1
+--    admins · mentor_applications · mentors · chat_rooms · messages · chat_reports
+--    + Storage bucket แบบ private "chat-files" + Realtime
+--    รุ่นพี่ตัวอย่าง (m1–m9) ยังเป็นข้อมูลสมมติในเว็บ ตอบอัตโนมัติเหมือนเดิม
+--    Sample mentors (m1–m9) stay fictional in the site and auto-reply as before.
+--
+--    ใส่ตัวเองเป็นแอดมิน / Make yourself an admin (run once, with your login email):
+--      insert into public.admins (user_id)
+--      select id from auth.users where email = 'you@example.com'
+--      on conflict do nothing;
+-- =====================================================================
+
+-- ---------- 8.1 admins ----------
+create table if not exists public.admins (
+  user_id     uuid primary key references auth.users (id) on delete cascade,
+  created_at  timestamptz not null default now()
+);
+alter table public.admins enable row level security;
+drop policy if exists "admins: read own" on public.admins;
+create policy "admins: read own" on public.admins
+  for select to authenticated using (user_id = (select auth.uid()));
+revoke all on public.admins from anon, authenticated;
+grant select on public.admins to authenticated;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (select 1 from public.admins where user_id = auth.uid());
+$$;
+revoke execute on function public.is_admin() from public, anon;
+grant execute on function public.is_admin() to authenticated;
+
+-- ---------- 8.2 mentor_applications: ใบสมัครรุ่นพี่ / mentor applications ----------
+--   สถานะ: pending (รออนุมัติ) · approved (อนุมัติแล้ว) · rejected (ไม่ผ่าน)
+--   ผู้สมัครเห็นเฉพาะใบของตัวเอง แอดมินเห็นทุกใบ เปลี่ยนสถานะได้ผ่าน review_mentor_application() เท่านั้น
+create table if not exists public.mentor_applications (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  nickname     text not null check (char_length(btrim(nickname)) between 1 and 30),
+  field        text not null check (char_length(btrim(field)) between 2 and 60),
+  company      text check (char_length(company) <= 60),
+  years        smallint not null check (years between 0 and 50),
+  topics       text[] not null
+               check (cardinality(topics) between 1 and 5
+                      and topics <@ array['intern','resume','salary','switch','rights']::text[]),
+  contact      text not null check (char_length(contact) <= 200
+                      and (contact ~* '^(https?://)?([a-z]{2,3}\.)?linkedin\.com/\S+$'
+                           or contact ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$')),
+  price        smallint not null check (price between 99 and 249),
+  bio          text check (char_length(bio) <= 200),
+  rules_ok     boolean not null check (rules_ok),
+  age18        boolean not null check (age18),
+  status       text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  admin_note   text check (char_length(admin_note) <= 300),
+  created_at   timestamptz not null default now(),
+  reviewed_at  timestamptz
+);
+create index if not exists mentor_applications_user_idx on public.mentor_applications (user_id, created_at desc);
+create unique index if not exists mentor_applications_one_pending on public.mentor_applications (user_id) where status = 'pending';
+
+alter table public.mentor_applications enable row level security;
+drop policy if exists "mentor_applications: read own or admin" on public.mentor_applications;
+drop policy if exists "mentor_applications: insert own" on public.mentor_applications;
+create policy "mentor_applications: read own or admin" on public.mentor_applications
+  for select to authenticated using (user_id = (select auth.uid()) or (select public.is_admin()));
+create policy "mentor_applications: insert own" on public.mentor_applications
+  for insert to authenticated
+  with check (user_id = (select auth.uid())
+              and (select (auth.jwt() ->> 'is_anonymous')::boolean) is not true);
+revoke all on public.mentor_applications from anon, authenticated;
+grant select on public.mentor_applications to authenticated;
+grant insert (nickname, field, company, years, topics, contact, price, bio, rules_ok, age18)
+  on public.mentor_applications to authenticated;
+
+-- ---------- 8.3 mentors: รุ่นพี่จริงที่อนุมัติแล้ว (ชื่อเล่นเท่านั้น) / approved real mentors (nickname only) ----------
+create table if not exists public.mentors (
+  id           uuid primary key references auth.users (id) on delete cascade,
+  nickname     text not null check (char_length(btrim(nickname)) between 1 and 30),
+  field        text not null check (char_length(field) <= 60),
+  company      text check (char_length(company) <= 60),
+  years        smallint not null check (years between 0 and 50),
+  topics       text[] not null default '{}',
+  price        smallint not null check (price between 99 and 249),
+  bio          text check (char_length(bio) <= 200),
+  available    boolean not null default true,
+  active       boolean not null default true,
+  approved_at  timestamptz not null default now()
+);
+alter table public.mentors enable row level security;
+drop policy if exists "mentors: read active" on public.mentors;
+drop policy if exists "mentors: update own" on public.mentors;
+create policy "mentors: read active" on public.mentors
+  for select to anon, authenticated using (active or id = (select auth.uid()));
+create policy "mentors: update own" on public.mentors
+  for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
+revoke all on public.mentors from anon, authenticated;
+grant select on public.mentors to anon, authenticated;
+grant update (available) on public.mentors to authenticated;
+
+-- แอดมินอนุมัติ/ปฏิเสธ / admin approves or rejects
+create or replace function public.review_mentor_application(app uuid, approve boolean, note text default null)
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  a public.mentor_applications;
+begin
+  if not public.is_admin() then
+    raise exception 'admins only' using errcode = 'insufficient_privilege';
+  end if;
+  select * into a from public.mentor_applications where id = app for update;
+  if not found then
+    raise exception 'application not found' using errcode = 'no_data_found';
+  end if;
+  update public.mentor_applications
+     set status = case when approve then 'approved' else 'rejected' end,
+         admin_note = left(note, 300), reviewed_at = now()
+   where id = app;
+  if approve then
+    insert into public.mentors (id, nickname, field, company, years, topics, price, bio, active, approved_at)
+    values (a.user_id, btrim(a.nickname), btrim(a.field), nullif(btrim(coalesce(a.company, '')), ''), a.years,
+            a.topics, a.price, a.bio, true, now())
+    on conflict (id) do update
+      set nickname = excluded.nickname, field = excluded.field, company = excluded.company,
+          years = excluded.years, topics = excluded.topics, price = excluded.price,
+          bio = excluded.bio, active = true;
+  else
+    update public.mentors set active = false where id = a.user_id;
+  end if;
+  return case when approve then 'approved' else 'rejected' end;
+end;
+$$;
+revoke execute on function public.review_mentor_application(uuid, boolean, text) from public, anon;
+grant execute on function public.review_mentor_application(uuid, boolean, text) to authenticated;
+
+-- ---------- 8.4 chat_rooms: 1 คำถาม = 1 ห้อง / one question = one room ----------
+--   สร้างห้องหลังสร้างแถว questions แล้ว (กติกาถามฟรี 5 คำถาม/เดือน ยังตรวจที่ questions เหมือนเดิม)
+--   The room is created after the questions row, so the 5-a-month Plus rule still applies there.
+create table if not exists public.chat_rooms (
+  id               uuid primary key default gen_random_uuid(),
+  question_id      uuid not null unique references public.questions (id) on delete cascade,
+  student_id       uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  mentor_id        uuid not null references public.mentors (id) on delete cascade,
+  student_name     text not null default '' check (char_length(student_name) <= 30),
+  status           text not null default 'waiting' check (status in ('waiting', 'answered', 'closed')),
+  created_at       timestamptz not null default now(),
+  last_msg_at      timestamptz not null default now(),
+  last_sender      uuid,
+  last_preview     text not null default '',
+  first_reply_at   timestamptz,
+  student_read_at  timestamptz not null default now(),
+  mentor_read_at   timestamptz not null default 'epoch',
+  student_live     boolean not null default false,
+  mentor_live      boolean not null default false,
+  blocked_by       uuid
+);
+create index if not exists chat_rooms_student_idx on public.chat_rooms (student_id, last_msg_at desc);
+create index if not exists chat_rooms_mentor_idx on public.chat_rooms (mentor_id, last_msg_at desc);
+
+create or replace function public.is_room_member(room uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (select 1 from public.chat_rooms r
+                 where r.id = room and auth.uid() in (r.student_id, r.mentor_id));
+$$;
+create or replace function public.chat_can_post(room uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (select 1 from public.chat_rooms r
+                 where r.id = room and auth.uid() in (r.student_id, r.mentor_id)
+                   and r.status <> 'closed' and r.blocked_by is null);
+$$;
+-- สำหรับ Storage: ชื่อโฟลเดอร์เป็นข้อความ / for Storage: folder names are text
+create or replace function public.room_folder_ok(folder text, for_write boolean)
+returns boolean
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+begin
+  if folder is null or folder !~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' then
+    return false;
+  end if;
+  if for_write then return public.chat_can_post(folder::uuid); end if;
+  return public.is_room_member(folder::uuid)
+      or (public.is_admin() and exists (select 1 from public.chat_reports where room_id = folder::uuid));
+end;
+$$;
+
+alter table public.chat_rooms enable row level security;
+drop policy if exists "chat_rooms: members read" on public.chat_rooms;
+drop policy if exists "chat_rooms: student creates" on public.chat_rooms;
+create policy "chat_rooms: members read" on public.chat_rooms
+  for select to authenticated using ((select auth.uid()) in (student_id, mentor_id));
+create policy "chat_rooms: student creates" on public.chat_rooms
+  for insert to authenticated
+  with check (student_id = (select auth.uid())
+              and (select (auth.jwt() ->> 'is_anonymous')::boolean) is not true);
+revoke all on public.chat_rooms from anon, authenticated;
+grant select on public.chat_rooms to authenticated;
+grant insert (question_id, mentor_id, student_name) on public.chat_rooms to authenticated;
+
+create or replace function public.chat_rooms_before_insert()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  q public.questions;
+begin
+  if current_setting('role', true) not in ('authenticated', 'anon') then
+    return new;
+  end if;
+  select * into q from public.questions where id = new.question_id;
+  if not found or q.user_id <> auth.uid() or q.status = 'closed' then
+    raise exception 'question not yours or closed' using errcode = 'check_violation';
+  end if;
+  if q.mentor_id <> new.mentor_id::text then
+    raise exception 'mentor mismatch' using errcode = 'check_violation';
+  end if;
+  if new.mentor_id = auth.uid() then
+    raise exception 'cannot ask yourself' using errcode = 'check_violation';
+  end if;
+  if not exists (select 1 from public.mentors m where m.id = new.mentor_id and m.active and m.available) then
+    raise exception 'mentor unavailable' using errcode = 'check_violation';
+  end if;
+  new.student_id := auth.uid(); new.status := 'waiting'; new.created_at := now();
+  new.last_msg_at := now(); new.last_sender := null; new.last_preview := '';
+  new.first_reply_at := null; new.student_read_at := now(); new.mentor_read_at := 'epoch';
+  new.student_live := false; new.mentor_live := false; new.blocked_by := null;
+  new.student_name := left(btrim(coalesce(new.student_name, '')), 30);
+  return new;
+end;
+$$;
+revoke execute on function public.chat_rooms_before_insert() from public, anon, authenticated;
+drop trigger if exists chat_rooms_before_insert on public.chat_rooms;
+create trigger chat_rooms_before_insert
+  before insert on public.chat_rooms
+  for each row execute function public.chat_rooms_before_insert();
+
+-- สถานะห้องตามคำถาม (ผู้ถามปิดคำถาม → ห้องปิด) / room status follows the question
+create or replace function public.questions_sync_room()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.status is distinct from old.status then
+    update public.chat_rooms set status = new.status where question_id = new.id;
+  end if;
+  return new;
+end;
+$$;
+revoke execute on function public.questions_sync_room() from public, anon, authenticated;
+drop trigger if exists questions_sync_room on public.questions;
+create trigger questions_sync_room
+  after update on public.questions
+  for each row execute function public.questions_sync_room();
+
+-- อ่านแล้ว / คุยสดแล้ว / บล็อก (อัปเดตห้องได้ผ่านฟังก์ชันเหล่านี้เท่านั้น)
+-- read receipts / live call done / block (the only ways to update a room)
+create or replace function public.chat_mark_read(room uuid)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update public.chat_rooms
+     set student_read_at = case when student_id = auth.uid() then now() else student_read_at end,
+         mentor_read_at  = case when mentor_id  = auth.uid() then now() else mentor_read_at end
+   where id = room and auth.uid() in (student_id, mentor_id);
+$$;
+create or replace function public.chat_confirm_live(room uuid)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update public.chat_rooms
+     set student_live = student_live or student_id = auth.uid(),
+         mentor_live  = mentor_live  or mentor_id  = auth.uid()
+   where id = room and auth.uid() in (student_id, mentor_id);
+$$;
+create or replace function public.chat_set_block(room uuid, blocked boolean)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update public.chat_rooms
+     set blocked_by = case when blocked then coalesce(blocked_by, auth.uid())
+                           when blocked_by = auth.uid() then null else blocked_by end
+   where id = room and auth.uid() in (student_id, mentor_id);
+$$;
+revoke execute on function public.is_room_member(uuid) from public, anon;
+revoke execute on function public.chat_can_post(uuid) from public, anon;
+revoke execute on function public.chat_mark_read(uuid) from public, anon;
+revoke execute on function public.chat_confirm_live(uuid) from public, anon;
+revoke execute on function public.chat_set_block(uuid, boolean) from public, anon;
+grant execute on function public.is_room_member(uuid) to authenticated;
+grant execute on function public.chat_can_post(uuid) to authenticated;
+grant execute on function public.chat_mark_read(uuid) to authenticated;
+grant execute on function public.chat_confirm_live(uuid) to authenticated;
+grant execute on function public.chat_set_block(uuid, boolean) to authenticated;
+
+-- ---------- 8.5 chat_reports: รายงานห้องแชท (แอดมินอ่านได้) / chat reports (admins can read) ----------
+create table if not exists public.chat_reports (
+  id           uuid primary key default gen_random_uuid(),
+  room_id      uuid not null references public.chat_rooms (id) on delete cascade,
+  reporter_id  uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  message_id   uuid,
+  reason       text not null check (reason in ('spam', 'harass', 'scam', 'contact', 'other')),
+  note         text check (char_length(note) <= 300),
+  created_at   timestamptz not null default now()
+);
+alter table public.chat_reports enable row level security;
+drop policy if exists "chat_reports: read own or admin" on public.chat_reports;
+drop policy if exists "chat_reports: members insert" on public.chat_reports;
+create policy "chat_reports: read own or admin" on public.chat_reports
+  for select to authenticated using (reporter_id = (select auth.uid()) or (select public.is_admin()));
+create policy "chat_reports: members insert" on public.chat_reports
+  for insert to authenticated
+  with check (reporter_id = (select auth.uid()) and public.is_room_member(room_id));
+revoke all on public.chat_reports from anon, authenticated;
+grant select on public.chat_reports to authenticated;
+grant insert (room_id, message_id, reason, note) on public.chat_reports to authenticated;
+revoke execute on function public.room_folder_ok(text, boolean) from public, anon;
+grant execute on function public.room_folder_ok(text, boolean) to authenticated;
+
+-- ---------- 8.6 messages: ข้อความในห้อง (อ่าน/เขียนได้เฉพาะ 2 คนในห้อง) / room messages (the two members only) ----------
+--   เบอร์โทร / LINE ID / อีเมล / ลิงก์ติดต่อ ถูกแทนที่ด้วย [hidden] ตอนบันทึก จนกว่าทั้งสองฝั่งยืนยันว่าคุยสดครั้งแรกแล้ว
+--   Phone numbers, LINE IDs, emails and contact links are replaced with [hidden] on save
+--   until both sides confirm their first live call. The original text is never stored.
+create table if not exists public.messages (
+  id          uuid primary key default gen_random_uuid(),
+  room_id     uuid not null references public.chat_rooms (id) on delete cascade,
+  sender_id   uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  body        text not null default '' check (char_length(body) <= 2000),
+  file_path   text check (char_length(file_path) <= 300),
+  file_name   text check (char_length(file_name) <= 120),
+  file_type   text check (file_type in ('image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf')),
+  file_size   integer check (file_size between 1 and 5242880),
+  masked      boolean not null default false,
+  created_at  timestamptz not null default now(),
+  check (char_length(btrim(body)) > 0 or file_path is not null)
+);
+create index if not exists messages_room_idx on public.messages (room_id, created_at);
+
+alter table public.messages enable row level security;
+drop policy if exists "messages: members read" on public.messages;
+drop policy if exists "messages: members send" on public.messages;
+create policy "messages: members read" on public.messages
+  for select to authenticated
+  using (public.is_room_member(room_id)
+         or ((select public.is_admin()) and exists (select 1 from public.chat_reports cr where cr.room_id = messages.room_id)));
+create policy "messages: members send" on public.messages
+  for insert to authenticated
+  with check (sender_id = (select auth.uid()) and public.chat_can_post(room_id));
+revoke all on public.messages from anon, authenticated;
+grant select on public.messages to authenticated;
+grant insert (room_id, body, file_path, file_name, file_type, file_size) on public.messages to authenticated;
+
+create or replace function public.mask_contacts(t text)
+returns text
+language sql
+immutable
+set search_path = ''
+as $$
+  select regexp_replace(regexp_replace(regexp_replace(regexp_replace(regexp_replace(coalesce(t, ''),
+    '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', '[hidden]', 'g'),
+    '(https?://|www\.)\S+|\m[A-Za-z0-9-]+\.(com|net|org|me|co|th|io|ly|gl|gg|link)(/\S*)?', '[hidden]', 'gi'),
+    '(line|ไลน์|ig|ไอจี|instagram|facebook|fb|เฟส|telegram|discord|tel|โทร)\s*(id)?\s*[:：]?\s*@?[A-Za-z0-9._-]{3,}', '[hidden]', 'gi'),
+    '@[A-Za-z0-9._-]{3,}', '[hidden]', 'g'),
+    '\+?\d([-. ]?\d){8,11}', '[hidden]', 'g');
+$$;
+
+create or replace function public.messages_before_insert()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  r public.chat_rooms;
+  m text;
+begin
+  select * into r from public.chat_rooms where id = new.room_id;
+  new.created_at := now();
+  if current_setting('role', true) in ('authenticated', 'anon') then
+    new.sender_id := auth.uid();
+  end if;
+  if new.file_path is not null and new.file_path not like new.room_id::text || '/%' then
+    raise exception 'file must be in the room folder' using errcode = 'check_violation';
+  end if;
+  new.body := btrim(coalesce(new.body, ''));
+  if not (r.student_live and r.mentor_live) then
+    m := public.mask_contacts(new.body);
+    new.masked := m is distinct from new.body;
+    new.body := m;
+  else
+    new.masked := false;
+  end if;
+  return new;
+end;
+$$;
+revoke execute on function public.messages_before_insert() from public, anon, authenticated;
+drop trigger if exists messages_before_insert on public.messages;
+create trigger messages_before_insert
+  before insert on public.messages
+  for each row execute function public.messages_before_insert();
+
+-- ข้อความใหม่ → อัปเดตห้อง และถ้ารุ่นพี่ตอบครั้งแรก คำถามเป็น "ตอบแล้ว"
+-- New message → update the room; a mentor's first reply marks the question answered.
+create or replace function public.messages_after_insert()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  r public.chat_rooms;
+  from_mentor boolean;
+begin
+  select * into r from public.chat_rooms where id = new.room_id;
+  from_mentor := new.sender_id = r.mentor_id;
+  update public.chat_rooms
+     set last_msg_at = new.created_at, last_sender = new.sender_id,
+         last_preview = left(case when new.body <> '' then new.body else coalesce(new.file_name, '📎') end, 80),
+         first_reply_at = case when from_mentor then coalesce(first_reply_at, new.created_at) else first_reply_at end,
+         student_read_at = case when not from_mentor then new.created_at else student_read_at end,
+         mentor_read_at  = case when from_mentor then new.created_at else mentor_read_at end
+   where id = r.id;
+  update public.questions
+     set last_activity_at = new.created_at,
+         status = case when from_mentor and status = 'waiting' then 'answered' else status end,
+         answered_at = case when from_mentor then coalesce(answered_at, new.created_at) else answered_at end
+   where id = r.question_id and status <> 'closed';
+  return new;
+end;
+$$;
+revoke execute on function public.messages_after_insert() from public, anon, authenticated;
+drop trigger if exists messages_after_insert on public.messages;
+create trigger messages_after_insert
+  after insert on public.messages
+  for each row execute function public.messages_after_insert();
+
+-- รีวิวรุ่นพี่จริงได้หลังคุยจบในห้องแชทเท่านั้น (1 ห้อง = 1 รีวิว, booking_id = id ห้อง)
+-- Real mentors can only be reviewed after a closed chat (1 room = 1 review, booking_id = room id).
+create or replace function public.mentor_reviews_real_check()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if exists (select 1 from public.mentors where id::text = new.mentor_id)
+     and not exists (select 1 from public.chat_rooms r
+                     where r.id::text = new.booking_id and r.student_id = new.user_id
+                       and r.mentor_id::text = new.mentor_id and r.status = 'closed') then
+    raise exception 'real mentor review needs a closed chat' using errcode = 'check_violation';
+  end if;
+  return new;
+end;
+$$;
+revoke execute on function public.mentor_reviews_real_check() from public, anon, authenticated;
+drop trigger if exists mentor_reviews_real_check on public.mentor_reviews;
+create trigger mentor_reviews_real_check
+  before insert on public.mentor_reviews
+  for each row execute function public.mentor_reviews_real_check();
+
+-- ---------- 8.7 Storage: bucket แบบ private ไม่เกิน 5MB เปิดได้เฉพาะคนในห้อง ----------
+--   ไฟล์อยู่ที่ chat-files/<room id>/<ชื่อไฟล์> / files live at chat-files/<room id>/<file>
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('chat-files', 'chat-files', false, 5242880,
+        array['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf'])
+on conflict (id) do update
+  set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "chat-files: room members read" on storage.objects;
+drop policy if exists "chat-files: room members upload" on storage.objects;
+create policy "chat-files: room members read" on storage.objects
+  for select to authenticated
+  using (bucket_id = 'chat-files' and public.room_folder_ok((storage.foldername(name))[1], false));
+create policy "chat-files: room members upload" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'chat-files' and public.room_folder_ok((storage.foldername(name))[1], true));
+
+-- ---------- 8.8 Realtime: ข้อความใหม่ + อ่านแล้ว ขึ้นทันที / new messages and read receipts arrive live ----------
+do $$
+begin
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    if not exists (select 1 from pg_publication_tables
+                   where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'messages') then
+      alter publication supabase_realtime add table public.messages;
+    end if;
+    if not exists (select 1 from pg_publication_tables
+                   where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'chat_rooms') then
+      alter publication supabase_realtime add table public.chat_rooms;
+    end if;
+  end if;
+end;
+$$;
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';
