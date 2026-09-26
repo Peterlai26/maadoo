@@ -36,19 +36,19 @@
   --sky:#CFEAFF; --sky-2:#EAF5FF; --orange:#FF9A1F; --orange-ink:#FFFFFF; --orange-soft:#FFE7C7; --blush:#FFB9B3;
   --good:#1C9D7F; --good-bg:#DCF5EC; --mid:#C27A12; --mid-bg:#FFF1D3; --bad:#E0506A; --bad-bg:#FFE3E8;
   --shadow:0 2px 0 rgba(13,60,148,.06),0 10px 24px rgba(47,111,214,.10);
-  --star:#FFB800; --plus-a:#4F86FF; --plus-b:#9161F5; --plus-c:#F2689F; --plus-soft:#F1EAFF; --plus-ink:#5B34C9; --coin-a:#FFD45C; --coin-b:#FF9A1F; --coin-ink:#4A2800; --on-brand:#FFFFFF; --orange-btn:#FF8A1F; --orange-btn-shade:#D96A00; --tag:#FF9A1F; --tag-shade:#D97A08; --tag-ink:#FFFFFF; --logo-bg:transparent; --logo-ink:#0D3C94;
+  --star:#FFB800; --plus-a:#4F86FF; --plus-b:#9161F5; --plus-c:#F2689F; --plus-soft:#F1EAFF; --plus-ink:#5B34C9; --coin-a:#FFD45C; --coin-b:#FF9A1F; --coin-ink:#4A2800; --on-brand:#FFFFFF; --cream:#FFF7E3; --cream-line:#F3DFA8; --orange-btn:#FF8A1F; --orange-btn-shade:#D96A00; --tag:#FF9A1F; --tag-shade:#D97A08; --tag-ink:#FFFFFF; --logo-bg:transparent; --logo-ink:#0D3C94;
   --display:"Mali",system-ui,sans-serif; --body:"Anuphan",system-ui,sans-serif; --mono:"Anuphan",system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   color-scheme:dark;--bg:#0C1630;--surface:#132248;--surface-2:#1B2D5A;--ink:#EAF1FF;--ink-2:#B1C2E4;--ink-3:#8292B8;
   --line:#26396B;--accent:#FFC94D;--accent-ink:#0D2A66;--blue:#5B93F5;--blue-ink:#08162F;--navy:#A9C8FF;--sky:#1A3470;--sky-2:#15285A;--orange:#FFA940;--orange-ink:#2A1600;--orange-soft:#4A3312;--blush:#F59C95;
   --good:#4CCBAA;--good-bg:#153B35;--mid:#EAB04E;--mid-bg:#3A2E14;--bad:#F57A90;--bad-bg:#40202B;
-  --shadow:0 2px 0 rgba(0,0,0,.2),0 10px 24px rgba(0,0,0,.3);--logo-bg:#EAF3FF;--logo-ink:#A9C8FF;--plus-soft:#2C2358;--plus-ink:#C9B5FF;}}
+  --shadow:0 2px 0 rgba(0,0,0,.2),0 10px 24px rgba(0,0,0,.3);--logo-bg:#EAF3FF;--logo-ink:#A9C8FF;--plus-soft:#2C2358;--plus-ink:#C9B5FF;--cream:#3A3120;--cream-line:#5C4B26;}}
 :root[data-theme="dark"]{
   color-scheme:dark;--bg:#0C1630;--surface:#132248;--surface-2:#1B2D5A;--ink:#EAF1FF;--ink-2:#B1C2E4;--ink-3:#8292B8;
   --line:#26396B;--accent:#FFC94D;--accent-ink:#0D2A66;--blue:#5B93F5;--blue-ink:#08162F;--navy:#A9C8FF;--sky:#1A3470;--sky-2:#15285A;--orange:#FFA940;--orange-ink:#2A1600;--orange-soft:#4A3312;--blush:#F59C95;
   --good:#4CCBAA;--good-bg:#153B35;--mid:#EAB04E;--mid-bg:#3A2E14;--bad:#F57A90;--bad-bg:#40202B;
-  --shadow:0 2px 0 rgba(0,0,0,.2),0 10px 24px rgba(0,0,0,.3);--logo-bg:#EAF3FF;--logo-ink:#A9C8FF;--plus-soft:#2C2358;--plus-ink:#C9B5FF;}
+  --shadow:0 2px 0 rgba(0,0,0,.2),0 10px 24px rgba(0,0,0,.3);--logo-bg:#EAF3FF;--logo-ink:#A9C8FF;--plus-soft:#2C2358;--plus-ink:#C9B5FF;--cream:#3A3120;--cream-line:#5C4B26;}
 *{box-sizing:border-box}
 body{overscroll-behavior-x:none;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 100px;
   background-image:radial-gradient(circle at 12% 0%,var(--sky-2) 0,transparent 40%),radial-gradient(circle at 100% 30%,var(--sky-2) 0,transparent 35%)}
@@ -419,6 +419,38 @@ body.sheet-open{overflow:hidden}
 .q-li{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}.q-prev{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 @media(max-width:520px){.tk-top{padding-right:96px}.tk-pup{width:70px;height:70px}.tk-top h1{font-size:25px}.tk-plans{gap:6px;padding:16px 12px}.tk-price{font-size:21px}.tk-plan{padding:14px 4px 10px}.tk-plan b{font-size:12.5px}
  .ms{flex-wrap:wrap}.ms-b{flex:1 1 170px}.ms-a{margin-left:38px}.cc-bal b{font-size:40px}}
+.promo-wrap{display:grid;gap:10px}.promo-top{display:flex;align-items:center;justify-content:space-between}.promo-top b{font-family:var(--display);color:var(--navy);font-size:18px}
+.x.sm{width:30px;height:30px;font-size:16px}
+.promo{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:24px;overscroll-behavior-x:contain}.promo::-webkit-scrollbar{display:none}
+.pcell{flex:0 0 100%;scroll-snap-align:start;min-width:0}
+.pslide{position:relative;display:flex;align-items:center;gap:14px;min-height:150px;padding:18px 20px;border-radius:24px;color:var(--on-brand);overflow:hidden}
+.ps-review{background:linear-gradient(120deg,var(--orange-btn),var(--plus-c))}.ps-pioneer{background:linear-gradient(120deg,var(--plus-a),var(--plus-b))}
+.ps-invite{background:linear-gradient(120deg,var(--good),var(--plus-a))}.ps-season{background:linear-gradient(120deg,var(--plus-b),var(--plus-c))}
+.ps-pup{width:96px;height:96px;border-radius:50%;border:3px solid rgba(255,255,255,.85);flex:none;background:var(--on-brand)}
+.ps-ic{font-size:54px;flex:none;width:96px;text-align:center}
+.ps-b{display:grid;gap:4px;min-width:0}.ps-b h3{font-size:21px;color:var(--on-brand);margin:0}.ps-b p{margin:0;font-size:14px;opacity:.95}
+.ps-tag{justify-self:start;background:rgba(255,255,255,.22);border-radius:99px;padding:2px 10px;font-size:12px;font-weight:700}
+.ps-btn{justify-self:start;background:var(--on-brand);color:var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.15);margin-top:4px;padding:8px 16px}
+:root[data-theme="dark"] .ps-btn{color:#1B2E57}
+.pdots{display:flex;gap:6px;justify-content:center}.pdot{width:9px;height:9px;border-radius:99px;border:0;background:var(--line);padding:0;transition:width .2s}.pdot.on{width:24px;background:var(--blue)}
+.inv-page{display:grid;gap:0;max-width:760px;margin:0 auto}.inv-head{display:grid;gap:8px;padding-top:8px}.inv-head h1{font-size:clamp(24px,5vw,32px)}.inv-head p{margin:0}
+.inv-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}.inv-stats .card{display:grid;gap:2px;padding:14px 16px}.inv-stats b{font-family:var(--display);font-size:24px;color:var(--navy)}
+.inv-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.inv-steps li{position:relative;display:grid;gap:4px;padding:16px}.inv-n{position:absolute;top:10px;right:12px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--orange-soft);color:var(--ink);font-weight:700;font-size:13px}
+.inv-hid{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;padding:12px 16px}
+.inv-link{width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;text-align:left;font:inherit;color:var(--ink);cursor:pointer}.inv-link:hover{box-shadow:0 0 0 2px var(--accent)}.inv-lt{display:grid;gap:2px;flex:1;min-width:0}.inv-lt .muted{font-size:13px;overflow-wrap:anywhere}
+.promo-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.pcard{display:grid;gap:8px;padding:14px 16px;transition:box-shadow .3s}.pcard.flash{box-shadow:0 0 0 3px var(--accent)}.pc-ic{font-size:26px}
+.icode{display:flex;align-items:center;gap:8px;border:2px dashed var(--orange);border-radius:14px;padding:6px 6px 6px 12px;background:var(--orange-soft)}
+.icode code{flex:1;min-width:0;font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:.06em;color:var(--ink);overflow-wrap:anywhere}
+.ref-form{flex-wrap:nowrap}.ref-form .field{flex:1;min-width:0;padding:8px 12px}
+.tk-was{display:block;font-size:13px;opacity:.75;font-weight:500}
+.eb-bar{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;background:var(--blue);color:var(--blue-ink);border-radius:18px;padding:10px 16px;margin-top:8px;font-size:14.5px}
+.eb-left{margin-left:auto;background:rgba(255,255,255,.2);border-radius:99px;padding:2px 12px;font-weight:700;white-space:nowrap}
+.tier.pro{position:relative;border:2.5px solid var(--orange-btn)!important}.tier .pop{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--orange-btn);color:var(--on-brand);font-size:12.5px;font-weight:700;border-radius:99px;padding:3px 12px;white-space:nowrap}
+.tier .was{font-size:.6em;color:var(--ink-3);font-weight:500}.eb-note{font-size:12.5px;color:var(--orange-btn-shade);font-weight:600}
+:root[data-theme="dark"] .eb-note{color:var(--orange)}
+.promise.cream{background:var(--cream);border:1.5px solid var(--cream-line)}.promise.cream b{color:var(--ink)}
+@media(max-width:520px){.pslide{min-height:132px;padding:14px 16px;gap:10px}.ps-pup{width:64px;height:64px}.ps-ic{font-size:38px;width:56px}.ps-b h3{font-size:17px}.ps-b p{font-size:13px}}
 .btn.danger{background:var(--bad);color:var(--surface);box-shadow:none}
 .otp-code{font-size:24px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
 .otp-links{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center}
@@ -726,7 +758,7 @@ function initSB(){
  try{SB=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){SB=null;return}
  if(S.user&&!S.user.id){S.user=null;S.myReviews=[]}
  SB.auth.onAuthStateChange((ev,session)=>{setTimeout(()=>sbUser(ev,session),0)});
- loadApproved();loadMentorReviews();rerender();
+ loadApproved();loadMentorReviews();loadPromoStats();rerender();
 }
 function mkUser(u,prev){
  const anon=!!u.is_anonymous,em=u.email||'',dn=u.user_metadata&&u.user_metadata.display_name;
@@ -741,7 +773,7 @@ async function sbUser(ev,session){
  if(same&&S.user.anon===!!u.is_anonymous&&S.user.email===(u.email||''))return;
  S.user=mkUser(u,same?S.user:null);
  if(same){rerender();return}
- await loadMine();loadApproved();loadMentorReviews();resetPrem();loadPrem();
+ await loadMine();loadApproved();loadMentorReviews();resetPrem();loadPrem().then(afterLoginPromo);
  if(ev==='SIGNED_IN'){if(S.modal&&(S.modal.type==='login'||S.modal.type==='otp'))S.modal=null;const fn=S.after;S.after=null;rerender();
   toast(S.user.anon?t('เข้าใช้แบบชั่วคราวแล้ว · ถ้าออกจากระบบ บัญชีนี้จะหายไป','You’re in as a guest · this account is gone once you log out'):t(`สวัสดี ${S.user.name}! รับ 20 แต้มต้อนรับ`,`Hi ${S.user.name}! +20 welcome points`));if(fn)fn()}
  else rerender();
@@ -892,7 +924,7 @@ async function sendReview(f){
  let ok=false,id=null;try{const {data,error}=await SB.from('reviews').insert(row).select('id');ok=!error;id=data&&data[0]&&data[0].id||null}catch(e){}
  S.sending=false;
  if(!ok){toast(t('ส่งรีวิวไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t submit your review. Please try again.'));return}
- S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({id,uid:S.user&&S.user.id,co:f.co,r:f.r,at:Date.now(),sal:!!row.salary,status:'pending'});addPoints(50);S.form=blankForm();S.view='write';render();window.scrollTo({top:0});
+ S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({id,uid:S.user&&S.user.id,co:f.co,r:f.r,at:Date.now(),sal:!!row.salary,status:'pending'});claimReferral();addPoints(50);S.form=blankForm();S.view='write';render();window.scrollTo({top:0});
 }
 
 /* delete your own review · only rows whose user_id is the logged-in user (also enforced by RLS in supabase/setup.sql) */
@@ -1298,6 +1330,7 @@ function home(){
  </div><div class="hero-side"><div class="mascot"><img src="${PUP()}" alt="${t('น้องมาดู น้องหมาผู้ช่วยหางาน','Maadoo, the job-hunting pup')}"><svg class="m-say" viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(69 12) rotate(6)"><path d="M6 0H32Q38 0 38 6V17Q38 23 32 23H14L2.5 32.5L7.5 23H6Q0 23 0 17V6Q0 0 6 0Z"/><text x="19" y="12.2" text-anchor="middle" dominant-baseline="central">JOB!</text></g></svg><span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span></div>
   <div class="stats"><div><b class="num">${fmt(12480)}</b><span>${t('รีวิว','reviews')}</span></div><div><b class="num">${fmt(3120)}</b><span>${t('บริษัท','companies')}</span></div><div><b class="num">${fmt(8904)}</b><span>${t('ข้อมูลเงินเดือน','salaries')}</span></div></div></div></section>
  <div class="search-wrap"><form class="search" id="searchForm" role="search"><input id="q" placeholder="${t('ค้นหาบริษัท ตำแหน่ง หรือย่าน เช่น QC, ลาดพร้าว','Search companies, roles or areas, e.g. QC, Ari')}" value="${esc(S.q)}" aria-label="${t('ค้นหา','Search')}"><button class="btn y">${t('ค้นหา','Search')}</button></form><div class="quick"><button class="explore-btn" data-go="explore"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>${t('สำรวจบริษัททั้งหมด','Explore all companies')}</button>${quick.map(k=>`<button data-qk="${esc(S.lang==='en'?k[1]:k[0])}">${S.lang==='en'?(k[1]==='intern'?'Internships':k[1]==='startup'?'Startups':k[1]==='pharma'?'Pharma':k[1]==='MRT'?'Near MRT':k[1]):(k[0]==='MRT'?'ใกล้ MRT':k[0])}</button>`).join('')}</div></div>
+ ${q?'':promoSection()}
  <section class="sec"><div class="sec-h"><h2>${q?t(`ผลการค้นหา “${esc(S.q)}”`,`Results for “${esc(S.q)}”`):t('บริษัทที่ถูกพูดถึงสัปดาห์นี้','Talked about this week')}</h2>${q?`<button class="link" data-clear>${t('ล้างการค้นหา','Clear search')}</button>`:`<button class="link" data-go="explore">${t('ดูทั้งหมด','See all')}</button>`}</div>
   <div class="grid g3">${list.length?list.map(coCard).join(''):`<div class="card empty">${t('ยังไม่มีบริษัทนี้ใน Maadoo','This company is not on Maadoo yet')} · <button class="link" data-go="write">${t('เป็นคนแรกที่รีวิว','Be the first to review')}</button> ${t('แล้วรับเหรียญ “ผู้บุกเบิก”','and earn the “Pioneer” badge')}</div>`}</div></section>
  <section class="sec grid g2">
@@ -1585,7 +1618,7 @@ const MISSIONS=[
  {k:'interview',ic:'🎤',kind:'mission',coins:20,need:1,n:['รีวิวการสัมภาษณ์','Review an interview'],how:['แชร์คำถามสัมภาษณ์ในหน้าบริษัท แท็บ “สัมภาษณ์”','Share interview questions on a company’s “Interviews” tab'],go:'explore'},
  {k:'answers',ic:'💬',kind:'mission',coins:15,need:3,n:['ตอบคำถามรุ่นน้อง 3 ข้อ','Answer 3 questions from juniors'],how:['ตอบในบอร์ดพูดคุย หน้า “ปรึกษา”','Answer on the board in the “Ask” page'],go:'ask'},
  {k:'invite',ic:'🤝',kind:'mission',coins:50,need:1,n:['ชวนเพื่อน','Invite a friend'],how:['แชร์ลิงก์ชวนเพื่อนของคุณ','Share your invite link'],act:'invite'}];
-const blankPrem=()=>({rev:0,plusUntil:0,coins:0,freeClaimed:false,ledger:[],qs:[],interviews:[],comments:[],invites:[],loaded:false});
+const blankPrem=()=>({inviteCode:null,referredBy:null,rev:0,plusUntil:0,coins:0,freeClaimed:false,ledger:[],qs:[],interviews:[],comments:[],invites:[],loaded:false});
 S.prem=blankPrem();S.planSel='y';
 const isPlus=()=>!!(S.user&&S.prem.plusUntil>Date.now());
 const monthKey=(d=new Date())=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
@@ -1607,12 +1640,15 @@ const claimed=ref=>S.prem.ledger.some(l=>l.ref===ref);
 /* premium actions need a real (non-guest) account */
 function needMember(fn){needLogin(()=>{if(S.user.anon){S.after=fn;openModal({type:'link',why:'premium'});return}fn()})}
 const premErr=e=>{const m=String((e&&e.message)||'');if(e&&e.code)console.warn('[Maadoo Job] premium error:',e.code,e.message);if(e&&(e.code==='PGRST205'||e.code==='42P01'||/does not exist|schema cache/.test(m)))return t('ยังไม่ได้ตั้งค่าตารางพรีเมียมใน Supabase (รัน SQL)','Premium tables aren’t set up in Supabase yet (run the SQL)');if(/invalid plus coins/.test(m))return t('ยังไม่ได้เป็น Plus ในระบบ จึงรับเหรียญ Plus ไม่ได้','Plus isn’t active on your account yet, so the Plus coins can’t be added');if(/profile/.test(m))return t('สร้างโปรไฟล์ไม่สำเร็จ ลองออกจากระบบแล้วเข้าใหม่','Couldn’t create your profile. Try logging out and in again');if(/cap/.test(m))return t('เดือนนี้รับเหรียญจากภารกิจครบ 300 แล้ว','You’ve reached this month’s 300-coin mission limit');if(/not enough/.test(m))return t('เหรียญไม่พอ','Not enough coins');if(/duplicate|23505/.test(m)||e&&e.code==='23505')return t('รับไปแล้ว','Already claimed');if(/plus required/.test(m))return t('ต้องเป็นสมาชิก Plus ก่อน','You need Plus first');if(/max 2/.test(m))return t('เปิดคำถามค้างได้ไม่เกิน 2 ข้อ','You can have at most 2 open questions');if(/quota/.test(m))return t('สิทธิ์ถามฟรีเดือนนี้หมดแล้ว','No free questions left this month');return t('ทำรายการไม่สำเร็จ ลองใหม่อีกครั้ง','Something went wrong. Please try again.')};
+async function selectProfile(){const full=await SB.from('profiles').select('plus_until,free_month_claimed,invite_code,referred_by').eq('id',S.user.id).maybeSingle();
+ if(!full.error)return full;if(!/invite_code|referred_by|42703|column/i.test(String(full.error.code)+' '+String(full.error.message)))return full;
+ console.warn('[Maadoo Job] promotions SQL not installed yet (profiles.invite_code missing); loading basic profile');return SB.from('profiles').select('plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle()}
 async function ensureProfile(){const r=await SB.from('profiles').select('id').eq('id',S.user.id).maybeSingle();if(r.error)throw r.error;if(r.data)return;
  const ins=await SB.from('profiles').insert({id:S.user.id});if(ins.error&&ins.error.code!=='23505')throw ins.error}
 async function refreshAll(){if(!sbLive())return;const P=S.prem;await refreshCoins();
  try{const l=await SB.from('coin_ledger').select('id,delta,kind,ref,status,created_at').order('created_at',{ascending:false}).limit(200);if(!l.error&&S.prem===P)P.ledger=(l.data||[]).map(r=>({id:r.id,delta:r.delta,kind:r.kind,ref:r.ref,status:r.status,at:Date.parse(r.created_at)||0}))}catch(e){}}
 async function refreshCoins(){if(!sbLive())return;const P=S.prem;
- try{const [pr,cb]=await Promise.all([SB.from('profiles').select('plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle(),SB.from('my_coins').select('coins,pending').maybeSingle()]);
+ try{const [pr,cb]=await Promise.all([selectProfile(),SB.from('my_coins').select('coins,pending').maybeSingle()]);
   if(pr.error)console.warn('[Maadoo Job] could not read profile:',pr.error.code,pr.error.message);if(cb.error)console.warn('[Maadoo Job] could not read coin balance (my_coins):',cb.error.code,cb.error.message);
   if(S.prem!==P)return;if(pr.data){P.plusUntil=pr.data.plus_until?Date.parse(pr.data.plus_until):0;P.freeClaimed=!!pr.data.free_month_claimed}if(cb.data)P.coins=cb.data.coins|0}catch(e){}}
 /* add a coin ledger entry (mirrors the rules enforced in supabase/setup.sql) */
@@ -1633,15 +1669,15 @@ async function setPlusUntil(until,extra){const P=S.prem;
  P.plusUntil=until;if(extra&&extra.free_month_claimed)P.freeClaimed=true;return grantPlusCoins()}
 async function grantPlusCoins(){if(!isPlus())return 0;const ref='plus:'+monthKey();if(claimed(ref))return 0;try{await addCoins(100,'plus',ref);return 100}catch(e){console.warn('[Maadoo Job] monthly Plus coins not added:',e&&(e.code||''),e&&(e.message||e));if(!(e&&e.code==='23505'))toast(premErr(e));return 0}}
 async function loadPrem(){const P=S.prem;if(!sbLive()){P.loaded=true;return}const rev0=P.rev;
- try{let {data}=await SB.from('profiles').select('plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle();
-  if(!data){await ensureProfile();({data}=await SB.from('profiles').select('plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle())}
+ try{let {data}=await selectProfile();
+  if(!data){await ensureProfile();({data}=await selectProfile())}
   const l=await SB.from('coin_ledger').select('id,delta,kind,ref,status,created_at').order('created_at',{ascending:false}).limit(200);
   const q=await SB.from('questions').select('*').order('created_at',{ascending:false}).limit(100);
   const cb=await SB.from('my_coins').select('coins,pending').maybeSingle();if(cb.error)console.warn('[Maadoo Job] could not read coin balance (my_coins):',cb.error.code,cb.error.message);
   if(S.prem!==P)return;
   const lq=q.error?[]:(q.data||[]).map(r=>({id:r.id,mid:r.mentor_id,status:r.status,counted:r.counted,refunded:r.refunded,msgs:Array.isArray(r.messages)?r.messages:[],createdAt:Date.parse(r.created_at),answeredAt:r.answered_at?Date.parse(r.answered_at):0,lastAt:Date.parse(r.last_activity_at),closedAt:r.closed_at?Date.parse(r.closed_at):0}));const seen=new Set(P.qs.map(v=>v.id));P.qs=P.qs.concat(lq.filter(v=>!seen.has(v.id)));
   if(P.rev!==rev0){P.loaded=true;await refreshAll();rerender();return}
-  if(data){P.plusUntil=data.plus_until?Date.parse(data.plus_until):0;P.freeClaimed=!!data.free_month_claimed}if(cb.data)P.coins=cb.data.coins|0;
+  if(data){P.plusUntil=data.plus_until?Date.parse(data.plus_until):0;P.freeClaimed=!!data.free_month_claimed;P.inviteCode=data.invite_code||null;P.referredBy=data.referred_by||null}if(cb.data)P.coins=cb.data.coins|0;
   if(!l.error)P.ledger=(l.data||[]).map(r=>({id:r.id,delta:r.delta,kind:r.kind,ref:r.ref,status:r.status,at:Date.parse(r.created_at)||0}));
  }catch(e){console.warn('[Maadoo Job] could not load premium data (profiles / coin_ledger / questions):',e&&(e.message||e))}
  P.loaded=true;await grantPlusCoins();P.qs.forEach(q=>{if(q.status==='waiting')scheduleReply(q)});qTick();rerender()}
@@ -1649,7 +1685,7 @@ function resetPrem(){S.prem=blankPrem()}
 /* ---------- simulated payment (DEMO) ---------- */
 function openPay(o){needMember(()=>openModal(Object.assign({type:'pay',method:'qr',step:'form'},o)))}
 function payModal(m,head){const busy=m.step==='processing';
- const what=m.what==='plus'?`Maadoo Plus · ${x(PLANS[m.plan].n)}`:m.what==='topup'?t(`เติม ${m.coins} เหรียญ`,`Top up ${m.coins} coins`):t(`จองคุยกับ${x(MENTORS.find(v=>v.id===m.mid).name)}`,`Session with ${x(MENTORS.find(v=>v.id===m.mid).name)}`);
+ const what=m.what==='emp'?`${m.tier} · ${esc(m.company)}`:m.what==='plus'?`Maadoo Plus · ${x(PLANS[m.plan].n)}`:m.what==='topup'?t(`เติม ${m.coins} เหรียญ`,`Top up ${m.coins} coins`):t(`จองคุยกับ${x(MENTORS.find(v=>v.id===m.mid).name)}`,`Session with ${x(MENTORS.find(v=>v.id===m.mid).name)}`);
  if(m.step==='done')return `<div class="pay-done"><div class="pay-ok">✓</div><h2>${t('ชำระเงินสำเร็จ (จำลอง)','Payment complete (simulated)')}</h2><p class="muted">${what} · ${fmt(m.amount)} ${t('บาท','THB')}</p><div class="demo-badge">🧪 ${t('เดโม · ไม่มีการตัดเงินจริง','DEMO · no money was taken')}</div><button class="btn y" data-close>${t('เรียบร้อย','Done')}</button></div>`;
  return `<div class="demo-banner">🧪 ${t('หน้าชำระเงินจำลอง · เดโม ไม่มีการตัดเงินจริง','Simulated checkout · DEMO, no real payment')}</div>`+head(t('ชำระเงิน','Checkout'),what)+
  `<div class="pay-sum"><span>${what}</span><b>${fmt(m.amount)} ${t('บาท','THB')}</b></div>${m.coinsUsed?`<div class="pay-sum sub"><span>🪙 ${t('ใช้เหรียญเป็นส่วนลด','Coins used as discount')}</span><b>−${fmt(m.coinsUsed)}</b></div>`:''}
@@ -1661,19 +1697,17 @@ async function payNow(){const m=S.modal;if(!m||m.type!=='pay'||m.step!=='form')r
   if(m.what==='plus'){const pl=PLANS[m.plan];m.gotCoins=await setPlusUntil(Math.max(Date.now(),S.prem.plusUntil)+pl.days*DAY)}
   else if(m.what==='topup'){await addCoins(m.coins,'topup')}
   else if(m.what==='book'){if(m.coinsUsed)await addCoins(-m.coinsUsed,'spend');finishBooking(m.mid,m.slot)}
+  else if(m.what==='emp'){await saveEmp(m.company,m.tier)}
  }catch(e){m.step='form';renderModal();toast(premErr(e));return}
  m.step='done';if(S.modal===m)renderModal();render();
- if(m.what==='plus')toast(m.gotCoins?t('ยินดีต้อนรับสู่ Maadoo Plus ✨ +100 เหรียญ','Welcome to Maadoo Plus ✨ +100 coins'):t('ยินดีต้อนรับสู่ Maadoo Plus ✨','Welcome to Maadoo Plus ✨'));else if(m.what==='topup')toast(t(`เติม ${m.coins} เหรียญแล้ว`,`Added ${m.coins} coins`))}
+ if(m.what==='plus')toast(m.gotCoins?t('ยินดีต้อนรับสู่ Maadoo Plus ✨ +100 เหรียญ','Welcome to Maadoo Plus ✨ +100 coins'):t('ยินดีต้อนรับสู่ Maadoo Plus ✨','Welcome to Maadoo Plus ✨'));else if(m.what==='topup')toast(t(`เติม ${m.coins} เหรียญแล้ว`,`Added ${m.coins} coins`));else if(m.what==='emp')toast(t(`เปิดใช้ Pro ให้ ${m.company} แล้ว`,`Pro is on for ${m.company}`))}
 function finishBooking(mid,slot){const mt=MENTORS.find(v=>v.id===mid);S.booked.push({id:newBid(),m:mt,mid:mt.id,slot,st:'wait',rid:null});addPoints(10);
  pushNotif('📅',`นัดคุยกับ${mt.name[0]} ${SLOTS[slot][0]}`,`Session with ${mt.name[1]}, ${SLOTS[slot][1]}`,['me'])}
 async function claimFreeMonth(){needMember(async()=>{if(S.prem.freeClaimed||S.myReviews.length<3)return;
  try{await setPlusUntil(Math.max(Date.now(),S.prem.plusUntil)+30*DAY,{free_month_claimed:true});await refreshCoins();render();toast(t('รับ Plus ฟรี 1 เดือนแล้ว ✨','Free month of Plus unlocked ✨'))}catch(e){toast(premErr(e))}})}
 async function claimMission(k){needMember(async()=>{const ms=MISSIONS.find(v=>v.k===k);if(missionProgress(k)<ms.need)return;
  try{await addCoins(ms.coins,ms.kind,missionRef(k));render();toast(ms.kind==='review'?t(`+${ms.coins} เหรียญ จะเข้ากระเป๋าหลังรีวิวผ่านการตรวจ`,`+${ms.coins} coins will arrive once your review is approved`):t(`+${ms.coins} เหรียญ!`,`+${ms.coins} coins!`))}catch(e){toast(premErr(e))}})}
-function invite(){needMember(async()=>{const url=location.origin+location.pathname+'?ref='+(S.user.id||S.user.email||'demo').toString().slice(0,8);let ok=false;
- try{if(navigator.share){await navigator.share({title:'Maadoo Job',text:t('มาดูรีวิวที่ทำงานก่อนไปทำงานกัน','Check workplaces before you go'),url});ok=true}}catch(e){}
- if(!ok){try{await navigator.clipboard.writeText(url);ok=true}catch(e){}}
- S.prem.invites.push(Date.now());render();toast(ok?t('คัดลอกลิงก์ชวนเพื่อนแล้ว (เดโม: นับทันทีที่แชร์)','Invite link copied (demo: counts as soon as you share)'):t('ลิงก์ชวนเพื่อน: ','Invite link: ')+url)})}
+function invite(){needMember(shareInvite)}
 /* ---------- Plus page ---------- */
 const PERKS=[['💬',['ถามรุ่นพี่ฟรี 5 คำถาม/เดือน','Ask mentors free: 5 questions/month']],['🎥',['คุยสดกับรุ่นพี่ลด 20%','20% off live mentor calls']],['📄',['ตรวจเรซูเม่ฟรี 1 ครั้ง/เดือน','1 free resume review/month']],['⏰',['แจ้งเตือนงานใหม่ก่อน 24 ชม.','New job alerts 24 h early']],['📊',['เทียบเงินเดือนละเอียด','Detailed salary comparisons']],['🎨',['ธีม + เพลงพิเศษ','Special themes + music']],['🪙',['100 เหรียญทุกเดือน','100 coins every month']]];
 const CMP=[[['อ่านรีวิว เงินเดือน คำถามสัมภาษณ์','Read reviews, salaries, interview Qs'],'✓','✓'],[['เขียนรีวิว และสมัครงาน','Write reviews and apply to jobs'],'✓','✓'],[['ถามรุ่นพี่ฟรี','Free mentor questions'],'—',['5/เดือน','5/month']],[['ส่วนลดคุยสดกับรุ่นพี่','Live mentor call discount'],'—','20%'],[['ตรวจเรซูเม่','Resume review'],'—',['1 ครั้ง/เดือน','1/month']],[['แจ้งเตือนงานใหม่','New job alerts'],['ปกติ','Standard'],['ก่อน 24 ชม.','24 h early']],[['เทียบเงินเดือน','Salary comparison'],['พื้นฐาน','Basic'],['ละเอียด','Detailed']],[['ธีม + เพลงพิเศษ','Special themes + music'],'—','✓'],[['เหรียญทุกเดือน','Monthly coins'],'—','100']];
@@ -1682,12 +1716,12 @@ function plusPage(){const P=S.prem,on=isPlus(),rv=Math.min(3,S.myReviews.length)
   <div class="tk-top"><img class="tk-pup" src="${PUP()}" alt=""><span class="tk-chip">✨ ${t('สมาชิกพรีเมียม','Premium membership')}</span><h1>Maadoo Plus</h1><p>${t('ตัวช่วยหางานแบบจัดเต็ม ถามรุ่นพี่ได้ทุกเดือน','Your all-in job-hunt sidekick, with mentor questions every month')}</p>
    ${on?`<div class="tk-status">✨ ${t(`เป็นสมาชิกถึง ${fmtDate(P.plusUntil)}`,`Member until ${fmtDate(P.plusUntil)}`)}</div>`:''}</div>
   <div class="tk-cut" aria-hidden="true"></div>
-  <div class="tk-plans" role="radiogroup" aria-label="${t('เลือกแพ็กเกจ','Choose a plan')}">${Object.keys(PLANS).map(k=>{const p=PLANS[k];return `<button type="button" role="radio" aria-checked="${S.planSel===k}" class="tk-plan ${S.planSel===k?'on':''}" data-plansel="${k}">${p.best?`<span class="tk-best">${t('คุ้มสุด','Best value')}</span>`:''}<b>${x(p.n)}</b><span class="tk-price">${fmt(p.price)}<small>${t('บาท','THB')}${x(p.per)}</small></span>${k==='y'?`<small class="tk-note">${t('ฟรี 2 เดือน','2 months free')}</small>`:k==='t'?`<small class="tk-note">${t('3 เดือน','3 months')}</small>`:`<small class="tk-note">${t('ยกเลิกได้ทุกเมื่อ','Cancel anytime')}</small>`}</button>`}).join('')}</div>
+  <div class="tk-plans" role="radiogroup" aria-label="${t('เลือกแพ็กเกจ','Choose a plan')}">${Object.keys(PLANS).map(k=>{const p=PLANS[k];return `<button type="button" role="radio" aria-checked="${S.planSel===k}" class="tk-plan ${S.planSel===k?'on':''}" data-plansel="${k}">${p.best?`<span class="tk-best">${t('คุ้มสุด','Best value')}</span>`:''}<b>${x(p.n)}</b><span class="tk-price">${planPrice(k)!==p.price?`<s class="tk-was">${fmt(p.price)}</s>`:''}${fmt(planPrice(k))}<small>${t('บาท','THB')}${x(p.per)}</small></span>${k==='y'?`<small class="tk-note">${yearlyDeal()?t('ลด 30% เดือนนี้','30% off this month'):t('ฟรี 2 เดือน','2 months free')}</small>`:k==='t'?`<small class="tk-note">${t('3 เดือน','3 months')}</small>`:`<small class="tk-note">${t('ยกเลิกได้ทุกเมื่อ','Cancel anytime')}</small>`}</button>`}).join('')}</div>
  </section>
  <section class="card perks"><h2>${t('สิทธิ์ของสมาชิก Plus','What you get with Plus')}</h2><ul>${PERKS.map(p=>`<li><span>${p[0]}</span>${x(p[1])}</li>`).join('')}</ul></section>
  <section class="card quest"><div class="row"><span class="q-ic">🎯</span><div style="flex:1;min-width:0"><b>${t('ภารกิจ: เขียน 3 รีวิว รับ Plus ฟรี 1 เดือน','Mission: write 3 reviews, get 1 month of Plus free')}</b><div class="muted" style="font-size:13px">${t('นับจากรีวิวบริษัทที่คุณเขียนจริง','Counts the company reviews you actually wrote')}</div></div></div>
   <div class="bar"><i style="width:${rv/3*100}%"></i></div><div class="row"><span class="muted">${rv}/3 ${t('รีวิว','reviews')}</span>${P.freeClaimed?`<span class="chip ver grow">✓ ${t('รับแล้ว','Claimed')}</span>`:rv>=3?`<button class="btn y sm grow" data-freemonth>${t('รับ Plus ฟรี','Claim free Plus')}</button>`:`<button class="btn ghost sm grow" data-go="write">${t('เขียนรีวิว','Write a review')}</button>`}</div></section>
- <button class="btn orange big" data-plusbuy>${on?t(`ต่ออายุ Plus · ${fmt(PLANS[S.planSel].price)} บาท`,`Renew Plus · ${fmt(PLANS[S.planSel].price)} THB`):t(`สมัคร Plus · ${fmt(PLANS[S.planSel].price)} บาท`,`Get Plus · ${fmt(PLANS[S.planSel].price)} THB`)}</button>
+ <button class="btn orange big" data-plusbuy>${on?t(`ต่ออายุ Plus · ${fmt(planPrice(S.planSel))} บาท`,`Renew Plus · ${fmt(planPrice(S.planSel))} THB`):t(`สมัคร Plus · ${fmt(planPrice(S.planSel))} บาท`,`Get Plus · ${fmt(planPrice(S.planSel))} THB`)}</button>
  <p class="free-note">💙 ${t('รีวิว เงินเดือน และการสมัครงาน ใช้ฟรีตลอด','Reviews, salaries and job applications are always free')}</p>
  <section class="card cmp-card"><h2>${t('ฟรี vs Plus','Free vs Plus')}</h2><div class="scroll"><table class="cmp"><thead><tr><th></th><th>${t('ฟรี','Free')}</th><th class="pl">Plus ✨</th></tr></thead><tbody>${CMP.map(r=>`<tr><td>${x(r[0])}</td><td>${x(r[1])}</td><td class="pl">${x(r[2])}</td></tr>`).join('')}</tbody></table></div></section>
  <p class="demo-note">${t('เดโม: กดสมัครแล้วจะเห็นหน้าชำระเงินจำลอง ไม่มีการตัดเงินจริง ยกเลิกได้ทุกเมื่อ และจ่ายเงินไม่ช่วยลบหรือซ่อนรีวิวใด ๆ','Demo: subscribing shows a simulated checkout, no money is taken. Cancel anytime. Paying never removes or hides any review.')}</p></div>`}
@@ -1767,6 +1801,86 @@ function ivModal(m,head){const c=getCo(m.co);return head(t('รีวิวก�
  <label class="grid" style="gap:4px"><b style="font-size:14px">${t('คำถามที่เจอ','A question they asked')}</b><input class="field" id="ivq" maxlength="140" value="${esc(m.q||'')}" placeholder="${t('เช่น ทำไมถึงอยากทำงานที่นี่','e.g. Why do you want to work here?')}"></label>
  ${authFormErr(m)}<div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close>${t('ยกเลิก','Cancel')}</button><button class="btn y" data-ivsend>${t('ส่ง','Submit')}</button></div>
  <p class="demo-note">${t('เดโม: เก็บไว้ในเครื่องนี้เท่านั้น','Demo: kept on this device only')}</p>`}
+/* ---------- promotions: home carousel, pioneers, invite codes, seasonal offer, employer early-bird ---------- */
+const PIONEER_MAX=1000,EARLY_MAX=50;
+S.pioneer=null;S.earlyLeft=null;S.promoIdx=0;S.refCode=null;S.empLocal=0;
+S.promoHidden=(()=>{const v=+store.get('maadoo-promo-hide');return v&&Date.now()-v<7*DAY})();
+try{const u=new URL(location.href),r=(u.searchParams.get('ref')||'').trim().toUpperCase();if(/^MAADOO-[A-Z0-9]{4,8}$/.test(r)){S.refCode=r;u.searchParams.delete('ref');history.replaceState(null,'',u.pathname+(u.search?u.search:'')+u.hash)}}catch(e){}
+const promoMonth=()=>{try{const m=+new URL(location.href).searchParams.get('promo_month');if(m>=1&&m<=12)return m}catch(e){}return new Date().getMonth()+1};
+const yearlyDeal=()=>promoMonth()===12;
+const planPrice=k=>k==='y'&&yearlyDeal()?Math.round(PLANS.y.price*.7):PLANS[k].price;
+function demoCode(){const s=String((S.user&&(S.user.id||S.user.email))||'demo');let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return 'MAADOO-'+h.toString(16).toUpperCase().padStart(6,'0').slice(-6)}
+const myCode=()=>S.prem.inviteCode||(S.user?demoCode():null);
+function seasonal(){const m=promoMonth();
+ if(m<=3)return {ic:'🎓',h:['เทอมฝึกงานมาแล้ว!','Internship season is here!'],p:['Plus เทอมฝึกงาน 3 เดือน เพียง 249 บาท','Plus for a 3-month internship term, only 249 THB'],b:['ดู Plus เทอมฝึกงาน','See the internship plan'],act:'plan-t'};
+ if(m===4)return {ic:'💦',h:['สงกรานต์นี้ เย็นสบายกับธีมพิเศษ','Cool off this Songkran with a special theme'],p:['ธีมสงกรานต์กำลังมา ระหว่างนี้ลองธีมทะเลก่อนนะ','A Songkran theme is coming. Try the Ocean theme meanwhile'],b:['ลองธีมทะเล','Try the Ocean theme'],act:'theme-sea'};
+ if(m===7||m===8)return {ic:'⚡',h:['เปิดเทอม หางานพาร์ทไทม์','New semester, new part-time jobs'],p:['งานใกล้มหาลัย สมัคร 1 แตะ นายจ้างห้ามเก็บเงินผู้สมัคร','Jobs near campus, one-tap apply, employers never charge you'],b:['ดูงานด่วน','See quick jobs'],act:'pt'};
+ if(m===11)return {ic:'🪷',h:['ลอยกระทง ลอยความกังวลเรื่องงาน','Loy Krathong: float your job worries away'],p:['ถามรุ่นพี่ตัวจริงได้เลย','Ask a real senior'],b:['ถามรุ่นพี่','Ask a mentor'],act:'ask'};
+ if(m===12)return {ic:'🎁',h:['ส่งท้ายปี Plus รายปีลด 30%','Year-end: yearly Plus 30% off'],p:[`จาก 990 เหลือ ${planPrice('y')} บาท ถึงสิ้นเดือนนี้`,`From 990 to ${planPrice('y')} THB until the end of this month`],b:['รับส่วนลด','Get the deal'],act:'plan-y'};
+ return {ic:'🪙',h:['ภารกิจสัปดาห์นี้ รับเหรียญฟรี','This week’s missions: free coins'],p:['เขียนรีวิว ตอบคำถามรุ่นน้อง ชวนเพื่อน แลกเป็นส่วนลด','Write reviews, help juniors, invite friends and turn coins into discounts'],b:['ดูภารกิจ','See missions'],act:'wallet'}}
+const MONTHS=[['ม.ค.','Jan'],['ก.พ.','Feb'],['มี.ค.','Mar'],['เม.ย.','Apr'],['พ.ค.','May'],['มิ.ย.','Jun'],['ก.ค.','Jul'],['ส.ค.','Aug'],['ก.ย.','Sep'],['ต.ค.','Oct'],['พ.ย.','Nov'],['ธ.ค.','Dec']];
+function pioneerInfo(){const p=S.pioneer;if(!p)return null;const left=Math.max(0,PIONEER_MAX-p.members);return {left,members:Math.min(p.members,PIONEER_MAX),me:p.sample?!!(S.user&&!S.user.anon):p.rank>0&&p.rank<=PIONEER_MAX,sample:!!p.sample}}
+function promoSection(){if(S.promoHidden)return '';const se=seasonal(),pi=pioneerInfo(),rv=S.myReviews.length;
+ const slides=[
+  `<div class="pslide ps-review"><img class="ps-pup" src="${PUP()}" alt=""><div class="ps-b"><span class="ps-tag">✨ ${t('โปรเปิดตัว','Launch offer')}</span><h3>${t('รีวิวแรก แลก Plus ฟรี!','Your first review unlocks free Plus!')}</h3><p>${t(`เขียนครบ 3 รีวิว รับ Plus ฟรี 1 เดือน · ตอนนี้ ${Math.min(rv,3)}/3`,`Write 3 reviews for 1 free month of Plus · now ${Math.min(rv,3)}/3`)}</p><button class="btn ps-btn" data-go="write">${t('เขียนรีวิวเลย','Write a review')}</button></div></div>`,
+  `<div class="pslide ps-pioneer"><span class="ps-ic">🚩</span><div class="ps-b"><span class="ps-tag">${t('1,000 คนแรก','First 1,000')}</span><h3>${t('ป้ายผู้บุกเบิก ติดโปรไฟล์ถาวร','A permanent Pioneer badge')}</h3><p>${pi?t(`เหลืออีก ${fmt(pi.left)} ที่`,`${fmt(pi.left)} spots left`):t('สำหรับสมาชิก 1,000 คนแรก','For our first 1,000 members')}</p><button class="btn ps-btn" data-pgo="pioneer">${t('ดูรายละเอียด','Details')}</button></div></div>`,
+  `<div class="pslide ps-invite"><span class="ps-ic">🤝</span><div class="ps-b"><span class="ps-tag">${t('ชวนเพื่อน','Invite friends')}</span><h3>${t('ชวนเพื่อน ได้คนละ 50 เหรียญ','Invite a friend, you both get 50 coins')}</h3><p>${t('เมื่อเพื่อนสมัครด้วยโค้ดของคุณแล้วเขียนรีวิวแรก','When they sign up with your code and write their first review')}</p><button class="btn ps-btn" data-pgo="invite">${t('ดูโค้ดของฉัน','See my code')}</button></div></div>`,
+  `<div class="pslide ps-season"><span class="ps-ic">${se.ic}</span><div class="ps-b"><span class="ps-tag">${t('โปรตามฤดูกาล','Seasonal')} · ${x(MONTHS[promoMonth()-1])}</span><h3>${x(se.h)}</h3><p>${x(se.p)}</p><button class="btn ps-btn" data-season="${se.act}">${x(se.b)}</button></div></div>`];
+ const code=myCode();
+ return `<section class="sec promo-wrap" aria-label="${t('โปรโมชัน','Promotions')}"><div class="promo-top"><b>🎉 ${t('โปรโมชัน','Promotions')}</b><button class="x sm" data-promohide aria-label="${t('ซ่อนโปรโมชัน 7 วัน','Hide promotions for 7 days')}" title="${t('ซ่อน 7 วัน','Hide for 7 days')}">×</button></div>
+ <div class="promo" id="promo" tabindex="0" role="region" aria-roledescription="carousel" aria-label="${t('แบนเนอร์โปรโมชัน','Promotion banners')}">${slides.map((sl,i)=>`<div class="pcell" role="group" aria-roledescription="slide" aria-label="${i+1} / ${slides.length}">${sl}</div>`).join('')}</div>
+ <div class="pdots">${slides.map((_,i)=>`<button class="pdot ${i===S.promoIdx?'on':''}" data-pdot="${i}" aria-label="${t(`แบนเนอร์ที่ ${i+1}`,`Banner ${i+1}`)}" aria-current="${i===S.promoIdx}"></button>`).join('')}</div>
+ <div class="promo-cards">
+  ${pioneerCard(pi)}
+  ${inviteCard(code)}
+ </div></section>`}
+function pioneerCard(pi){return `<div class="card pcard" id="pioneerCard"><div class="row" style="gap:10px;flex-wrap:nowrap"><span class="pc-ic">🚩</span><div style="min-width:0"><b>${t('ป้ายผู้บุกเบิก ถาวร','Permanent Pioneer badge')}</b><div class="muted" style="font-size:13px">${t('สำหรับสมาชิก 1,000 คนแรก','For the first 1,000 members')}</div></div>${pi&&pi.me?`<span class="chip ver" style="margin-left:auto">✓ ${t('คุณได้แล้ว','Yours')}</span>`:''}</div>
+   <div class="bar"><i style="width:${pi?pi.members/PIONEER_MAX*100:0}%"></i></div>
+   <div class="muted" style="font-size:13px">${pi?t(`สมาชิกแล้ว ${fmt(pi.members)}/1,000 · <b>เหลืออีก ${fmt(pi.left)} ที่</b>`,`${fmt(pi.members)}/1,000 joined · <b>${fmt(pi.left)} spots left</b>`)+(pi.sample?` · ${t('ตัวเลขตัวอย่าง','sample figure')}`:''):t('กำลังโหลด…','Loading…')}</div>
+   ${S.user?'':`<button class="btn y sm" data-login style="justify-self:start">${t('สมัครรับป้าย','Join to get it')}</button>`}</div>`}
+function inviteCard(code,full){return `<div class="card pcard" id="inviteCard"><div class="row" style="gap:10px;flex-wrap:nowrap"><span class="pc-ic">🤝</span><div style="min-width:0"><b>${t('ชวนเพื่อน ได้คนละ 50 เหรียญ','Invite friends: 50 coins each')}</b><div class="muted" style="font-size:13px">${t('เพื่อนสมัครด้วยโค้ดแล้วเขียนรีวิวแรก','When a friend joins with your code and writes a first review')}</div></div></div>
+   ${code?`<div class="icode"><code>${esc(code)}</code><button class="btn sm" data-share>${t('แชร์','Share')}</button></div>${full?`<button class="link" data-copycode style="justify-self:start">📋 ${t('คัดลอกเฉพาะโค้ด','Copy the code only')}</button>`:`<button class="link" data-go="invite" style="justify-self:start">${t('ดูหน้าชวนเพื่อนของฉัน','Open my invite page')} →</button>`}`:`<button class="btn y sm" data-login style="justify-self:start">${t('เข้าสู่ระบบเพื่อรับโค้ด','Log in to get your code')}</button>`}
+   ${S.user&&!S.prem.referredBy?`<form id="refForm" class="row ref-form"><input class="field" id="refIn" maxlength="14" autocomplete="off" placeholder="${t('มีโค้ดจากเพื่อน? MAADOO-…','Got a friend’s code? MAADOO-…')}" value="${esc(S.refCode||'')}" aria-label="${t('โค้ดจากเพื่อน','Friend’s code')}"><button class="btn ghost sm">${t('ใช้โค้ด','Apply')}</button></form>`:S.prem.referredBy?`<span class="chip ver" style="justify-self:start">✓ ${t('ใช้โค้ดเพื่อนแล้ว','Friend’s code applied')}</span>`:''}</div>`}
+function invitePage(){const code=myCode(),pi=pioneerInfo(),mine=['referral:me',S.user?'referral:'+S.user.id:''];
+ const refs=S.user?S.prem.ledger.filter(l=>l.kind==='referral'&&l.status==='ok'):[],coins=refs.reduce((a,l)=>a+l.delta,0),friends=refs.filter(l=>!mine.includes(l.ref)).length;
+ const steps=[['🔗',['แชร์โค้ดหรือลิงก์ให้เพื่อน','Share your code or link'],['ส่งทางแชต โซเชียล หรือให้เพื่อนพิมพ์โค้ดเอง','Send it in a chat or on social, or let them type the code']],['✍️',['เพื่อนสมัครแล้วใส่โค้ด','Your friend joins with the code'],['จากนั้นเขียนรีวิวบริษัทแรก','then writes their first company review']],['🪙',['ได้คนละ 50 เหรียญ','You both get 50 coins'],['ครั้งเดียวต่อเพื่อน 1 คน ชวนได้ไม่จำกัด','Once per friend, invite as many as you like']]];
+ return `<div class="inv-page"><section class="inv-head"><span class="chip" style="justify-self:start">🎉 ${t('โปรโมชัน','Promotions')}</span><h1>${t('ชวนเพื่อน & ผู้บุกเบิก','Invite friends & Pioneers')}</h1><p class="muted">${t('โค้ดชวนเพื่อนของคุณอยู่ที่นี่เสมอ แม้จะซ่อนแบนเนอร์บนหน้าแรกไว้','Your invite code always lives here, even when the home banners are hidden.')}</p></section>
+ <section class="sec">${inviteCard(code,true)}</section>
+ ${S.user?`<section class="sec"><div class="inv-stats"><div class="card"><b>${fmt(friends)}</b><span class="muted">${t('เพื่อนที่ชวนสำเร็จ','Friends who joined')}</span></div><div class="card"><b>🪙 ${fmt(coins)}</b><span class="muted">${t('เหรียญจากการชวนเพื่อน','Coins from invites')}</span></div></div></section>`:''}
+ <section class="sec"><div class="sec-h"><h2>${t('ทำงานยังไง','How it works')}</h2></div><ol class="inv-steps">${steps.map((st,i)=>`<li class="card"><span class="inv-n">${i+1}</span><span class="pc-ic">${st[0]}</span><b>${x(st[1])}</b><span class="muted">${x(st[2])}</span></li>`).join('')}</ol>
+  <p class="demo-note">${t('ใช้โค้ดของตัวเองไม่ได้ · บัญชีชั่วคราวต้องผูกอีเมลก่อน · เหรียญแลกเป็นเงินสดไม่ได้','You can’t use your own code · guest accounts need an email first · coins can’t be exchanged for cash')}</p></section>
+ <section class="sec"><div class="sec-h"><h2>${t('ป้ายผู้บุกเบิก','Pioneer badge')}</h2></div>${pioneerCard(pi)}</section>
+ ${S.promoHidden?`<section class="sec"><div class="card inv-hid"><span>🙈 ${t('แบนเนอร์โปรโมชันบนหน้าแรกถูกซ่อนไว้ 7 วัน','The home promotion banners are hidden for 7 days')}</span><button class="btn ghost sm" data-promoshow>${t('แสดงอีกครั้ง','Show again')}</button></div></section>`:''}
+ </div>`}
+function bindPromo(){const el=$('#promo');if(!el)return;const n=el.children.length;el.scrollLeft=S.promoIdx*el.clientWidth;
+ let tm=0;el.addEventListener('scroll',()=>{clearTimeout(tm);tm=setTimeout(()=>{const i=Math.round(el.scrollLeft/Math.max(1,el.clientWidth));if(i!==S.promoIdx){S.promoIdx=Math.max(0,Math.min(n-1,i));document.querySelectorAll('.pdot').forEach((d,k)=>{d.classList.toggle('on',k===S.promoIdx);d.setAttribute('aria-current',k===S.promoIdx)})}},60)},{passive:true});
+ el.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();promoGo(S.promoIdx+(e.key==='ArrowRight'?1:-1))}})}
+function promoGo(i){const el=$('#promo');if(!el)return;const n=el.children.length;S.promoIdx=(i+n)%n;el.scrollTo({left:S.promoIdx*el.clientWidth,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});document.querySelectorAll('.pdot').forEach((d,k)=>{d.classList.toggle('on',k===S.promoIdx);d.setAttribute('aria-current',k===S.promoIdx)})}
+async function shareInvite(){const code=myCode();if(!code)return;const url=location.origin+location.pathname+'?ref='+encodeURIComponent(code);let ok=false;
+ try{if(navigator.share){await navigator.share({title:'Maadoo Job',text:t(`ใช้โค้ด ${code} สมัครมาดูจ็อบ แล้วเขียนรีวิวแรก รับ 50 เหรียญทั้งคู่`,`Use code ${code} to join Maadoo Job and write your first review. We both get 50 coins`),url});ok=true}}catch(e){if(e&&e.name==='AbortError')return}
+ if(!ok){try{await navigator.clipboard.writeText(url);ok=true}catch(e){}}
+ if(S.user)S.prem.invites.push(Date.now());render();toast(ok?t('คัดลอกลิงก์ชวนเพื่อนแล้ว','Invite link copied'):t('ลิงก์ชวนเพื่อน: ','Invite link: ')+url)}
+async function applyRef(code){code=String(code||'').trim().toUpperCase();if(!/^MAADOO-[A-Z0-9]{4,8}$/.test(code)){toast(t('รูปแบบโค้ดไม่ถูกต้อง เช่น MAADOO-1A2B3C','That code doesn’t look right, e.g. MAADOO-1A2B3C'));return false}
+ if(code===myCode()){toast(t('ใช้โค้ดของตัวเองไม่ได้นะ','You can’t use your own code'));return false}
+ if(sbLive()){try{const {error}=await SB.rpc('use_invite_code',{code});if(error)throw error}catch(e){const m=String(e&&e.message||'');toast(/invalid code/.test(m)?t('ไม่พบโค้ดนี้','We couldn’t find that code'):/own code/.test(m)?t('ใช้โค้ดของตัวเองไม่ได้นะ','You can’t use your own code'):premErr(e));return false}
+  S.prem.referredBy=code}else S.prem.referredBy=code;
+ S.refCode=null;render();toast(t('ใช้โค้ดเพื่อนแล้ว! เขียนรีวิวแรกเพื่อรับ 50 เหรียญทั้งคู่','Code applied! Write your first review and you both get 50 coins'));claimReferral();return true}
+async function claimReferral(){if(!S.user||!S.prem.referredBy||!S.myReviews.length)return;
+ if(sbLive()){try{const {data,error}=await SB.rpc('claim_referral_reward');if(error)throw error;if(data>0){await refreshAll();render();toast(t('+50 เหรียญจากการชวนเพื่อน 🎉','+50 coins from your invite 🎉'))}}catch(e){console.warn('[Maadoo Job] referral reward:',e&&(e.message||e))}return}
+ const ref='referral:me';if(claimed(ref))return;S.prem.ledger.unshift({id:'l-ref',delta:50,kind:'referral',ref,status:'ok',at:Date.now()});S.prem.coins+=50;render();toast(t('+50 เหรียญจากการชวนเพื่อน 🎉','+50 coins from your invite 🎉'))}
+async function loadPromoStats(){
+ if(SB){try{const [a,b]=await Promise.all([SB.rpc('pioneer_stats'),SB.rpc('early_bird_left')]);
+   if(!a.error&&a.data)S.pioneer={members:+a.data.members||0,rank:+a.data.rank||0};if(!b.error&&b.data!=null)S.earlyLeft=+b.data}catch(e){}}
+ if(!S.pioneer)S.pioneer={members:236,rank:0,sample:true};
+ if(S.earlyLeft==null)S.earlyLeft=Math.max(0,EARLY_MAX-12-S.empLocal);
+ if(['home','employer','me'].includes(S.view))rerender()}
+async function afterLoginPromo(){await loadPromoStats();if(S.refCode&&sbLive()&&!S.prem.referredBy)await applyRef(S.refCode);else claimReferral()}
+/* employer sign-ups (demo payment for Pro) */
+const EMP={Starter:{plan:'starter',price:0},Pro:{plan:'pro',price:3900,early:1950},Enterprise:{plan:'enterprise',price:15000}};
+const proPrice=()=>S.earlyLeft>0?EMP.Pro.early:EMP.Pro.price;
+async function saveEmp(company,tier){const e=EMP[tier];
+ if(sbLive()){const {error}=await SB.from('employer_signups').insert({company,plan:e.plan});if(error)throw error;const r=await SB.rpc('early_bird_left');if(!r.error&&r.data!=null)S.earlyLeft=+r.data}
+ else if(e.plan==='pro'&&S.earlyLeft>0){S.empLocal++;S.earlyLeft--}}
 const LEVELS=[[0,['มือใหม่','Newbie']],[100,['รุ่นพี่','Senior']],[300,['ผู้เชี่ยวชาญ','Expert']]];
 function me(){
  if(!S.user)return `<div class="card" style="max-width:520px;margin:24px auto 0;display:grid;gap:14px;justify-items:center;text-align:center;padding:28px"><img src="${PUP()}" alt="" style="width:110px;height:110px;border-radius:50%"><h1 style="font-size:24px">${t('เข้าสู่ระบบเพื่อใช้ Maadoo เต็ม ๆ','Log in to get the most out of Maadoo')}</h1>
@@ -1774,7 +1888,7 @@ function me(){
   <button class="btn y" data-login>${t('เข้าสู่ระบบ / สมัครสมาชิก','Log in / Sign up')}</button></div>`;
  const u=S.user;const lv=LEVELS.filter(l=>u.points>=l[0]).pop();const nx=LEVELS.find(l=>l[0]>u.points);
  const prog=nx?Math.round((u.points-lv[0])/(nx[0]-lv[0])*100):100;
- const B=[['🐣',['สมาชิกใหม่','New member'],true],['✍️',['นักรีวิวมือใหม่','First review'],S.myReviews.length>0],['🙋',['นักถาม','Curious mind'],S.asked>0],['💼',['ผู้สมัครงาน','Job seeker'],Object.keys(S.applied).length>0],['✨',['สมาชิก Plus','Plus member'],isPlus()],['🚩',['ผู้บุกเบิก','Pioneer'],false]];
+ const B=[['🐣',['สมาชิกใหม่','New member'],true],['✍️',['นักรีวิวมือใหม่','First review'],S.myReviews.length>0],['🙋',['นักถาม','Curious mind'],S.asked>0],['💼',['ผู้สมัครงาน','Job seeker'],Object.keys(S.applied).length>0],['✨',['สมาชิก Plus','Plus member'],isPlus()],['🚩',['ผู้บุกเบิก','Pioneer'],!!(pioneerInfo()&&pioneerInfo().me)]];
  const followed=CO.filter(c=>S.follow[c.id]),saved=JOBS.filter(j=>S.saved[j.id]),applied=JOBS.filter(j=>S.applied[j.id]);
  const sec=(h,body,empty)=>`<section class="sec"><div class="sec-h"><h2>${h}</h2></div>${body||`<p class="muted">${empty}</p>`}</section>`;
  return `<div class="me-head"><span class="me-ava">${esc(u.name.slice(0,1).toUpperCase())}</span><div><h1 style="font-size:26px">${esc(u.name)}</h1><div class="row" style="gap:6px">${u.anon?`<span class="chip">⏳ ${t('บัญชีชั่วคราว','Guest account')}</span>`:`<span class="muted">${esc(u.email)}</span>${u.verified?`<span class="chip ver">✓ ${t('ยืนยันแล้ว','Verified')}</span>`:`<span class="chip">${t('ยังไม่ยืนยัน','Not verified')}</span>`}`}${isPlus()?'<span class="chip plus-chip">✨ Plus</span>':''}</div></div>
@@ -1782,6 +1896,7 @@ function me(){
  ${u.anon?`<section class="sec"><div class="card" style="display:grid;gap:10px"><b>${t('บัญชีนี้เป็นแบบชั่วคราว','This is a guest account')}</b><p class="muted" style="margin:0">${t('ถ้าออกจากระบบหรือล้างข้อมูลเบราว์เซอร์ บัญชีนี้จะหายไป และยังเขียนรีวิวไม่ได้ ผูกอีเมลไว้เพื่อเก็บบัญชีและเริ่มเขียนรีวิว','Logging out or clearing browser data loses this account, and guests can’t write reviews. Add an email to keep it and start reviewing.')}</p><button class="btn y" data-linkacct style="justify-self:start">${t('เก็บบัญชีไว้ด้วยอีเมล','Keep this account with email')}</button></div></section>`:''}
  <section class="sec"><div class="sec-h"><h2>${t('ป้ายของฉัน','My badges')}</h2></div><div class="badges">${B.map(b=>`<div class="bdg ${b[2]?'':'off'}"><span>${b[0]}</span>${x(b[1])}</div>`).join('')}</div></section>
  <section class="sec prem-row">${coinCard(true)}${isPlus()?`<div class="plus-mini"><b>✨ Maadoo Plus</b><span>${t(`เป็นสมาชิกถึง ${fmtDate(S.prem.plusUntil)}`,`Member until ${fmtDate(S.prem.plusUntil)}`)}</span><span class="muted">${t(`ถามรุ่นพี่ฟรีเหลือ ${qLeft()}/${Q_MAX}`,`${qLeft()}/${Q_MAX} free questions left`)}</span><button class="btn ghost sm" data-go="plus">${t('ดูสิทธิ์','See perks')}</button></div>`:plusBanner()}</section>
+ <section class="sec"><button class="card inv-link" data-go="invite"><span class="pc-ic">🤝</span><span class="inv-lt"><b>${t('ชวนเพื่อน ได้คนละ 50 เหรียญ','Invite friends: 50 coins each')}</b><span class="muted">${u.anon?t('ผูกอีเมลเพื่อรับโค้ดของคุณ','Add an email to get your code'):t(`โค้ดของฉัน ${esc(myCode()||'')}`,`My code ${esc(myCode()||'')}`)}</span></span><span aria-hidden="true">→</span></button></section>
  ${sec(t('⚡ งานพาร์ทไทม์ที่สมัคร','⚡ Part-time applications'),Object.keys(S.ptApps).length?`<div class="list">${Object.keys(S.ptApps).map(id=>{const p=PT.find(v=>v.id===id);const a=S.ptApps[id];return `<div class="li"><span class="dot" style="background:${PT_ST[a.st][3]}"></span><div><b>${esc(x(p.title))}</b><div class="muted">${x(ptOrg(p).name)} · ${PT_ST[a.st][0]} ${t(PT_ST[a.st][1],PT_ST[a.st][2])}</div></div>${a.st===2?`<button class="btn y grow" data-ptrate="${id}">${t('จบงานแล้ว · ให้คะแนน','Done · rate employer')}</button>`:`<button class="btn ghost grow" data-pt="${id}">${t('ดู','View')}</button>`}</div>`}).join('')}</div>`:'',t('ยังไม่ได้สมัครงานพาร์ทไทม์ ลองดูแท็บ “⚡ งานด่วน” ในหน้างาน','No part-time applications yet. Try “⚡ Quick part-time” in Jobs.'))}
  ${sec(t('งานที่สมัคร','Applications'),applied.length?`<div class="list">${applied.map(j=>`<div class="li"><b>${x(j.title)}</b><span class="muted">${x(getCo(j.co).name)}</span><span class="chip mid grow">${t('รอบริษัทตอบกลับ','Awaiting reply')}</span></div>`).join('')}</div>`:'',t('ยังไม่ได้สมัครงาน ลองดูหน้า “งาน”','No applications yet. Try the Jobs tab.'))}
  ${S.prem.qs.length||isPlus()?sec(t('คำถามของฉัน','My questions'),myQuestions(),t('ยังไม่ได้ถามรุ่นพี่ กด “ถามฟรี” บนการ์ดรุ่นพี่ได้เลย','No questions yet. Tap “Ask free” on a mentor card.')):''}
@@ -1792,18 +1907,19 @@ function me(){
  <section class="sec row"><button class="btn ghost" data-logout>${t('ออกจากระบบ','Log out')}</button><button class="link" data-go="rules">${t('แนวทางรีวิวและความเป็นส่วนตัว','Review guidelines & privacy')}</button></section>`;
 }
 function employer(){
- const days=[['จ','Mon',320],['อ','Tue',410],['พ','Wed',380],['พฤ','Thu',520],['ศ','Fri',610],['ส','Sat',290],['อา','Sun',700]];const mx=700;
- return `<section class="hero" style="grid-template-columns:1fr"><div class="hero-txt"><span class="chip" style="justify-self:start">${t('สำหรับบริษัท','For employers')}</span>
+ const days=[['จ','Mon',320],['อ','Tue',410],['พ','Wed',380],['พฤ','Thu',520],['ศ','Fri',610],['ส','Sat',290],['อา','Sun',700]];const mx=700;const left=S.earlyLeft,eb=left==null||left>0;
+ return `<div class="eb-bar">🚀 <span>${t('<b>50 บริษัทแรก:</b> Pro ลด 50% นาน 3 เดือน + ประกาศงานฟรี 3 เดือน','<b>First 50 companies:</b> Pro 50% off for 3 months + 3 months of free job posts')}</span><span class="eb-left">${left==null?'…':left>0?t(`เหลือ ${fmt(left)} สิทธิ์`,`${fmt(left)} spots left`):t('สิทธิ์เต็มแล้ว','All spots taken')}</span></div>
+ <section class="hero" style="grid-template-columns:1fr"><div class="hero-txt"><span class="chip" style="justify-self:start">${t('สำหรับบริษัท','For employers')}</span>
   <h1>${t('ให้คนเก่ง <em>มาดู</em> บริษัทคุณ','Let great people <em>see</em> your company')}</h1>
   <p>${t('ตอบรีวิว เล่าเรื่องวัฒนธรรมองค์กร และลงประกาศงานในที่ที่นักศึกษาและคนจบใหม่ตัดสินใจเลือกที่ทำงาน','Respond to reviews, show your culture and post jobs where students and new grads decide where to work.')}</p>
   <div class="stats"><div><b>48,000+</b><span>${t('ผู้ใช้ต่อเดือน','monthly users')}</span></div><div><b>72%</b><span>${t('อายุ 20–27 ปี','aged 20–27')}</span></div><div><b>3.4×</b><span>${t('ใบสมัครเมื่อตอบรีวิว','more applicants when you reply')}</span></div></div>
   <p class="muted" style="color:var(--ink-3)">${t('* ตัวเลขตัวอย่างสำหรับเดโม','* Sample figures for the demo')}</p></div></section>
- <div class="promise sec"><span style="font-size:24px">🛡️</span><div><b>${t('สัญญาของมาดูจ็อบ','The Maadoo Job promise')}</b><p>${t('ไม่มีแพ็กเกจไหนซื้อสิทธิ์ลบ ซ่อน หรือแก้รีวิวได้ บริษัททำได้แค่ตอบกลับอย่างสุภาพ รีวิวถูกลบเมื่อผิดแนวทางเท่านั้น','No plan can buy the right to delete, hide or edit reviews. Companies can only reply publicly. Reviews are removed only when they break the guidelines.')}</p></div></div>
+ <div class="promise cream sec"><span style="font-size:24px">🛡️</span><div><b>${t('ทุกแพ็กเกจตอบรีวิวได้ แต่ลบหรือซ่อนรีวิวไม่ได้','Every plan can reply to reviews, but none can delete or hide them')}</b><p>${t('ไม่มีแพ็กเกจไหนซื้อสิทธิ์ลบ ซ่อน หรือแก้รีวิวได้ บริษัททำได้แค่ตอบกลับอย่างสุภาพ รีวิวถูกลบเมื่อผิดแนวทางเท่านั้น','No plan can buy the right to delete, hide or edit reviews. Companies can only reply publicly. Reviews are removed only when they break the guidelines.')}</p></div></div>
  <section class="sec"><div class="sec-h"><h2>${t('แพ็กเกจ','Plans')}</h2><span class="muted">${t('ราคาต่อเดือน ไม่รวม VAT','Monthly, excl. VAT')}</span></div>
  <div class="price-grid">
   <div class="tier"><h3>Starter</h3><div class="amt">${t('ฟรี','Free')}</div><ul><li>${t('ยืนยันเป็นเจ้าของหน้าบริษัท','Claim your company page')}</li><li>${t('ตอบรีวิวได้ 5 ครั้ง/เดือน','Reply to 5 reviews/month')}</li><li>${t('สถิติผู้เข้าชมพื้นฐาน','Basic visitor stats')}</li><li class="no">${t('แต่งหน้าบริษัท','Branded page')}</li></ul><button class="btn ghost" data-emp="Starter">${t('เริ่มใช้ฟรี','Start free')}</button></div>
-  <div class="tier hot"><div class="row"><h3>Pro</h3><span class="chip ad">${t('ยอดนิยม','Popular')}</span></div><div class="amt">3,900 <span class="muted" style="font-size:14px;font-family:var(--body);font-weight:400">${t('บาท','THB')}</span></div><ul><li>${t('ตอบรีวิวไม่จำกัด','Unlimited review replies')}</li><li>${t('แต่งหน้าบริษัท รูปออฟฟิศ วิดีโอ','Branded page with photos and video')}</li><li>${t('ประกาศงานฟรี 3 ตำแหน่ง','3 free job posts')}</li><li>${t('แดชบอร์ดผู้สมัครและผู้ติดตาม','Applicant & follower dashboard')}</li></ul><button class="btn" data-emp="Pro">${t('ทดลอง Pro 14 วัน','Try Pro for 14 days')}</button></div>
-  <div class="tier"><h3>Enterprise</h3><div class="amt" style="font-size:26px">${t('ติดต่อทีมขาย','Talk to sales')}</div><ul><li>${t('ทุกอย่างใน Pro','Everything in Pro')}</li><li>${t('ประกาศงานไม่จำกัด','Unlimited job posts')}</li><li>${t('รายงานเงินเดือนตามตลาดรายไตรมาส','Quarterly market salary reports')}</li><li>${t('บูธใน Maadoo Job Fair','Booth at the Maadoo Job Fair')}</li></ul><button class="btn ghost" data-emp="Enterprise">${t('ติดต่อเรา','Contact us')}</button></div>
+  <div class="tier hot pro"><span class="pop">⭐ ${t('ยอดนิยม','Most popular')}</span><h3>Pro</h3><div class="amt">${eb?`<s class="was">3,900</s> 1,950`:'3,900'} <span class="muted" style="font-size:14px;font-family:var(--body);font-weight:400">${t('บาท/เดือน','THB/mo')}</span></div>${eb?`<div class="eb-note">${t('ราคานี้ 3 เดือนแรก สำหรับ 50 บริษัทแรก','For the first 3 months, first 50 companies')}</div>`:''}<ul><li>${t('ตอบรีวิวไม่จำกัด','Unlimited review replies')}</li><li>${t('แต่งหน้าบริษัท รูปออฟฟิศ วิดีโอ','Branded page with photos and video')}</li><li>${eb?t('ประกาศงานฟรี 3 เดือน','3 months of free job posts'):t('ประกาศงานฟรี 3 ตำแหน่ง','3 free job posts')}</li><li>${t('แดชบอร์ดผู้สมัครและผู้ติดตาม','Applicant & follower dashboard')}</li></ul><button class="btn orange" data-emp="Pro">${t('สมัคร Pro','Get Pro')}</button></div>
+  <div class="tier"><h3>Enterprise</h3><div class="amt"><span class="muted" style="font-size:14px;font-family:var(--body);font-weight:400">${t('เริ่ม','from')}</span> 15,000 <span class="muted" style="font-size:14px;font-family:var(--body);font-weight:400">${t('บาท/เดือน','THB/mo')}</span></div><ul><li>${t('ทุกอย่างใน Pro','Everything in Pro')}</li><li>${t('ประกาศงานไม่จำกัด','Unlimited job posts')}</li><li>${t('รายงานเงินเดือนตามตลาดรายไตรมาส','Quarterly market salary reports')}</li><li>${t('บูธใน Maadoo Job Fair','Booth at the Maadoo Job Fair')}</li></ul><button class="btn ghost" data-emp="Enterprise">${t('ติดต่อทีมขาย','Talk to sales')}</button></div>
  </div></section>
  <section class="sec"><div class="sec-h"><h2>${t('บริการเสริม','Add-ons')}</h2></div><div class="list">
   ${[[t('ประกาศงาน / ฝึกงาน','Job / internship post'),t('1,500 บาท / 30 วัน','1,500 THB / 30 days')],[t('โปรโมตประกาศขึ้นอันดับต้น (ติดป้าย “โฆษณา”)','Promoted listing (labeled “Sponsored”)'),t('490 บาท / สัปดาห์','490 THB / week')],[t('รายงานเงินเดือนตามตำแหน่ง','Salary report by role'),t('4,900 บาท / ฉบับ','4,900 THB / report')],[t('สปอนเซอร์ควิซหรือบทความแนะแนว','Sponsor a quiz or career article'),t('เริ่ม 9,000 บาท','From 9,000 THB')]].map(a=>`<div class="li"><span>${a[0]}</span><b class="grow" style="color:var(--navy)">${a[1]}</b></div>`).join('')}</div></section>
@@ -1941,8 +2057,10 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
   <h2>${t('ก่อนไปทำงาน มาดูก่อน','Before you go, Maadoo first')}</h2><p class="muted" style="font-size:15px">${t('น้องมาดูช่วยส่องที่ทำงานให้ รีวิวจากคนในตัวจริง เงินเดือนจริง คำถามสัมภาษณ์จริง และรุ่นพี่ที่พร้อมให้คำปรึกษา','Maadoo the pup sniffs out workplaces for you: real reviews from insiders, real salaries, real interview questions, and seniors ready to help.')}</p>
   <div class="w-grid">${[['⭐','explore',['รีวิวบริษัท','Company reviews'],['คะแนน 6 หมวด และความจริง vs ที่ประกาศ','6 ratings and reality vs. the job ad']],['💰','explore',['เงินเดือนจริง','Real salaries'],['เทียบเงินเดือนตำแหน่งเดียวกัน','Compare pay for the same role']],['💼','jobs',['งานและฝึกงาน','Jobs & internships'],['ทุกประกาศมีคะแนนรีวิวแนบ','Every post shows its review score']],['🐾','ask',['ปัดหารุ่นพี่','Swipe for mentors'],['คุย 1:1 หรือถามในบอร์ด','Chat 1:1 or ask the board']]].map(f=>`<button class="w-item" data-welcomego="${f[1]}"><span>${f[0]}</span><b>${x(f[2])}</b><small>${x(f[3])}</small></button>`).join('')}</div>
   <button class="btn y" data-close style="justify-self:stretch">${t('เริ่มใช้งานเลย','Let’s go')}</button></div>`;
- if(m.type==='emp')body=`${head(t(`เริ่มต้นแพ็กเกจ ${m.tier}`,`Start ${m.tier}`),t('ทีมมาดูจ็อบจะติดต่อกลับภายใน 1 วันทำการ','The Maadoo Job team will get back to you within 1 business day'))}
-  <form id="empForm" class="grid"><input class="field" id="ecn" placeholder="${t('ชื่อบริษัท','Company name')}" required><input class="field" id="eem" type="email" placeholder="${t('อีเมลที่ทำงาน','Work email')}" required><input class="field" id="eph" placeholder="${t('เบอร์โทร (ไม่บังคับ)','Phone (optional)')}"><button class="btn">${t('ส่งข้อมูล','Send')}</button></form><p class="demo-note">${t('เดโม: ข้อมูลไม่ถูกส่งไปไหน','Demo: nothing is sent anywhere')}</p>`;
+ if(m.type==='emp'){const e=EMP[m.tier],pay=m.tier==='Pro'?proPrice():0;body=`${head(t(`แพ็กเกจ ${m.tier}`,`${m.tier} plan`),m.tier==='Enterprise'?t('ทีมมาดูจ็อบจะติดต่อกลับภายใน 1 วันทำการ','The Maadoo Job team will get back to you within 1 business day'):m.tier==='Pro'?t(`${fmt(pay)} บาท/เดือน${pay<3900?' · 3 เดือนแรก':''}`,`${fmt(pay)} THB/month${pay<3900?' · first 3 months':''}`):t('ฟรีตลอด','Free forever'))}
+  <form id="empForm" class="grid"><input class="field" id="ecn" maxlength="120" placeholder="${t('ชื่อบริษัท','Company name')}" required><input class="field" id="eem" type="email" placeholder="${t('อีเมลที่ทำงาน','Work email')}" required>${m.tier==='Enterprise'?`<input class="field" id="eph" placeholder="${t('เบอร์โทร (ไม่บังคับ)','Phone (optional)')}">`:''}
+  <button class="btn ${m.tier==='Pro'?'orange':''}">${m.tier==='Pro'?t('ไปหน้าชำระเงิน (จำลอง)','Continue to checkout (simulated)'):m.tier==='Starter'?t('เริ่มใช้ฟรี','Start free'):t('ส่งข้อมูล','Send')}</button></form>
+  <p class="demo-note">${t('เดโม: ไม่มีการตัดเงินจริง','Demo: no money is taken')}</p>`}
  const fresh=el._m!==m;el._m=m;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview','qchat','qnew'].includes(m.type)?'sheet-m':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}if(m.type==='qchat'){const cb=$('#chatBox');if(cb)cb.scrollTop=cb.scrollHeight;const qi=$('#qmsg');if(qi&&matchMedia('(hover:hover)').matches)qi.focus({preventScroll:true});return}
  const f=el.querySelector('input');if(f)f.focus();
 }
@@ -1980,7 +2098,7 @@ function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
 function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
 function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
 addEventListener('resize',()=>{if(S.indOpen&&S.view==='explore'&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
-function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();}
+function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
@@ -2046,8 +2164,15 @@ document.addEventListener('click',e=>{
  if(d.mrevdelok!==undefined){mrevDelete();return}
  if(d.mrevsend!==undefined){mrevSubmit();return}
  if(d.mtag){const m=S.modal;if(m&&m.type==='mreview'){const i=m.tags.indexOf(d.mtag);i<0?m.tags.push(d.mtag):m.tags.splice(i,1);b.setAttribute('aria-pressed',i<0)}return}
+ if(d.pdot!==undefined){promoGo(+d.pdot);return}
+ if(d.pgo){const c=document.getElementById(d.pgo==='invite'?'inviteCard':'pioneerCard');if(c){c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1200)}return}
+ if(d.season){const a=d.season;if(a==='plan-t'||a==='plan-y'){S.planSel=a.slice(5);go('plus')}else if(a==='theme-sea'){S.skin='sea';store.set('maadoo-skin','sea');render();toast(t('เปลี่ยนเป็นธีมทะเลแล้ว 🌊','Switched to the Ocean theme 🌊'))}else if(a==='pt'){S.jobTab='pt';go('jobs')}else if(a==='ask'){S.askTab='swipe';go('ask')}else go('wallet');return}
+ if(d.promohide!==undefined){S.promoHidden=true;store.set('maadoo-promo-hide',String(Date.now()));render();toast(t('ซ่อนโปรโมชัน 7 วันแล้ว · ดูโค้ดชวนเพื่อนได้ที่หน้าโปรไฟล์','Promotions hidden for 7 days · your invite code is on your profile'));return}
+ if(d.promoshow!==undefined){S.promoHidden=false;store.set('maadoo-promo-hide','0');render();toast(t('แสดงโปรโมชันบนหน้าแรกอีกครั้งแล้ว','Promotions are back on the home page'));return}
+ if(d.copycode!==undefined){const c=myCode();if(!c)return;(async()=>{let ok=false;try{await navigator.clipboard.writeText(c);ok=true}catch(e){}toast(ok?t('คัดลอกโค้ดแล้ว','Code copied'):t('โค้ดของคุณ: ','Your code: ')+c)})();return}
+ if(d.share!==undefined){shareInvite();return}
  if(d.plansel){S.planSel=d.plansel;render();const pb=document.querySelector(`[data-plansel="${d.plansel}"]`);if(pb)pb.focus({preventScroll:true});return}
- if(d.plusbuy!==undefined){const k=S.planSel;openPay({what:'plus',plan:k,amount:PLANS[k].price});return}
+ if(d.plusbuy!==undefined){const k=S.planSel;openPay({what:'plus',plan:k,amount:planPrice(k)});return}
  if(d.freemonth!==undefined){claimFreeMonth();return}
  if(d.claim){claimMission(d.claim);return}
  if(d.invite!==undefined){invite();return}
@@ -2129,17 +2254,21 @@ document.addEventListener('submit',e=>{e.preventDefault();
    PT.unshift(post);S.ptForm={title:'',kind:'onsite',day:'today',when:'',pay:'',unit:'h',need:'1',how:'cash',req:'',boost:'none',ok:false};S.modal=null;S.view='jobs';S.jobTab='pt';S.ptDay='all';render();window.scrollTo({top:0});toast(t('โพสต์งานแล้ว! รอผู้สมัครสักครู่','Job posted! Applicants will arrive shortly'));
    FAKE_APPL.forEach((a,i)=>setTimeout(()=>{post.appl.push([...a]);pushNotif('🙋',`มีผู้สมัครใหม่: ${a[0]}`,`New applicant: ${a[0]}`,['jobs']);if(S.modal&&S.modal.type==='ptappl')renderModal();else if(S.view==='jobs')render()},2500+i*3000))});return}
  if(e.target.id==='linkForm'){if(SB)linkAccount();return}
+ if(e.target.id==='refForm'){needMember(()=>applyRef($('#refIn').value));return}
  if(e.target.id==='qmsgForm'){const m=S.modal,q=m&&S.prem.qs.find(v=>v.id===m.id),inp=$('#qmsg'),v=(inp.value||'').trim().slice(0,500);if(!q||!v||q.status==='closed')return;
   q.msgs.push({f:'me',t:v,at:Date.now()});q.status='waiting';q.lastAt=Date.now();q.skipped=false;qSave(q);scheduleReply(q);renderModal();return}
  if(e.target.id==='otpEmailForm'){if(SB)otpSend();return}
  if(e.target.id==='otpCodeForm'){if(SB)otpVerify();return}
- if(e.target.id==='empForm'){closeModal();toast(t('ได้รับข้อมูลแล้ว ทีมจะติดต่อกลับเร็ว ๆ นี้','Got it. Our team will be in touch soon'));return}
+ if(e.target.id==='empForm'){const m=S.modal,co=($('#ecn').value||'').trim().slice(0,120);if(!m||!co)return;const tier=m.tier;
+  if(tier==='Pro'){openPay({what:'emp',tier,company:co,amount:proPrice()});return}
+  needMember(async()=>{try{await saveEmp(co,tier)}catch(err){toast(premErr(err));return}closeModal();render();
+   toast(tier==='Starter'?t('เปิดใช้ Starter แล้ว! ยืนยันเจ้าของหน้าบริษัทได้เลย','Starter is on! You can claim your company page now'):t('ได้รับข้อมูลแล้ว ทีมจะติดต่อกลับเร็ว ๆ นี้','Got it. Our team will be in touch soon'))});return}
  if(e.target.id==='rvForm'){syncForm();const f=S.form;if(!(f.co&&f.r&&f.mood!==null&&f.ot!==null&&f.rec!==null))return;
   if(SB){needLogin(()=>reviewOrLink(f));return}
   const c=getCo(f.co);const def=MOOD_T[f.mood];
   const same=v=>v?[v,v]:null;
   c.reviews.unshift({role:same(f.role)||['ไม่ระบุตำแหน่ง','Role not given'],type:f.type,mood:f.mood,r:f.r,t:same(f.title)||def,p:same(f.pro)||['—','—'],c:same(f.con)||['—','—'],d:'Q3 2026',v:false,h:0});
-  S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({co:f.co,r:f.r,at:Date.now(),sal:!!String(f.sal||'').replace(/[^\d]/g,'')});addPoints(50);S.form=blankForm();render();window.scrollTo({top:0});return}
+  S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({co:f.co,r:f.r,at:Date.now(),sal:!!String(f.sal||'').replace(/[^\d]/g,'')});claimReferral();addPoints(50);S.form=blankForm();render();window.scrollTo({top:0});return}
  if(e.target.id==='askForm'){const q=$('#askq').value.trim();if(!q){toast(t('พิมพ์คำถามก่อนนะ','Type a question first'));return}
   const an=$('#anon').checked;S.bd.anon=an;const nm=!an&&S.user?[S.user.name,S.user.name]:['คุณ (ไม่ระบุตัวตน)','You (anonymous)'];
   POSTS.unshift({id:'u'+Date.now(),kind:S.bd.kind,tag:S.askTag,by:nm,ava:'🙂',bg:'#CFEAFF',ver:!an&&S.user&&S.user.verified,ts:0,likes:0,text:[q,q],comments:[]});
@@ -2357,6 +2486,7 @@ const SND=(()=>{
 
 render();
 setInterval(()=>{if(qTick())rerender()},60000);
+setTimeout(loadPromoStats,SB?0:300);
 if(!store.get('maadoo-welcome'))openModal({type:'welcome'});
 if(window.supabase)initSB();else{const sbjs=document.getElementById('sbjs');if(sbjs)sbjs.addEventListener('load',initSB)}
 </script>
