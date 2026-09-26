@@ -519,6 +519,185 @@ create trigger questions_before_write
 -- อนุมัติเหรียญจากรีวิว (หลังรีวิวผ่านการตรวจ) / Approve review coins after moderation:
 --   update public.coin_ledger set status = 'ok' where id = '<ledger id>';
 
+-- =====================================================================
+-- 7) โปรโมชัน: ผู้บุกเบิก 1,000 คนแรก · ชวนเพื่อน · 50 บริษัทแรก
+--    Promotions: first 1,000 pioneers · invite a friend · first 50 companies
+-- =====================================================================
+
+-- ---------- 7.1 ผู้บุกเบิก: จำนวนสมาชิกจริง + ลำดับการสมัครของฉัน ----------
+--   นับเฉพาะบัญชีที่ไม่ใช่ผู้ใช้ชั่วคราว / counts non-guest accounts only
+create or replace function public.pioneer_stats()
+returns json
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select json_build_object(
+    'members', (select count(*) from auth.users u where coalesce(u.is_anonymous, false) = false),
+    'rank', (select count(*) from auth.users u, auth.users me
+             where me.id = auth.uid() and coalesce(me.is_anonymous, false) = false
+               and coalesce(u.is_anonymous, false) = false and u.created_at <= me.created_at)
+  );
+$$;
+revoke execute on function public.pioneer_stats() from public;
+grant execute on function public.pioneer_stats() to anon, authenticated;
+
+-- ---------- 7.2 ชวนเพื่อน: โค้ดชวน + ใครชวนใคร / invite codes + who invited whom ----------
+alter table public.profiles add column if not exists invite_code text;
+alter table public.profiles add column if not exists referred_by uuid references auth.users (id) on delete set null;
+create unique index if not exists profiles_invite_code_idx on public.profiles (invite_code);
+
+create or replace function public.profiles_set_invite_code()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if new.invite_code is null then
+    new.invite_code := 'MAADOO-' || upper(substr(md5(new.id::text), 1, 6));
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists profiles_set_invite_code on public.profiles;
+create trigger profiles_set_invite_code
+  before insert on public.profiles
+  for each row execute function public.profiles_set_invite_code();
+update public.profiles set invite_code = 'MAADOO-' || upper(substr(md5(id::text), 1, 6)) where invite_code is null;
+
+-- เหรียญชวนเพื่อน (kind = 'referral') เพิ่มได้ผ่านฟังก์ชันด้านล่างเท่านั้น
+-- Referral coins (kind = 'referral') can only be added through the function below.
+alter table public.coin_ledger drop constraint if exists coin_ledger_kind_check;
+alter table public.coin_ledger add constraint coin_ledger_kind_check
+  check (kind in ('mission', 'review', 'topup', 'plus', 'spend', 'referral'));
+
+create or replace function public.coin_ledger_guard_referral()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if new.kind = 'referral' and coalesce(current_setting('maadoo.referral', true), '') <> 'on' then
+    raise exception 'referral coins only via claim_referral_reward()' using errcode = 'check_violation';
+  end if;
+  if new.kind = 'referral' then new.status := 'ok'; end if;
+  return new;
+end;
+$$;
+drop trigger if exists coin_ledger_guard_referral on public.coin_ledger;
+create trigger coin_ledger_guard_referral
+  before insert on public.coin_ledger
+  for each row execute function public.coin_ledger_guard_referral();
+
+-- ใช้โค้ดของเพื่อน (ครั้งเดียว ห้ามใช้โค้ดตัวเอง) / use a friend's code (once, not your own)
+create or replace function public.use_invite_code(code text)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  me uuid := auth.uid();
+  inviter uuid;
+begin
+  if me is null or coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) then
+    raise exception 'login required' using errcode = 'check_violation';
+  end if;
+  select id into inviter from public.profiles where invite_code = upper(trim(code));
+  if inviter is null then raise exception 'invalid code' using errcode = 'check_violation'; end if;
+  if inviter = me then raise exception 'own code' using errcode = 'check_violation'; end if;
+  insert into public.profiles (id) values (me) on conflict (id) do nothing;
+  update public.profiles set referred_by = inviter where id = me and referred_by is null;
+  return found;
+end;
+$$;
+
+-- เพื่อนเขียนรีวิวแรกแล้ว → ได้คนละ 50 เหรียญ (ครั้งเดียว) / friend's first review → 50 coins each (once)
+create or replace function public.claim_referral_reward()
+returns integer
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  me uuid := auth.uid();
+  inviter uuid;
+begin
+  select referred_by into inviter from public.profiles where id = me;
+  if inviter is null then return 0; end if;
+  if not exists (select 1 from public.reviews r where r.user_id = me) then return 0; end if;
+  if exists (select 1 from public.coin_ledger where user_id = me and ref = 'referral:' || me::text) then return 0; end if;
+  perform set_config('maadoo.referral', 'on', true);
+  insert into public.coin_ledger (user_id, delta, kind, ref) values (me, 50, 'referral', 'referral:' || me::text);
+  insert into public.coin_ledger (user_id, delta, kind, ref) values (inviter, 50, 'referral', 'referral:' || me::text)
+    on conflict do nothing;
+  perform set_config('maadoo.referral', '', true);
+  return 50;
+end;
+$$;
+
+revoke execute on function public.use_invite_code(text) from public, anon;
+revoke execute on function public.claim_referral_reward() from public, anon;
+grant execute on function public.use_invite_code(text) to authenticated;
+grant execute on function public.claim_referral_reward() to authenticated;
+
+-- ---------- 7.3 แพ็กเกจบริษัท (เดโม) + สิทธิ์ 50 บริษัทแรก / employer plans (demo) + first-50 offer ----------
+create table if not exists public.employer_signups (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  company     text not null check (char_length(company) between 1 and 120),
+  plan        text not null check (plan in ('starter', 'pro', 'enterprise')),
+  early_bird  boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+alter table public.employer_signups enable row level security;
+drop policy if exists "employer_signups: read own"   on public.employer_signups;
+drop policy if exists "employer_signups: insert own" on public.employer_signups;
+create policy "employer_signups: read own" on public.employer_signups
+  for select to authenticated using (user_id = (select auth.uid()));
+create policy "employer_signups: insert own" on public.employer_signups
+  for insert to authenticated
+  with check (user_id = (select auth.uid()) and (select (auth.jwt() ->> 'is_anonymous')::boolean) is not true);
+revoke all on public.employer_signups from anon, authenticated;
+grant select on public.employer_signups to authenticated;
+grant insert (company, plan) on public.employer_signups to authenticated;
+
+-- 50 บริษัทแรกที่สมัคร Pro ได้ early_bird (ตั้งค่าโดยระบบ ไม่ใช่ผู้ใช้) / first 50 Pro sign-ups get early_bird
+create or replace function public.employer_signups_before_insert()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  perform pg_advisory_xact_lock(hashtext('employer_early_bird'));
+  new.early_bird := new.plan = 'pro'
+    and (select count(*) from public.employer_signups where early_bird) < 50;
+  return new;
+end;
+$$;
+revoke execute on function public.employer_signups_before_insert() from public, anon, authenticated;
+drop trigger if exists employer_signups_before_insert on public.employer_signups;
+create trigger employer_signups_before_insert
+  before insert on public.employer_signups
+  for each row execute function public.employer_signups_before_insert();
+
+create or replace function public.early_bird_left()
+returns integer
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select greatest(0, 50 - (select count(*) from public.employer_signups where early_bird))::integer;
+$$;
+revoke execute on function public.early_bird_left() from public;
+grant execute on function public.early_bird_left() to anon, authenticated;
+
+-- ให้ผู้ใช้อ่านโค้ดชวน + ใครชวนตัวเองได้ (เขียนเองไม่ได้) / users can read their invite code (not write it)
+grant select on public.profiles to authenticated;
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';
