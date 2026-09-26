@@ -113,9 +113,6 @@ button{cursor:pointer}
 .mascot img{width:100%;height:100%;border-radius:50%;animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 12px 18px rgba(13,60,148,.18))}
 .m-say{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:2;animation:bob 3.2s ease-in-out infinite}
 .mascot img{position:relative;z-index:1}
-.m-lock{position:absolute;left:2%;bottom:2%;z-index:3;width:40px;height:40px;border-radius:50%;background:var(--surface);border:1.5px solid var(--line);box-shadow:var(--shadow);font-size:17px;line-height:1;display:grid;place-items:center;padding:0;transition:transform .15s}
-.m-lock:hover{transform:scale(1.08)}.m-lock[aria-pressed="true"]{border-color:var(--blue);background:var(--sky)}
-@media(max-width:640px){.m-lock{width:30px;height:30px;font-size:13px;left:-4px;bottom:-2px}}
 .m-say path{fill:var(--surface);stroke:var(--navy);stroke-width:2.2;stroke-linejoin:round}
 .m-say text{fill:var(--tag);stroke:var(--tag-shade);stroke-width:.5;paint-order:stroke;font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:-.2px}
 .spark{position:absolute;color:var(--accent);font-size:22px;animation:tw 2.4s ease-in-out infinite}
@@ -1231,7 +1228,7 @@ function home(){
  return `<section class="hero"><div class="hero-txt">
   <h1>${t('ก่อนไปทำงาน <em>มาดู</em>ก่อน','Before you go, <em>Maadoo</em> first')}</h1>
   <p class="hero-sub">${t('รีวิวที่ทำงานจากคนในตัวจริง','Real workplace reviews from real insiders')}</p>
- </div><div class="hero-side"><div class="mascot"><button type="button" class="m-lock" data-puplock aria-pressed="${!!S.pupLock}" aria-label="${S.pupLock?t('ปลดล็อกไอคอน ให้เปลี่ยนตามธีม','Unlock the icon so it follows the theme'):t('ล็อกไอคอนนี้ไว้ ไม่ให้เปลี่ยนตามธีม','Lock this icon so it stays when the theme changes')}" title="${S.pupLock?t('ปลดล็อกไอคอน','Unlock icon'):t('ล็อกไอคอนนี้','Lock this icon')}">${S.pupLock?'🔒':'🔓'}</button><img src="${PUP(S.pupLock||S.skin)}" alt="${t('น้องมาดู น้องหมาผู้ช่วยหางาน','Maadoo, the job-hunting pup')}"><svg class="m-say" viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(69 12) rotate(6)"><path d="M6 0H32Q38 0 38 6V17Q38 23 32 23H14L2.5 32.5L7.5 23H6Q0 23 0 17V6Q0 0 6 0Z"/><text x="19" y="12.2" text-anchor="middle" dominant-baseline="central">JOB!</text></g></svg><span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span></div>
+ </div><div class="hero-side"><div class="mascot"><img src="${PUP()}" alt="${t('น้องมาดู น้องหมาผู้ช่วยหางาน','Maadoo, the job-hunting pup')}"><svg class="m-say" viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(69 12) rotate(6)"><path d="M6 0H32Q38 0 38 6V17Q38 23 32 23H14L2.5 32.5L7.5 23H6Q0 23 0 17V6Q0 0 6 0Z"/><text x="19" y="12.2" text-anchor="middle" dominant-baseline="central">JOB!</text></g></svg><span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span></div>
   <div class="stats"><div><b class="num">${fmt(12480)}</b><span>${t('รีวิว','reviews')}</span></div><div><b class="num">${fmt(3120)}</b><span>${t('บริษัท','companies')}</span></div><div><b class="num">${fmt(8904)}</b><span>${t('ข้อมูลเงินเดือน','salaries')}</span></div></div></div></section>
  <div class="search-wrap"><form class="search" id="searchForm" role="search"><input id="q" placeholder="${t('ค้นหาบริษัท ตำแหน่ง หรือย่าน เช่น QC, ลาดพร้าว','Search companies, roles or areas, e.g. QC, Ari')}" value="${esc(S.q)}" aria-label="${t('ค้นหา','Search')}"><button class="btn y">${t('ค้นหา','Search')}</button></form><div class="quick"><button class="explore-btn" data-go="explore"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>${t('สำรวจบริษัททั้งหมด','Explore all companies')}</button>${quick.map(k=>`<button data-qk="${esc(S.lang==='en'?k[1]:k[0])}">${S.lang==='en'?(k[1]==='intern'?'Internships':k[1]==='startup'?'Startups':k[1]==='pharma'?'Pharma':k[1]==='MRT'?'Near MRT':k[1]):(k[0]==='MRT'?'ใกล้ MRT':k[0])}</button>`).join('')}</div></div>
  <section class="sec"><div class="sec-h"><h2>${q?t(`ผลการค้นหา “${esc(S.q)}”`,`Results for “${esc(S.q)}”`):t('บริษัทที่ถูกพูดถึงสัปดาห์นี้','Talked about this week')}</h2>${q?`<button class="link" data-clear>${t('ล้างการค้นหา','Clear search')}</button>`:`<button class="link" data-go="explore">${t('ดูทั้งหมด','See all')}</button>`}</div>
@@ -1784,7 +1781,6 @@ document.addEventListener('click',e=>{
  if(d.mrevdelok!==undefined){mrevDelete();return}
  if(d.mrevsend!==undefined){mrevSubmit();return}
  if(d.mtag){const m=S.modal;if(m&&m.type==='mreview'){const i=m.tags.indexOf(d.mtag);i<0?m.tags.push(d.mtag):m.tags.splice(i,1);b.setAttribute('aria-pressed',i<0)}return}
- if(d.puplock!==undefined){S.pupLock=S.pupLock?null:S.skin;store.set('maadoo-pup-lock',S.pupLock||'');render();const lb=document.querySelector('[data-puplock]');if(lb)lb.focus({preventScroll:true});toast(S.pupLock?t('ล็อกไอคอนแล้ว เปลี่ยนธีมไอคอนก็ไม่เปลี่ยน','Icon locked. It stays when you change the theme'):t('ปลดล็อกแล้ว ไอคอนเปลี่ยนตามธีม','Unlocked. The icon follows the theme again'));return}
  if(d.snd!==undefined){SND.toggle();renderThemePop();return}
  if(d.fx){if(d.fx==='amb'){S.fxAmb=!S.fxAmb;store.set('maadoo-fx-amb',S.fxAmb?'1':'0')}else{S.fxTap=!S.fxTap;store.set('maadoo-fx-tap',S.fxTap?'1':'0')}renderThemePop();FX.kick();return}
  if(d.coachok!==undefined){S.coach=false;store.set('maadoo-coach','1');renderCoach();return}
@@ -1890,7 +1886,6 @@ const FXINFO={default:{c:['#2F6FD6','#FF9A1F','#FFC53D','#8EC5FF'],n:['ประ
  garden:{c:['#FF6F91','#FFB347','#B28DFF','#6EC6FF','#FF8FB1'],n:['ผีเสื้อบินในสวน','Garden butterflies'],amb:'fly',tap:'flower'},
  sea:{c:['#7FD8F0','#B8ECF8','#4FC3E3','#FFFFFF'],n:['ฟองอากาศใต้ทะเล','Rising bubbles'],amb:'bubble',tap:'bubble'}};
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
-S.pupLock=(k=>SKINS.some(v=>v[0]===k)?k:null)(store.get('maadoo-pup-lock'));
 S.fxAmb=store.get('maadoo-fx-amb')?store.get('maadoo-fx-amb')==='1':!reduceMotion;
 S.fxTap=store.get('maadoo-fx-tap')?store.get('maadoo-fx-tap')==='1':!reduceMotion;
 const FX=(()=>{
