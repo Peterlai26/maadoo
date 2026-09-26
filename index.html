@@ -507,6 +507,19 @@ footer.foot{max-width:1040px;margin:40px auto 0;padding-block:20px;border-top:1.
 footer.foot .link{font-size:14px}
 footer.foot .brand-s{display:flex;gap:6px;align-items:center;font-family:var(--display);font-weight:700;color:var(--navy)}
 footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
+/* Plus gold frame on mentor swipe cards */
+:root{--gold-frame:linear-gradient(135deg,#FFF6D2,#FFD970 25%,#F2B63C 50%,#FFE9A3 70%,#E8A93A);--gold-shade:#D9A23A;--gold-glow:rgba(255,200,90,.45);--gold-star:#F2B63C;--gold-soft:#FFF3C9;--gold-line:#F2D27A;--gold-ink:#7A5200}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gold-star:#FFD970;--gold-soft:#3A2F14;--gold-line:#6B5520;--gold-ink:#FFDF8A}}
+:root[data-theme="dark"]{--gold-star:#FFD970;--gold-soft:#3A2F14;--gold-line:#6B5520;--gold-ink:#FFDF8A}
+.scard.gold{border:5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,var(--gold-frame) border-box;box-shadow:0 6px 0 var(--gold-shade),0 0 18px var(--gold-glow)}
+.g-spark{position:absolute;color:var(--gold-star);line-height:1;pointer-events:none;text-shadow:0 0 6px var(--gold-glow);animation:gspark 2.4s ease-in-out infinite}
+.g-spark.a{bottom:10%;left:12%;font-size:18px}.g-spark.b{top:22%;right:14%;font-size:13px;animation-delay:1.2s}
+@keyframes gspark{0%,100%{opacity:.55;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.g-spark{animation:none}}
+.s-foot{position:absolute;right:12px;bottom:12px;left:12px;z-index:1;display:flex;justify-content:flex-end;align-items:center;gap:6px;flex-wrap:wrap}
+.s-foot .s-price{position:static}
+.s-foot .s-askp{position:static;border:0;padding:5px 12px;font-size:13px;border-radius:99px;background:var(--orange-btn);color:var(--on-brand);box-shadow:0 3px 0 var(--orange-btn-shade)}
+.plus-tag{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin-left:8px;padding:2px 10px;border-radius:99px;background:var(--gold-soft);color:var(--gold-ink);border:1.5px solid var(--gold-line);font-family:var(--body);font-size:12.5px;font-weight:700;letter-spacing:.01em}
 .deck{position:relative;height:480px;max-width:360px;margin:18px auto 0}
 .scard{position:absolute;inset:0;border-radius:30px;background:var(--surface);border:1.5px solid var(--line);box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-rows:210px 1fr;touch-action:none;user-select:none;-webkit-user-select:none}
 .scard.top{cursor:grab}.scard.top:active{cursor:grabbing}
@@ -1427,7 +1440,7 @@ function done(){const d=S.done;const c=getCo(d.co);
  <p class="muted">${t('แคปหน้าจอการ์ดนี้ไปแชร์ใน IG Story หรือ LINE ได้เลย','Screenshot this card to share on IG Stories or LINE')}</p>
  <div class="row"><button class="btn" data-co="${c.id}" data-tabto="reviews">${t(`ดูรีวิวทั้งหมดของ ${x(c.name)}`,`See all ${x(c.name)} reviews`)}</button><button class="btn ghost" data-again>${t('เขียนอีกรีวิว','Write another')}</button></div></div>`}
 function ask(){
- const top=`<h1 style="font-size:28px;margin-top:8px">${t('ปรึกษาเรื่องงาน','Ask about work')}</h1><p class="muted" style="margin-top:4px">${t('ปัดหารุ่นพี่คุยตัวต่อตัว หรือโพสต์ถามและแชร์ในบอร์ดที่ใครก็ตอบได้','Swipe for a 1:1 mentor, or post and share on a board anyone can answer.')}</p>
+ const top=`<h1 style="font-size:28px;margin-top:8px">${t('ปรึกษาเรื่องงาน','Ask about work')}${isPlus()?'<span class="plus-tag">✨ Plus</span>':''}</h1><p class="muted" style="margin-top:4px">${t('ปัดหารุ่นพี่คุยตัวต่อตัว หรือโพสต์ถามและแชร์ในบอร์ดที่ใครก็ตอบได้','Swipe for a 1:1 mentor, or post and share on a board anyone can answer.')}</p>
  <div class="segs">${[['swipe',PAW+t('ปัดหารุ่นพี่','Swipe mentors')],['threads',t('💬 บอร์ดพูดคุย','💬 Community board')]].map(([k,n])=>`<button class="${S.askTab===k?'on':''}" data-asktab="${k}">${n}</button>`).join('')}</div>`;
  if(S.askTab==='swipe')return top+swipe();
  return top+board()}
@@ -1502,7 +1515,7 @@ function mBadge(m,cls){const st=mStat(m),nw=st.n<3;
  return `<button type="button" class="s-rate ${nw?'new':''} ${cls||''}" data-mrevs="${m.id}" aria-label="${nw?t('รุ่นพี่ใหม่ ดูรีวิว','New mentor, see reviews'):t(`คะแนน ${st.avg.toFixed(1)} จาก 5 จาก ${st.n} รีวิว ดูรีวิว`,`Rated ${st.avg.toFixed(1)} of 5 from ${st.n} reviews, see reviews`)}">${nw?`<b>✨ ${t('รุ่นพี่ใหม่','New mentor')}</b>`:`<span class="st">★</span><b>${st.avg.toFixed(1)}</b><small>(${st.n} ${t('รีวิว','reviews')})</small>`}</button>`}
 const mTopTags=m=>{const tp=mStat(m).top.slice(0,2);return tp.length?`<div class="s-top">${tp.map(g=>x([MTAGS[g][2],MTAGS[g][3]])).join(' · ')}</div>`:''};
 function mprice(m){return isPlus()?Math.round(m.price*.8):m.price}
-function scard(m,cls){return `<div class="scard ${cls}" data-mid="${m.id}"><div class="s-hero" style="background:linear-gradient(160deg,${m.bg},var(--surface))"><span class="stamp like">${t('สนใจ','LIKE')}</span><span class="stamp nope">${t('ข้าม','NOPE')}</span>${mBadge(m)}<span class="s-ava">${m.ava}</span>${askBtn(m)}<span class="s-price">${mprice(m)} ${t('บาท','THB')}/30 ${t('นาที','min')}</span></div>
+function scard(m,cls){const g=isPlus(),price=`<span class="s-price">${mprice(m)} ${t('บาท','THB')}/30 ${t('นาที','min')}</span>`;return `<div class="scard ${cls}${g?' gold':''}" data-mid="${m.id}"><div class="s-hero" style="background:linear-gradient(160deg,${m.bg},var(--surface))"><span class="stamp like">${t('สนใจ','LIKE')}</span><span class="stamp nope">${t('ข้าม','NOPE')}</span>${mBadge(m)}${g?'<span class="g-spark a" aria-hidden="true">✦</span><span class="g-spark b" aria-hidden="true">✦</span>':''}<span class="s-ava">${m.ava}</span>${g?`<div class="s-foot">${askBtn(m)}${price}</div>`:askBtn(m)+price}</div>
  <div class="s-info"><h2>${x(m.name)} <span class="chip ver">✓</span></h2>${mTopTags(m)}<div class="muted" style="font-size:14px">${x(m.role)} · ${x(m.at)}</div><p class="s-bio">“${x(m.bio)}”</p>
  <div class="row" style="gap:6px">${m.tags.map(g=>`<span class="chip">${x(g)}</span>`).join('')}</div><span class="corate">🗓️ ${m.n} ${t('ครั้งที่ให้คำปรึกษา','sessions')}</span></div></div>`}
 function swipe(){const sw=S.sw;const deck=deckList();const liked=MENTORS.filter(m=>sw.liked.includes(m.id));
@@ -1749,7 +1762,7 @@ const qOpen=()=>S.prem.qs.filter(q=>q.status!=='closed').length;
 const qUsed=()=>{const ms=monthStart();return S.prem.qs.filter(q=>q.counted&&q.closedAt>=ms).length};
 const qLeft=()=>Math.max(0,Q_MAX-qUsed()-qOpen());
 const Q_ST={waiting:['รอคำตอบ','Waiting','mid'],answered:['ตอบแล้ว','Answered','good'],closed:['ปิดแล้ว','Closed','']};
-function askBtn(m){return isPlus()?`<button type="button" class="s-ask" data-askm="${m.id}">💬 ${t(`ถามฟรี (เหลือ ${qLeft()}/${Q_MAX})`,`Ask free (${qLeft()}/${Q_MAX} left)`)}</button>`:`<button type="button" class="s-ask s-ask-off" data-askm="${m.id}">💬 ${t('ถามรุ่นพี่ · Plus','Ask · Plus')}</button>`}
+function askBtn(m){return isPlus()?`<button type="button" class="btn orange sm s-ask s-askp" data-askm="${m.id}" aria-label="${t(`ถามฟรี เหลือ ${qLeft()} จาก ${Q_MAX}`,`Ask free, ${qLeft()} of ${Q_MAX} left`)}">💬 ${t(`ถามฟรี ${qLeft()}/${Q_MAX}`,`Ask free ${qLeft()}/${Q_MAX}`)}</button>`:`<button type="button" class="s-ask s-ask-off" data-askm="${m.id}">💬 ${t('ถามรุ่นพี่ · Plus','Ask · Plus')}</button>`}
 function askMentor(mid){needMember(()=>{if(!isPlus()){go('plus');toast(t('ถามรุ่นพี่ฟรีเป็นสิทธิ์ของสมาชิก Plus','Free mentor questions are a Plus perk'));return}
  qTick();if(qOpen()>=Q_OPEN){toast(t('เปิดคำถามค้างได้ไม่เกิน 2 ข้อ ปิดข้อเก่าก่อนนะ','You can have at most 2 open questions. Close one first.'));return}
  if(qLeft()<=0){toast(t('สิทธิ์ถามฟรีเดือนนี้หมดแล้ว รีเซ็ตต้นเดือนหน้า','No free questions left this month. They reset next month.'));return}
