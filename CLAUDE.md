@@ -22,7 +22,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - **All sample companies, people, reviews, salaries and sample mentors are fictional.** Never use real company names or real people in sample data. Sample mentors (m1–m9) carry a "ตัวอย่าง / Sample" chip and keep auto-replying.
 - **Real mentors (step 1) are the only real people:** users who applied and an admin approved. They appear by **nickname only** with a "✓ รุ่นพี่จริง / Real mentor" chip; their LinkedIn/work-email contact is for verification and only admins see it.
 - Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme, effect toggles, ambient-sound on/off + volume, and the "promotions hidden" timestamp (7 days) (always wrapped in try/catch).
-- Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email code/OTP, or "try without signing up" anonymous guest), the `reviews` and `mentor_reviews` tables, the premium tables `profiles`, `coin_ledger` and `questions`, `employer_signups`, the real-mentor tables `admins`, `mentor_applications`, `mentors`, `chat_rooms`, `messages`, `chat_reports`, the private Storage bucket `chat-files`, Realtime (messages, chat_rooms, typing broadcast), and the RPCs `pioneer_stats`, `use_invite_code`, `claim_referral_reward`, `early_bird_left`, `is_admin`, `review_mentor_application`, `chat_mark_read`, `chat_confirm_live`, `chat_set_block`. supabase-js keeps its auth session in `localStorage`.
+- Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email code/OTP, or "try without signing up" anonymous guest), the `reviews` and `mentor_reviews` tables, the premium tables `profiles`, `coin_ledger` and `questions`, `employer_signups`, the real-mentor tables `admins`, `mentor_applications`, `mentors`, `chat_rooms`, `messages`, `chat_reports`, `mentor_availability`, `mentor_days_off`, `bookings`, `session_notes`, the private Storage bucket `chat-files`, Realtime (messages, chat_rooms, bookings, session_notes, typing broadcast), and the RPCs `pioneer_stats`, `use_invite_code`, `claim_referral_reward`, `early_bird_left`, `is_admin`, `review_mentor_application`, `chat_mark_read`, `chat_confirm_live`, `chat_set_block`, `mentor_taken_slots`, `book_session`, `cancel_booking`, `report_noshow`, `complete_booking`, `set_meet_link`, `save_session_notes`, `toggle_note_saved`. supabase-js keeps its auth session in `localStorage`.
   - New reviews are `pending`; the public sees only `approved` ones via the `approved_reviews` view (no `user_id`, no `salary`). Users can never set or change `status`; moderation happens in the Supabase dashboard.
   - Guests (anonymous users) can browse, swipe and apply, but can't add reviews (blocked in the UI and by RLS); they can keep their account by adding an email (`updateUser`).
   - Only the publishable key goes in `index.html`. Never add a secret / `service_role` key.
@@ -37,7 +37,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Style: cute, rounded, friendly. Fonts are Mali (display) and Anuphan (body).
 
 ## Main areas (views in `index.html`)
-home · explore (companies) · company (overview / reviews / salaries / interviews / open jobs) · jobs (tabs: full-time/internships and ⚡ quick part-time) · write (5-question quick review) · ask (Tinder-style mentor swipe + community board) · me (profile, Plus + coin cards, level, badges, my questions, mentor sessions, applications) · plus (Maadoo Plus page) · wallet (coin wallet + weekly missions) · invite (my invite code, invite stats, how it works, Pioneer card; linked from Me so the code stays reachable after the home promo block is hidden) · chat (1:1 room with a real mentor) · mentorApply (mentor application form) · admin (approve mentors, read chat reports; only users in `admins`) · employer (plans) · rules (guidelines, PDPA, part-time safety) · quiz.
+home · explore (companies) · company (overview / reviews / salaries / interviews / open jobs) · jobs (tabs: full-time/internships and ⚡ quick part-time) · write (5-question quick review) · ask (Tinder-style mentor swipe + community board) · me (profile, Plus + coin cards, level, badges, my questions, mentor sessions, applications) · plus (Maadoo Plus page) · wallet (coin wallet + weekly missions) · invite (my invite code, invite stats, how it works, Pioneer card; linked from Me so the code stays reachable after the home promo block is hidden) · chat (1:1 room with a real mentor) · book (live-call booking page) · live (live-call room) · mentorApply (mentor application form) · admin (approve mentors, read chat reports; only users in `admins`) · employer (plans) · rules (guidelines, PDPA, part-time safety) · quiz.
 
 ## Premium (decided) — Maadoo Plus, Maadoo coins, Ask a mentor
 - **Always free:** reading/writing reviews, salaries and applying to jobs. Paying never removes, hides or edits reviews.
@@ -59,6 +59,27 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
 - **Mentor mode (Me):** available/not-available switch (hides the card, open chats still work), summary card (earnings this month are **simulated**: 40 THB per closed question, no real payouts; rating from reviews; average first-reply time), tabs รอตอบ / กำลังคุย / ปิดแล้ว with the 48 h countdown (red under 6 h).
 - **Notifications:** red dot on the bell (new notification) and on the Ask tab (unread chats); browser notifications only after the user taps "เปิดแจ้งเตือน" and only while the tab is open in the background. No email notifications yet.
 - Mentors never see the asker's email; the room shows the asker's display name only if they set one, otherwise "น้อง (ไม่ระบุชื่อ)".
+
+## Real mentors, step 2: live calls (decided)
+- **Times** are Bangkok time in 30-minute slots (`slot` 0–47; the editor shows 08:00–21:30). Mentors set a weekly schedule, can switch whole weekdays off (`mentors.off_weekdays`) and add days off (`mentor_days_off`) in mentor mode.
+- **Booking page (`book`)**, used for every 📅 button (sample mentors get a made-up schedule and in-memory bookings):
+  - A strip of the next 7 days, faded when there are no free slots, and a 3-column slot grid with taken slots struck through.
+  - A slot must start at least 1 h from now and within 8 days.
+  - Price summary: full price → Plus 20% off → coin slider (up to 50% of the Plus price and your balance) → big orange total.
+  - Terms: free cancellation until 12 h before; mentor no-show = full refund; student no-show = no refund.
+  - The payment is simulated (`payModal`, `what:'live'`), but coins are really deducted: `book_session()` writes a `spend` row with ref `booking:<id>`.
+- **One booking per slot:** a unique index on `(mentor_id, starts_at)` where the booking isn't cancelled. Refunds are `refund` ledger rows that only `cancel_booking()` / `report_noshow()` can write.
+- **Live room (`live`):**
+  - Jitsi link `https://meet.jit.si/maadoojob-<64 random hex>` made per booking; the mentor may set a Google Meet link instead.
+  - "เข้าห้องวิดีโอ" works from 10 minutes before the start.
+  - A 30-minute timer ring, a 5-minute warning, and a link to the same chat (reuses an open room with that mentor, or a booking room with no question).
+  - Cancel before the start; no-show buttons from +10 min; "คุยเสร็จแล้ว" from +15 min.
+- **After the call:**
+  - Done (or the mentor's notes) unlocks contact details in that chat for new messages. Messages masked earlier stay masked, because the original text isn't stored.
+  - The mentor writes up to 3 tips (`session_notes`); the student sees "📝 สรุปจากรุ่นพี่" and can save it to Me.
+  - The student is asked to rate the mentor with the existing mentor-review flow (booking id = booking id). Those reviews get `live = true` and show "✓ คุยสดจริง".
+- **Mentor earnings (simulated)** = 80% of the price after the Plus discount (the platform covers the coin part), counted for done and student-no-show calls. It is shown with the question earnings in mentor mode.
+- **Reminders** in the site (bell + toast, and a browser notification if allowed and the tab is hidden) for both sides: 1 h before, at the start, and 5 minutes before the end.
 
 ## Promotions (decided)
 - **Home promo block** (below the hero/search, hidden while searching): swipeable banner carousel with dots — "รีวิวแรก แลก Plus ฟรี!" (links to the existing 3-reviews → 1 free month mission; there is no separate first-review trial), "1,000 คนแรก", "ชวนเพื่อน", "โปรตามฤดูกาล" — plus a Pioneer card and an Invite card. The × hides the whole block for 7 days.

@@ -407,7 +407,6 @@ body.sheet-open{overflow:hidden}
 .pay-m{display:flex;gap:8px;align-items:center;justify-content:center;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:10px;font-weight:600;font-size:14px}.pay-m.on{border-color:var(--blue);background:var(--sky)}
 .pay-qr{display:grid;justify-items:center;gap:4px}.qr-fake{width:132px;height:132px;border-radius:12px;background:repeating-conic-gradient(var(--ink) 0 25%,var(--surface) 0 50%) 0 0/22px 22px;border:8px solid var(--surface);outline:1.5px solid var(--line);opacity:.8}
 .pay-done{display:grid;gap:10px;justify-items:center;text-align:center}.pay-ok{width:64px;height:64px;border-radius:50%;background:var(--good);color:var(--surface);display:grid;place-items:center;font-size:34px;font-weight:700}
-.coin-use{gap:8px;font-size:14px;cursor:pointer}.coin-use input{width:18px;height:18px;accent-color:var(--blue)}
 .s-ask{position:absolute;left:12px;bottom:12px;z-index:1;background:var(--plus-soft);color:var(--plus-ink);border:1.5px solid var(--plus-b);border-radius:99px;padding:5px 12px;font-weight:700;font-size:13px;box-shadow:var(--shadow)}
 .s-ask.s-ask-off{background:var(--surface);color:var(--ink-2);border-color:var(--line)}
 .q-rules{margin:0;padding-left:20px;display:grid;gap:3px;font-size:13px;color:var(--ink-2)}
@@ -465,9 +464,6 @@ body.sheet-open{overflow:hidden}
 .mentor-top{display:flex;gap:12px;align-items:center}
 .ava{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:24px;flex:none}
 .price{font-family:var(--display);font-weight:700;color:var(--navy);font-size:18px}
-.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
-.slot{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:8px;font-size:13px;text-align:center}
-.slot.on{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
 .me-head{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:8px}
 .me-ava{width:76px;height:76px;border-radius:50%;background:var(--sky);display:grid;place-items:center;font-family:var(--display);font-size:30px;font-weight:700;color:var(--navy);border:3px solid var(--surface);box-shadow:var(--shadow)}
 .lvl{display:grid;gap:6px;min-width:220px;flex:1}
@@ -507,6 +503,37 @@ footer.foot{max-width:1040px;margin:40px auto 0;padding-block:20px;border-top:1.
 footer.foot .link{font-size:14px}
 footer.foot .brand-s{display:flex;gap:6px;align-items:center;font-family:var(--display);font-weight:700;color:var(--navy)}
 footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
+/* live-call booking, live room, availability editor */
+.bkv,.lvv{display:grid;gap:12px;max-width:760px;margin:8px auto 0}
+.bk-head{display:flex;align-items:center;gap:12px;padding:12px 14px;min-width:0}.bk-head .cv-t b{font-size:17px}
+.bk-sec{display:grid;gap:10px;padding:14px 16px}
+.bk-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.bk-day{display:grid;justify-items:center;gap:1px;padding:8px 2px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;min-width:0}
+.bk-day b{font-family:var(--display);font-size:19px;color:var(--navy)}.bk-day small{font-size:11px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.bk-day.on{background:var(--blue);border-color:var(--blue);color:var(--blue-ink)}.bk-day.on b,.bk-day.on small{color:var(--blue-ink)}
+.bk-day.off{opacity:.42;cursor:not-allowed}
+.bk-slots,.av-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.av-slots{grid-template-columns:repeat(auto-fill,minmax(76px,1fr))}
+.bk-slot{padding:9px 4px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.bk-slot:hover:not(:disabled){border-color:var(--blue)}.bk-slot.on{background:var(--blue);border-color:var(--blue);color:var(--blue-ink)}
+.bk-slot.taken{text-decoration:line-through;color:var(--ink-3);background:var(--surface-2);cursor:not-allowed;opacity:.8}
+.bk-price{gap:8px}.bk-row{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:14.5px}.bk-row.good{color:var(--good);font-weight:600}.bk-row.muted{color:var(--ink-3)}
+.bk-coins{display:grid;gap:4px;padding:8px 10px;border-radius:14px;background:var(--sky-2)}.bk-coins input{width:100%;accent-color:var(--orange-btn)}
+.bk-total{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-top:1.5px dashed var(--line);padding-top:10px}.bk-total b{font-family:var(--display);font-size:30px;color:var(--orange-btn);line-height:1.1}
+.bk-terms{margin:0;padding-left:20px;display:grid;gap:3px;font-size:13px;color:var(--ink-2)}
+.lv-main{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:16px}
+.lv-ringbox{width:150px;height:150px}.lv-ring{width:100%;height:100%;display:block}
+.lv-track{fill:none;stroke:var(--surface-2);stroke-width:10}.lv-prog{fill:none;stroke:var(--blue);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .9s linear}
+.lv-ring.hot .lv-prog{stroke:var(--bad)}.lv-big{font-family:var(--display);font-size:17px;font-weight:700;fill:var(--navy)}.lv-small{font-size:10px;fill:var(--ink-3)}.lv-big.sm{font-size:12.5px}
+.lv-join{display:grid;gap:8px;min-width:0}.lv-join .btn.big{text-align:center;text-decoration:none}.lv-link{overflow-wrap:anywhere;font-size:12px}.lv-topic{margin:0;font-size:14px;color:var(--ink-2);overflow-wrap:anywhere}
+.lv-acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lv-note{display:grid;gap:6px;padding:14px 16px;background:var(--cream);border-color:var(--cream-line)}.lv-note ol{margin:0;padding-left:22px;display:grid;gap:4px}
+.mb-bk{display:grid;gap:8px;margin:12px 0}
+.av-ed{display:grid;gap:12px;padding:14px 16px;margin-top:10px}
+.av-wd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.av-wd button{display:grid;justify-items:center;padding:6px 2px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;cursor:pointer;min-width:0}
+.av-wd button small{font-weight:400;font-size:11px;color:var(--ink-3)}.av-wd button.on{background:var(--blue);border-color:var(--blue);color:var(--blue-ink)}.av-wd button.on small{color:var(--blue-ink)}.av-wd button.off:not(.on){opacity:.5}
+.av-off{display:grid;gap:8px}.av-off .chip .link{margin-left:2px;font-size:15px;text-decoration:none}
+@media (max-width:520px){.lv-main{grid-template-columns:1fr;justify-items:center;text-align:center}.lv-join{width:100%}.lv-ringbox{width:140px;height:140px}.bk-day{padding:6px 1px;border-radius:12px}.bk-day b{font-size:16px}}
 /* real mentors: chat room, inbox, apply form, admin */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .ndot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--bad);margin-left:5px;vertical-align:top;box-shadow:0 0 0 2px var(--surface)}
@@ -1338,7 +1365,7 @@ function applyPrefs(){
  $('#demoTag').textContent=t('เดโม · ข้อมูลตัวอย่าง','Demo · sample data');
 }
 function nav(){
- const act=S.view==='company'?'explore':S.view==='chat'?'ask':S.view;
+ const act=S.view==='company'?'explore':['chat','book'].includes(S.view)?'ask':S.view==='live'?'me':S.view;
  const cu=S.user&&S.rooms?chatUnread():0,dot=id=>id==='ask'&&cu?`<i class="ndot" aria-label="${t('ข้อความใหม่','New messages')}"></i>`:'';
  $('#topnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}">${x(n.t)}${dot(n.id)}</button>`).join('');
  $('#bnav').innerHTML=NAV.filter(n=>n.id!=='explore').map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''} ${n.id==='write'?'write':''}"><svg viewBox="0 0 24 24">${n.i}</svg>${x(n.t)}${dot(n.id)}</button>`).join('');
@@ -1558,7 +1585,7 @@ function swipe(){const sw=S.sw;const deck=deckList();const liked=MENTORS.filter(
  ${liked.length?`<section class="sec"><div class="sec-h"><h2>${t('รุ่นพี่ที่คุณปัดขวา','Mentors you liked')} (${liked.length})</h2></div><div class="list">${liked.map(m=>`<div class="li"><span class="ava" style="width:40px;height:40px;font-size:20px;background:${m.bg}">${m.ava}</span><div><b>${x(m.name)}</b><div class="muted">${x(m.role)}</div></div><button class="btn grow" data-book="${m.id}">${t('จองเวลา','Book')}</button></div>`).join('')}</div></section>`:''}
  <div class="sec">${plusBanner()}</div><p class="muted" style="margin-top:8px">${t('Maadoo หักค่าธรรมเนียม 15% จากแต่ละการจอง รุ่นพี่ได้รับ 85%','Maadoo keeps a 15% fee per booking; mentors receive 85%')}</p>`}
 function swipeGo(dir){const card=document.querySelector('.scard.top');if(!card||card.dataset.gone)return;const id=card.dataset.mid;if(dir!=='book')card.dataset.gone='1';
- if(dir==='book'){openModal({type:'book',id,slot:null});return}
+ if(dir==='book'){openBook(id);return}
  card.style.transition='transform .35s ease, opacity .35s';card.style.transform=`translateX(${dir==='right'?600:-600}px) rotate(${dir==='right'?24:-24}deg)`;card.style.opacity='0';
  const st=card.querySelector(dir==='right'?'.stamp.like':'.stamp.nope');if(st)st.style.opacity=1;
  setTimeout(()=>{if(dir==='right'){S.sw.liked.push(id);render();openModal({type:'match',id})}else{S.sw.skipped.push(id);render()}},300)}
@@ -1582,7 +1609,6 @@ function mentors(){return `<div class="grid" style="margin-top:16px">${plusBanne
  <button class="btn" data-book="${m.id}">${t('จองเวลาคุย','Book a session')}</button></article>`}).join('')}</div>
  <p class="muted">${t('Maadoo หักค่าธรรมเนียม 15% จากแต่ละการจอง รุ่นพี่ได้รับ 85%','Maadoo keeps a 15% fee per booking; mentors receive 85%')}</p></div>`}
 /* ---------- mentor sessions & reviews ---------- */
-const newBid=()=>'b-'+((window.crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2,10));
 const findRev=id=>{for(const k in S.mdb){const r=S.mdb[k].find(v=>v.id===id);if(r)return r}return null};
 function bookingRow(b){const r=b.rid&&findRev(b.rid),when=b.slot!=null?x(SLOTS[b.slot]):b.at?quarterDate(b.at):'';
  const st=r?`<span class="chip ver">✓ ${t('รีวิวแล้ว','Reviewed')} · ★${r.s}</span>`:b.st==='done'?`<span class="chip good">${t('เสร็จแล้ว','Done')}</span>`:`<span class="chip mid">${t('รอปรึกษา','Upcoming')}</span>`;
@@ -1596,7 +1622,7 @@ function mrevsModal(m,head){const mt=MENTORS.find(v=>v.id===m.id),st=mStat(mt),r
  `<div class="mr-sum"><div class="mr-avg"><b>${st.n?st.avg.toFixed(1):'–'}</b>${starRow(st.avg)}<small>${st.n} ${t('รีวิว','reviews')}${st.n<3?` · ✨ ${t('รุ่นพี่ใหม่','New mentor')}`:''}</small></div>
   <div class="mr-dist">${st.dist.map((c,i)=>`<div class="mr-bar"><span>${5-i}★</span><i><em style="width:${c/mx*100}%"></em></i><small>${c}</small></div>`).join('')}</div></div>
  ${st.top.length?`<div class="row" style="gap:6px">${st.top.map(g=>`<span class="chip">${x(MTAGS[g])} · ${st.tc[g]}</span>`).join('')}</div>`:''}
- <div class="mr-list">${rv.map(r=>`<article class="mrv"><div class="row" style="gap:6px">${starRow(r.s,'sm')}<span class="chip ver">✓ ${t('ปรึกษาจริง','Real session')}</span>${r.mine?`<span class="chip mid">${t('รีวิวของคุณ','Your review')}</span>`:''}</div>
+ <div class="mr-list">${rv.map(r=>`<article class="mrv"><div class="row" style="gap:6px">${starRow(r.s,'sm')}<span class="chip ver">✓ ${r.live?t('คุยสดจริง','Live call'):t('ปรึกษาจริง','Real session')}</span>${r.mine?`<span class="chip mid">${t('รีวิวของคุณ','Your review')}</span>`:''}</div>
   ${r.c&&(Array.isArray(r.c)?r.c[0]:r.c)?`<p>${esc(x(r.c))}</p>`:''}${r.tags.length?`<div class="mr-tags">${r.tags.filter(g=>MTAGS[g]).map(g=>x(MTAGS[g])).join(' · ')}</div>`:''}
   <small class="muted">${r.who?x(r.who):t('ผู้ใช้มาดูจ็อบ','Maadoo Job member')} · ${r.d?x(r.d):quarterDate(r.at)}</small>
   ${r.reply?`<div class="reply"><b>💬 ${t(`คำตอบจาก${x(mt.name)}`,`Reply from ${x(mt.name)}`)}</b><span>${esc(x(r.reply))}</span></div>`:''}</article>`).join('')||`<p class="muted">${t('ยังไม่มีรีวิว','No reviews yet')}</p>`}</div>
@@ -1633,7 +1659,7 @@ async function mrevSave(m){const b=S.booked.find(v=>v.id===m.bid);if(!b)return;c
  m.busy=false;
  if(err){m.err=err.code==='23505'?['การจองนี้รีวิวไปแล้ว','You’ve already reviewed this session.']:err.status===429?['ลองบ่อยเกินไป รอสักครู่แล้วลองใหม่','Too many tries. Wait a moment and try again.']:!err.status&&!err.code?['เชื่อมต่อไม่ได้ เช็กอินเทอร์เน็ตแล้วลองใหม่','Can’t connect. Check your internet and try again.']:['ส่งรีวิวไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t send your review. Please try again.'];if(S.modal===m)renderModal();return}
  const list=S.mdb[b.mid]=(S.mdb[b.mid]||[]).filter(v=>v.id!==m.edit&&v.id!==id);const old=m.edit&&findRev(m.edit);
- list.push({id,s:m.stars,tags,c:comment||'',at:old&&old.at||at,reply:old&&old.reply||null,mine:true,real:true});
+ list.push({id,s:m.stars,tags,c:comment||'',at:old&&old.at||at,reply:old&&old.reply||null,mine:true,real:true,live:!!(b.live||old&&old.live)});
  b.rid=id;b.st='done';if(S.modal===m)S.modal=null;if(first)addPoints(20);render();
  toast(first?t('ขอบคุณสำหรับรีวิว! +20 แต้ม','Thanks for your review! +20 pts'):t('บันทึกรีวิวแล้ว','Review saved'))}
 async function mrevDelete(){const m=S.modal;if(!m||m.type!=='mrevdel'||m.busy)return;const b=S.booked.find(v=>v.id===m.bid);if(!b||!b.rid)return;const id=b.rid;
@@ -1642,8 +1668,8 @@ async function mrevDelete(){const m=S.modal;if(!m||m.type!=='mrevdel'||m.busy)re
  m.busy=false;if(!ok){m.err=['ลบรีวิวไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t delete the review. Please try again.'];if(S.modal===m)renderModal();return}
  for(const k in S.mdb)S.mdb[k]=S.mdb[k].filter(v=>v.id!==id);b.rid=null;if(S.modal===m)S.modal=null;render();toast(t('ลบรีวิวแล้ว','Review deleted'))}
 async function loadMentorReviews(){if(!SB)return;if(RM.p)await RM.p;
- try{const {data,error}=await SB.from('mentor_reviews_public').select('id,mentor_id,stars,tags,comment,reply,created_at').order('created_at',{ascending:false}).limit(1000);if(error)throw error;
-  const m={};(data||[]).forEach(r=>{if(!MENTORS.some(v=>v.id===r.mentor_id))return;(m[r.mentor_id]=m[r.mentor_id]||[]).push({id:r.id,s:Math.max(1,Math.min(5,r.stars|0)),tags:Array.isArray(r.tags)?r.tags:[],c:r.comment||'',at:Date.parse(r.created_at)||0,reply:r.reply||null,real:true,mine:false})});
+ try{let {data,error}=await SB.from('mentor_reviews_public').select('id,mentor_id,stars,tags,comment,reply,created_at,live').order('created_at',{ascending:false}).limit(1000);if(error&&/live|42703|column/i.test(String(error.code)+' '+String(error.message)))({data,error}=await SB.from('mentor_reviews_public').select('id,mentor_id,stars,tags,comment,reply,created_at').order('created_at',{ascending:false}).limit(1000));if(error)throw error;
+  const m={};(data||[]).forEach(r=>{if(!MENTORS.some(v=>v.id===r.mentor_id))return;(m[r.mentor_id]=m[r.mentor_id]||[]).push({id:r.id,s:Math.max(1,Math.min(5,r.stars|0)),tags:Array.isArray(r.tags)?r.tags:[],c:r.comment||'',at:Date.parse(r.created_at)||0,reply:r.reply||null,real:true,mine:false,live:!!r.live})});
   const local=[];for(const k in S.mdb)S.mdb[k].forEach(v=>{if(String(v.id).startsWith('local-'))local.push([k,v])});S.mdb=m;local.forEach(([k,v])=>(S.mdb[k]=S.mdb[k]||[]).push(v));
  }catch(e){console.warn('[Maadoo Job] could not load mentor reviews (mentor_reviews_public view):',e&&(e.message||e))}
  await loadMyMentorReviews();if(['ask','me'].includes(S.view)||(S.modal&&S.modal.type==='mrevs'))rerender()}
@@ -1741,13 +1767,11 @@ async function payNow(){const m=S.modal;if(!m||m.type!=='pay'||m.step!=='form')r
  try{
   if(m.what==='plus'){const pl=PLANS[m.plan];m.gotCoins=await setPlusUntil(Math.max(Date.now(),S.prem.plusUntil)+pl.days*DAY)}
   else if(m.what==='topup'){await addCoins(m.coins,'topup')}
-  else if(m.what==='book'){if(m.coinsUsed)await addCoins(-m.coinsUsed,'spend');finishBooking(m.mid,m.slot)}
   else if(m.what==='emp'){await saveEmp(m.company,m.tier)}
- }catch(e){m.step='form';renderModal();toast(premErr(e));return}
+  else if(m.what==='live'){await bookLive(m)}
+ }catch(e){m.step='form';renderModal();toast(m.what==='live'?(e&&e.message&&!e.code?e.message:liveErr(e)):premErr(e));return}
  m.step='done';if(S.modal===m)renderModal();render();
  if(m.what==='plus')toast(m.gotCoins?t('ยินดีต้อนรับสู่ Maadoo Plus ✨ +100 เหรียญ','Welcome to Maadoo Plus ✨ +100 coins'):t('ยินดีต้อนรับสู่ Maadoo Plus ✨','Welcome to Maadoo Plus ✨'));else if(m.what==='topup')toast(t(`เติม ${m.coins} เหรียญแล้ว`,`Added ${m.coins} coins`));else if(m.what==='emp')toast(t(`เปิดใช้ Pro ให้ ${m.company} แล้ว`,`Pro is on for ${m.company}`))}
-function finishBooking(mid,slot){const mt=MENTORS.find(v=>v.id===mid);S.booked.push({id:newBid(),m:mt,mid:mt.id,slot,st:'wait',rid:null});addPoints(10);
- pushNotif('📅',`นัดคุยกับ${mt.name[0]} ${SLOTS[slot][0]}`,`Session with ${mt.name[1]}, ${SLOTS[slot][1]}`,['me'])}
 async function claimFreeMonth(){needMember(async()=>{if(S.prem.freeClaimed||S.myReviews.length<3)return;
  try{await setPlusUntil(Math.max(Date.now(),S.prem.plusUntil)+30*DAY,{free_month_claimed:true});await refreshCoins();render();toast(t('รับ Plus ฟรี 1 เดือนแล้ว ✨','Free month of Plus unlocked ✨'))}catch(e){toast(premErr(e))}})}
 async function claimMission(k){needMember(async()=>{const ms=MISSIONS.find(v=>v.k===k);if(missionProgress(k)<ms.need)return;
@@ -1857,7 +1881,7 @@ const RM={rows:[],loaded:false,p:null};
 let chatCh=null,roomCh=null,roomChId=null,lastTyping=0;
 const PRICE_MIN=99,PRICE_MAX=249,FILE_MAX=5*1024*1024,FILE_TYPES=['image/png','image/jpeg','image/webp','image/gif','application/pdf'],REPLY_H=48,PAYOUT=40;
 const blankMform=()=>({nick:'',field:'',company:'',years:'',topics:[],contact:'',price:149,bio:'',rules:false,age:false});
-function resetChat(){unsubscribeChat();Object.assign(S,{mApp:null,isAdmin:false,myMentor:null,adminApps:[],adminReports:[],rooms:[],msgs:{},typing:{},chat:null,chatDraft:'',chatBusy:false,fileUrls:{},adminMsgs:null})}
+function resetChat(){unsubscribeChat();Object.assign(S,{mApp:null,isAdmin:false,myMentor:null,adminApps:[],adminReports:[],rooms:[],msgs:{},typing:{},chat:null,chatDraft:'',chatBusy:false,fileUrls:{},adminMsgs:null,bookings:[],notes:{},availEdit:null,bk:null})}
 S.mform=blankMform();S.inboxTab='waiting';S.adminTab='pending';resetChat();
 const isUuid=s=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(String(s||''));
 const MRULES=[['ใช้ชื่อเล่นเท่านั้น ไม่เปิดเผยข้อมูลส่วนตัวของตัวเองหรือผู้ถาม','Use a nickname only and never share your own or the asker’s personal details'],['ห้ามเก็บเงินนอกระบบ ขายคอร์ส หรือชวนลงทุน','Never take payment outside Maadoo Job, sell courses or pitch investments'],['ห้ามขอเบอร์ LINE หรือช่องทางติดต่อก่อนคุยสดครั้งแรก','Don’t ask for phone numbers, LINE or other contacts before the first live call'],['ตอบคำถามภายใน 48 ชม. ถ้าไม่ตอบ ผู้ถามได้สิทธิ์คืน','Reply within 48 hours, or the asker gets their question back'],['ห้ามเปิดเผยความลับของบริษัท','Never share your company’s confidential information'],['ตอบรีวิวได้ แต่ลบหรือซ่อนรีวิวไม่ได้','You can reply to reviews but never delete or hide them']];
@@ -1900,12 +1924,12 @@ async function loadChat(){if(!sbLive())return;const uid=S.user.id;
   [r,a,ad,mm].forEach(v=>{if(v.error)console.warn('[Maadoo Job] mentor chat not ready (run the SQL, section 8):',v.error.code,v.error.message)});
   if(!r.error)S.rooms=r.data||[];S.mApp=a.error?null:(a.data&&a.data[0])||null;S.isAdmin=!ad.error&&!!ad.data;S.myMentor=mm.error?null:mm.data||null;
   if(S.myMentor)ensureMentor(uid);S.rooms.forEach(v=>ensureMentor(v.mentor_id));syncQs();
-  if(!r.error)subscribeChat();if(S.isAdmin)loadAdmin()}catch(e){console.warn('[Maadoo Job] could not load mentor chat:',e&&(e.message||e))}
+  if(!r.error)subscribeChat();if(S.isAdmin)loadAdmin();loadBookings()}catch(e){console.warn('[Maadoo Job] could not load mentor chat:',e&&(e.message||e))}
  chatRefresh()}
 function syncQs(){if(!S.user)return;S.rooms.forEach(r=>{if(amMentor(r))return;const q=S.prem.qs.find(v=>v.id===r.question_id);if(!q)return;
  q.status=r.status;if(r.first_reply_at)q.answeredAt=q.answeredAt||Date.parse(r.first_reply_at);q.lastAt=Math.max(q.lastAt||0,Date.parse(r.last_msg_at)||0)})}
 function subscribeChat(){if(!SB||!SB.channel||!sbLive()||chatCh)return;
- try{chatCh=SB.channel('maadoo-chat-'+S.user.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>onMsg(p.new)).on('postgres_changes',{event:'*',schema:'public',table:'chat_rooms'},p=>onRoom(p.new)).subscribe()}catch(e){chatCh=null}}
+ try{chatCh=SB.channel('maadoo-chat-'+S.user.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>onMsg(p.new)).on('postgres_changes',{event:'*',schema:'public',table:'chat_rooms'},p=>onRoom(p.new)).on('postgres_changes',{event:'*',schema:'public',table:'bookings'},p=>onBooking(p.new)).on('postgres_changes',{event:'*',schema:'public',table:'session_notes'},p=>onNote(p.new)).subscribe()}catch(e){chatCh=null}}
 function unsubscribeChat(){try{if(chatCh&&SB)SB.removeChannel(chatCh)}catch(e){}chatCh=null;leaveRoomCh()}
 function joinRoomCh(id){if(!SB||!SB.channel||roomChId===id)return;leaveRoomCh();roomChId=id;
  try{roomCh=SB.channel('room-typing:'+id).on('broadcast',{event:'typing'},p=>{if(!p.payload||!S.user||p.payload.u===S.user.id)return;S.typing[id]=Date.now();chatListRefresh();setTimeout(chatListRefresh,4200)}).subscribe()}catch(e){roomCh=null}}
@@ -2004,8 +2028,9 @@ function mentorInbox(){const mm=S.myMentor,me=S.user.id,rooms=S.rooms.filter(r=>
  const TN={waiting:['รอตอบ','Waiting'],active:['กำลังคุย','Active'],closed:['ปิดแล้ว','Closed']},list=tabs[S.inboxTab]||[];
  return `<section class="sec mentor-box"><div class="sec-h"><h2>📥 ${t('โหมดรุ่นพี่','Mentor mode')}</h2><span class="chip ver">✓ ${t('รุ่นพี่จริง','Real mentor')}</span></div>
  <div class="card mb-card"><button class="fx-row mb-sw" data-mavail role="switch" aria-checked="${mm.available}"><span><b>${mm.available?t('🟢 ว่าง รับคำถาม','🟢 Available for questions'):t('⚪ ไม่ว่าง','⚪ Not available')}</b><small>${mm.available?t('น้อง ๆ เห็นการ์ดของคุณในหน้าปรึกษา','Students can see your card on the Ask page'):t('ซ่อนการ์ดไว้ชั่วคราว คำถามที่เปิดอยู่ยังตอบได้','Your card is hidden; open questions can still be answered')}</small></span><i class="tg ${mm.available?'on':''}"></i></button>
-  <div class="mb-stats"><div><b>฿${fmt(closedM*PAYOUT)}</b><span class="muted">${t('รายได้เดือนนี้ (จำลอง)','Earned this month (simulated)')}</span></div><div><b>${stt.n<3?'✨':'★ '+stt.avg.toFixed(1)}</b><span class="muted">${stt.n<3?t('รุ่นพี่ใหม่','New mentor'):t(`คะแนน (${stt.n} รีวิว)`,`Rating (${stt.n} reviews)`)}</span></div><div><b>${avgTxt}</b><span class="muted">${t('เวลาตอบเฉลี่ย','Avg. reply time')}</span></div></div>
-  <p class="demo-note" style="margin:0">${t(`เดโม: รายได้คิด ${PAYOUT} บาทต่อคำถามที่ปิดแล้ว ยังไม่มีการจ่ายเงินจริง`,`Demo: earnings count ${PAYOUT} THB per closed question. No real payouts yet`)}</p></div>
+  <div class="mb-stats"><div><b>฿${fmt(closedM*PAYOUT+liveEarned())}</b><span class="muted">${t('รายได้เดือนนี้ (จำลอง)','Earned this month (simulated)')}</span></div><div><b>${stt.n<3?'✨':'★ '+stt.avg.toFixed(1)}</b><span class="muted">${stt.n<3?t('รุ่นพี่ใหม่','New mentor'):t(`คะแนน (${stt.n} รีวิว)`,`Rating (${stt.n} reviews)`)}</span></div><div><b>${avgTxt}</b><span class="muted">${t('เวลาตอบเฉลี่ย','Avg. reply time')}</span></div></div>
+  <p class="demo-note" style="margin:0">${t(`เดโม: คำถามที่ปิดแล้วข้อละ ${PAYOUT} บาท + คุยสด 80% ของราคาหลังหักส่วนลด Plus (ส่วนที่จ่ายด้วยเหรียญ แพลตฟอร์มจ่ายแทน) ยังไม่มีการจ่ายเงินจริง`,`Demo: ${PAYOUT} THB per closed question + 80% of each live call’s Plus price (the platform covers the coin part). No real payouts yet`)}</p></div>
+ ${mentorBookings()}${availEditor()}
  <div class="segs" role="tablist">${Object.keys(TN).map(k=>`<button role="tab" aria-selected="${S.inboxTab===k}" class="${S.inboxTab===k?'on':''}" data-inbox="${k}">${x(TN[k])} (${tabs[k].length})${tabs[k].some(roomUnread)?'<i class="ndot"></i>':''}</button>`).join('')}</div>
  ${list.length?`<div class="list">${list.map(roomRow).join('')}</div>`:`<p class="muted">${S.inboxTab==='waiting'?t('ยังไม่มีคำถามรอตอบ','No questions waiting'):S.inboxTab==='active'?t('ยังไม่มีห้องที่คุยอยู่','No active chats'):t('ยังไม่มีคำถามที่ปิดแล้ว','No closed questions yet')}</p>`}
  ${notifAsk()}</section>`}
@@ -2093,6 +2118,200 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-chat],[dat
 document.addEventListener('submit',e=>{if(e.target.id==='chatForm'){e.preventDefault();const i=$('#chatIn');chatSend(i?i.value:'');return}if(e.target.id==='mApplyForm'){e.preventDefault();sendMApply()}});
 document.addEventListener('input',e=>{if(e.target.id==='ma-price'){const v=+e.target.value,o=$('#ma-pv');S.mform.price=v;e.target.setAttribute('aria-valuetext',v+' THB');if(o)o.textContent=`${fmt(v)} ${t('บาท','THB')}`}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.view==='chat'){const r=S.rooms.find(v=>v.id===S.chat);if(r&&roomUnread(r))markRead(r)}});
+/* ---------- real mentors, step 2: availability · booking page · live call room · session notes ---------- */
+const SLOT_MIN=16,SLOT_MAX=43,LIVE_MIN=30,COIN_CAP=.5,EARN_RATE=.8;
+S.bookings=[];S.notes={};S.avail={};S.bk=null;S.liveId=null;S.availEdit=null;
+const TZ='Asia/Bangkok';
+const bkkDay=(ts=Date.now())=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(ts));
+const dayAdd=(day,n)=>bkkDay(Date.parse(day+'T12:00:00+07:00')+n*DAY);
+const isoDow=day=>{const d=new Date(Date.parse(day+'T12:00:00+07:00')).getUTCDay();return d||7};
+const slotStart=(day,slot)=>Date.parse(day+'T00:00:00+07:00')+slot*18e5;
+const slotTxt=s=>`${String(Math.floor(s/2)).padStart(2,'0')}:${s%2?'30':'00'}`;
+const WD=[null,['จ.','Mon'],['อ.','Tue'],['พ.','Wed'],['พฤ.','Thu'],['ศ.','Fri'],['ส.','Sat'],['อา.','Sun']];
+const WDL=[null,['จันทร์','Monday'],['อังคาร','Tuesday'],['พุธ','Wednesday'],['พฤหัสบดี','Thursday'],['ศุกร์','Friday'],['เสาร์','Saturday'],['อาทิตย์','Sunday']];
+const whenTxt=ts=>new Date(ts).toLocaleString(S.lang==='en'?'en-GB':'th-TH',{timeZone:TZ,weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const randHex=n=>{try{const a=new Uint8Array(n/2);crypto.getRandomValues(a);return [...a].map(v=>v.toString(16).padStart(2,'0')).join('')}catch(e){let s='';while(s.length<n)s+=Math.random().toString(16).slice(2);return s.slice(0,n)}};
+const BK_ST={booked:['นัดแล้ว','Booked','mid'],done:['คุยเสร็จแล้ว','Done','good'],cancelled:['ยกเลิกแล้ว','Cancelled',''],mentor_noshow:['รุ่นพี่ไม่มา','Mentor no-show','bad'],student_noshow:['น้องไม่มา','Student no-show','bad']};
+const BK_TERMS=[['ยกเลิกฟรีก่อนเวลานัด 12 ชม. (คืนเหรียญเต็ม)','Free cancellation up to 12 h before (coins refunded)'],['รุ่นพี่ไม่มา = คืนเต็ม','Mentor no-show = full refund'],['น้องไม่มา = ไม่คืน','Student no-show = no refund']];
+function bkPrice(mt,coins){const full=mt.price,disc=isPlus()?Math.round(full*.2):0,after=full-disc,maxC=Math.max(0,Math.min(S.prem.coins|0,Math.floor(after*COIN_CAP))),c=Math.max(0,Math.min(coins|0,maxC));return {full,disc,after,maxC,coins:c,total:after-c,earn:Math.round(after*EARN_RATE)}}
+/* sample mentors get a made-up weekly schedule so the booking page works in the demo */
+function hashStr(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return h}
+function demoAvail(mt){const h=hashStr(mt.id),slots=new Set();for(let w=1;w<=7;w++){const range=w<=5?[37,42]:[20,31];for(let s=range[0];s<=range[1];s++)slots.add(w+':'+s)}
+ const taken=new Set();for(let i=0;i<8;i++){const day=dayAdd(bkkDay(),i);for(let s=SLOT_MIN;s<=SLOT_MAX;s++)if(hashStr(mt.id+day+s)%4===0)taken.add(slotStart(day,s))}
+ S.bookings.filter(b=>b.mentor_id===mt.id&&b.status!=='cancelled').forEach(b=>taken.add(Date.parse(b.starts_at)));
+ return {slots,off:[1+h%5],daysOff:new Set(),taken,loaded:true,demo:true}}
+async function loadAvail(mid){if(!isUuid(mid)||!SB){S.avail[mid]=demoAvail(ensureMentor(mid));return}
+ S.avail[mid]=S.avail[mid]||{slots:new Set(),off:[],daysOff:new Set(),taken:new Set(),loaded:false};
+ try{const [a,o,m,tk]=await Promise.all([SB.from('mentor_availability').select('weekday,slot').eq('mentor_id',mid),SB.from('mentor_days_off').select('day').eq('mentor_id',mid),SB.from('mentors').select('off_weekdays').eq('id',mid).maybeSingle(),SB.rpc('mentor_taken_slots',{mentor:mid})]);
+  [a,o,m,tk].forEach(v=>{if(v.error)console.warn('[Maadoo Job] booking data not ready (run the SQL, section 9):',v.error.code,v.error.message)});
+  S.avail[mid]={slots:new Set((a.data||[]).map(r=>r.weekday+':'+r.slot)),off:(m.data&&m.data.off_weekdays)||[],daysOff:new Set((o.data||[]).map(r=>r.day)),taken:new Set((tk.data||[]).map(v=>Date.parse(typeof v==='string'?v:v.mentor_taken_slots||v))),loaded:true,err:!!(a.error||tk.error)}}
+ catch(e){S.avail[mid]={slots:new Set(),off:[],daysOff:new Set(),taken:new Set(),loaded:true,err:true}}
+ if(['book','me'].includes(S.view))render()}
+function daySlots(av,day){if(!av||av.off.includes(isoDow(day))||av.daysOff.has(day))return [];const w=isoDow(day),out=[];for(let s=0;s<48;s++)if(av.slots.has(w+':'+s))out.push(s);return out}
+const slotFree=(av,day,s)=>{const st=slotStart(day,s);return st>=Date.now()+36e5&&!av.taken.has(st)};
+/* ---------- booking page ---------- */
+function openBook(mid){const mt=ensureMentor(mid);if(S.user&&mid===S.user.id){toast(t('จองตัวเองไม่ได้นะ','You can’t book yourself'));return}
+ S.bk={mid,day:null,slot:null,coins:0,topic:''};if(!S.avail[mid]||S.avail[mid].demo)loadAvail(mid);go('book')}
+function bookView(){const b=S.bk;if(!b)return `<div class="card empty" style="margin-top:20px">${t('เลือกรุ่นพี่ที่จะจองก่อนนะ','Pick a mentor to book first')} <button class="btn ghost sm" data-go="ask">${t('ไปหน้าปรึกษา','Go to Ask')}</button></div>`;
+ const mt=ensureMentor(b.mid),av=S.avail[b.mid],today=bkkDay(),days=[...Array(7)].map((_,i)=>dayAdd(today,i+1));
+ const freeOf=d=>av&&av.loaded?daySlots(av,d).filter(s=>slotFree(av,d,s)):[];
+ if(av&&av.loaded&&!b.day)b.day=days.find(d=>freeOf(d).length)||days[0];
+ const P=bkPrice(mt,b.coins);b.coins=P.coins;const sl=b.day&&av?daySlots(av,b.day).filter(s=>slotStart(b.day,s)>=Date.now()+36e5):[];
+ return `<div class="bkv"><header class="card bk-head"><button class="cv-ib" data-go="ask" aria-label="${t('ย้อนกลับ','Back')}">←</button><span class="ava" style="width:48px;height:48px;font-size:24px;background:${mt.bg}">${mt.ava}</span><div class="cv-t"><b>${t(`จองคุยสดกับ${x(mt.name)}`,`Book a live call with ${x(mt.name)}`)}</b><span class="muted">${mt.real?`<span class="chip ver">✓ ${t('รุ่นพี่จริง','Real mentor')}</span>`:`<span class="chip">${t('ตัวอย่าง','Sample')}</span>`} ${x(mt.role)} · ${t('วิดีโอคอล 30 นาที','30-min video call')}</span></div></header>
+ <section class="card bk-sec"><b>📅 ${t('เลือกวัน','Pick a day')}</b>
+  ${!av||!av.loaded?`<p class="muted">${t('กำลังโหลดเวลาว่าง…','Loading free times…')}</p>`:`<div class="bk-days" role="listbox" aria-label="${t('วัน','Day')}">${days.map(d=>{const n=freeOf(d).length,dt=new Date(Date.parse(d+'T12:00:00+07:00'));return `<button class="bk-day ${b.day===d?'on':''} ${n?'':'off'}" data-bkday="${d}" role="option" aria-selected="${b.day===d}" ${n?'':'aria-disabled="true"'}><small>${x(WD[isoDow(d)])}</small><b>${dt.getUTCDate()}</b><small>${n?t(`${n} ช่อง`,`${n} free`):t('ไม่ว่าง','Full')}</small></button>`}).join('')}</div>`}
+  <b>🕒 ${t('เลือกเวลา','Pick a time')}</b>
+  ${av&&av.loaded?(sl.length?`<div class="bk-slots">${sl.map(s=>{const free=slotFree(av,b.day,s);return `<button class="bk-slot ${b.slot===s?'on':''} ${free?'':'taken'}" data-bkslot="${s}" ${free?'':`disabled aria-label="${slotTxt(s)} ${t('ถูกจองแล้ว','taken')}"`}>${slotTxt(s)}</button>`}).join('')}</div>`:`<p class="muted">${t('วันนี้ไม่มีเวลาว่าง ลองเลือกวันอื่น','No free times this day. Try another day')}</p>`):''}
+  ${av&&av.err?`<p class="form-err">${t('ยังโหลดเวลาว่างไม่ได้ (ยังไม่ได้รัน SQL ขั้นที่ 2)','Couldn’t load free times (the step 2 SQL isn’t installed yet)')}</p>`:''}</section>
+ <section class="card bk-sec"><b>💬 ${t('อยากคุยเรื่องอะไร','What do you want to talk about?')} <span class="muted">(${t('ไม่บังคับ','optional')})</span></b><textarea class="field" id="bkTopic" maxlength="300" rows="2" placeholder="${t('เช่น ขอดูเรซูเม่ฝึกงาน QC','e.g. review my QC internship resume')}">${esc(b.topic)}</textarea></section>
+ <section class="card bk-sec bk-price"><div class="bk-row"><span>${t('ราคาเต็ม (30 นาที)','Full price (30 min)')}</span><span>${fmt(P.full)} ${t('บาท','THB')}</span></div>
+  <div class="bk-row ${P.disc?'good':'muted'}"><span>✨ ${t('ส่วนลด Plus 20%','Plus 20% off')}</span><span>${P.disc?`−${fmt(P.disc)}`:`<button class="link" data-go="plus">${t('สมัคร Plus','Get Plus')}</button>`}</span></div>
+  <div class="bk-coins"><div class="bk-row"><span>🪙 ${t('ใช้เหรียญ','Use coins')} <small class="muted">${t(`(สูงสุด 50% · มี ${fmt(S.prem.coins|0)})`,`(up to 50% · you have ${fmt(S.prem.coins|0)})`)}</small></span><span id="bkCoinsV">−${fmt(P.coins)}</span></div>
+   <input type="range" id="bkCoins" min="0" max="${P.maxC}" step="1" value="${P.coins}" ${P.maxC?'':'disabled'} aria-label="${t('จำนวนเหรียญที่ใช้','Coins to use')}"></div>
+  <div class="bk-total"><span>${t('ยอดชำระ','Total')}</span><b id="bkTotal">${fmt(P.total)} ${t('บาท','THB')}</b></div>
+  <ul class="bk-terms">${BK_TERMS.map(v=>`<li>${x(v)}</li>`).join('')}</ul>
+  <button class="btn orange big" data-bkpay ${b.slot==null?'disabled':''}>${b.slot==null?t('เลือกวันและเวลาก่อน','Pick a day and time first'):t(`ชำระเงิน ${fmt(P.total)} บาท`,`Pay ${fmt(P.total)} THB`)}</button>
+  <p class="demo-note">${t('เดโม: ชำระเงินจำลอง ไม่มีการตัดเงินจริง แต่เหรียญถูกหักจริง','Demo: the payment is simulated, but coins are really deducted')}</p></section></div>`}
+function bkCoinsInput(v){const b=S.bk;if(!b)return;const P=bkPrice(ensureMentor(b.mid),+v);b.coins=P.coins;const c=$('#bkCoinsV'),tt=$('#bkTotal'),btn=$('[data-bkpay]');if(c)c.textContent='−'+fmt(P.coins);if(tt)tt.textContent=`${fmt(P.total)} ${t('บาท','THB')}`;if(btn&&b.slot!=null)btn.textContent=t(`ชำระเงิน ${fmt(P.total)} บาท`,`Pay ${fmt(P.total)} THB`)}
+function bkPay(){const b=S.bk;if(!b||b.slot==null)return;b.topic=(($('#bkTopic')||{}).value||'').slice(0,300);const mt=ensureMentor(b.mid);
+ needMember(()=>{if(mt.real&&!sbLive()){toast(t('ต้องเข้าสู่ระบบก่อนจองรุ่นพี่จริง','Log in to book a real mentor'));return}const P=bkPrice(mt,b.coins);openPay({what:'live',mid:b.mid,day:b.day,slot:b.slot,coinsUsed:P.coins,amount:P.total,topic:b.topic})})}
+function liveErr(e){const m=String(e&&e.message||'');console.warn('[Maadoo Job] booking error:',e&&e.code,m);
+ if(/slot taken/.test(m))return t('ช่องนี้เพิ่งถูกจองไป เลือกเวลาอื่นนะ','Someone just booked that slot. Pick another time');
+ if(/not enough coins/.test(m))return t('เหรียญไม่พอ','Not enough coins');if(/too many coins/.test(m))return t('ใช้เหรียญได้ไม่เกิน 50% ของราคาหลังหัก Plus','Coins can cover at most 50% of the Plus price');
+ if(/not available|not bookable|mentor unavailable/.test(m))return t('เวลานี้จองไม่ได้แล้ว เลือกเวลาอื่นนะ','That time can’t be booked any more. Pick another');
+ if(/too early/.test(m))return t('ยังไม่ถึงเวลา ลองใหม่อีกสักครู่','It’s too early for that. Try again a bit later');
+ if(/already started/.test(m))return t('เริ่มนัดไปแล้ว ยกเลิกไม่ได้','The call has started, so it can’t be cancelled');
+ if(/invalid meet link/.test(m))return t('ลิงก์ต้องเป็น https://meet.google.com/…','The link must be https://meet.google.com/…');
+ return chatErr(e)}
+async function bookLive(m){const mt=ensureMentor(m.mid),P=bkPrice(mt,m.coinsUsed),st=slotStart(m.day,m.slot);let b;
+ if(isUuid(m.mid)){const nm=S.user.email&&S.user.name===S.user.email.split('@')[0]?'':String(S.user.name||'').slice(0,30);
+  const {data,error}=await SB.rpc('book_session',{mentor:m.mid,day:m.day,slot:m.slot,coins:m.coinsUsed,topic:m.topic||null,sname:nm});if(error){if(/slot taken/.test(error.message||''))loadAvail(m.mid);throw {message:liveErr(error)}}
+  b=Array.isArray(data)?data[0]:data;await Promise.all([refreshAll(),loadChat()])}
+ else{const id='demo-'+randHex(12);if(P.coins)await addCoins(-P.coins,'spend','booking:'+id);
+  b={id,demo:true,mentor_id:m.mid,student_id:S.user.id||'me',room_id:null,starts_at:new Date(st).toISOString(),price:P.full,plus_discount:P.disc,coins_used:P.coins,paid:P.total,mentor_earn:P.earn,topic:m.topic||null,status:'booked',refund_coins:0,meet_url:'https://meet.jit.si/maadoojob-'+randHex(40),meet_custom:null,student_saved_note:false,created_at:new Date().toISOString()};
+  const av=S.avail[m.mid];if(av)av.taken.add(st)}
+ S.bookings=S.bookings.filter(v=>v.id!==b.id);S.bookings.unshift(b);addPoints(10);S.bk=null;
+ pushNotif('📅',`นัดคุยสดกับ${mt.name[0]} ${whenTxt(st)}`,`Live call with ${mt.name[1]}, ${whenTxt(st)}`,['live',b.id]);S.liveId=b.id;S.view='live'}
+/* ---------- live call room ---------- */
+const bkMine=b=>!!(S.user&&(b.student_id===S.user.id||(b.demo&&b.student_id==='me')));
+const bkMentorSide=b=>!!(S.user&&b.mentor_id===S.user.id);
+function bkOther(b){if(bkMentorSide(b)){const r=S.rooms.find(v=>v.id===b.room_id);return r&&r.student_name?esc(r.student_name):t('น้อง (ไม่ระบุชื่อ)','A student')}return x(ensureMentor(b.mentor_id).name)}
+function livePhase(b){const st=Date.parse(b.starts_at),n=Date.now();if(b.status!=='booked')return b.status;if(n<st-6e5)return 'before';if(n<st+LIVE_MIN*6e4)return 'open';return 'over'}
+function ringSvg(b){const st=Date.parse(b.starts_at),n=Date.now(),dur=LIVE_MIN*6e4,el=Math.max(0,Math.min(dur,n-st)),p=n<st?0:el/dur,C=2*Math.PI*52,left=dur-el;
+ const center=b.status!=='booked'?x(BK_ST[b.status]):n<st?(st-n>DAY?t(`อีก ${Math.ceil((st-n)/DAY)} วัน`,`in ${Math.ceil((st-n)/DAY)} d`):st-n>=36e5?t(`อีก ${Math.floor((st-n)/36e5)} ชม. ${Math.floor((st-n)%36e5/6e4)} น.`,`in ${Math.floor((st-n)/36e5)}h ${Math.floor((st-n)%36e5/6e4)}m`):t(`อีก ${Math.ceil((st-n)/6e4)} นาที`,`in ${Math.ceil((st-n)/6e4)} min`)):left>0?`${String(Math.floor(left/6e4)).padStart(2,'0')}:${String(Math.floor(left%6e4/1e3)).padStart(2,'0')}`:t('หมดเวลา','Time’s up');
+ return `<svg viewBox="0 0 120 120" class="lv-ring ${n>=st&&left<=5*6e4&&left>0&&b.status==='booked'?'hot':''}" role="img" aria-label="${esc(String(center))}"><circle cx="60" cy="60" r="52" class="lv-track"/><circle cx="60" cy="60" r="52" class="lv-prog" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C*(1-p)).toFixed(1)}" transform="rotate(-90 60 60)"/><text x="60" y="58" text-anchor="middle" class="lv-big ${String(center).length>7?'sm':''}">${esc(String(center))}</text><text x="60" y="78" text-anchor="middle" class="lv-small">${t('30 นาที','30 min')}</text></svg>`}
+function noteCard(b,mine){const n=S.notes[b.id];if(!n)return '';return `<section class="card lv-note"><div class="row" style="gap:8px"><b>📝 ${t('สรุปจากรุ่นพี่','Summary from your mentor')}</b>${mine?`<button class="btn ${b.student_saved_note?'ghost':'y'} sm" style="margin-left:auto" data-bksave="${b.id}">${b.student_saved_note?`✓ ${t('บันทึกแล้ว','Saved')}`:`🔖 ${t('บันทึกเก็บไว้','Save')}`}</button>`:''}</div><ol>${n.tips.map(v=>`<li>${esc(v)}</li>`).join('')}</ol><small class="muted">${x(ensureMentor(b.mentor_id).name)} · ${whenTxt(Date.parse(b.starts_at))}</small></section>`}
+function liveView(){const b=S.bookings.find(v=>v.id===S.liveId);
+ if(!S.user||!b)return `<div class="card empty" style="margin-top:20px;display:grid;gap:10px;justify-items:center">${t('ไม่พบนัดนี้ หรือยังไม่ได้เข้าสู่ระบบ','Booking not found, or you’re not logged in')}<button class="btn ghost sm" data-go="me">${t('ไปหน้าฉัน','Go to Me')}</button></div>`;
+ const ms=bkMentorSide(b),mt=ensureMentor(b.mentor_id),st=Date.parse(b.starts_at),n=Date.now(),ph=livePhase(b),stt=BK_ST[b.status],link=b.meet_custom||b.meet_url,canJoin=b.status==='booked'&&n>=st-6e5&&n<st+90*6e4;
+ const refund=b.coins_used>0?t(`คืน ${b.coins_used} เหรียญ`,`${b.coins_used} coins back`):t('ไม่มีเหรียญต้องคืน','no coins to refund');
+ return `<div class="lvv"><header class="card bk-head"><button class="cv-ib" data-go="me" aria-label="${t('ย้อนกลับ','Back')}">←</button><span class="ava" style="width:48px;height:48px;font-size:24px;background:${ms?'var(--sky)':mt.bg}">${ms?'🙂':mt.ava}</span><div class="cv-t"><b>🎥 ${t('คุยสดกับ','Live call with')} ${bkOther(b)}</b><span class="muted">${whenTxt(st)} · ${t('30 นาที','30 min')} · <span class="chip ${stt[2]}">${x(stt)}</span>${b.demo?` · <span class="chip">${t('เดโม','demo')}</span>`:''}</span></div></header>
+ <section class="card lv-main"><div class="lv-ringbox" id="lvRing">${ringSvg(b)}</div><div class="lv-join">
+  ${b.status==='booked'?(canJoin?`<a class="btn orange big" href="${esc(link)}" target="_blank" rel="noopener noreferrer" data-lvjoin>🎥 ${t('เข้าห้องวิดีโอ','Join the video call')}</a><small class="muted lv-link">${esc(link.replace(/^https:\/\//,''))}</small>`:`<button class="btn big" disabled>🎥 ${t('เข้าห้องวิดีโอ','Join the video call')}</button><small class="muted">${n<st?t('เปิดได้ก่อนเวลานัด 10 นาที','Opens 10 minutes before the call'):t('ห้องปิดแล้ว','The room has closed')}</small>`):''}
+  ${b.room_id?`<button class="btn ghost" data-chat="${b.room_id}">💬 ${t('เปิดแชท (ใช้ต่อได้)','Open the chat')}</button>`:''}
+  ${b.topic?`<p class="lv-topic">💭 ${esc(b.topic)}</p>`:''}</div></section>
+ ${ms&&b.status==='booked'?`<form id="meetForm" class="card bk-sec"><b>🔗 ${t('ใช้ลิงก์ Google Meet ของคุณเอง (ไม่บังคับ)','Use your own Google Meet link (optional)')}</b><div class="row" style="flex-wrap:nowrap"><input class="field" id="meetIn" style="flex:1;min-width:0" maxlength="80" placeholder="https://meet.google.com/abc-defg-hij" value="${esc(b.meet_custom||'')}"><button class="btn ghost sm">${t('บันทึก','Save')}</button></div><small class="muted">${t('เว้นว่าง = ใช้ห้อง Jitsi ที่สร้างให้อัตโนมัติ','Leave empty to use the auto-created Jitsi room')}</small></form>`:''}
+ ${b.status==='booked'?`<section class="card bk-sec lv-acts">${n<st?`<button class="btn ghost" data-bkcancel="${b.id}">✕ ${ms?t('ยกเลิกนัด (คืนเต็มให้น้อง)','Cancel (full refund to the student)'):st-n>=12*36e5?t(`ยกเลิกฟรี (${refund})`,`Cancel for free (${refund})`):t('ยกเลิก (ไม่คืนเงิน · เหลือไม่ถึง 12 ชม.)','Cancel (no refund · under 12 h left)')}</button>`:''}
+  ${n>=st+10*6e4?`<button class="btn ghost" data-bknoshow="${b.id}">🙈 ${ms?t('น้องไม่มา','The student didn’t show up'):t('รุ่นพี่ไม่มา (คืนเต็ม)','The mentor didn’t show up (full refund)')}</button>`:''}
+  ${n>=st+15*6e4?`<button class="btn y" data-bkdone="${b.id}">✓ ${t('คุยเสร็จแล้ว','We’re done')}</button>`:''}
+  ${n<st+10*6e4?`<small class="muted">${t('ปุ่ม “ไม่มาตามนัด” จะขึ้นหลังเวลานัด 10 นาที และ “คุยเสร็จแล้ว” หลัง 15 นาที','“No-show” appears 10 minutes after the start, and “We’re done” after 15 minutes')}</small>`:''}
+  ${b.demo?`<div class="demo-row">🧪 ${t('เดโม:','Demo:')} <button class="link" data-bkskip="${b.id}">${n<st?t('ข้ามไปเวลานัด','Skip to the start'):t('ข้ามไป 20 นาที','Skip 20 minutes')}</button></div>`:''}</section>`:''}
+ ${b.status==='cancelled'?`<p class="cv-end muted">${t(`ยกเลิกแล้ว · คืน ${b.refund_coins} เหรียญ`,`Cancelled · ${b.refund_coins} coins refunded`)}</p>`:''}
+ ${b.status==='mentor_noshow'?`<p class="cv-end muted">${t(`รุ่นพี่ไม่มาตามนัด · คืน ${b.refund_coins} เหรียญแล้ว`,`The mentor didn’t show up · ${b.refund_coins} coins refunded`)}</p>`:''}
+ ${b.status==='student_noshow'?`<p class="cv-end muted">${t('น้องไม่มาตามนัด · ไม่มีการคืนเงิน','The student didn’t show up · no refund')}</p>`:''}
+ ${ms&&['booked','done'].includes(b.status)&&n>=st?`<form id="noteForm" class="card bk-sec"><b>📝 ${t('สรุป 3 ข้อแนะนำให้น้อง','3 tips for your student')}</b>${[0,1,2].map(i=>`<input class="field" id="note${i}" maxlength="200" placeholder="${t(`ข้อ ${i+1}`,`Tip ${i+1}`)}" value="${esc((S.notes[b.id]&&S.notes[b.id].tips[i])||'')}">`).join('')}<button class="btn y">${S.notes[b.id]?t('อัปเดตสรุป','Update the summary'):t('ส่งสรุปให้น้อง','Send to the student')}</button><small class="muted">${t('ส่งสรุปแล้ว นัดนี้จะถือว่าคุยเสร็จ','Sending the summary marks the call as done')}</small></form>`:''}
+ ${noteCard(b,!ms)}
+ ${!ms&&b.status==='done'?(()=>{const bb=S.booked.find(v=>v.id===b.id),r=bb&&bb.rid&&findRev(bb.rid);return `<section class="card bk-sec">${r?`<span class="chip ver">✓ ${t('รีวิวแล้ว','Reviewed')} · ★${r.s}</span>`:`<button class="btn y" data-bkrev="${b.id}">⭐ ${t('ให้ดาวและรีวิวรุ่นพี่','Rate and review your mentor')}</button><small class="muted">${t('รีวิวจะติดป้าย “✓ คุยสดจริง”','Your review gets the “✓ Live call” badge')}</small>`}</section>`})():''}
+ <section class="card bk-sec"><b>📜 ${t('เงื่อนไข','Terms')}</b><ul class="bk-terms">${BK_TERMS.map(v=>`<li>${x(v)}</li>`).join('')}</ul><small class="muted">${t(`ชำระ ${fmt(b.paid)} บาท (จำลอง) · ใช้ ${b.coins_used} เหรียญ${ms?` · รายได้คุณ ${fmt(b.mentor_earn)} บาท (จำลอง)`:''}`,`Paid ${fmt(b.paid)} THB (simulated) · ${b.coins_used} coins${ms?` · you earn ${fmt(b.mentor_earn)} THB (simulated)`:''}`)}</small></section>
+ ${notifAsk()}</div>`}
+let lvPhase='';
+setInterval(()=>{if(S.view!=='live')return;const b=S.bookings.find(v=>v.id===S.liveId);if(!b)return;const ph=livePhase(b)+':'+(Date.now()>=Date.parse(b.starts_at)+10*6e4)+':'+(Date.now()>=Date.parse(b.starts_at)+15*6e4);
+ if(ph!==lvPhase){const first=!lvPhase;lvPhase=ph;if(!first&&!document.activeElement.matches('input,textarea')){render();return}}const r=$('#lvRing');if(r)r.innerHTML=ringSvg(b)},1000);
+/* reminders: 1 h before, at the start, and 5 minutes left (both sides, while the site is open) */
+const bkSeen=new Set();
+function bkRemind(){if(!S.user)return;const n=Date.now();S.bookings.forEach(b=>{if(b.status!=='booked'||!(bkMine(b)||bkMentorSide(b)))return;const st=Date.parse(b.starts_at),who=bkMentorSide(b)?[t('น้อง','your student'),'your student']:ensureMentor(b.mentor_id).name;
+ const fire=(k,ic,th,en)=>{if(bkSeen.has(b.id+k))return;bkSeen.add(b.id+k);NOTIFS.unshift({ic,t:[th,en],w:['เมื่อสักครู่','Just now'],go:['live',b.id],read:false});renderBell();toast(`${ic} ${S.lang==='en'?en:th}`);
+  try{if(document.hidden&&'Notification' in window&&Notification.permission==='granted'){const nn=new Notification('Maadoo Job',{body:S.lang==='en'?en:th,icon:'maadoo-job-icon-512.png',tag:'maadoo-bk-'+b.id+k});nn.onclick=()=>{window.focus();go('live',{liveId:b.id});nn.close()}}}catch(e){}};
+ if(st-n<=36e5&&st-n>5*6e4)fire('h','⏰',`อีกไม่ถึง 1 ชม. ถึงเวลาคุยสดกับ${who[0]}`,`Less than an hour until your live call with ${who[1]}`);
+ if(n>=st&&n<st+LIVE_MIN*6e4-5*6e4)fire('s','🎥',`ถึงเวลาคุยสดกับ${who[0]}แล้ว เข้าห้องได้เลย`,`Your live call with ${who[1]} is starting. Join now`);
+ if(n>=st+(LIVE_MIN-5)*6e4&&n<st+LIVE_MIN*6e4)fire('5','⏳','เหลือเวลาคุยอีก 5 นาที','5 minutes left in your call')})}
+setInterval(bkRemind,15000);
+/* ---------- booking actions ---------- */
+async function bkRpc(fn,args,ok,local){const b=S.bookings.find(v=>v.id===args.bk);if(!b)return;
+ if(b.demo){local(b);render();if(ok)toast(ok);return}
+ try{const {error}=await SB.rpc(fn,args);if(error)throw error;const {data}=await SB.from('bookings').select('*').eq('id',b.id).maybeSingle();if(data)Object.assign(b,data);if(fn==='cancel_booking'||fn==='report_noshow')refreshAll();if(ok)toast(ok);loadChat()}catch(e){toast(liveErr(e))}render()}
+function demoFinish(b,st){b.status=st;b.ended_at=new Date().toISOString();if(st==='cancelled'||st==='mentor_noshow'){b.mentor_earn=0;b.refund_coins=st==='mentor_noshow'||Date.parse(b.starts_at)-Date.now()>=12*36e5?b.coins_used:0;if(b.refund_coins){S.prem.ledger.unshift({id:'l-rf-'+b.id,delta:b.refund_coins,kind:'refund',ref:'refund:'+b.id,status:'ok',at:Date.now()});S.prem.coins+=b.refund_coins}}}
+function bkCancel(id){const b=S.bookings.find(v=>v.id===id);if(!b)return;openModal({type:'bkcancel',bk:id})}
+function bkcancelModal(m,head){const b=S.bookings.find(v=>v.id===m.bk);if(!b)return head('','');const ms=bkMentorSide(b),free=ms||Date.parse(b.starts_at)-Date.now()>=12*36e5;
+ return head(t('ยกเลิกนัดนี้?','Cancel this call?'),whenTxt(Date.parse(b.starts_at)))+`<p style="margin:0">${ms?t('น้องจะได้เหรียญคืนเต็มจำนวน','The student gets all their coins back'):free?t(`ยกเลิกฟรี ได้คืน ${b.coins_used} เหรียญ`,`Free cancellation: ${b.coins_used} coins back`):t('เหลือไม่ถึง 12 ชม. ยกเลิกตอนนี้จะไม่ได้เงินหรือเหรียญคืน','Less than 12 h left, so cancelling now gives no refund')}</p>
+ <div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close>${t('ไม่ยกเลิก','Keep it')}</button><button class="btn danger" data-bkcancelok>✕ ${t('ยกเลิกนัด','Cancel the call')}</button></div>`}
+function bkReview(b){const mt=ensureMentor(b.mentor_id);let bb=S.booked.find(v=>v.id===b.id);if(!bb){bb={id:b.id,m:mt,mid:mt.id,slot:null,at:Date.parse(b.starts_at),st:'done',rid:null,live:true};S.booked.push(bb)}bb.live=true;bb.st='done';openMrev(bb.id)}
+async function bkSaveNote(b){const tips=[0,1,2].map(i=>(($('#note'+i)||{}).value||'').trim().slice(0,200)).filter(Boolean);if(!tips.length){toast(t('เขียนอย่างน้อย 1 ข้อนะ','Write at least one tip'));return}
+ if(b.demo){S.notes[b.id]={booking_id:b.id,tips};if(b.status==='booked')demoFinish(b,'done');render();toast(t('ส่งสรุปแล้ว','Summary sent'));return}
+ try{const {error}=await SB.rpc('save_session_notes',{bk:b.id,tips});if(error)throw error;S.notes[b.id]={booking_id:b.id,tips};b.status='done';toast(t('ส่งสรุปให้น้องแล้ว','Summary sent to your student'));loadChat()}catch(e){toast(liveErr(e))}render()}
+function onBooking(row){if(!row||!row.id||!S.user)return;const i=S.bookings.findIndex(v=>v.id===row.id),old=i>=0?S.bookings[i]:null;
+ if(old)Object.assign(old,row);else S.bookings.unshift(row);
+ if(!old&&row.mentor_id===S.user.id)notifyBk(row,'📅',`มีนัดคุยสดใหม่ ${whenTxt(Date.parse(row.starts_at))}`,`New live call booked for ${whenTxt(Date.parse(row.starts_at))}`);
+ else if(old&&old.status!==row.status||old&&row.status!=='booked'&&!bkSeen.has(row.id+row.status)){bkSeen.add(row.id+row.status);if(row.status==='cancelled'&&row.cancelled_by!==S.user.id)notifyBk(row,'✕','นัดคุยสดถูกยกเลิก','A live call was cancelled');if(row.status==='done'&&bkMine(row))notifyBk(row,'✓','คุยสดเสร็จแล้ว ให้ดาวรุ่นพี่ได้เลย','Your live call is done. Rate your mentor')}
+ const av=S.avail[row.mentor_id];if(av&&row.status!=='cancelled')av.taken.add(Date.parse(row.starts_at));if(['live','me','book'].includes(S.view))render();else nav()}
+function onNote(row){if(!row||!row.booking_id)return;S.notes[row.booking_id]=row;const b=S.bookings.find(v=>v.id===row.booking_id);if(b&&bkMine(b)&&!bkSeen.has(b.id+'note')){bkSeen.add(b.id+'note');notifyBk(b,'📝','รุ่นพี่ส่งสรุป 3 ข้อแนะนำมาแล้ว','Your mentor sent a 3-point summary')}if(['live','me'].includes(S.view))render()}
+function notifyBk(b,ic,th,en){NOTIFS.unshift({ic,t:[th,en],w:['เมื่อสักครู่','Just now'],go:['live',b.id],read:false});renderBell();if(!document.hidden)toast(`${ic} ${S.lang==='en'?en:th}`)}
+async function loadBookings(){if(!sbLive())return;const uid=S.user.id;try{const [b,n]=await Promise.all([SB.from('bookings').select('*').order('starts_at',{ascending:false}).limit(200),SB.from('session_notes').select('*').limit(200)]);
+ if(!S.user||S.user.id!==uid)return;if(b.error)console.warn('[Maadoo Job] bookings not ready (run the SQL, section 9):',b.error.code,b.error.message);else S.bookings=(b.data||[]).concat(S.bookings.filter(v=>v.demo));
+ if(!n.error)(n.data||[]).forEach(r=>{S.notes[r.booking_id]=r});S.bookings.forEach(v=>ensureMentor(v.mentor_id));bkRemind()}catch(e){}if(['live','me'].includes(S.view))render()}
+/* ---------- lists in "Me" ---------- */
+function bkRow(b){const ms=bkMentorSide(b),mt=ensureMentor(b.mentor_id),st=BK_ST[b.status],soon=b.status==='booked'&&Date.parse(b.starts_at)-Date.now()<36e5;
+ return `<button class="li q-li room-li" data-live="${b.id}"><span class="ava" style="width:38px;height:38px;font-size:18px;background:${ms?'var(--sky)':mt.bg}">${ms?'🙂':mt.ava}</span><div class="bk-t"><b>🎥 ${bkOther(b)}</b><span class="muted">${whenTxt(Date.parse(b.starts_at))}</span></div><span class="chip ${soon?'bad hot':st[2]}">${soon?t('ใกล้ถึงเวลา','Starting soon'):x(st)}</span></button>`}
+function myLiveCalls(){if(!S.user)return '';const L=S.bookings.filter(bkMine);if(!L.length)return '';const up=L.filter(b=>b.status==='booked').sort((a,b)=>Date.parse(a.starts_at)-Date.parse(b.starts_at)),past=L.filter(b=>b.status!=='booked');const saved=L.filter(b=>b.student_saved_note&&S.notes[b.id]);
+ return `<section class="sec"><div class="sec-h"><h2>🎥 ${t('นัดคุยสดของฉัน','My live calls')}</h2></div><div class="list">${up.concat(past.slice(0,5)).map(bkRow).join('')}</div></section>${saved.length?`<section class="sec"><div class="sec-h"><h2>📝 ${t('สรุปที่บันทึกไว้','Saved summaries')}</h2></div><div class="grid" style="gap:10px">${saved.map(b=>noteCard(b,true)).join('')}</div></section>`:''}`}
+function mentorBookings(){const me=S.user.id,L=S.bookings.filter(b=>b.mentor_id===me),up=L.filter(b=>b.status==='booked').sort((a,b)=>Date.parse(a.starts_at)-Date.parse(b.starts_at));
+ return `<div class="mb-bk"><b>📅 ${t('นัดคุยสดที่กำลังจะถึง','Upcoming live calls')} (${up.length})</b>${up.length?`<div class="list">${up.map(bkRow).join('')}</div>`:`<p class="muted" style="margin:0">${t('ยังไม่มีนัด ตั้งเวลาว่างไว้ น้อง ๆ จะจองได้','No calls yet. Set your free times so students can book')}</p>`}</div>`}
+const liveEarned=()=>{const ms=monthStart(),me=S.user&&S.user.id;return S.bookings.filter(b=>b.mentor_id===me&&['done','student_noshow'].includes(b.status)&&Date.parse(b.ended_at||b.starts_at)>=ms).reduce((a,b)=>a+(b.mentor_earn|0),0)};
+/* ---------- availability editor (mentor mode) ---------- */
+async function openAvailEdit(){const me=S.user.id;await loadAvail(me);const av=S.avail[me]||{slots:new Set(),off:[],daysOff:new Set()};S.availEdit={wd:isoDow(bkkDay()),slots:new Set(av.slots),off:[...av.off],daysOff:[...av.daysOff].filter(d=>d>=bkkDay()).sort(),busy:false};render()}
+function availEditor(){const A=S.availEdit;if(!A)return `<button class="btn ghost" data-avopen>🗓️ ${t('ตั้งเวลาว่างรายสัปดาห์','Set weekly free times')}</button>`;const off=A.off.includes(A.wd),n=w=>[...A.slots].filter(k=>k.startsWith(w+':')).length;
+ return `<div class="card av-ed"><div class="row" style="gap:8px"><b>🗓️ ${t('เวลาว่างรายสัปดาห์ (ช่องละ 30 นาที)','Weekly free times (30-minute slots)')}</b></div>
+ <div class="av-wd" role="tablist">${[1,2,3,4,5,6,7].map(w=>`<button role="tab" aria-selected="${A.wd===w}" class="${A.wd===w?'on':''} ${A.off.includes(w)?'off':''}" data-avwd="${w}">${x(WD[w])}<small>${A.off.includes(w)?t('ปิด','off'):n(w)}</small></button>`).join('')}</div>
+ <button class="fx-row mb-sw" data-avoff role="switch" aria-checked="${!off}"><span><b>${t(`รับนัดวัน${WDL[A.wd][0]}`,`Take calls on ${WDL[A.wd][1]}s`)}</b><small>${off?t('ปิดทั้งวัน','Closed all day'):t(`${n(A.wd)} ช่อง`,`${n(A.wd)} slots`)}</small></span><i class="tg ${off?'':'on'}"></i></button>
+ ${off?'':`<div class="av-slots">${[...Array(SLOT_MAX-SLOT_MIN+1)].map((_,i)=>{const s=SLOT_MIN+i,on=A.slots.has(A.wd+':'+s);return `<button class="bk-slot ${on?'on':''}" data-avslot="${s}" aria-pressed="${on}">${slotTxt(s)}</button>`}).join('')}</div>`}
+ <div class="av-off"><b>🏖️ ${t('ปิดบางวัน (วันหยุด)','Days off')}</b><div class="row" style="flex-wrap:nowrap"><input type="date" class="field" id="avDay" min="${bkkDay()}" style="flex:1;min-width:0"><button class="btn ghost sm" data-avdayadd>${t('เพิ่ม','Add')}</button></div>
+  ${A.daysOff.length?`<div class="row" style="gap:6px">${A.daysOff.map(d=>`<span class="chip">${new Date(Date.parse(d+'T12:00:00+07:00')).toLocaleDateString(S.lang==='en'?'en-GB':'th-TH',{weekday:'short',day:'numeric',month:'short'})} <button class="link" data-avdaydel="${d}" aria-label="${t('ลบ','Remove')}">×</button></span>`).join('')}</div>`:''}</div>
+ <div class="row" style="justify-content:flex-end"><button class="btn ghost" data-avclose>${t('ปิด','Close')}</button><button class="btn y" data-avsave ${A.busy?'disabled':''}>${t('บันทึกเวลาว่าง','Save free times')}</button></div></div>`}
+async function saveAvail(){const A=S.availEdit,me=S.user.id;if(!A||A.busy)return;A.busy=true;render();
+ try{const rows=[...A.slots].map(k=>{const [w,s]=k.split(':');return {mentor_id:me,weekday:+w,slot:+s}});
+  let r=await SB.from('mentor_availability').delete().eq('mentor_id',me);if(r.error)throw r.error;if(rows.length){r=await SB.from('mentor_availability').insert(rows);if(r.error)throw r.error}
+  r=await SB.from('mentor_days_off').delete().eq('mentor_id',me);if(r.error)throw r.error;if(A.daysOff.length){r=await SB.from('mentor_days_off').insert(A.daysOff.map(day=>({mentor_id:me,day})));if(r.error)throw r.error}
+  r=await SB.from('mentors').update({off_weekdays:A.off}).eq('id',me);if(r.error)throw r.error;
+  S.availEdit=null;await loadAvail(me);toast(t('บันทึกเวลาว่างแล้ว','Free times saved'))}catch(e){A.busy=false;toast(liveErr(e))}render()}
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-bkday],[data-bkslot],[data-bkpay],[data-live],[data-bkcancel],[data-bkcancelok],[data-bknoshow],[data-bkdone],[data-bksave],[data-bkrev],[data-bkskip],[data-lvjoin],[data-avopen],[data-avclose],[data-avwd],[data-avoff],[data-avslot],[data-avdayadd],[data-avdaydel],[data-avsave]');if(!el)return;const d=el.dataset;
+ if(d.bkday){if(el.classList.contains('off'))return;S.bk.topic=(($('#bkTopic')||{}).value||'');S.bk.day=d.bkday;S.bk.slot=null;render();return}
+ if(d.bkslot){S.bk.topic=(($('#bkTopic')||{}).value||'');S.bk.slot=+d.bkslot;render();return}
+ if(d.bkpay!==undefined){bkPay();return}
+ if(d.live){go('live',{liveId:d.live});return}
+ if(d.bkcancel){bkCancel(d.bkcancel);return}
+ if(d.bkcancelok!==undefined){const id=S.modal&&S.modal.bk;closeModal();bkRpc('cancel_booking',{bk:id},t('ยกเลิกนัดแล้ว','Call cancelled'),b=>demoFinish(b,'cancelled'));return}
+ if(d.bknoshow){const b=S.bookings.find(v=>v.id===d.bknoshow);bkRpc('report_noshow',{bk:d.bknoshow},t('บันทึกแล้ว','Noted'),x2=>demoFinish(x2,bkMentorSide(b)?'student_noshow':'mentor_noshow'));return}
+ if(d.bkdone){bkRpc('complete_booking',{bk:d.bkdone},t('คุยเสร็จแล้ว ช่องทางติดต่อในแชทไม่ถูกซ่อนแล้ว','Done. Contact details are no longer hidden in the chat'),b=>demoFinish(b,'done'));const b=S.bookings.find(v=>v.id===d.bkdone);if(b&&bkMine(b))setTimeout(()=>{if(b.status==='done')bkReview(b)},600);return}
+ if(d.bksave){const b=S.bookings.find(v=>v.id===d.bksave);if(!b)return;const v=!b.student_saved_note;b.student_saved_note=v;render();toast(v?t('บันทึกสรุปไว้ในหน้าฉันแล้ว','Summary saved to your Me page'):t('เอาออกจากที่บันทึกแล้ว','Removed from saved'));if(!b.demo&&SB)SB.rpc('toggle_note_saved',{bk:b.id,saved:v}).then(({error})=>{if(error){b.student_saved_note=!v;render();toast(liveErr(error))}});return}
+ if(d.bkrev){const b=S.bookings.find(v=>v.id===d.bkrev);if(b)bkReview(b);return}
+ if(d.bkskip){const b=S.bookings.find(v=>v.id===d.bkskip);if(!b)return;const st=Date.parse(b.starts_at),n=Date.now();b.starts_at=new Date(n<st?n-3e4:st-20*6e4).toISOString();if(!ensureMentor(b.mentor_id).real&&!S.notes[b.id]&&n>=st)S.notes[b.id]={booking_id:b.id,tips:[t('ทำเรซูเม่ 1 หน้า ใส่ผลงานเป็นตัวเลข','Keep your resume to one page, with results as numbers'),t('ซ้อมตอบ “ทำไมถึงอยากทำงานที่นี่” ให้คล่อง','Practise answering “why do you want to work here?”'),t('สมัครอย่างน้อย 5 ที่ในสัปดาห์นี้','Apply to at least 5 places this week')]};lvPhase='';render();return}
+ if(d.lvjoin!==undefined){toast(t('เปิดห้องวิดีโอในแท็บใหม่แล้ว แชทและตัวจับเวลายังอยู่ที่นี่','The video call opened in a new tab; the chat and timer stay here'));return}
+ if(d.avopen!==undefined){openAvailEdit();return}
+ if(d.avclose!==undefined){S.availEdit=null;render();return}
+ const A=S.availEdit;if(!A)return;
+ if(d.avwd){A.wd=+d.avwd;render();return}
+ if(d.avoff!==undefined){const i=A.off.indexOf(A.wd);if(i>=0)A.off.splice(i,1);else A.off.push(A.wd);render();return}
+ if(d.avslot){const k=A.wd+':'+d.avslot;if(A.slots.has(k))A.slots.delete(k);else A.slots.add(k);render();return}
+ if(d.avdayadd!==undefined){const v=($('#avDay')||{}).value;if(v&&v>=bkkDay()&&!A.daysOff.includes(v)){A.daysOff.push(v);A.daysOff.sort();render()}return}
+ if(d.avdaydel){A.daysOff=A.daysOff.filter(v=>v!==d.avdaydel);render();return}
+ if(d.avsave!==undefined){saveAvail();return}});
+document.addEventListener('submit',e=>{if(e.target.id==='meetForm'){e.preventDefault();const b=S.bookings.find(v=>v.id===S.liveId);if(!b)return;const url=(($('#meetIn')||{}).value||'').trim();
+  if(url&&!/^https:\/\/meet\.google\.com\/[a-z0-9-]{3,40}$/.test(url)){toast(liveErr({message:'invalid meet link'}));return}
+  if(b.demo){b.meet_custom=url||null;render();toast(t('บันทึกลิงก์แล้ว','Link saved'));return}
+  SB.rpc('set_meet_link',{bk:b.id,url:url||null}).then(({error})=>{if(error){toast(liveErr(error));return}b.meet_custom=url||null;render();toast(t('บันทึกลิงก์แล้ว','Link saved'))});return}
+ if(e.target.id==='noteForm'){e.preventDefault();const b=S.bookings.find(v=>v.id===S.liveId);if(b)bkSaveNote(b)}});
+document.addEventListener('input',e=>{if(e.target.id==='bkCoins')bkCoinsInput(e.target.value);if(e.target.id==='bkTopic'&&S.bk)S.bk.topic=e.target.value});
 /* ---------- interview review (for the weekly mission) ---------- */
 function ivModal(m,head){const c=getCo(m.co);return head(t('รีวิวการสัมภาษณ์','Review your interview'),x(c.name))+
  `<b style="font-size:14px">${t('ความยาก','Difficulty')}</b><div class="opts">${Object.keys(DIFF).map(k=>`<button type="button" class="opt ${m.diff===k?'on':''}" data-ivdiff="${k}">${x(DIFF[k])}</button>`).join('')}</div>
@@ -2192,6 +2411,7 @@ function me(){
  return `<div class="me-head"><span class="me-ava">${esc(u.name.slice(0,1).toUpperCase())}</span><div><h1 style="font-size:26px">${esc(u.name)}</h1><div class="row" style="gap:6px">${u.anon?`<span class="chip">⏳ ${t('บัญชีชั่วคราว','Guest account')}</span>`:`<span class="muted">${esc(u.email)}</span>${u.verified?`<span class="chip ver">✓ ${t('ยืนยันแล้ว','Verified')}</span>`:`<span class="chip">${t('ยังไม่ยืนยัน','Not verified')}</span>`}`}${isPlus()?'<span class="chip plus-chip">✨ Plus</span>':''}</div></div>
   <div class="lvl card"><div class="row"><b style="font-family:var(--display);color:var(--navy)">${t('ระดับ','Level')}: ${x(lv[1])}</b><span class="muted" style="margin-left:auto">${u.points} ${t('แต้ม','pts')}</span></div><div class="progress"><i style="width:${prog}%"></i></div><span class="muted">${nx?t(`อีก ${nx[0]-u.points} แต้มถึงระดับ “${nx[1][0]}”`,`${nx[0]-u.points} pts to “${nx[1][1]}”`):t('ระดับสูงสุดแล้ว 🎉','Top level 🎉')}</span></div></div>
  ${mentorCta()}
+ ${myLiveCalls()}
  ${u.anon?`<section class="sec"><div class="card" style="display:grid;gap:10px"><b>${t('บัญชีนี้เป็นแบบชั่วคราว','This is a guest account')}</b><p class="muted" style="margin:0">${t('ถ้าออกจากระบบหรือล้างข้อมูลเบราว์เซอร์ บัญชีนี้จะหายไป และยังเขียนรีวิวไม่ได้ ผูกอีเมลไว้เพื่อเก็บบัญชีและเริ่มเขียนรีวิว','Logging out or clearing browser data loses this account, and guests can’t write reviews. Add an email to keep it and start reviewing.')}</p><button class="btn y" data-linkacct style="justify-self:start">${t('เก็บบัญชีไว้ด้วยอีเมล','Keep this account with email')}</button></div></section>`:''}
  <section class="sec"><div class="sec-h"><h2>${t('ป้ายของฉัน','My badges')}</h2></div><div class="badges">${B.map(b=>`<div class="bdg ${b[2]?'':'off'}"><span>${b[0]}</span>${x(b[1])}</div>`).join('')}</div></section>
  <section class="sec prem-row">${coinCard(true)}${isPlus()?`<div class="plus-mini"><b>✨ Maadoo Plus</b><span>${t(`เป็นสมาชิกถึง ${fmtDate(S.prem.plusUntil)}`,`Member until ${fmtDate(S.prem.plusUntil)}`)}</span><span class="muted">${t(`ถามรุ่นพี่ฟรีเหลือ ${qLeft()}/${Q_MAX}`,`${qLeft()}/${Q_MAX} free questions left`)}</span><button class="btn ghost sm" data-go="plus">${t('ดูสิทธิ์','See perks')}</button></div>`:plusBanner()}</section>
@@ -2336,6 +2556,7 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
  if(m.type==='creport')body=creportModal(m,head);
  if(m.type==='cblock')body=cblockModal(m,head);
  if(m.type==='amsgs')body=amsgsModal(m,head);
+ if(m.type==='bkcancel')body=bkcancelModal(m,head);
  if(m.type==='iv')body=ivModal(m,head);
  if(m.type==='mreview')body=mreviewModal(m,head);
  if(m.type==='mrevdel')body=mrevdelModal(m,head);
@@ -2346,13 +2567,6 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
  if(m.type==='ptrate')body=ptRateModal(m);
  if(m.type==='report')body=`${head(t('รายงานรีวิวนี้','Report this review'),t('ทีมจะตรวจภายใน 48 ชั่วโมง','We’ll look at it within 48 hours'))}
   <div class="grid">${[['ระบุชื่อบุคคล','Names an individual'],['ข้อมูลเท็จ','False information'],['คำหยาบ / คุกคาม','Abusive or harassing'],['สแปม / ไม่ใช่ประสบการณ์จริง','Spam or not a real experience']].map((r,i)=>`<button class="opt" style="text-align:left;border-radius:16px" data-reason="${i}">${x(r)}</button>`).join('')}</div>`;
- if(m.type==='book'){const mt=MENTORS.find(v=>v.id===m.id);const pr=isPlus()?Math.round(mt.price*.8):mt.price;
-  body=`${head(t(`จองคุยกับ${x(mt.name)}`,`Book ${x(mt.name)}`),`${x(mt.role)} · ${x(mt.at)}`)}<b>${t('เลือกเวลา (วิดีโอคอล 30 นาที)','Pick a time (30-min video call)')}</b>
-  <div class="slots">${SLOTS.map((s,i)=>`<button class="slot ${m.slot===i?'on':''}" data-slot="${i}">${x(s)}</button>`).join('')}</div>
-  <textarea class="field" id="bnote" placeholder="${t('อยากคุยเรื่องอะไร เช่น ขอดูเรซูเม่ฝึกงาน QC','What do you want to talk about?')}"></textarea>
-  ${S.user&&S.prem.coins>0?`<label class="row coin-use"><input type="checkbox" id="useCoins" ${m.useCoins?'checked':''}> 🪙 ${t(`ใช้ ${Math.min(S.prem.coins,pr)} เหรียญ ลด ${Math.min(S.prem.coins,pr)} บาท`,`Use ${Math.min(S.prem.coins,pr)} coins for ${Math.min(S.prem.coins,pr)} THB off`)}</label>`:''}
-  <div class="row"><span class="price">${m.useCoins&&S.user?Math.max(0,pr-Math.min(S.prem.coins,pr)):pr} ${t('บาท','THB')}</span>${isPlus()?`<span class="chip ad">Plus −20%</span>`:''}<button class="btn y" style="margin-left:auto" data-confirmbook ${m.slot==null?'disabled':''}>${t('ยืนยันการจอง','Confirm booking')}</button></div>
-  <p class="demo-note">${t('เดโม: ไม่มีการตัดเงินจริง','Demo: no payment is taken')}</p>`}
  if(m.type==='match'){const mt=MENTORS.find(v=>v.id===m.id);const ini=S.user?esc(S.user.name.slice(0,1).toUpperCase()):'🙂';
   body=`<div class="match"><button class="x" data-close aria-label="${t('ปิด','Close')}" style="justify-self:end">×</button><div class="match-t">${t('แมตช์แล้ว!','It’s a match!')}</div><div class="match-av"><span class="me-ava">${ini}</span><span class="me-ava" style="background:${mt.bg};font-size:38px">${mt.ava}</span></div><p>${t(`${x(mt.name)}พร้อมให้คำปรึกษาคุณแล้ว 🎉`,`${x(mt.name)} is ready to chat with you 🎉`)}</p><button class="btn y" data-book="${mt.id}">${t('จองเวลาคุยเลย','Book a session')}</button><button class="link" data-close>${t('ปัดต่อ','Keep swiping')}</button></div>`}
  if(m.type==='welcome')body=`<div class="welcome"><button class="x" data-close aria-label="${t('ปิด','Close')}" style="justify-self:end">×</button><img src="maadoo-job-round.png" width="1182" height="1231" decoding="async" alt="${t('โลโก้มาดูจ็อบ','Maadoo Job logo')}" class="w-logo"><div class="w-kicker">📢 ${t('ยินดีต้อนรับสู่มาดูจ็อบ','Welcome to Maadoo Job')}</div>
@@ -2400,7 +2614,7 @@ function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
 function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
 function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
 addEventListener('resize',()=>{if(S.indOpen&&S.view==='explore'&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
-function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();}
+function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
@@ -2413,7 +2627,7 @@ document.addEventListener('click',e=>{
  if(!b)return;const d=b.dataset;
  if(b.id==='bellBtn'){S.notifOpen=!S.notifOpen;S.themeOpen=false;renderThemePop();renderBell();return}
  if(d.readall!==undefined){NOTIFS.forEach(v=>v.read=true);renderBell();return}
- if(d.ni!==undefined){const v=NOTIFS[+d.ni];v.read=true;S.notifOpen=false;if(v.go[0]==='company')go('company',{co:v.go[1],tab:'overview'});else if(v.go[0]==='chat'){S.chatDraft='';go('chat',{chat:v.go[1]})}else go(v.go[0]);return}
+ if(d.ni!==undefined){const v=NOTIFS[+d.ni];v.read=true;S.notifOpen=false;if(v.go[0]==='company')go('company',{co:v.go[1],tab:'overview'});else if(v.go[0]==='chat'){S.chatDraft='';go('chat',{chat:v.go[1]})}else if(v.go[0]==='live'){go('live',{liveId:v.go[1]})}else go(v.go[0]);return}
  if(d.close!==undefined){closeModal();return}
  if(d.gopt!==undefined){S.jobTab='pt';go('jobs');return}
  if(d.jtab){S.jobTab=d.jtab;render();return}
@@ -2451,11 +2665,8 @@ document.addEventListener('click',e=>{
  if(d.sw){swipeGo(d.sw);return}
  if(d.topic){S.sw.topic=d.topic;render();return}
  if(d.swreset!==undefined){S.sw.skipped=[];render();return}
- if(d.book){openModal({type:'book',id:d.book,slot:null});return}
+ if(d.book){if(S.modal)closeModal();openBook(d.book);return}
  if(d.slot!==undefined){S.modal.slot=+d.slot;renderModal();return}
- if(d.confirmbook!==undefined){const m=S.modal;needLogin(()=>{const mt=MENTORS.find(v=>v.id===m.id),pr=mprice(mt),cu=m.useCoins?Math.min(S.prem.coins,pr):0;
-  if(pr-cu>0){openPay({what:'book',mid:mt.id,slot:m.slot,amount:pr-cu,coinsUsed:cu});return}
-  needMember(async()=>{try{await addCoins(-cu,'spend')}catch(e){toast(premErr(e));return}finishBooking(mt.id,m.slot);S.modal=null;render();toast(t(`จองแล้ว! ใช้ ${cu} เหรียญ`,`Booked with ${cu} coins!`))})});return}
  if(d.emp){openModal({type:'emp',tier:d.emp});return}
  if(b.id==='themeBtn'){S.themeOpen=!S.themeOpen;S.notifOpen=false;if(S.coach){S.coach=false;store.set('maadoo-coach','1')}renderBell();applyPrefs();return}
  if(d.skin){S.skin=d.skin;store.set('maadoo-skin',S.skin);render();const sw=document.querySelector(`#themePop [data-skin="${S.skin}"]`);if(sw)sw.focus({preventScroll:true});const k=SKINS.find(v=>v[0]===S.skin);toast(`${k[1]} ${t('ธีม','Theme')}: ${x(k[2])}`);return}
@@ -2582,7 +2793,7 @@ document.addEventListener('submit',e=>{e.preventDefault();
 });
 function syncPtForm(){const g=id=>document.getElementById(id);if(!g('pf-title'))return;const f=S.ptForm;f.title=g('pf-title').value;f.kind=g('pf-kind').value;f.day=g('pf-day').value;f.when=g('pf-when').value;f.pay=g('pf-pay').value;f.unit=g('pf-unit').value;f.need=g('pf-need').value;f.how=g('pf-how').value;f.req=g('pf-req').value;f.ok=g('pf-ok').checked}
 document.addEventListener('input',e=>{if(e.target.id==='mcomment'){if(S.modal)S.modal.comment=e.target.value;const c=$('#mcount');if(c)c.textContent=e.target.value.length+'/300';return}if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.setAttribute('aria-valuetext',v+'%');return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
-document.addEventListener('change',e=>{if(e.target.id==='useCoins'&&S.modal&&S.modal.type==='book'){S.modal.useCoins=e.target.checked;renderModal();return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();render()}
+document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();render()}
  if(id==='jInd'){S.jobF.ind=e.target.value;render()}if(id==='jMin'){S.jobF.min=+e.target.value;render()}if(id==='onlyJobs'){S.coOnlyJobs=e.target.checked;render()}});
 document.addEventListener('keydown',e=>{
  if(S.view==='explore'){const inMenu=e.target.closest&&e.target.closest('#indMenu'),onBtn=e.target.id==='indBtn';

@@ -245,9 +245,11 @@ create trigger mentor_reviews_before_update
 -- รีวิวสาธารณะ ทุกคนอ่านได้ (รวมคนที่ไม่ได้ล็อกอิน) / Public reviews, readable by everyone (logged in or not)
 -- Supabase linter จะเตือน "Security Definer View" — ตั้งใจแบบนี้ เหมือน approved_reviews
 -- The linter flags "Security Definer View"; intended, same as approved_reviews.
+-- live = รีวิวหลังคุยสดจริง (ตั้งโดย trigger ใน section 9) / review after a real live call (set by a section 9 trigger)
+alter table public.mentor_reviews add column if not exists live boolean not null default false;
 create or replace view public.mentor_reviews_public
 with (security_invoker = false) as
-  select id, mentor_id, stars, tags, comment, reply, created_at
+  select id, mentor_id, stars, tags, comment, reply, created_at, live
   from public.mentor_reviews;
 
 revoke all on public.mentor_reviews_public from anon, authenticated;
@@ -570,7 +572,7 @@ update public.profiles set invite_code = 'MAADOO-' || upper(substr(md5(id::text)
 -- Referral coins (kind = 'referral') can only be added through the function below.
 alter table public.coin_ledger drop constraint if exists coin_ledger_kind_check;
 alter table public.coin_ledger add constraint coin_ledger_kind_check
-  check (kind in ('mission', 'review', 'topup', 'plus', 'spend', 'referral'));
+  check (kind in ('mission', 'review', 'topup', 'plus', 'spend', 'referral', 'refund'));
 
 create or replace function public.coin_ledger_guard_referral()
 returns trigger
@@ -925,8 +927,9 @@ as $$
 declare
   q public.questions;
 begin
-  if current_setting('role', true) not in ('authenticated', 'anon') then
-    return new;
+  if current_setting('role', true) not in ('authenticated', 'anon')
+     or coalesce(current_setting('maadoo.room', true), '') = 'on' then
+    return new;  -- ห้องของการจอง สร้างผ่าน book_session() / booking rooms come from book_session()
   end if;
   select * into q from public.questions where id = new.question_id;
   if not found or q.user_id <> auth.uid() or q.status = 'closed' then
@@ -1214,6 +1217,442 @@ begin
     if not exists (select 1 from pg_publication_tables
                    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'chat_rooms') then
       alter publication supabase_realtime add table public.chat_rooms;
+    end if;
+  end if;
+end;
+$$;
+
+-- =====================================================================
+-- 9) คุยกับรุ่นพี่ ขั้นที่ 2: จองคุยสด / Real mentors, step 2: live-call bookings
+--    mentor_availability · mentor_days_off · bookings (+ unique slot) · session_notes
+--    เวลาเป็นเวลาไทย (Asia/Bangkok) ช่องละ 30 นาที: slot 0 = 00:00, 1 = 00:30 … 47 = 23:30
+--    Times are Bangkok local time in 30-minute slots: slot 0 = 00:00 … 47 = 23:30.
+--    ชำระเงินเป็นแบบจำลอง แต่เหรียญถูกหักจริงจาก coin_ledger (kind = 'spend', ref = 'booking:<id>')
+--    Payment is simulated, but coins are really deducted from coin_ledger.
+-- =====================================================================
+
+-- ---------- 9.1 เวลาว่างรายสัปดาห์ + วันหยุด / weekly availability + days off ----------
+alter table public.mentors add column if not exists off_weekdays smallint[] not null default '{}';
+grant update (available, off_weekdays) on public.mentors to authenticated;
+
+create table if not exists public.mentor_availability (
+  mentor_id  uuid not null references public.mentors (id) on delete cascade,
+  weekday    smallint not null check (weekday between 1 and 7),   -- 1 = จันทร์ / Monday … 7 = อาทิตย์ / Sunday
+  slot       smallint not null check (slot between 0 and 47),
+  primary key (mentor_id, weekday, slot)
+);
+create table if not exists public.mentor_days_off (
+  mentor_id  uuid not null references public.mentors (id) on delete cascade,
+  day        date not null,
+  primary key (mentor_id, day)
+);
+alter table public.mentor_availability enable row level security;
+alter table public.mentor_days_off enable row level security;
+drop policy if exists "mentor_availability: read all" on public.mentor_availability;
+drop policy if exists "mentor_availability: own insert" on public.mentor_availability;
+drop policy if exists "mentor_availability: own delete" on public.mentor_availability;
+drop policy if exists "mentor_days_off: read all" on public.mentor_days_off;
+drop policy if exists "mentor_days_off: own insert" on public.mentor_days_off;
+drop policy if exists "mentor_days_off: own delete" on public.mentor_days_off;
+create policy "mentor_availability: read all" on public.mentor_availability for select to anon, authenticated using (true);
+create policy "mentor_availability: own insert" on public.mentor_availability for insert to authenticated with check (mentor_id = (select auth.uid()));
+create policy "mentor_availability: own delete" on public.mentor_availability for delete to authenticated using (mentor_id = (select auth.uid()));
+create policy "mentor_days_off: read all" on public.mentor_days_off for select to anon, authenticated using (true);
+create policy "mentor_days_off: own insert" on public.mentor_days_off for insert to authenticated with check (mentor_id = (select auth.uid()));
+create policy "mentor_days_off: own delete" on public.mentor_days_off for delete to authenticated using (mentor_id = (select auth.uid()));
+revoke all on public.mentor_availability from anon, authenticated;
+revoke all on public.mentor_days_off from anon, authenticated;
+grant select on public.mentor_availability to anon, authenticated;
+grant select on public.mentor_days_off to anon, authenticated;
+grant insert, delete on public.mentor_availability to authenticated;
+grant insert, delete on public.mentor_days_off to authenticated;
+
+-- ---------- 9.2 ห้องแชทของการจอง (ไม่ผูกกับคำถาม) / chat rooms for bookings (no question) ----------
+alter table public.chat_rooms alter column question_id drop not null;
+
+-- ---------- 9.3 เหรียญคืน (kind = 'refund') เพิ่มได้ผ่านฟังก์ชันยกเลิก/ไม่มาตามนัดเท่านั้น ----------
+--   Refund coins can only be added by the cancel / no-show functions below.
+alter table public.coin_ledger drop constraint if exists coin_ledger_kind_check;
+alter table public.coin_ledger add constraint coin_ledger_kind_check
+  check (kind in ('mission', 'review', 'topup', 'plus', 'spend', 'referral', 'refund'));
+create or replace function public.coin_ledger_guard_refund()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if new.kind = 'refund' and coalesce(current_setting('maadoo.refund', true), '') <> 'on' then
+    raise exception 'refund coins only via booking functions' using errcode = 'check_violation';
+  end if;
+  if new.kind = 'refund' then new.status := 'ok'; end if;
+  return new;
+end;
+$$;
+drop trigger if exists coin_ledger_guard_refund on public.coin_ledger;
+create trigger coin_ledger_guard_refund
+  before insert on public.coin_ledger
+  for each row execute function public.coin_ledger_guard_refund();
+
+-- ---------- 9.4 bookings: การจองคุยสด / live-call bookings ----------
+--   ราคา: เต็ม → Plus ลด 20% → ใช้เหรียญได้ไม่เกิน 50% ของราคาหลังหัก Plus
+--   รายได้รุ่นพี่ (จำลอง) = 80% ของราคาหลังหัก Plus (ส่วนที่จ่ายด้วยเหรียญ แพลตฟอร์มจ่ายแทน)
+--   Price: full → Plus 20% off → coins up to 50% of the Plus price.
+--   Mentor earnings (simulated) = 80% of the Plus price (the platform covers the coin part).
+create table if not exists public.bookings (
+  id                  uuid primary key default gen_random_uuid(),
+  mentor_id           uuid not null references public.mentors (id) on delete cascade,
+  student_id          uuid not null references auth.users (id) on delete cascade,
+  room_id             uuid references public.chat_rooms (id) on delete set null,
+  starts_at           timestamptz not null,
+  price               integer not null check (price between 0 and 1000),
+  plus_discount       integer not null default 0,
+  coins_used          integer not null default 0 check (coins_used >= 0),
+  paid                integer not null default 0,
+  mentor_earn         integer not null default 0,
+  topic               text check (char_length(topic) <= 300),
+  status              text not null default 'booked'
+                      check (status in ('booked', 'done', 'cancelled', 'mentor_noshow', 'student_noshow')),
+  refund_coins        integer not null default 0,
+  meet_url            text not null,
+  meet_custom         text check (meet_custom ~ '^https://meet\.google\.com/[a-z0-9-]{3,40}$'),
+  student_saved_note  boolean not null default false,
+  cancelled_by        uuid,
+  ended_at            timestamptz,
+  created_at          timestamptz not null default now()
+);
+-- กันจองซ้อน: ช่องเวลาเดียวกันของรุ่นพี่คนเดียวกันจองได้คนเดียว / one booking per mentor slot
+create unique index if not exists bookings_slot_uniq on public.bookings (mentor_id, starts_at) where status <> 'cancelled';
+create index if not exists bookings_student_idx on public.bookings (student_id, starts_at desc);
+create index if not exists bookings_mentor_idx on public.bookings (mentor_id, starts_at desc);
+alter table public.bookings enable row level security;
+drop policy if exists "bookings: members read" on public.bookings;
+create policy "bookings: members read" on public.bookings
+  for select to authenticated using ((select auth.uid()) in (student_id, mentor_id));
+revoke all on public.bookings from anon, authenticated;
+grant select on public.bookings to authenticated;
+
+-- ช่องที่ถูกจองแล้ว (ไม่บอกว่าใครจอง) / taken slots (without who booked them)
+create or replace function public.mentor_taken_slots(mentor uuid)
+returns setof timestamptz
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select starts_at from public.bookings
+   where mentor_id = mentor and status <> 'cancelled'
+     and starts_at between now() - interval '1 day' and now() + interval '9 days';
+$$;
+
+create or replace function public.booking_close_room(b public.bookings)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update public.chat_rooms r set status = 'closed'
+   where r.id = b.room_id and r.question_id is null
+     and not exists (select 1 from public.bookings o where o.room_id = r.id and o.id <> b.id and o.status = 'booked');
+$$;
+
+create or replace function public.book_session(mentor uuid, day date, slot integer, coins integer default 0,
+                                               topic text default null, sname text default null)
+returns public.bookings
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  me uuid := auth.uid();
+  m public.mentors;
+  st timestamptz;
+  disc integer;
+  after_plus integer;
+  rid uuid;
+  b public.bookings;
+begin
+  if me is null or coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) then
+    raise exception 'login required' using errcode = 'insufficient_privilege';
+  end if;
+  select * into m from public.mentors where id = mentor and active and available;
+  if not found then raise exception 'mentor unavailable' using errcode = 'check_violation'; end if;
+  if mentor = me then raise exception 'cannot book yourself' using errcode = 'check_violation'; end if;
+  if slot is null or slot < 0 or slot > 47 then raise exception 'invalid slot' using errcode = 'check_violation'; end if;
+  st := (day::timestamp + make_interval(mins => slot * 30)) at time zone 'Asia/Bangkok';
+  if st < now() + interval '1 hour' or st > now() + interval '8 days' then
+    raise exception 'slot not bookable' using errcode = 'check_violation';
+  end if;
+  if extract(isodow from day)::smallint = any (m.off_weekdays)
+     or exists (select 1 from public.mentor_days_off o where o.mentor_id = mentor and o.day = book_session.day)
+     or not exists (select 1 from public.mentor_availability a
+                    where a.mentor_id = mentor and a.weekday = extract(isodow from book_session.day)::smallint
+                      and a.slot = book_session.slot) then
+    raise exception 'mentor not available at that time' using errcode = 'check_violation';
+  end if;
+  disc := case when exists (select 1 from public.profiles p where p.id = me and p.plus_until > now())
+               then round(m.price * 0.2)::integer else 0 end;
+  after_plus := m.price - disc;
+  coins := coalesce(coins, 0);
+  if coins < 0 or coins > floor(after_plus * 0.5) then
+    raise exception 'too many coins' using errcode = 'check_violation';
+  end if;
+  -- แชทเดิมใช้ต่อได้ ถ้ายังไม่มีห้องที่เปิดอยู่ สร้างห้องของการจอง / reuse an open chat, or make one for the booking
+  select id into rid from public.chat_rooms
+   where student_id = me and mentor_id = mentor and status <> 'closed' and blocked_by is null
+   order by last_msg_at desc limit 1;
+  if rid is null then
+    perform set_config('maadoo.room', 'on', true);
+    insert into public.chat_rooms (question_id, student_id, mentor_id, student_name, status)
+    values (null, me, mentor, left(btrim(coalesce(sname, '')), 30), 'answered')
+    returning id into rid;
+    perform set_config('maadoo.room', '', true);
+  end if;
+  begin
+    insert into public.bookings (mentor_id, student_id, room_id, starts_at, price, plus_discount, coins_used,
+                                 paid, mentor_earn, topic, meet_url)
+    values (mentor, me, rid, st, m.price, disc, coins, after_plus - coins, round(after_plus * 0.8)::integer,
+            nullif(left(btrim(coalesce(topic, '')), 300), ''),
+            'https://meet.jit.si/maadoojob-' || replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', ''))
+    returning * into b;
+  exception when unique_violation then
+    raise exception 'slot taken' using errcode = 'check_violation';
+  end;
+  if coins > 0 then
+    insert into public.coin_ledger (user_id, delta, kind, ref) values (me, -coins, 'spend', 'booking:' || b.id::text);
+  end if;
+  return b;
+end;
+$$;
+
+create or replace function public.booking_refund(b public.bookings)
+returns integer
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if b.coins_used <= 0 then return 0; end if;
+  perform set_config('maadoo.refund', 'on', true);
+  insert into public.coin_ledger (user_id, delta, kind, ref)
+  values (b.student_id, b.coins_used, 'refund', 'refund:' || b.id::text)
+  on conflict do nothing;
+  perform set_config('maadoo.refund', '', true);
+  return b.coins_used;
+end;
+$$;
+
+-- ยกเลิก: น้องยกเลิกฟรีก่อนนัด 12 ชม. (หลังจากนั้นไม่คืน) · รุ่นพี่ยกเลิก = คืนเต็ม
+-- Cancel: free for the student until 12 h before (no refund after) · mentor cancels = full refund
+create or replace function public.cancel_booking(bk uuid)
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  me uuid := auth.uid();
+  b public.bookings;
+  refund boolean;
+begin
+  select * into b from public.bookings where id = bk for update;
+  if not found or me not in (b.student_id, b.mentor_id) then raise exception 'booking not found' using errcode = 'no_data_found'; end if;
+  if b.status <> 'booked' then raise exception 'booking not active' using errcode = 'check_violation'; end if;
+  if now() >= b.starts_at then raise exception 'already started' using errcode = 'check_violation'; end if;
+  refund := me = b.mentor_id or b.starts_at - now() >= interval '12 hours';
+  update public.bookings
+     set status = 'cancelled', cancelled_by = me, ended_at = now(), mentor_earn = 0,
+         refund_coins = case when refund then coins_used else 0 end
+   where id = bk returning * into b;
+  if refund then perform public.booking_refund(b); end if;
+  perform public.booking_close_room(b);
+  return case when refund then 'refunded' else 'no_refund' end;
+end;
+$$;
+
+-- ไม่มาตามนัด (หลังเวลานัด 10 นาที): น้องแจ้งรุ่นพี่ไม่มา = คืนเต็ม · รุ่นพี่แจ้งน้องไม่มา = ไม่คืน
+-- No-show (10 min after the start): mentor no-show = full refund · student no-show = no refund
+create or replace function public.report_noshow(bk uuid)
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  me uuid := auth.uid();
+  b public.bookings;
+begin
+  select * into b from public.bookings where id = bk for update;
+  if not found or me not in (b.student_id, b.mentor_id) then raise exception 'booking not found' using errcode = 'no_data_found'; end if;
+  if b.status <> 'booked' then raise exception 'booking not active' using errcode = 'check_violation'; end if;
+  if now() < b.starts_at + interval '10 minutes' then raise exception 'too early' using errcode = 'check_violation'; end if;
+  if me = b.student_id then
+    update public.bookings set status = 'mentor_noshow', ended_at = now(), mentor_earn = 0, refund_coins = coins_used
+     where id = bk returning * into b;
+    perform public.booking_refund(b);
+  else
+    update public.bookings set status = 'student_noshow', ended_at = now() where id = bk returning * into b;
+  end if;
+  perform public.booking_close_room(b);
+  return b.status;
+end;
+$$;
+
+-- คุยเสร็จ (หลังเริ่ม 15 นาที) → ปลดการซ่อนช่องทางติดต่อในแชท / done (15 min after the start) → contacts unlocked
+create or replace function public.booking_mark_done(b public.bookings)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update public.bookings set status = 'done', ended_at = now() where id = b.id and status = 'booked';
+  update public.chat_rooms set student_live = true, mentor_live = true where id = b.room_id;
+$$;
+create or replace function public.complete_booking(bk uuid)
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  me uuid := auth.uid();
+  b public.bookings;
+begin
+  select * into b from public.bookings where id = bk for update;
+  if not found or me not in (b.student_id, b.mentor_id) then raise exception 'booking not found' using errcode = 'no_data_found'; end if;
+  if b.status = 'done' then return 'done'; end if;
+  if b.status <> 'booked' then raise exception 'booking not active' using errcode = 'check_violation'; end if;
+  if now() < b.starts_at + interval '15 minutes' then raise exception 'too early' using errcode = 'check_violation'; end if;
+  perform public.booking_mark_done(b);
+  return 'done';
+end;
+$$;
+
+-- รุ่นพี่ใส่ลิงก์ Google Meet เองได้ / the mentor can use their own Google Meet link
+create or replace function public.set_meet_link(bk uuid, url text)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  url := nullif(btrim(coalesce(url, '')), '');
+  if url is not null and url !~ '^https://meet\.google\.com/[a-z0-9-]{3,40}$' then
+    raise exception 'invalid meet link' using errcode = 'check_violation';
+  end if;
+  update public.bookings set meet_custom = url
+   where id = bk and mentor_id = auth.uid() and status = 'booked';
+  if not found then raise exception 'booking not found' using errcode = 'no_data_found'; end if;
+end;
+$$;
+
+-- ---------- 9.5 session_notes: สรุป 3 ข้อจากรุ่นพี่ / the mentor's 3-point summary ----------
+create table if not exists public.session_notes (
+  booking_id  uuid primary key references public.bookings (id) on delete cascade,
+  mentor_id   uuid not null references public.mentors (id) on delete cascade,
+  tips        text[] not null check (cardinality(tips) between 1 and 3),
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+alter table public.session_notes enable row level security;
+drop policy if exists "session_notes: members read" on public.session_notes;
+create policy "session_notes: members read" on public.session_notes
+  for select to authenticated
+  using (exists (select 1 from public.bookings b
+                 where b.id = booking_id and (select auth.uid()) in (b.student_id, b.mentor_id)));
+revoke all on public.session_notes from anon, authenticated;
+grant select on public.session_notes to authenticated;
+
+create or replace function public.save_session_notes(bk uuid, tips text[])
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  b public.bookings;
+  clean text[];
+begin
+  select * into b from public.bookings where id = bk for update;
+  if not found or b.mentor_id <> auth.uid() then raise exception 'booking not found' using errcode = 'no_data_found'; end if;
+  if b.status not in ('booked', 'done') or now() < b.starts_at then raise exception 'not yet' using errcode = 'check_violation'; end if;
+  select coalesce(array_agg(left(btrim(t), 200)), '{}') into clean
+    from unnest(tips) as t where btrim(coalesce(t, '')) <> '';
+  if cardinality(clean) < 1 or cardinality(clean) > 3 then raise exception 'need 1 to 3 tips' using errcode = 'check_violation'; end if;
+  insert into public.session_notes (booking_id, mentor_id, tips) values (bk, b.mentor_id, clean)
+  on conflict (booking_id) do update set tips = excluded.tips, updated_at = now();
+  perform public.booking_mark_done(b);
+end;
+$$;
+
+create or replace function public.toggle_note_saved(bk uuid, saved boolean)
+returns void
+language sql
+security definer
+set search_path = ''
+as $$
+  update public.bookings set student_saved_note = saved where id = bk and student_id = auth.uid();
+$$;
+
+revoke execute on function public.mentor_taken_slots(uuid) from public;
+revoke execute on function public.booking_close_room(public.bookings) from public, anon, authenticated;
+revoke execute on function public.booking_refund(public.bookings) from public, anon, authenticated;
+revoke execute on function public.booking_mark_done(public.bookings) from public, anon, authenticated;
+revoke execute on function public.book_session(uuid, date, integer, integer, text, text) from public, anon;
+revoke execute on function public.cancel_booking(uuid) from public, anon;
+revoke execute on function public.report_noshow(uuid) from public, anon;
+revoke execute on function public.complete_booking(uuid) from public, anon;
+revoke execute on function public.set_meet_link(uuid, text) from public, anon;
+revoke execute on function public.save_session_notes(uuid, text[]) from public, anon;
+revoke execute on function public.toggle_note_saved(uuid, boolean) from public, anon;
+grant execute on function public.mentor_taken_slots(uuid) to anon, authenticated;
+grant execute on function public.book_session(uuid, date, integer, integer, text, text) to authenticated;
+grant execute on function public.cancel_booking(uuid) to authenticated;
+grant execute on function public.report_noshow(uuid) to authenticated;
+grant execute on function public.complete_booking(uuid) to authenticated;
+grant execute on function public.set_meet_link(uuid, text) to authenticated;
+grant execute on function public.save_session_notes(uuid, text[]) to authenticated;
+grant execute on function public.toggle_note_saved(uuid, boolean) to authenticated;
+
+-- ---------- 9.6 รีวิวหลังคุยสด ติดป้าย "✓ คุยสดจริง" / reviews after a live call get "✓ Live call" ----------
+alter table public.mentor_reviews add column if not exists live boolean not null default false;
+create or replace function public.mentor_reviews_real_check()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  new.live := exists (select 1 from public.bookings b
+                      where b.id::text = new.booking_id and b.student_id = new.user_id
+                        and b.mentor_id::text = new.mentor_id and b.status = 'done');
+  if not new.live
+     and exists (select 1 from public.mentors where id::text = new.mentor_id)
+     and not exists (select 1 from public.chat_rooms r
+                     where r.id::text = new.booking_id and r.student_id = new.user_id
+                       and r.mentor_id::text = new.mentor_id and r.status = 'closed') then
+    raise exception 'real mentor review needs a closed chat or a finished live call' using errcode = 'check_violation';
+  end if;
+  return new;
+end;
+$$;
+create or replace view public.mentor_reviews_public
+with (security_invoker = false) as
+  select id, mentor_id, stars, tags, comment, reply, created_at, live
+  from public.mentor_reviews;
+revoke all on public.mentor_reviews_public from anon, authenticated;
+grant select on public.mentor_reviews_public to anon, authenticated;
+
+-- ---------- 9.7 Realtime: การจองและสรุปขึ้นทันทีทั้งสองฝั่ง / bookings and notes arrive live ----------
+do $$
+begin
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    if not exists (select 1 from pg_publication_tables
+                   where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'bookings') then
+      alter publication supabase_realtime add table public.bookings;
+    end if;
+    if not exists (select 1 from pg_publication_tables
+                   where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'session_notes') then
+      alter publication supabase_realtime add table public.session_notes;
     end if;
   end if;
 end;
