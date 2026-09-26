@@ -1606,7 +1606,9 @@ const missionRef=k=>`mission:${k}:${weekKey()}`;
 const claimed=ref=>S.prem.ledger.some(l=>l.ref===ref);
 /* premium actions need a real (non-guest) account */
 function needMember(fn){needLogin(()=>{if(S.user.anon){S.after=fn;openModal({type:'link',why:'premium'});return}fn()})}
-const premErr=e=>{const m=String((e&&e.message)||'');if(/cap/.test(m))return t('เดือนนี้รับเหรียญจากภารกิจครบ 300 แล้ว','You’ve reached this month’s 300-coin mission limit');if(/not enough/.test(m))return t('เหรียญไม่พอ','Not enough coins');if(/duplicate|23505/.test(m)||e&&e.code==='23505')return t('รับไปแล้ว','Already claimed');if(/plus required/.test(m))return t('ต้องเป็นสมาชิก Plus ก่อน','You need Plus first');if(/max 2/.test(m))return t('เปิดคำถามค้างได้ไม่เกิน 2 ข้อ','You can have at most 2 open questions');if(/quota/.test(m))return t('สิทธิ์ถามฟรีเดือนนี้หมดแล้ว','No free questions left this month');return t('ทำรายการไม่สำเร็จ ลองใหม่อีกครั้ง','Something went wrong. Please try again.')};
+const premErr=e=>{const m=String((e&&e.message)||'');if(e&&e.code)console.warn('[Maadoo Job] premium error:',e.code,e.message);if(e&&(e.code==='PGRST205'||e.code==='42P01'||/does not exist|schema cache/.test(m)))return t('ยังไม่ได้ตั้งค่าตารางพรีเมียมใน Supabase (รัน SQL)','Premium tables aren’t set up in Supabase yet (run the SQL)');if(/invalid plus coins/.test(m))return t('ยังไม่ได้เป็น Plus ในระบบ จึงรับเหรียญ Plus ไม่ได้','Plus isn’t active on your account yet, so the Plus coins can’t be added');if(/profile/.test(m))return t('สร้างโปรไฟล์ไม่สำเร็จ ลองออกจากระบบแล้วเข้าใหม่','Couldn’t create your profile. Try logging out and in again');if(/cap/.test(m))return t('เดือนนี้รับเหรียญจากภารกิจครบ 300 แล้ว','You’ve reached this month’s 300-coin mission limit');if(/not enough/.test(m))return t('เหรียญไม่พอ','Not enough coins');if(/duplicate|23505/.test(m)||e&&e.code==='23505')return t('รับไปแล้ว','Already claimed');if(/plus required/.test(m))return t('ต้องเป็นสมาชิก Plus ก่อน','You need Plus first');if(/max 2/.test(m))return t('เปิดคำถามค้างได้ไม่เกิน 2 ข้อ','You can have at most 2 open questions');if(/quota/.test(m))return t('สิทธิ์ถามฟรีเดือนนี้หมดแล้ว','No free questions left this month');return t('ทำรายการไม่สำเร็จ ลองใหม่อีกครั้ง','Something went wrong. Please try again.')};
+async function ensureProfile(){const r=await SB.from('profiles').select('id').eq('id',S.user.id).maybeSingle();if(r.error)throw r.error;if(r.data)return;
+ const ins=await SB.from('profiles').insert({id:S.user.id});if(ins.error&&ins.error.code!=='23505')throw ins.error}
 async function refreshCoins(){if(!sbLive())return;try{const {data}=await SB.from('profiles').select('coins,plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle();if(data){S.prem.coins=data.coins|0;S.prem.plusUntil=data.plus_until?Date.parse(data.plus_until):0;S.prem.freeClaimed=!!data.free_month_claimed}}catch(e){}}
 /* add a coin ledger entry (mirrors the rules enforced in supabase/setup.sql) */
 async function addCoins(delta,kind,ref){const P=S.prem;
@@ -1614,18 +1616,19 @@ async function addCoins(delta,kind,ref){const P=S.prem;
  if(['mission','review'].includes(kind)&&missionEarned()+delta>MISSION_CAP)throw {message:'cap'};
  if(kind==='spend'&&P.coins+delta<0)throw {message:'not enough'};
  const status=kind==='review'?'pending':'ok';let id='l-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),at=Date.now();
- if(sbLive()){const {data,error}=await SB.from('coin_ledger').insert({delta,kind,ref:ref||null}).select('id,created_at,status');if(error)throw error;id=data[0].id;at=Date.parse(data[0].created_at)||at;
+ if(sbLive()){await ensureProfile();const {data,error}=await SB.from('coin_ledger').insert({delta,kind,ref:ref||null}).select('id,created_at,status');if(error)throw error;if(!data||!data.length)throw {message:'ledger not saved'};id=data[0].id;at=Date.parse(data[0].created_at)||at;
   P.ledger.unshift({id,delta,kind,ref,status:data[0].status,at});await refreshCoins()}
  else{P.ledger.unshift({id,delta,kind,ref,status,at});if(status==='ok')P.coins+=delta;
   else setTimeout(()=>{const l=P.ledger.find(v=>v.id===id);if(l&&l.status==='pending'){l.status='ok';P.coins+=l.delta;toast(t(`รีวิวผ่านการตรวจแล้ว (จำลอง) +${l.delta} เหรียญ`,`Review approved (simulated) +${l.delta} coins`));rerender()}},6000)}
  return id}
 async function setPlusUntil(until,extra){const P=S.prem;
- if(sbLive()){const upd=Object.assign({plus_until:new Date(until).toISOString()},extra||{});const {error}=await SB.from('profiles').update(upd).eq('id',S.user.id);if(error)throw error}
- P.plusUntil=until;if(extra&&extra.free_month_claimed)P.freeClaimed=true;await grantPlusCoins()}
-async function grantPlusCoins(){if(!isPlus())return;const ref='plus:'+monthKey();if(claimed(ref))return;try{await addCoins(100,'plus',ref)}catch(e){}}
+ if(sbLive()){await ensureProfile();const upd=Object.assign({plus_until:new Date(until).toISOString()},extra||{});
+  const {data,error}=await SB.from('profiles').update(upd).eq('id',S.user.id).select('plus_until');if(error)throw error;if(!data||!data.length)throw {message:'profile not updated'}}
+ P.plusUntil=until;if(extra&&extra.free_month_claimed)P.freeClaimed=true;return grantPlusCoins()}
+async function grantPlusCoins(){if(!isPlus())return 0;const ref='plus:'+monthKey();if(claimed(ref))return 0;try{await addCoins(100,'plus',ref);return 100}catch(e){console.warn('[Maadoo Job] monthly Plus coins not added:',e&&(e.code||''),e&&(e.message||e));if(!(e&&e.code==='23505'))toast(premErr(e));return 0}}
 async function loadPrem(){const P=S.prem;if(!sbLive()){P.loaded=true;return}
  try{let {data}=await SB.from('profiles').select('coins,plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle();
-  if(!data){await SB.from('profiles').insert({});({data}=await SB.from('profiles').select('coins,plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle())}
+  if(!data){await ensureProfile();({data}=await SB.from('profiles').select('coins,plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle())}
   if(data){P.coins=data.coins|0;P.plusUntil=data.plus_until?Date.parse(data.plus_until):0;P.freeClaimed=!!data.free_month_claimed}
   const l=await SB.from('coin_ledger').select('id,delta,kind,ref,status,created_at').order('created_at',{ascending:false}).limit(200);
   if(!l.error)P.ledger=(l.data||[]).map(r=>({id:r.id,delta:r.delta,kind:r.kind,ref:r.ref,status:r.status,at:Date.parse(r.created_at)||0}));
@@ -1646,18 +1649,18 @@ function payModal(m,head){const busy=m.step==='processing';
  <button class="btn y big" data-paynow ${busy?'disabled':''}>${busy?t('กำลังชำระ (จำลอง)…','Processing (simulated)…'):t(`จ่าย ${fmt(m.amount)} บาท (จำลอง)`,`Pay ${fmt(m.amount)} THB (simulated)`)}</button>`}
 async function payNow(){const m=S.modal;if(!m||m.type!=='pay'||m.step!=='form')return;m.step='processing';renderModal();await new Promise(r=>setTimeout(r,1100));
  try{
-  if(m.what==='plus'){const pl=PLANS[m.plan];await setPlusUntil(Math.max(Date.now(),S.prem.plusUntil)+pl.days*DAY)}
+  if(m.what==='plus'){const pl=PLANS[m.plan];m.gotCoins=await setPlusUntil(Math.max(Date.now(),S.prem.plusUntil)+pl.days*DAY)}
   else if(m.what==='topup'){await addCoins(m.coins,'topup')}
   else if(m.what==='book'){if(m.coinsUsed)await addCoins(-m.coinsUsed,'spend');finishBooking(m.mid,m.slot)}
  }catch(e){m.step='form';renderModal();toast(premErr(e));return}
  m.step='done';if(S.modal===m)renderModal();render();
- if(m.what==='plus')toast(t('ยินดีต้อนรับสู่ Maadoo Plus ✨ +100 เหรียญ','Welcome to Maadoo Plus ✨ +100 coins'));else if(m.what==='topup')toast(t(`เติม ${m.coins} เหรียญแล้ว`,`Added ${m.coins} coins`))}
+ if(m.what==='plus')toast(m.gotCoins?t('ยินดีต้อนรับสู่ Maadoo Plus ✨ +100 เหรียญ','Welcome to Maadoo Plus ✨ +100 coins'):t('ยินดีต้อนรับสู่ Maadoo Plus ✨','Welcome to Maadoo Plus ✨'));else if(m.what==='topup')toast(t(`เติม ${m.coins} เหรียญแล้ว`,`Added ${m.coins} coins`))}
 function finishBooking(mid,slot){const mt=MENTORS.find(v=>v.id===mid);S.booked.push({id:newBid(),m:mt,mid:mt.id,slot,st:'wait',rid:null});addPoints(10);
  pushNotif('📅',`นัดคุยกับ${mt.name[0]} ${SLOTS[slot][0]}`,`Session with ${mt.name[1]}, ${SLOTS[slot][1]}`,['me'])}
 async function claimFreeMonth(){needMember(async()=>{if(S.prem.freeClaimed||S.myReviews.length<3)return;
- try{await setPlusUntil(Math.max(Date.now(),S.prem.plusUntil)+30*DAY,{free_month_claimed:true});render();toast(t('รับ Plus ฟรี 1 เดือนแล้ว ✨','Free month of Plus unlocked ✨'))}catch(e){toast(premErr(e))}})}
+ try{await setPlusUntil(Math.max(Date.now(),S.prem.plusUntil)+30*DAY,{free_month_claimed:true});await refreshCoins();render();toast(t('รับ Plus ฟรี 1 เดือนแล้ว ✨','Free month of Plus unlocked ✨'))}catch(e){toast(premErr(e))}})}
 async function claimMission(k){needMember(async()=>{const ms=MISSIONS.find(v=>v.k===k);if(missionProgress(k)<ms.need)return;
- try{await addCoins(ms.coins,ms.kind,missionRef(k));render();toast(ms.kind==='review'?t(`+${ms.coins} เหรียญ รอตรวจรีวิว`,`+${ms.coins} coins, waiting for review approval`):t(`+${ms.coins} เหรียญ!`,`+${ms.coins} coins!`))}catch(e){toast(premErr(e))}})}
+ try{await addCoins(ms.coins,ms.kind,missionRef(k));render();toast(ms.kind==='review'?t(`+${ms.coins} เหรียญ จะเข้ากระเป๋าหลังรีวิวผ่านการตรวจ`,`+${ms.coins} coins will arrive once your review is approved`):t(`+${ms.coins} เหรียญ!`,`+${ms.coins} coins!`))}catch(e){toast(premErr(e))}})}
 function invite(){needMember(async()=>{const url=location.origin+location.pathname+'?ref='+(S.user.id||S.user.email||'demo').toString().slice(0,8);let ok=false;
  try{if(navigator.share){await navigator.share({title:'Maadoo Job',text:t('มาดูรีวิวที่ทำงานก่อนไปทำงานกัน','Check workplaces before you go'),url});ok=true}}catch(e){}
  if(!ok){try{await navigator.clipboard.writeText(url);ok=true}catch(e){}}
