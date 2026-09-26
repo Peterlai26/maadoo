@@ -36,7 +36,7 @@
   --sky:#CFEAFF; --sky-2:#EAF5FF; --orange:#FF9A1F; --orange-ink:#FFFFFF; --orange-soft:#FFE7C7; --blush:#FFB9B3;
   --good:#1C9D7F; --good-bg:#DCF5EC; --mid:#C27A12; --mid-bg:#FFF1D3; --bad:#E0506A; --bad-bg:#FFE3E8;
   --shadow:0 2px 0 rgba(13,60,148,.06),0 10px 24px rgba(47,111,214,.10);
-  --tag:#FF9A1F; --tag-shade:#D97A08; --tag-ink:#FFFFFF; --logo-bg:transparent;
+  --star:#FFB800; --tag:#FF9A1F; --tag-shade:#D97A08; --tag-ink:#FFFFFF; --logo-bg:transparent;
   --display:"Mali",system-ui,sans-serif; --body:"Anuphan",system-ui,sans-serif; --mono:"Anuphan",system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -313,6 +313,45 @@ textarea.field{min-height:84px;resize:vertical}
 @keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
 @media(prefers-reduced-motion:reduce){.dd-menu.sheet{animation:none}}
 body.sheet-open{overflow:hidden}
+.s-rate{position:absolute;top:12px;left:12px;z-index:1;display:inline-flex;align-items:baseline;gap:4px;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:99px;padding:5px 12px 5px 10px;box-shadow:var(--shadow);font-family:var(--body);cursor:pointer;line-height:1.1}
+.s-rate .st{color:var(--star);font-size:19px;align-self:center;text-shadow:0 1px 0 rgba(0,0,0,.12)}
+.s-rate b{font-family:var(--display);font-size:21px;font-weight:700;color:var(--ink)}
+.s-rate small{font-size:12px;color:var(--ink-2)}
+.s-rate.new b{font-size:14px;color:var(--navy)}
+.s-rate:hover{border-color:var(--star)}
+.s-rate.inline{position:static;box-shadow:none;padding:3px 10px 3px 8px}.s-rate.inline b{font-size:17px}.s-rate.inline .st{font-size:16px}
+.s-top{font-size:13px;font-weight:600;color:var(--orange);margin-top:-4px}
+:root[data-theme="dark"] .s-top{color:var(--star)}
+.stars-g{display:inline-flex;gap:1px;color:var(--line);font-size:18px;line-height:1}.stars-g i{font-style:normal}.stars-g .on{color:var(--star)}
+.stars-g .half{background:linear-gradient(90deg,var(--star) 50%,var(--line) 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stars-g.sm{font-size:15px}
+.modal.wide{width:min(560px,100%)}
+.mr-sum{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:var(--sky-2);border:1.5px solid var(--line);border-radius:20px;padding:14px 16px}
+.mr-avg{display:grid;justify-items:center;gap:2px;min-width:92px}.mr-avg b{font-family:var(--display);font-size:40px;line-height:1;color:var(--ink)}.mr-avg small{font-size:12px;color:var(--ink-2);text-align:center}
+.mr-dist{flex:1;min-width:170px;display:grid;gap:4px}
+.mr-bar{display:grid;grid-template-columns:28px 1fr 22px;gap:8px;align-items:center;font-size:12px;color:var(--ink-2)}
+.mr-bar i{height:8px;border-radius:99px;background:var(--line);overflow:hidden}.mr-bar em{display:block;height:100%;background:var(--star);border-radius:99px}
+.mr-bar small{text-align:right}
+.mr-list{display:grid;gap:10px}
+.mrv{border:1.5px solid var(--line);border-radius:18px;padding:12px 14px;display:grid;gap:6px;background:var(--surface)}
+.mrv p{margin:0;font-size:14px}.mr-tags{font-size:12.5px;color:var(--orange);font-weight:600}
+:root[data-theme="dark"] .mr-tags{color:var(--star)}
+.rstars-w{display:grid;justify-items:center;gap:4px}
+.rstars{display:flex;gap:4px;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:16px;padding:2px 6px;cursor:pointer}
+.rst{width:48px;height:48px;display:grid;place-items:center;font-size:40px;line-height:1;color:var(--line);transition:transform .12s,color .12s}
+.rst.on{color:var(--star);text-shadow:0 2px 0 rgba(0,0,0,.1)}
+.rstars:active .rst.on{transform:scale(1.08)}
+.rst-lbl{font-size:14px;font-weight:600;color:var(--ink-2)}
+.mtags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.mtag{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:8px 14px;font-weight:500;min-height:40px}
+.mtag[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:var(--blue-ink)}
+.mtag[aria-pressed="true"]::before{content:"✓ "}
+.btn.sm{padding:7px 14px;font-size:13.5px}
+.li.bk{flex-wrap:wrap}.bk-t{display:grid;flex:1;min-width:120px}.bk-t .muted{font-size:13px}
+.bk-a{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+@media(max-width:600px){.modal-bg.sheet-m{place-items:end stretch;padding:0}
+ .modal-bg.sheet-m .modal{width:100%;border-radius:24px 24px 0 0;max-height:88dvh;border-bottom:0;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}.modal-bg.sheet-m.in .modal{animation:sheetUp .22s ease-out}}
+@media(prefers-reduced-motion:reduce){.modal-bg.sheet-m.in .modal{animation:none}}
 .btn.danger{background:var(--bad);color:var(--surface);box-shadow:none}
 .otp-code{font-size:24px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
 .otp-links{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center}
@@ -377,7 +416,7 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 :root[data-theme="dark"] .s-hero{filter:saturate(.9)}
 .s-ava{font-size:104px;line-height:1;filter:drop-shadow(0 8px 12px rgba(13,60,148,.18))}
 .s-price{position:absolute;bottom:12px;right:12px;background:var(--surface);color:var(--navy);font-weight:600;font-size:13px;padding:4px 12px;border-radius:99px;box-shadow:var(--shadow)}
-.stamp{position:absolute;top:22px;padding:2px 14px;border:3px solid;border-radius:12px;font-family:var(--display);font-weight:700;font-size:24px;opacity:0;background:rgba(255,255,255,.7);z-index:2}
+.stamp{position:absolute;top:22px;padding:2px 14px;border:3px solid;border-radius:12px;font-family:var(--display);font-weight:700;font-size:24px;opacity:0;background:rgba(255,255,255,.7);z-index:2;pointer-events:none}
 .stamp.like{left:18px;color:#1C9D7F;border-color:#1C9D7F;transform:rotate(-14deg)}
 .stamp.nope{right:18px;color:#E0506A;border-color:#E0506A;transform:rotate(14deg)}
 .s-info{padding:16px 18px;display:grid;gap:8px;align-content:start}
@@ -599,7 +638,7 @@ html,body{overflow-x:clip}
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const S={lang:store.get('maadoo-lang')||'th',skin:store.get('maadoo-skin')||(store.get('maadoo-theme')==='dark'||(!store.get('maadoo-theme')&&matchMedia('(prefers-color-scheme: dark)').matches)?'night':'default'),themeOpen:false,coach:false,view:'home',co:null,tab:'overview',q:'',unlocked:false,follow:{},helped:{},poll:null,
  form:null,done:null,quiz:{i:0,a:[]},sal:{role:0,v:'22000'},askText:'',askTag:0,filter:-1,
- user:null,after:null,modal:null,notifOpen:false,saved:{},applied:{},booked:[],myReviews:[],dbRev:{},dbState:'idle',dbAt:0,sending:false,asked:0,
+ user:null,after:null,modal:null,mdb:{},notifOpen:false,saved:{},applied:{},booked:[],myReviews:[],dbRev:{},dbState:'idle',dbAt:0,sending:false,asked:0,
  jobF:{type:'all',ind:'all',min:0},askTab:'swipe',ptApps:{},ptDay:'all',jobTab:'full',ptForm:{title:'',kind:'onsite',day:'today',when:'',pay:'',unit:'h',need:'1',how:'cash',req:'',boost:'none',ok:false},ptRate:{s:0,tags:{}},coOnlyJobs:false,sw:{liked:[],skipped:[],topic:'all'},bd:{sort:'hot',tag:-1,kind:'ask',open:{p1:true},anon:true},pl:{}};
 const t=(th,en)=>S.lang==='en'?en:th;
 const x=v=>Array.isArray(v)?(S.lang==='en'?v[1]:v[0]):v;
@@ -620,7 +659,7 @@ function initSB(){
  try{SB=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){SB=null;return}
  if(S.user&&!S.user.id){S.user=null;S.myReviews=[]}
  SB.auth.onAuthStateChange((ev,session)=>{setTimeout(()=>sbUser(ev,session),0)});
- loadApproved();rerender();
+ loadApproved();loadMentorReviews();rerender();
 }
 function mkUser(u,prev){
  const anon=!!u.is_anonymous,em=u.email||'',dn=u.user_metadata&&u.user_metadata.display_name;
@@ -630,12 +669,12 @@ function mkUser(u,prev){
 }
 async function sbUser(ev,session){
  const u=session&&session.user;
- if(!u){if(S.user&&S.user.id){S.user=null;S.myReviews=[];rerender()}return}
+ if(!u){if(S.user&&S.user.id){S.user=null;S.myReviews=[];forgetMine();rerender()}return}
  const same=S.user&&S.user.id===u.id;
  if(same&&S.user.anon===!!u.is_anonymous&&S.user.email===(u.email||''))return;
  S.user=mkUser(u,same?S.user:null);
  if(same){rerender();return}
- await loadMine();loadApproved();
+ await loadMine();loadApproved();loadMentorReviews();
  if(ev==='SIGNED_IN'){if(S.modal&&(S.modal.type==='login'||S.modal.type==='otp'))S.modal=null;const fn=S.after;S.after=null;rerender();
   toast(S.user.anon?t('เข้าใช้แบบชั่วคราวแล้ว · ถ้าออกจากระบบ บัญชีนี้จะหายไป','You’re in as a guest · this account is gone once you log out'):t(`สวัสดี ${S.user.name}! รับ 20 แต้มต้อนรับ`,`Hi ${S.user.name}! +20 welcome points`));if(fn)fn()}
  else rerender();
@@ -838,15 +877,64 @@ const JOBS=[
 ];
 const TOPICS={intern:['ฝึกงาน','Internships'],resume:['เรซูเม่ & สัมภาษณ์','Resume & interviews'],salary:['เงินเดือน','Salary'],switch:['ย้ายสาย','Career switch'],rights:['สิทธิแรงงาน','Labor rights']};
 const MENTORS=[
- {id:'m1',name:['พี่มิ้นท์','Mint'],role:['QA Officer · 4 ปี','QA Officer · 4 yrs'],at:['ไบโอเฟรช ฟู้ดส์','BioFresh Foods'],ava:'🧪',bg:'#FFE08A',rating:4.9,n:86,price:129,top:['intern','resume'],tags:[['ฝึกงาน QC','QC internships'],['HACCP','HACCP'],['เรซูเม่','Resume']],bio:['เคยเป็นเด็กฝึกงานที่นี่มาก่อน ช่วยเตรียมตัวฝึกงานสายอาหารได้ทุกขั้นตอน','I started here as an intern. I can walk you through food-industry internships step by step.']},
- {id:'m2',name:['พี่ต้น','Ton'],role:['QC Microbiologist · 6 ปี','QC Microbiologist · 6 yrs'],at:['นอร์ธสตาร์ ฟาร์มา','Northstar Pharma'],ava:'💊',bg:'#C9DBFF',rating:4.8,n:54,price:179,top:['salary','switch'],tags:[['สายยา','Pharma careers'],['ต่อรองเงินเดือน','Salary talks']],bio:['ย้ายจากสายอาหารมาสายยา เงินเดือนขึ้น 40% เล่าให้ฟังได้หมดว่าทำยังไง','Moved from food to pharma with a 40% raise. Happy to share exactly how.']},
- {id:'m3',name:['พี่แพร','Prae'],role:['Data Analyst · 3 ปี','Data Analyst · 3 yrs'],at:['คลาวด์บัน เทค','Cloudbun Tech'],ava:'📊',bg:'#FFD0BE',rating:5.0,n:41,price:99,top:['switch','resume'],tags:[['ย้ายสายไป Data','Switching to data'],['ซ้อมสัมภาษณ์','Mock interviews']],bio:['จบวิทย์แต่ย้ายมาทำ Data ได้ในปีเดียว มีแผนเรียนให้ดูเลย','Science grad who moved into data within a year. I’ll share my study plan.']},
- {id:'m4',name:['พี่โอม','Ohm'],role:['HR Business Partner · 8 ปี','HR Business Partner · 8 yrs'],at:['บริษัทค้าปลีก','Retail company'],ava:'🤝',bg:'#DDF0B5',rating:4.7,n:120,price:249,top:['resume','rights','salary'],tags:[['ตรวจเรซูเม่','Resume review'],['สิทธิแรงงาน','Labor rights']],bio:['อ่านเรซูเม่มาแล้วกว่า 5,000 ฉบับ รู้ว่า HR มองหาอะไรใน 10 วินาทีแรก','I’ve read 5,000+ resumes and know what HR looks for in the first 10 seconds.']},
- {id:'m5',name:['พี่เฟิร์น','Fern'],role:['Fermentation Lead · 5 ปี','Fermentation Lead · 5 yrs'],at:['กรีนแคป บริวอรี่','Greencap Brewery'],ava:'🍺',bg:'#FFE3B8',rating:4.9,n:33,price:149,top:['intern','switch'],tags:[['งานหมัก','Fermentation'],['สตาร์ทอัพเครื่องดื่ม','Drink startups']],bio:['ชอบงานหมักแต่ไม่รู้จะเริ่มตรงไหน? มาคุยกัน ตั้งแต่ฝึกงานถึงเปิดแบรนด์','Love fermentation but not sure where to start? From internships to launching a brand.']},
- {id:'m6',name:['พี่บอส','Boss'],role:['Lab Supervisor · 7 ปี','Lab Supervisor · 7 yrs'],at:['สยามแล็บ อนาลิติกส์','Siam Lab Analytics'],ava:'🔬',bg:'#BDEBDD',rating:4.6,n:72,price:199,top:['intern','rights'],tags:[['ISO 17025','ISO 17025'],['ชีวิตคนแล็บ','Lab life']],bio:['คุมแล็บมา 7 ปี ถามได้ทั้งเรื่องงาน OT และการรับมือหัวหน้า','7 years running a lab. Ask me about the work, overtime and handling bosses.']},
- {id:'m7',name:['พี่จูน','June'],role:['Product Designer · 4 ปี','Product Designer · 4 yrs'],at:['คลาวด์บัน เทค','Cloudbun Tech'],ava:'🎨',bg:'#FFD3E2',rating:4.9,n:28,price:129,top:['switch','resume'],tags:[['พอร์ตโฟลิโอ','Portfolio'],['UX/UI','UX/UI']],bio:['จากนักศึกษาชีวะสู่ดีไซเนอร์ ช่วยทำพอร์ตให้ดูโปรได้','From biology student to designer. I’ll help your portfolio look pro.']},
- {id:'m8',name:['พี่นัท','Nut'],role:['Recruiter · 5 ปี','Recruiter · 5 yrs'],at:['บริษัทจัดหางาน','Recruitment agency'],ava:'🎯',bg:'#D9D3FF',rating:4.8,n:95,price:179,top:['salary','resume'],tags:[['ต่อรองเงินเดือน','Negotiation'],['หางานจบใหม่','First job hunt']],bio:['อยู่ฝั่งคนจ้างมาตลอด บอกได้ว่าควรขอเงินเดือนเท่าไหร่ถึงไม่ขาดทุน','I’ve always sat on the hiring side. I’ll tell you what to ask for.']},
+ {id:'m1',name:['พี่มิ้นท์','Mint'],role:['QA Officer · 4 ปี','QA Officer · 4 yrs'],at:['ไบโอเฟรช ฟู้ดส์','BioFresh Foods'],ava:'🧪',bg:'#FFE08A',n:86,price:129,top:['intern','resume'],tags:[['ฝึกงาน QC','QC internships'],['HACCP','HACCP'],['เรซูเม่','Resume']],bio:['เคยเป็นเด็กฝึกงานที่นี่มาก่อน ช่วยเตรียมตัวฝึกงานสายอาหารได้ทุกขั้นตอน','I started here as an intern. I can walk you through food-industry internships step by step.']},
+ {id:'m2',name:['พี่ต้น','Ton'],role:['QC Microbiologist · 6 ปี','QC Microbiologist · 6 yrs'],at:['นอร์ธสตาร์ ฟาร์มา','Northstar Pharma'],ava:'💊',bg:'#C9DBFF',n:54,price:179,top:['salary','switch'],tags:[['สายยา','Pharma careers'],['ต่อรองเงินเดือน','Salary talks']],bio:['ย้ายจากสายอาหารมาสายยา เงินเดือนขึ้น 40% เล่าให้ฟังได้หมดว่าทำยังไง','Moved from food to pharma with a 40% raise. Happy to share exactly how.']},
+ {id:'m3',name:['พี่แพร','Prae'],role:['Data Analyst · 3 ปี','Data Analyst · 3 yrs'],at:['คลาวด์บัน เทค','Cloudbun Tech'],ava:'📊',bg:'#FFD0BE',n:41,price:99,top:['switch','resume'],tags:[['ย้ายสายไป Data','Switching to data'],['ซ้อมสัมภาษณ์','Mock interviews']],bio:['จบวิทย์แต่ย้ายมาทำ Data ได้ในปีเดียว มีแผนเรียนให้ดูเลย','Science grad who moved into data within a year. I’ll share my study plan.']},
+ {id:'m4',name:['พี่โอม','Ohm'],role:['HR Business Partner · 8 ปี','HR Business Partner · 8 yrs'],at:['บริษัทค้าปลีก','Retail company'],ava:'🤝',bg:'#DDF0B5',n:120,price:249,top:['resume','rights','salary'],tags:[['ตรวจเรซูเม่','Resume review'],['สิทธิแรงงาน','Labor rights']],bio:['อ่านเรซูเม่มาแล้วกว่า 5,000 ฉบับ รู้ว่า HR มองหาอะไรใน 10 วินาทีแรก','I’ve read 5,000+ resumes and know what HR looks for in the first 10 seconds.']},
+ {id:'m5',name:['พี่เฟิร์น','Fern'],role:['Fermentation Lead · 5 ปี','Fermentation Lead · 5 yrs'],at:['กรีนแคป บริวอรี่','Greencap Brewery'],ava:'🍺',bg:'#FFE3B8',n:33,price:149,top:['intern','switch'],tags:[['งานหมัก','Fermentation'],['สตาร์ทอัพเครื่องดื่ม','Drink startups']],bio:['ชอบงานหมักแต่ไม่รู้จะเริ่มตรงไหน? มาคุยกัน ตั้งแต่ฝึกงานถึงเปิดแบรนด์','Love fermentation but not sure where to start? From internships to launching a brand.']},
+ {id:'m6',name:['พี่บอส','Boss'],role:['Lab Supervisor · 7 ปี','Lab Supervisor · 7 yrs'],at:['สยามแล็บ อนาลิติกส์','Siam Lab Analytics'],ava:'🔬',bg:'#BDEBDD',n:72,price:199,top:['intern','rights'],tags:[['ISO 17025','ISO 17025'],['ชีวิตคนแล็บ','Lab life']],bio:['คุมแล็บมา 7 ปี ถามได้ทั้งเรื่องงาน OT และการรับมือหัวหน้า','7 years running a lab. Ask me about the work, overtime and handling bosses.']},
+ {id:'m7',name:['พี่จูน','June'],role:['Product Designer · 4 ปี','Product Designer · 4 yrs'],at:['คลาวด์บัน เทค','Cloudbun Tech'],ava:'🎨',bg:'#FFD3E2',n:28,price:129,top:['switch','resume'],tags:[['พอร์ตโฟลิโอ','Portfolio'],['UX/UI','UX/UI']],bio:['จากนักศึกษาชีวะสู่ดีไซเนอร์ ช่วยทำพอร์ตให้ดูโปรได้','From biology student to designer. I’ll help your portfolio look pro.']},
+ {id:'m8',name:['พี่นัท','Nut'],role:['Recruiter · 5 ปี','Recruiter · 5 yrs'],at:['บริษัทจัดหางาน','Recruitment agency'],ava:'🎯',bg:'#D9D3FF',n:95,price:179,top:['salary','resume'],tags:[['ต่อรองเงินเดือน','Negotiation'],['หางานจบใหม่','First job hunt']],bio:['อยู่ฝั่งคนจ้างมาตลอด บอกได้ว่าควรขอเงินเดือนเท่าไหร่ถึงไม่ขาดทุน','I’ve always sat on the hiring side. I’ll tell you what to ask for.']},
+ {id:'m9',name:['พี่ฝน','Fon'],role:['QA Associate · 1 ปี','QA Associate · 1 yr'],at:['เมกะมาร์ท รีเทล','Megamart Retail'],ava:'🌱',bg:'#D4F2C4',n:3,price:89,top:['intern','switch'],tags:[['เพิ่งเริ่มงาน','Just started'],['QA อาหารสด','Fresh food QA']],bio:['เพิ่งจบมาปีเดียว ยังจำได้ทุกขั้นตอนตอนหางานแรก','Graduated a year ago and still remember every step of the first job hunt.']},
 ];
+/* mentor reviews (fictional samples). The rating on every card is computed from these + real reviews, so it always matches. */
+const MTAGS={direct:['ตรงประเด็น','To the point','ตรงประเด็น','To the point'],kind:['ใจดีเป็นกันเอง','Kind & friendly','ใจดี','Kind'],real:['ให้ข้อมูลจริง','Honest, real info','ข้อมูลจริง','Real info'],ontime:['ตรงเวลา','On time','ตรงเวลา','On time'],resume:['ช่วยเรื่องเรซูเม่','Resume help','ช่วยเรซูเม่','Resume help'],recommend:['แนะนำต่อได้','Would recommend','แนะนำต่อ','Recommend']};
+const WHO={f4:['นักศึกษาปี 4 · สายอาหาร','Year 4 student · Food science'],f3:['นักศึกษาปี 3 · สายอาหาร','Year 3 student · Food science'],m4:['นักศึกษาปี 4 · จุลชีวะ','Year 4 student · Microbiology'],m2:['นักศึกษาปี 2 · จุลชีวะ','Year 2 student · Microbiology'],c4:['นักศึกษาปี 4 · เคมี','Year 4 student · Chemistry'],b3:['นักศึกษาปี 3 · บริหาร','Year 3 student · Business'],s4:['นักศึกษาปี 4 · สถิติ','Year 4 student · Statistics'],g1:['จบใหม่ 1 ปี · สายวิทย์','1 year after graduating · Science'],g0:['เพิ่งจบ · วิศวะ','New grad · Engineering'],d3:['นักศึกษาปี 3 · ออกแบบ','Year 3 student · Design'],p5:['นักศึกษาปี 5 · เภสัช','Year 5 student · Pharmacy']};
+const MON={9:['ก.ย. 2026','Sep 2026'],8:['ส.ค. 2026','Aug 2026'],7:['ก.ค. 2026','Jul 2026'],6:['มิ.ย. 2026','Jun 2026'],5:['พ.ค. 2026','May 2026']};
+const R=(s,tags,th,en,who,mo,reply)=>({s,tags,c:[th,en],who:WHO[who],d:MON[mo],reply:reply||null});
+const MREV={
+ m1:[R(5,['direct','resume'],'พี่ช่วยแก้เรซูเม่ฝึกงาน QC จนได้สัมภาษณ์ 2 ที่ในสัปดาห์เดียว','She fixed my QC internship resume and I got two interviews in one week','f4',9,['ดีใจด้วยนะ! ขอให้ได้ที่ที่ชอบเลย','So happy for you! Hope you land the one you like']),
+  R(5,['kind','real'],'เล่าชีวิตฝึกงานจริง ๆ ไม่อวย ทำให้รู้ว่าต้องเตรียมอะไร','Told me what the internship is really like, no sugar-coating','f3',9),
+  R(5,['direct','ontime'],'ตรงเวลา ตอบครบทุกคำถาม HACCP','On time and answered every HACCP question','m4',8),
+  R(4,['kind'],'ใจดีมาก แต่อยากให้มีเวลามากกว่านี้','Very kind, I just wished we had more time','f3',8),
+  R(5,['recommend','resume'],'คุ้มค่ามาก แนะนำเพื่อนไปอีก 2 คน','Totally worth it, I already sent two friends','f4',7)],
+ m2:[R(5,['real','direct'],'เล่าตัวเลขเงินเดือนสายยาแบบละเอียด ช่วยตัดสินใจย้ายสายได้เลย','Walked me through real pharma salary numbers, helped me decide to switch','g1',9),
+  R(5,['direct'],'ต่อรองเงินเดือนตามที่พี่สอน ได้เพิ่มมา 3,000','Used his negotiation tips and got 3,000 more','g1',8,['เก่งมาก! จำไว้ว่าเราขอได้เสมอ','Great job! Remember you can always ask']),
+  R(4,['real','ontime'],'ข้อมูลแน่น แต่พูดเร็วไปนิด','Packed with info, just talked a bit fast','p5',8),
+  R(5,['recommend'],'ถ้าจะเข้าสายยา ต้องคุยกับพี่ต้น','If you want pharma, talk to Ton','m4',7)],
+ m3:[R(5,['direct','resume'],'ได้แผนเรียน Data 6 เดือนมาเลย ใช้ได้จริง','Got a real 6-month data study plan','s4',9),
+  R(5,['kind','recommend'],'ซ้อมสัมภาษณ์ให้ 2 รอบ มั่นใจขึ้นเยอะ','Two rounds of mock interviews, I feel way more confident','b3',9),
+  R(5,['real'],'บอกตรง ๆ ว่าพอร์ตยังขาดอะไร','Told me honestly what my portfolio was missing','s4',8),
+  R(5,['ontime','direct'],'ตรงเวลา กระชับ ได้เนื้อหาเต็ม 30 นาที','On time and focused, a full 30 minutes of content','c4',7)],
+ m4:[R(5,['resume','direct'],'พี่อ่านเรซูเม่ 10 วินาทีแล้วชี้จุดผิดได้ทันที','Spotted my resume problems in about ten seconds','b3',9),
+  R(4,['real'],'รู้สิทธิแรงงานมากขึ้น แต่อยากให้มีเอกสารสรุปให้','Learned a lot about labor rights, would love a summary sheet','g0',9,['ขอบคุณที่บอกนะ ต่อไปจะส่งสรุปให้ทุกคนหลังคุย','Thanks for the tip, I’ll send a summary after every session now']),
+  R(5,['kind','resume'],'ใจดี ไม่ดุ แก้เรซูเม่ให้ละเอียดมาก','Kind, not scary at all, very detailed resume feedback','f4',8),
+  R(4,['ontime'],'ได้ข้อมูลดี แต่ราคาสูงไปนิดสำหรับนักศึกษา','Good info, a bit pricey for students','m2',8),
+  R(5,['recommend','real'],'HR ตัวจริง บอกเลยว่าบริษัทมองอะไร','A real HR pro who tells you what companies look for','g1',7),
+  R(5,['direct'],'ตอบคำถามยาก ๆ เรื่องลาออกได้ชัดเจน','Gave clear answers on tricky resignation questions','g1',6)],
+ m5:[R(5,['kind','real'],'คุยสนุกมาก ได้รู้จักงานหมักจริง ๆ','So fun to talk to, I learned what fermentation work is really like','f3',9),
+  R(5,['recommend'],'ช่วยหาที่ฝึกงานสายเครื่องดื่มให้ด้วย','Even helped me find a drinks internship','f4',8),
+  R(4,['direct'],'ดีมาก แต่สัญญาณเน็ตพี่หลุดนิดหน่อย','Great, though her connection dropped a little','m2',7,['ขอโทษด้วยน้า ย้ายมาคุยในห้องที่เน็ตดีแล้ว','Sorry about that! I moved to a room with better wifi'])],
+ m6:[R(5,['real','direct'],'เล่าเรื่อง OT ในแล็บตรง ๆ ช่วยตัดสินใจได้เยอะ','Honest about overtime in labs, really helped me decide','c4',9),
+  R(4,['ontime'],'ตรงเวลา ได้ข้อมูล ISO 17025 ครบ','On time, covered ISO 17025 well','m4',9),
+  R(4,['kind'],'ใจดี แต่อยากได้ตัวอย่างข้อสอบเข้างานมากกว่านี้','Kind, but I wanted more sample test questions','m2',8),
+  R(5,['recommend','real'],'ถ้าจะทำแล็บ ควรคุยก่อนสมัคร','Talk to him before applying to any lab','c4',8),
+  R(5,['direct'],'แนะนำวิธีรับมือหัวหน้าได้ใช้จริง','Gave practical tips for handling a tough boss','g1',7),
+  R(4,['real','ontime'],'ข้อมูลดี แต่ช่วงท้ายรีบไปหน่อย','Good info, the ending felt a bit rushed','m4',6),
+  R(5,['kind'],'พูดเพราะ ฟังเข้าใจง่าย','Friendly and easy to understand','m2',6)],
+ m7:[R(5,['resume','kind'],'พอร์ตดูโปรขึ้นมาก ได้งานดีไซน์แรกแล้ว!','My portfolio looks so much better, I got my first design job!','d3',9,['ยินดีด้วยมาก ๆ!','Huge congrats!']),
+  R(5,['direct'],'ชี้จุดที่ต้องแก้ในพอร์ตแบบชัดเจน','Pointed out exactly what to fix in my portfolio','d3',8),
+  R(5,['recommend','real'],'ย้ายสายจากชีวะได้เหมือนพี่ ขอบคุณมาก','I switched from biology just like her, thank you!','m4',7)],
+ m8:[R(5,['direct','real'],'บอกช่วงเงินเดือนที่ควรขอได้เป๊ะมาก','Told me exactly what salary range to ask for','g0',9),
+  R(5,['recommend'],'ได้ข้อเสนอจากที่ที่อยากไปแล้ว','I got an offer from my top choice','g0',9),
+  R(4,['resume','ontime'],'แก้เรซูเม่ดี แต่อยากได้ตัวอย่างอีเมลสมัครงาน','Good resume fixes, I also wanted a sample cover email','b3',8,['ส่งตัวอย่างให้ทางแชตแล้วนะ','I sent you a sample in chat']),
+  R(5,['kind','direct'],'เป็นกันเอง ถามอะไรก็ตอบ','Friendly, answered everything','s4',8),
+  R(5,['real'],'รู้ว่า recruiter มองอะไรจากใบสมัคร','Now I know what recruiters look for','g1',7),
+  R(4,['direct'],'ดีมาก แต่ 30 นาทีสั้นไปหน่อย','Great, 30 minutes just felt short','b3',6),
+  R(5,['recommend','kind'],'แนะนำให้ทุกคนที่หางานแรก','Recommended for anyone hunting for a first job','g0',6),
+  R(5,['resume'],'เรซูเม่ผ่านรอบแรกเพิ่มขึ้นเยอะ','My resume gets past the first round much more now','f4',5)],
+ m9:[R(5,['kind'],'พี่ใจดีมาก เล่าชีวิตงานประกันคุณภาพให้ฟังละเอียด','Very kind, explained QA work in detail','f3',9)]
+};
 const SLOTS=[['ส. 27 ก.ย. 10:00','Sat 27 Sep 10:00'],['ส. 27 ก.ย. 14:00','Sat 27 Sep 14:00'],['อา. 28 ก.ย. 19:00','Sun 28 Sep 19:00'],['อ. 30 ก.ย. 20:00','Tue 30 Sep 20:00']];
 const NOTIFS=[
  {ic:'📝',t:['มีรีวิวใหม่ของ คลาวด์บัน เทค','New review for Cloudbun Tech'],w:['5 นาทีที่แล้ว','5 min ago'],go:['company','cloudbun'],read:false},
@@ -1307,10 +1395,17 @@ function jobsFull(){
 function plusBanner(){if(S.user&&S.user.plus)return `<div class="plus"><div><h3>✦ ${t('คุณเป็นสมาชิก Maadoo Plus','You’re a Maadoo Plus member')}</h3><p>${t('ลด 20% ทุกการจองรุ่นพี่ และตรวจเรซูเม่ฟรีเดือนละ 1 ครั้ง','20% off every mentor session and one free resume review a month')}</p></div></div>`;
  return `<div class="plus"><div><h3>✦ Maadoo Plus · 99 ${t('บาท/เดือน','THB/mo')}</h3><p>${t('ลด 20% ทุกการจองรุ่นพี่ · ตรวจเรซูเม่ฟรีเดือนละ 1 ครั้ง · แจ้งเตือนงานก่อนใคร','20% off mentor sessions · 1 free resume review a month · early job alerts')}</p></div><button class="btn y" data-plus>${t('สมัคร Plus','Get Plus')}</button></div>`}
 function deckList(){const sw=S.sw;return MENTORS.filter(m=>(sw.topic==='all'||m.top.includes(sw.topic))&&!sw.liked.includes(m.id)&&!sw.skipped.includes(m.id))}
+function mRevs(m){return (S.mdb[m.id]||[]).slice().sort((a,b)=>b.at-a.at).concat(MREV[m.id]||[])}
+function mStat(m){const r=mRevs(m),n=r.length,tc={};r.forEach(v=>v.tags.forEach(g=>{if(MTAGS[g])tc[g]=(tc[g]||0)+1}));
+ return {n,avg:n?r.reduce((a,v)=>a+v.s,0)/n:0,dist:[5,4,3,2,1].map(k=>r.filter(v=>v.s===k).length),tc,top:Object.keys(tc).sort((a,b)=>tc[b]-tc[a]||Object.keys(MTAGS).indexOf(a)-Object.keys(MTAGS).indexOf(b))}}
+const starRow=(v,cls)=>`<span class="stars-g ${cls||''}" aria-hidden="true">${[1,2,3,4,5].map(i=>`<i class="${v>=i-.25?'on':v>=i-.75?'half':''}">★</i>`).join('')}</span>`;
+function mBadge(m,cls){const st=mStat(m),nw=st.n<3;
+ return `<button type="button" class="s-rate ${nw?'new':''} ${cls||''}" data-mrevs="${m.id}" aria-label="${nw?t('รุ่นพี่ใหม่ ดูรีวิว','New mentor, see reviews'):t(`คะแนน ${st.avg.toFixed(1)} จาก 5 จาก ${st.n} รีวิว ดูรีวิว`,`Rated ${st.avg.toFixed(1)} of 5 from ${st.n} reviews, see reviews`)}">${nw?`<b>✨ ${t('รุ่นพี่ใหม่','New mentor')}</b>`:`<span class="st">★</span><b>${st.avg.toFixed(1)}</b><small>(${st.n} ${t('รีวิว','reviews')})</small>`}</button>`}
+const mTopTags=m=>{const tp=mStat(m).top.slice(0,2);return tp.length?`<div class="s-top">${tp.map(g=>x([MTAGS[g][2],MTAGS[g][3]])).join(' · ')}</div>`:''};
 function mprice(m){return S.user&&S.user.plus?Math.round(m.price*.8):m.price}
-function scard(m,cls){return `<div class="scard ${cls}" data-mid="${m.id}"><div class="s-hero" style="background:linear-gradient(160deg,${m.bg},var(--surface))"><span class="stamp like">${t('สนใจ','LIKE')}</span><span class="stamp nope">${t('ข้าม','NOPE')}</span><span class="s-ava">${m.ava}</span><span class="s-price">${mprice(m)} ${t('บาท','THB')}/30 ${t('นาที','min')}</span></div>
- <div class="s-info"><h2>${x(m.name)} <span class="chip ver">✓</span></h2><div class="muted" style="font-size:14px">${x(m.role)} · ${x(m.at)}</div><p class="s-bio">“${x(m.bio)}”</p>
- <div class="row" style="gap:6px">${m.tags.map(g=>`<span class="chip">${x(g)}</span>`).join('')}</div><span class="corate">★ <b>${m.rating.toFixed(1)}</b> · ${m.n} ${t('ครั้งที่ให้คำปรึกษา','sessions')}</span></div></div>`}
+function scard(m,cls){return `<div class="scard ${cls}" data-mid="${m.id}"><div class="s-hero" style="background:linear-gradient(160deg,${m.bg},var(--surface))"><span class="stamp like">${t('สนใจ','LIKE')}</span><span class="stamp nope">${t('ข้าม','NOPE')}</span>${mBadge(m)}<span class="s-ava">${m.ava}</span><span class="s-price">${mprice(m)} ${t('บาท','THB')}/30 ${t('นาที','min')}</span></div>
+ <div class="s-info"><h2>${x(m.name)} <span class="chip ver">✓</span></h2>${mTopTags(m)}<div class="muted" style="font-size:14px">${x(m.role)} · ${x(m.at)}</div><p class="s-bio">“${x(m.bio)}”</p>
+ <div class="row" style="gap:6px">${m.tags.map(g=>`<span class="chip">${x(g)}</span>`).join('')}</div><span class="corate">🗓️ ${m.n} ${t('ครั้งที่ให้คำปรึกษา','sessions')}</span></div></div>`}
 function swipe(){const sw=S.sw;const deck=deckList();const liked=MENTORS.filter(m=>sw.liked.includes(m.id));
  return `<div class="opts" style="margin-top:14px;justify-content:center"><button class="opt ${sw.topic==='all'?'on':''}" data-topic="all">${t('ทุกเรื่อง','Everything')}</button>${Object.keys(TOPICS).map(k=>`<button class="opt ${sw.topic===k?'on':''}" data-topic="${k}">${x(TOPICS[k])}</button>`).join('')}</div>
  <div class="deck">${deck.length?deck.slice(0,2).reverse().map((m,i,a)=>scard(m,i===a.length-1?'top':'back')).join(''):`<div class="scard empty-deck"><img src="${PUP()}" alt=""><h2>${t('ปัดครบแล้ว!','You’ve seen everyone!')}</h2><p class="muted">${t('ลองเปลี่ยนหัวข้อ หรือเริ่มปัดใหม่','Try another topic or start over')}</p><button class="btn y" data-swreset>${t('เริ่มปัดใหม่','Start over')}</button></div>`}</div>
@@ -1325,7 +1420,7 @@ function swipeGo(dir){const card=document.querySelector('.scard.top');if(!card||
  setTimeout(()=>{if(dir==='right'){S.sw.liked.push(id);render();openModal({type:'match',id})}else{S.sw.skipped.push(id);render()}},300)}
 function bindDeck(){const card=document.querySelector('.scard.top');if(!card)return;let sx=0,sy=0,dx=0,drag=false;
  const like=card.querySelector('.stamp.like'),nope=card.querySelector('.stamp.nope');
- card.addEventListener('pointerdown',e=>{drag=true;sx=e.clientX;sy=e.clientY;dx=0;card.setPointerCapture(e.pointerId);card.style.transition='none'});
+ card.addEventListener('pointerdown',e=>{if(e.target.closest('.s-rate'))return;drag=true;sx=e.clientX;sy=e.clientY;dx=0;card.setPointerCapture(e.pointerId);card.style.transition='none'});
  card.addEventListener('pointermove',e=>{if(!drag)return;dx=e.clientX-sx;const dy=(e.clientY-sy)*.3;card.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/18}deg)`;like.style.opacity=Math.max(0,Math.min(1,dx/100));nope.style.opacity=Math.max(0,Math.min(1,-dx/100))});
  const end=()=>{if(!drag)return;drag=false;if(Math.abs(dx)>100){swipeGo(dx>0?'right':'left')}else{card.style.transition='transform .25s';card.style.transform='';like.style.opacity=0;nope.style.opacity=0}};
  card.addEventListener('pointerup',end);card.addEventListener('pointercancel',end);
@@ -1337,11 +1432,82 @@ function bindDeck(){const card=document.querySelector('.scard.top');if(!card)ret
   if(Math.abs(wx)>130){const dir=wx>0?'right':'left';wx=0;swipeGo(dir);return}
   wt=setTimeout(()=>{wx=0;card.style.transition='transform .25s';card.style.transform='';like.style.opacity=0;nope.style.opacity=0},180)},{passive:false});
  card.addEventListener('dragstart',e=>e.preventDefault())}
-function mentors(){return `<div class="grid" style="margin-top:16px">${plusBanner()}<div class="grid g2">${MENTORS.map(m=>{const pr=S.user&&S.user.plus?Math.round(m.price*.8):m.price;return `<article class="card mentor"><div class="mentor-top"><span class="ava" style="background:${m.bg}">${m.ava}</span><div style="flex:1"><h3 style="font-size:17px">${x(m.name)} <span class="chip ver">✓ ${t('ยืนยันแล้ว','Verified')}</span></h3><div class="muted">${x(m.role)} · ${x(m.at)}</div></div></div>
+function mentors(){return `<div class="grid" style="margin-top:16px">${plusBanner()}<div class="grid g2">${MENTORS.map(m=>{const pr=S.user&&S.user.plus?Math.round(m.price*.8):m.price;return `<article class="card mentor"><div class="mentor-top"><span class="ava" style="background:${m.bg}">${m.ava}</span><div style="flex:1"><h3 style="font-size:17px">${x(m.name)} <span class="chip ver">✓ ${t('ยืนยันแล้ว','Verified')}</span></h3><div class="muted">${x(m.role)} · ${x(m.at)}</div>${mTopTags(m)}</div></div>
  <div class="row" style="gap:6px">${m.tags.map(g=>`<span class="chip">${x(g)}</span>`).join('')}</div>
- <div class="row"><span class="corate">★ <b>${m.rating.toFixed(1)}</b> · ${m.n} ${t('ครั้ง','sessions')}</span><span style="margin-left:auto" class="price">${pr!==m.price?`<s class="muted" style="font-size:13px">${m.price}</s> `:''}${pr} ${t('บาท','THB')}<span class="muted" style="font-family:var(--body);font-weight:400">/30 ${t('นาที','min')}</span></span></div>
+ <div class="row">${mBadge(m,'inline')}<span class="corate">${m.n} ${t('ครั้ง','sessions')}</span><span style="margin-left:auto" class="price">${pr!==m.price?`<s class="muted" style="font-size:13px">${m.price}</s> `:''}${pr} ${t('บาท','THB')}<span class="muted" style="font-family:var(--body);font-weight:400">/30 ${t('นาที','min')}</span></span></div>
  <button class="btn" data-book="${m.id}">${t('จองเวลาคุย','Book a session')}</button></article>`}).join('')}</div>
  <p class="muted">${t('Maadoo หักค่าธรรมเนียม 15% จากแต่ละการจอง รุ่นพี่ได้รับ 85%','Maadoo keeps a 15% fee per booking; mentors receive 85%')}</p></div>`}
+/* ---------- mentor sessions & reviews ---------- */
+const newBid=()=>'b-'+((window.crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2,10));
+const findRev=id=>{for(const k in S.mdb){const r=S.mdb[k].find(v=>v.id===id);if(r)return r}return null};
+function bookingRow(b){const r=b.rid&&findRev(b.rid),when=b.slot!=null?x(SLOTS[b.slot]):b.at?quarterDate(b.at):'';
+ const st=r?`<span class="chip ver">✓ ${t('รีวิวแล้ว','Reviewed')} · ★${r.s}</span>`:b.st==='done'?`<span class="chip good">${t('เสร็จแล้ว','Done')}</span>`:`<span class="chip mid">${t('รอปรึกษา','Upcoming')}</span>`;
+ const act=r?`<button class="btn ghost sm" data-mrevedit="${b.id}">${t('แก้ไข','Edit')}</button><button class="del-rv" data-mrevdel="${b.id}">🗑️ ${t('ลบ','Delete')}</button>`
+  :b.st==='done'?`<button class="btn y sm" data-mrevopen="${b.id}">⭐ ${t('เขียนรีวิว','Write a review')}</button>`
+  :`<button class="btn ghost sm" data-mdone="${b.id}">${t('จำลองว่าปรึกษาเสร็จแล้ว','Mark as done (demo)')}</button>`;
+ return `<div class="li bk"><span class="ava" style="width:36px;height:36px;font-size:18px;background:${b.m.bg}">${b.m.ava}</span><div class="bk-t"><b>${x(b.m.name)}</b><span class="muted">${when}</span></div>${st}<div class="bk-a">${act}</div></div>`}
+const quarterDate=ts=>{const d=new Date(ts);return d.toLocaleDateString(S.lang==='en'?'en-GB':'th-TH',{month:'short',year:'numeric'})};
+function mrevsModal(m,head){const mt=MENTORS.find(v=>v.id===m.id),st=mStat(mt),rv=mRevs(mt),mx=Math.max(1,...st.dist);
+ return head(`${t('รีวิว','Reviews for')} ${x(mt.name)}`,`${x(mt.role)} · ${x(mt.at)}`)+
+ `<div class="mr-sum"><div class="mr-avg"><b>${st.n?st.avg.toFixed(1):'–'}</b>${starRow(st.avg)}<small>${st.n} ${t('รีวิว','reviews')}${st.n<3?` · ✨ ${t('รุ่นพี่ใหม่','New mentor')}`:''}</small></div>
+  <div class="mr-dist">${st.dist.map((c,i)=>`<div class="mr-bar"><span>${5-i}★</span><i><em style="width:${c/mx*100}%"></em></i><small>${c}</small></div>`).join('')}</div></div>
+ ${st.top.length?`<div class="row" style="gap:6px">${st.top.map(g=>`<span class="chip">${x(MTAGS[g])} · ${st.tc[g]}</span>`).join('')}</div>`:''}
+ <div class="mr-list">${rv.map(r=>`<article class="mrv"><div class="row" style="gap:6px">${starRow(r.s,'sm')}<span class="chip ver">✓ ${t('ปรึกษาจริง','Real session')}</span>${r.mine?`<span class="chip mid">${t('รีวิวของคุณ','Your review')}</span>`:''}</div>
+  ${r.c&&(Array.isArray(r.c)?r.c[0]:r.c)?`<p>${esc(x(r.c))}</p>`:''}${r.tags.length?`<div class="mr-tags">${r.tags.filter(g=>MTAGS[g]).map(g=>x(MTAGS[g])).join(' · ')}</div>`:''}
+  <small class="muted">${r.who?x(r.who):t('ผู้ใช้มาดูจ็อบ','Maadoo Job member')} · ${r.d?x(r.d):quarterDate(r.at)}</small>
+  ${r.reply?`<div class="reply"><b>💬 ${t(`คำตอบจาก${x(mt.name)}`,`Reply from ${x(mt.name)}`)}</b><span>${esc(x(r.reply))}</span></div>`:''}</article>`).join('')||`<p class="muted">${t('ยังไม่มีรีวิว','No reviews yet')}</p>`}</div>
+ <p class="demo-note">${t('รีวิวมาจากคนที่ปรึกษาจริงเท่านั้น รุ่นพี่ตอบรีวิวได้ แต่ลบหรือซ่อนรีวิวไม่ได้','Reviews come only from real sessions. Mentors can reply but can’t delete or hide reviews.')}</p>
+ <button class="btn y" data-book="${mt.id}">${t('จองเวลาคุย','Book a session')}</button>`}
+const STAR_TXT=[['แตะดาวเพื่อให้คะแนน','Tap a star to rate'],['ควรปรับปรุง','Needs work'],['พอใช้','Fair'],['ดี','Good'],['ดีมาก','Very good'],['ยอดเยี่ยม','Excellent']];
+function mreviewModal(m,head){const b=S.booked.find(v=>v.id===m.bid);const dis=m.busy?'disabled':'';
+ return head(m.edit?t('แก้ไขรีวิว','Edit your review'):t('ปรึกษาเป็นยังไงบ้าง?','How was your session?'),`${x(b.m.name)} · ${x(b.m.role)}`)+
+ `<div class="rstars-w"><div class="rstars" id="rstars" role="slider" tabindex="0" aria-label="${t('ให้คะแนนดาว','Star rating')}" aria-valuemin="1" aria-valuemax="5" aria-valuenow="${m.stars||0}" aria-valuetext="${m.stars?`${m.stars} ${t('ดาว','stars')} · ${x(STAR_TXT[m.stars])}`:x(STAR_TXT[0])}">${[1,2,3,4,5].map(i=>`<span class="rst ${m.stars>=i?'on':''}" data-rst="${i}">★</span>`).join('')}</div><div class="rst-lbl" id="rstLbl">${x(STAR_TXT[m.stars||0])}</div></div>
+ <div><b style="font-size:14px">${t('เด่นเรื่องไหน (เลือกได้หลายอัน)','What stood out? (pick any)')}</b><div class="mtags">${Object.keys(MTAGS).map(g=>`<button type="button" class="mtag" data-mtag="${g}" aria-pressed="${m.tags.includes(g)}">${x(MTAGS[g])}</button>`).join('')}</div></div>
+ <label class="grid" style="gap:4px"><b style="font-size:14px">${t('ความเห็นเพิ่มเติม (ไม่บังคับ)','Anything else? (optional)')}</b><textarea class="field" id="mcomment" maxlength="300" rows="3" placeholder="${t('เล่าสั้น ๆ ว่าได้อะไรจากการคุย','A line about what helped')}">${esc(m.comment||'')}</textarea><small class="muted" id="mcount" style="justify-self:end">${(m.comment||'').length}/300</small></label>
+ ${authFormErr(m)}
+ <div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close ${dis}>${t('ไว้ทีหลัง','Later')}</button><button class="btn y" data-mrevsend ${dis}>${m.busy?t('กำลังส่ง…','Sending…'):m.edit?t('บันทึก','Save'):t('ส่งรีวิว','Send review')}</button></div>`}
+function mrevdelModal(m,head){const dis=m.busy?'disabled':'';return head(t('ลบรีวิวนี้?','Delete this review?'),'')+`<p style="margin:0">${t('ลบแล้วกู้คืนไม่ได้ แต่เขียนรีวิวใหม่ให้การจองนี้ได้','This can’t be undone, but you can review this session again.')}</p>${authFormErr(m)}
+ <div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close ${dis}>${t('ยกเลิก','Cancel')}</button><button class="btn danger" data-mrevdelok ${dis}>${m.busy?t('กำลังลบ…','Deleting…'):t('ลบรีวิว','Delete review')}</button></div>`}
+function setStars(v){const m=S.modal;if(!m||m.type!=='mreview')return;m.stars=Math.max(1,Math.min(5,v));m.err=null;const w=$('#rstars');if(!w)return;
+ w.querySelectorAll('.rst').forEach(e=>e.classList.toggle('on',+e.dataset.rst<=m.stars));w.setAttribute('aria-valuenow',m.stars);w.setAttribute('aria-valuetext',`${m.stars} ${t('ดาว','stars')} · ${x(STAR_TXT[m.stars])}`);$('#rstLbl').textContent=x(STAR_TXT[m.stars]);const er=document.querySelector('.modal .form-err');if(er)er.remove()}
+function bindStars(){const w=$('#rstars');if(!w)return;let down=false;const at=e=>{const r=w.getBoundingClientRect();return Math.ceil(Math.max(.01,Math.min(.999,(e.clientX-r.left)/r.width))*5)};
+ w.addEventListener('pointerdown',e=>{down=true;try{w.setPointerCapture(e.pointerId)}catch(_){}setStars(at(e))});
+ w.addEventListener('pointermove',e=>{if(down)setStars(at(e))});['pointerup','pointercancel'].forEach(ev=>w.addEventListener(ev,()=>{down=false}));
+ w.addEventListener('keydown',e=>{const v=S.modal.stars||0,k=e.key;let n=null;if(k==='ArrowRight'||k==='ArrowUp')n=v+1;else if(k==='ArrowLeft'||k==='ArrowDown')n=v-1;else if(k==='Home')n=1;else if(k==='End')n=5;else if(/^[1-5]$/.test(k))n=+k;if(n!=null){e.preventDefault();setStars(n)}})}
+function openMrev(bid){const b=S.booked.find(v=>v.id===bid);if(!b)return;const r=b.rid&&findRev(b.rid);
+ openModal(r?{type:'mreview',bid,edit:r.id,stars:r.s,tags:r.tags.slice(),comment:typeof r.c==='string'?r.c:''}:{type:'mreview',bid,stars:0,tags:[],comment:''})}
+function mrevSubmit(){const m=S.modal;if(!m||m.type!=='mreview'||m.busy)return;const c=$('#mcomment');if(c)m.comment=c.value.slice(0,300);
+ if(!m.stars){m.err=['เลือกดาวก่อนส่งนะ','Pick a star rating first.'];renderModal();return}
+ needLogin(()=>{if(SB&&S.user&&S.user.anon){S.after=()=>mrevSave(m);openModal({type:'link',why:'review'});return}mrevSave(m)})}
+async function mrevSave(m){const b=S.booked.find(v=>v.id===m.bid);if(!b)return;const first=!m.edit;
+ if(S.modal!==m){S.modal=m;}m.busy=true;m.err=null;renderModal();
+ const tags=m.tags.filter(g=>MTAGS[g]),comment=(m.comment||'').trim().slice(0,300)||null;let id=m.edit||null,at=Date.now(),err=null;
+ if(SB&&S.user&&S.user.id){try{
+   const q=m.edit&&!String(m.edit).startsWith('local-')?SB.from('mentor_reviews').update({stars:m.stars,tags,comment}).eq('id',m.edit).select('id,created_at'):SB.from('mentor_reviews').insert({mentor_id:b.mid,booking_id:b.id,stars:m.stars,tags,comment}).select('id,created_at');
+   const {data,error}=await q;if(error)err=error;else if(!data||!data.length)err={message:'no row'};else{id=data[0].id;at=Date.parse(data[0].created_at)||at}}catch(e){err=e}}
+ else if(!id)id='local-'+b.id;
+ m.busy=false;
+ if(err){m.err=err.code==='23505'?['การจองนี้รีวิวไปแล้ว','You’ve already reviewed this session.']:err.status===429?['ลองบ่อยเกินไป รอสักครู่แล้วลองใหม่','Too many tries. Wait a moment and try again.']:!err.status&&!err.code?['เชื่อมต่อไม่ได้ เช็กอินเทอร์เน็ตแล้วลองใหม่','Can’t connect. Check your internet and try again.']:['ส่งรีวิวไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t send your review. Please try again.'];if(S.modal===m)renderModal();return}
+ const list=S.mdb[b.mid]=(S.mdb[b.mid]||[]).filter(v=>v.id!==m.edit&&v.id!==id);const old=m.edit&&findRev(m.edit);
+ list.push({id,s:m.stars,tags,c:comment||'',at:old&&old.at||at,reply:old&&old.reply||null,mine:true,real:true});
+ b.rid=id;b.st='done';if(S.modal===m)S.modal=null;if(first)addPoints(20);render();
+ toast(first?t('ขอบคุณสำหรับรีวิว! +20 แต้ม','Thanks for your review! +20 pts'):t('บันทึกรีวิวแล้ว','Review saved'))}
+async function mrevDelete(){const m=S.modal;if(!m||m.type!=='mrevdel'||m.busy)return;const b=S.booked.find(v=>v.id===m.bid);if(!b||!b.rid)return;const id=b.rid;
+ m.busy=true;m.err=null;renderModal();let ok=true;
+ if(SB&&S.user&&S.user.id&&!String(id).startsWith('local-')){try{const {data,error}=await SB.from('mentor_reviews').delete().eq('id',id).select('id');ok=!error&&data&&data.length>0}catch(e){ok=false}}
+ m.busy=false;if(!ok){m.err=['ลบรีวิวไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t delete the review. Please try again.'];if(S.modal===m)renderModal();return}
+ for(const k in S.mdb)S.mdb[k]=S.mdb[k].filter(v=>v.id!==id);b.rid=null;if(S.modal===m)S.modal=null;render();toast(t('ลบรีวิวแล้ว','Review deleted'))}
+async function loadMentorReviews(){if(!SB)return;
+ try{const {data,error}=await SB.from('mentor_reviews_public').select('id,mentor_id,stars,tags,comment,reply,created_at').order('created_at',{ascending:false}).limit(1000);if(error)throw error;
+  const m={};(data||[]).forEach(r=>{if(!MENTORS.some(v=>v.id===r.mentor_id))return;(m[r.mentor_id]=m[r.mentor_id]||[]).push({id:r.id,s:Math.max(1,Math.min(5,r.stars|0)),tags:Array.isArray(r.tags)?r.tags:[],c:r.comment||'',at:Date.parse(r.created_at)||0,reply:r.reply||null,real:true,mine:false})});
+  const local=[];for(const k in S.mdb)S.mdb[k].forEach(v=>{if(String(v.id).startsWith('local-'))local.push([k,v])});S.mdb=m;local.forEach(([k,v])=>(S.mdb[k]=S.mdb[k]||[]).push(v));
+ }catch(e){console.warn('[Maadoo Job] could not load mentor reviews (mentor_reviews_public view):',e&&(e.message||e))}
+ await loadMyMentorReviews();if(['ask','me'].includes(S.view)||(S.modal&&S.modal.type==='mrevs'))rerender()}
+async function loadMyMentorReviews(){const uid=S.user&&S.user.id;if(!SB||!uid)return;
+ try{const {data,error}=await SB.from('mentor_reviews').select('id,user_id,mentor_id,booking_id,created_at').eq('user_id',uid);if(error)throw error;
+  (data||[]).filter(r=>r.user_id===uid).forEach(r=>{const rv=findRev(r.id);if(rv)rv.mine=true;const mt=MENTORS.find(v=>v.id===r.mentor_id);if(!mt)return;
+   let b=S.booked.find(v=>v.id===r.booking_id);if(!b){b={id:r.booking_id,m:mt,mid:mt.id,slot:null,at:Date.parse(r.created_at)||Date.now(),st:'done',rid:null,db:true};S.booked.push(b)}b.rid=r.id;b.st='done'})}catch(e){}}
+function forgetMine(){for(const k in S.mdb)S.mdb[k].forEach(v=>{v.mine=false});S.booked=S.booked.filter(b=>!b.db)}
 const LEVELS=[[0,['มือใหม่','Newbie']],[100,['รุ่นพี่','Senior']],[300,['ผู้เชี่ยวชาญ','Expert']]];
 function me(){
  if(!S.user)return `<div class="card" style="max-width:520px;margin:24px auto 0;display:grid;gap:14px;justify-items:center;text-align:center;padding:28px"><img src="${PUP()}" alt="" style="width:110px;height:110px;border-radius:50%"><h1 style="font-size:24px">${t('เข้าสู่ระบบเพื่อใช้ Maadoo เต็ม ๆ','Log in to get the most out of Maadoo')}</h1>
@@ -1359,7 +1525,7 @@ function me(){
  ${u.plus?'':`<div class="sec">${plusBanner()}</div>`}
  ${sec(t('⚡ งานพาร์ทไทม์ที่สมัคร','⚡ Part-time applications'),Object.keys(S.ptApps).length?`<div class="list">${Object.keys(S.ptApps).map(id=>{const p=PT.find(v=>v.id===id);const a=S.ptApps[id];return `<div class="li"><span class="dot" style="background:${PT_ST[a.st][3]}"></span><div><b>${esc(x(p.title))}</b><div class="muted">${x(ptOrg(p).name)} · ${PT_ST[a.st][0]} ${t(PT_ST[a.st][1],PT_ST[a.st][2])}</div></div>${a.st===2?`<button class="btn y grow" data-ptrate="${id}">${t('จบงานแล้ว · ให้คะแนน','Done · rate employer')}</button>`:`<button class="btn ghost grow" data-pt="${id}">${t('ดู','View')}</button>`}</div>`}).join('')}</div>`:'',t('ยังไม่ได้สมัครงานพาร์ทไทม์ ลองดูแท็บ “⚡ งานด่วน” ในหน้างาน','No part-time applications yet. Try “⚡ Quick part-time” in Jobs.'))}
  ${sec(t('งานที่สมัคร','Applications'),applied.length?`<div class="list">${applied.map(j=>`<div class="li"><b>${x(j.title)}</b><span class="muted">${x(getCo(j.co).name)}</span><span class="chip mid grow">${t('รอบริษัทตอบกลับ','Awaiting reply')}</span></div>`).join('')}</div>`:'',t('ยังไม่ได้สมัครงาน ลองดูหน้า “งาน”','No applications yet. Try the Jobs tab.'))}
- ${sec(t('นัดคุยกับรุ่นพี่','Mentor sessions'),S.booked.length?`<div class="list">${S.booked.map(b=>`<div class="li"><span class="ava" style="width:36px;height:36px;font-size:18px;background:${b.m.bg}">${b.m.ava}</span><b>${x(b.m.name)}</b><span class="muted">${x(SLOTS[b.slot])}</span><span class="chip ver grow">${t('ยืนยันแล้ว','Confirmed')}</span></div>`).join('')}</div>`:'',t('ยังไม่มีนัด','No sessions booked'))}
+ ${sec(t('การปรึกษาของฉัน','My mentor sessions'),S.booked.length?`<div class="list">${S.booked.map(bookingRow).join('')}</div><p class="demo-note">${t('เดโม: ยังไม่มีวิดีโอคอลจริง กด “จำลองว่าปรึกษาเสร็จแล้ว” เพื่อลองรีวิวรุ่นพี่','Demo: there’s no real video call yet. Tap “Mark as done (demo)” to try reviewing a mentor.')}</p>`:'',t('ยังไม่มีนัด ลองปัดหารุ่นพี่ในหน้า “ปรึกษา”','No sessions yet. Swipe for a mentor on the “Ask” page.'))}
  ${sec(t('งานที่บันทึกไว้','Saved jobs'),saved.length?`<div class="grid g2">${saved.map(jobCard).join('')}</div>`:'',t('กด ♡ ที่ประกาศงานเพื่อบันทึก','Tap ♡ on a job to save it'))}
  ${sec(t('บริษัทที่ติดตาม','Following'),followed.length?`<div class="grid g3">${followed.map(coCard).join('')}</div>`:'',t('ยังไม่ได้ติดตามบริษัทไหน','Not following any companies yet'))}
  ${sec(t('รีวิวของฉัน','My reviews'),S.myReviews.length?`<div class="list">${S.myReviews.map(r=>`<div class="li"><b>${x(getCo(r.co).name)}</b><span class="stars">${stars(r.r)}</span>${r.status==='approved'?`<span class="chip ver grow">✓ ${t('เผยแพร่แล้ว','Published')}</span>`:`<span class="chip mid grow">${t('รอตรวจ','In review')}</span>`}${canDelete(r.id)?`<button class="del-rv" data-delrev="${esc(r.id)}">🗑️ ${t('ลบ','Delete')}</button>`:''}</div>`).join('')}</div>`:'',t('ยังไม่มีรีวิว เขียนรีวิวแรกรับ 50 แต้ม','No reviews yet. Your first one earns 50 pts.'))}
@@ -1486,6 +1652,9 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
   <button class="btn y">${t('เข้าสู่ระบบ / สมัคร','Log in / Sign up')}</button></form><p class="demo-note">${t('เดโม: ไม่มีการส่งอีเมลจริง อีเมลที่ไม่ใช่ gmail/hotmail/yahoo/outlook จะได้ป้ายยืนยัน','Demo: no email is sent. Emails not from gmail/hotmail/yahoo/outlook get verified.')}</p>`;
  if(m.type==='link')body=linkModal(m,head);
  if(m.type==='otp')body=otpModal(m,head);
+ if(m.type==='mrevs')body=mrevsModal(m,head);
+ if(m.type==='mreview')body=mreviewModal(m,head);
+ if(m.type==='mrevdel')body=mrevdelModal(m,head);
  if(m.type==='delrev')body=delRevModal(m,head);
  if(m.type==='pt')body=ptModal(m);
  if(m.type==='ptpost')body=ptPostModal();
@@ -1510,7 +1679,7 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
   <button class="btn y" data-confirmplus>${t('สมัคร Plus','Subscribe')}</button><p class="demo-note">${t('เดโม: ไม่มีการตัดเงินจริง','Demo: no payment is taken')}</p>`;
  if(m.type==='emp')body=`${head(t(`เริ่มต้นแพ็กเกจ ${m.tier}`,`Start ${m.tier}`),t('ทีมมาดูจ็อบจะติดต่อกลับภายใน 1 วันทำการ','The Maadoo Job team will get back to you within 1 business day'))}
   <form id="empForm" class="grid"><input class="field" id="ecn" placeholder="${t('ชื่อบริษัท','Company name')}" required><input class="field" id="eem" type="email" placeholder="${t('อีเมลที่ทำงาน','Work email')}" required><input class="field" id="eph" placeholder="${t('เบอร์โทร (ไม่บังคับ)','Phone (optional)')}"><button class="btn">${t('ส่งข้อมูล','Send')}</button></form><p class="demo-note">${t('เดโม: ข้อมูลไม่ถูกส่งไปไหน','Demo: nothing is sent anywhere')}</p>`;
- el.innerHTML=`<div class="modal-bg" data-bg><div class="modal" role="dialog" aria-modal="true">${body}</div></div>`;
+ const fresh=el._m!==m;el._m=m;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview'].includes(m.type)?'sheet-m':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}
  const f=el.querySelector('input');if(f)f.focus();
 }
 function renderBell(){const n=NOTIFS.filter(v=>!v.read).length;
@@ -1588,7 +1757,7 @@ document.addEventListener('click',e=>{
  if(d.anon!==undefined){if(SB)authRun(()=>SB.auth.signInAnonymously(),'anon');return}
  if(d.linkacct!==undefined){openModal({type:'link'});return}
  if(d.resend!==undefined){if(S.modal){S.modal.sent=null;renderModal()}return}
- if(d.logout!==undefined){if(SB&&S.user&&S.user.id){SB.auth.signOut().catch(()=>{});S.myReviews=[]}S.user=null;render();toast(t('ออกจากระบบแล้ว','Logged out'));return}
+ if(d.logout!==undefined){if(SB&&S.user&&S.user.id){SB.auth.signOut().catch(()=>{});S.myReviews=[];forgetMine()}S.user=null;render();toast(t('ออกจากระบบแล้ว','Logged out'));return}
  if(d.report){openModal({type:'report'});return}
  if(d.reason!==undefined){closeModal();toast(t('ส่งให้ทีมตรวจแล้ว ขอบคุณที่ช่วยดูแลชุมชน','Sent to moderators. Thanks for keeping Maadoo safe'));return}
  if(d.save){S.saved[d.save]=!S.saved[d.save];render();toast(S.saved[d.save]?t('บันทึกงานแล้ว ดูได้ที่หน้า “ฉัน”','Saved. Find it under “Me”'):t('นำออกจากงานที่บันทึก','Removed from saved'));return}
@@ -1600,12 +1769,19 @@ document.addEventListener('click',e=>{
  if(d.swreset!==undefined){S.sw.skipped=[];render();return}
  if(d.book){openModal({type:'book',id:d.book,slot:null});return}
  if(d.slot!==undefined){S.modal.slot=+d.slot;renderModal();return}
- if(d.confirmbook!==undefined){const m=S.modal;needLogin(()=>{const mt=MENTORS.find(v=>v.id===m.id);S.booked.push({m:mt,slot:m.slot});addPoints(10);S.modal=null;pushNotif('📅',`นัดคุยกับ${mt.name[0]} ${SLOTS[m.slot][0]}`,`Session with ${mt.name[1]}, ${SLOTS[m.slot][1]}`,['me']);render();toast(t('จองแล้ว! ลิงก์วิดีโอคอลจะส่งไปทางอีเมล','Booked! The video link will be emailed to you'))});return}
+ if(d.confirmbook!==undefined){const m=S.modal;needLogin(()=>{const mt=MENTORS.find(v=>v.id===m.id);S.booked.push({id:newBid(),m:mt,mid:mt.id,slot:m.slot,st:'wait',rid:null});addPoints(10);S.modal=null;pushNotif('📅',`นัดคุยกับ${mt.name[0]} ${SLOTS[m.slot][0]}`,`Session with ${mt.name[1]}, ${SLOTS[m.slot][1]}`,['me']);render();toast(t('จองแล้ว! ลิงก์วิดีโอคอลจะส่งไปทางอีเมล','Booked! The video link will be emailed to you'))});return}
  if(d.plus!==undefined){needLogin(()=>openModal({type:'plus'}));return}
  if(d.confirmplus!==undefined){S.user.plus=true;S.modal=null;render();toast(t('ยินดีต้อนรับสู่ Maadoo Plus ✦','Welcome to Maadoo Plus ✦'));return}
  if(d.emp){openModal({type:'emp',tier:d.emp});return}
  if(b.id==='themeBtn'){S.themeOpen=!S.themeOpen;S.notifOpen=false;if(S.coach){S.coach=false;store.set('maadoo-coach','1')}renderBell();applyPrefs();return}
  if(d.skin){S.skin=d.skin;store.set('maadoo-skin',S.skin);render();const sw=document.querySelector(`#themePop [data-skin="${S.skin}"]`);if(sw)sw.focus({preventScroll:true});const k=SKINS.find(v=>v[0]===S.skin);toast(`${k[1]} ${t('ธีม','Theme')}: ${x(k[2])}`);return}
+ if(d.mrevs){openModal({type:'mrevs',id:d.mrevs});return}
+ if(d.mdone){const bk=S.booked.find(v=>v.id===d.mdone);if(bk){bk.st='done';render();openMrev(bk.id)}return}
+ if(d.mrevopen||d.mrevedit){openMrev(d.mrevopen||d.mrevedit);return}
+ if(d.mrevdel){openModal({type:'mrevdel',bid:d.mrevdel});return}
+ if(d.mrevdelok!==undefined){mrevDelete();return}
+ if(d.mrevsend!==undefined){mrevSubmit();return}
+ if(d.mtag){const m=S.modal;if(m&&m.type==='mreview'){const i=m.tags.indexOf(d.mtag);i<0?m.tags.push(d.mtag):m.tags.splice(i,1);b.setAttribute('aria-pressed',i<0)}return}
  if(d.snd!==undefined){SND.toggle();renderThemePop();return}
  if(d.fx){if(d.fx==='amb'){S.fxAmb=!S.fxAmb;store.set('maadoo-fx-amb',S.fxAmb?'1':'0')}else{S.fxTap=!S.fxTap;store.set('maadoo-fx-tap',S.fxTap?'1':'0')}renderThemePop();FX.kick();return}
  if(d.coachok!==undefined){S.coach=false;store.set('maadoo-coach','1');renderCoach();return}
@@ -1687,7 +1863,7 @@ document.addEventListener('submit',e=>{e.preventDefault();
   S.bd.open[pid]=true;addPoints(5);render();toast(t('ส่งความคิดเห็นแล้ว +5 แต้ม','Comment posted +5 pts'));}
 });
 function syncPtForm(){const g=id=>document.getElementById(id);if(!g('pf-title'))return;const f=S.ptForm;f.title=g('pf-title').value;f.kind=g('pf-kind').value;f.day=g('pf-day').value;f.when=g('pf-when').value;f.pay=g('pf-pay').value;f.unit=g('pf-unit').value;f.need=g('pf-need').value;f.how=g('pf-how').value;f.req=g('pf-req').value;f.ok=g('pf-ok').checked}
-document.addEventListener('input',e=>{if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.setAttribute('aria-valuetext',v+'%');return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
+document.addEventListener('input',e=>{if(e.target.id==='mcomment'){if(S.modal)S.modal.comment=e.target.value;const c=$('#mcount');if(c)c.textContent=e.target.value.length+'/300';return}if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.setAttribute('aria-valuetext',v+'%');return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
 document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();render()}
  if(id==='jInd'){S.jobF.ind=e.target.value;render()}if(id==='jMin'){S.jobF.min=+e.target.value;render()}if(id==='onlyJobs'){S.coOnlyJobs=e.target.checked;render()}});
 document.addEventListener('keydown',e=>{
