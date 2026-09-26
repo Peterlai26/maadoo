@@ -1,14 +1,18 @@
-# Maadoo (มาดู) — project guide for Claude Code
+# Maadoo Job (มาดูจ็อบ) — project guide for Claude Code
 
-Maadoo is a **demo** website for workplace reviews, salaries, part-time jobs and career advice, aimed at Thai university students and new graduates.
+Maadoo Job is a **demo** website for workplace reviews, salaries, part-time jobs and career advice, aimed at Thai university students and new graduates.
 Slogan: "ก่อนไปทำงาน มาดูก่อน" / "Before you go, Maadoo first".
+Brand name: **Maadoo Job** (Thai: **มาดูจ็อบ**). Use it only where the brand is named (title, header logo, footer, ©, welcome popup, employer page, login title, meta tags). "มาดู" is also a Thai verb and stays in the slogan and sentences — never find-and-replace it across the file. The mascot is still "น้องมาดู" / "Maadoo the pup"; product names such as Maadoo Plus stay as they are.
 Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`).
 
 ## Files
 - `index.html` — the whole app in one file: HTML + CSS + vanilla JS, no build step, no framework.
+- Header logo = mascot circle + "Maadoo" wordmark + an orange "JOB" tag hung through the last "o", built in HTML/CSS/SVG (no image). Tag colors come from `--tag`, `--tag-shade`, `--tag-ink`. At ≤350px only the circle and a small JOB badge show.
+- `maadoo-job-icon-512.png` — favicon and apple-touch-icon.
+- `maadoo-job-round.png` — round Maadoo Job logo shown in the first-visit welcome popup (on a light `--logo-bg` panel in the night theme).
 - `maadoo-icon.webp` — the mascot (a white puppy with a magnifying glass) for the Classic theme.
 - `maadoo-icon-<theme>.webp` — mascot variants: night, sakura, mint, lavender, sunset, dino, garden, sea.
-- `og-image.jpg` — 1200×630 link-preview image.
+- `og-image.jpg` — 1200×630 link-preview image. When you replace it, bump the `?v=` query on `og:image` / `twitter:image` so caches refresh.
 - `supabase/setup.sql` — Supabase tables, RLS and grants. The owner runs it by hand in the SQL Editor; keep it idempotent.
 - Deploy = commit to `main`. No build command, output directory is the repo root.
 
