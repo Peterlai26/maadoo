@@ -494,7 +494,7 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .wrap,footer.foot{position:relative;z-index:1}
 .hero{background:linear-gradient(160deg,color-mix(in srgb,var(--sky) 72%,transparent),color-mix(in srgb,var(--sky-2) 60%,transparent))}
 .sw-fx{font-size:11px;color:var(--ink-3);font-weight:400}
-.fx-sec{display:grid;gap:6px;margin-top:10px;padding-top:10px;border-top:1.5px solid var(--line)}
+.fx-sec{display:grid;gap:6px;margin:4px 0 10px;padding-bottom:10px;border-bottom:1.5px solid var(--line)}
 .fx-sec>b{font-size:13px;color:var(--ink-2);padding-left:4px}
 .fx-row{display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;text-align:left}
 .snd-vol{display:flex;align-items:center;gap:8px;padding:2px 8px 4px}.snd-vol input{flex:1;min-width:0;accent-color:var(--blue);height:24px}
@@ -1521,12 +1521,12 @@ function renderBell(){const n=NOTIFS.filter(v=>!v.read).length;
 function foot(){$('#foot').innerHTML=`<span class="brand-s"><img src="${PUP()}" alt="">Maadoo Job</span><button class="link" data-go="employer">${t('สำหรับบริษัท','For employers')}</button><button class="link" data-go="quiz">${t('ควิซหาบริษัทที่ใช่','Company-match quiz')}</button><button class="link" data-go="rules">${t('แนวทางรีวิวและความเป็นส่วนตัว','Guidelines & privacy')}</button><span style="margin-left:auto">© 2026 ${t('มาดูจ็อบ','Maadoo Job')} · ${t('เดโม','demo')}</span>`}
 
 function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen){el.innerHTML='';return}
- el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')}</b></div><div class="swatches">${SKINS.map(k=>`<button class="sw ${S.skin===k[0]?'on':''}" data-skin="${k[0]}"><span class="sw-prev" style="background:${k[3]}"><i style="background:${k[4]}"></i><i style="background:${k[5]}"></i><img src="${PUP(k[0])}" alt=""></span><span>${k[1]} ${x(k[2])}</span><small class="sw-fx">✨ ${x(FXINFO[k[0]].n)}</small></button>`).join('')}</div>
- <div class="fx-sec"><b>${t('เอฟเฟคและเสียง','Effects & sound')}</b>
+ el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')}</b></div><div class="fx-sec"><b>${t('เอฟเฟคและเสียง','Effects & sound')}</b>
   <button class="fx-row" data-fx="amb" role="switch" aria-checked="${S.fxAmb}"><span><b>✨ ${t('เอฟเฟคพื้นหลัง','Background effect')}</b><small>${x(FXINFO[S.skin].n)}</small></span><i class="tg ${S.fxAmb?'on':''}"></i></button>
   <button class="fx-row" data-fx="tap" role="switch" aria-checked="${S.fxTap}"><span><b>👆 ${t('เอฟเฟคตอนกด','Tap effect')}</b><small>${t('มีอนิเมชันเด้งออกมาทุกครั้งที่กด','A little burst every time you tap')}</small></span><i class="tg ${S.fxTap?'on':''}"></i></button>
   <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(SNDINFO[S.skin])}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
-  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}</div></div>`}
+  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}</div>
+ <div class="swatches">${SKINS.map(k=>`<button class="sw ${S.skin===k[0]?'on':''}" data-skin="${k[0]}"><span class="sw-prev" style="background:${k[3]}"><i style="background:${k[4]}"></i><i style="background:${k[5]}"></i><img src="${PUP(k[0])}" alt=""></span><span>${k[1]} ${x(k[2])}</span><small class="sw-fx">✨ ${x(FXINFO[k[0]].n)}</small></button>`).join('')}</div></div>`}
 function renderCoach(){const el=$('#coach');if(!el)return;el.innerHTML=S.coach&&!S.themeOpen?`<div class="coach" role="status"><b>🎨 ${t('เปลี่ยนธีมได้ตรงนี้นะ!','You can change the theme here!')}</b><span>${t('มีทั้งแบบธรรมดา กลางคืน ซากุระ มินต์ และอื่น ๆ','Classic, Night, Sakura, Mint and more')}</span><button class="btn y" data-coachok>${t('เข้าใจแล้ว','Got it')}</button></div>`:''}
 /* explore: category dropdown · popover on wide screens, bottom sheet on phones (≤600px) */
 const isSheet=()=>matchMedia('(max-width:600px)').matches;
