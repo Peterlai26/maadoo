@@ -21,7 +21,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Everything user-facing is **bilingual Thai + English**. Use `t('ไทย','English')` for UI strings and `[th, en]` pairs with `x(...)` for data. Never add a string in only one language.
 - **All companies, people, reviews and salaries are fictional.** Never use real company names or real people.
 - Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme, effect toggles and ambient-sound on/off + volume (always wrapped in try/catch).
-- Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email code/OTP, or "try without signing up" anonymous guest), the `reviews` table and the `mentor_reviews` table. supabase-js keeps its auth session in `localStorage`.
+- Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email code/OTP, or "try without signing up" anonymous guest), the `reviews` and `mentor_reviews` tables, and the premium tables `profiles`, `coin_ledger` and `questions`. supabase-js keeps its auth session in `localStorage`.
   - New reviews are `pending`; the public sees only `approved` ones via the `approved_reviews` view (no `user_id`, no `salary`). Users can never set or change `status`; moderation happens in the Supabase dashboard.
   - Guests (anonymous users) can browse, swipe and apply, but can't add reviews (blocked in the UI and by RLS); they can keep their account by adding an email (`updateUser`).
   - Only the publishable key goes in `index.html`. Never add a secret / `service_role` key.
@@ -36,12 +36,22 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Style: cute, rounded, friendly. Fonts are Mali (display) and Anuphan (body).
 
 ## Main areas (views in `index.html`)
-home · explore (companies) · company (overview / reviews / salaries / interviews / open jobs) · jobs (tabs: full-time/internships and ⚡ quick part-time) · write (5-question quick review) · ask (Tinder-style mentor swipe + community board) · me (profile, level, badges, applications) · employer (plans) · rules (guidelines, PDPA, part-time safety) · quiz.
+home · explore (companies) · company (overview / reviews / salaries / interviews / open jobs) · jobs (tabs: full-time/internships and ⚡ quick part-time) · write (5-question quick review) · ask (Tinder-style mentor swipe + community board) · me (profile, Plus + coin cards, level, badges, my questions, mentor sessions, applications) · plus (Maadoo Plus page) · wallet (coin wallet + weekly missions) · employer (plans) · rules (guidelines, PDPA, part-time safety) · quiz.
+
+## Premium (decided) — Maadoo Plus, Maadoo coins, Ask a mentor
+- **Always free:** reading/writing reviews, salaries and applying to jobs. Paying never removes, hides or edits reviews.
+- **Demo payments only:** every "pay" opens the simulated checkout (`payModal`) with a clear "เดโม / DEMO" banner. No real money is taken; never add a real payment integration without the owner's go-ahead.
+- **Maadoo Plus plans:** monthly 99 THB (30 days) · yearly 990 THB (365 days, "คุ้มสุด", 2 months free) · internship term 249 THB (90 days). Buying extends `plus_until` from the later of now/current expiry.
+- **Plus perks:** 5 free mentor questions a month · 20% off live mentor calls · 1 free resume review a month · job alerts 24 h early · detailed salary comparison · special themes + music (coming soon) · 100 coins a month (granted once per calendar month while Plus is active).
+- **Plus mission:** write 3 company reviews → 1 free month of Plus (once per account, counted from the user's real reviews).
+- **Ask a mentor (Plus):** open-ended chat until answered. "ได้คำตอบแล้ว พอใจ" closes it and uses 1 question, then offers a mentor review. No mentor reply within 48 h → refunded. 7 days quiet after a mentor reply → auto-closes and uses 1. Max 2 open at once; 5 per calendar month, no rollover (used this month + open ≤ 5). Mentors are fictional; replies are simulated a few seconds after sending. Statuses: รอคำตอบ / ตอบแล้ว / ปิดแล้ว.
+- **Maadoo coins:** 1 coin = 1 THB off (mentor bookings, theme unlocks); never exchangeable for cash. Top-ups: 100 = 99, 300 = 279, 600 = 529 THB. Weekly missions: company review +30, salary (in a review) +20, interview review +20, answer 3 juniors on the board +15, invite a friend +50 — each once per ISO week. Coins from reviews stay pending until the review passes moderation. Mission coins (missions + reviews) are capped at 300 per calendar month.
+- **Storage:** logged-in (non-guest) users sync to Supabase `profiles` (`plus_until`, `free_month_claimed`), `coin_ledger` and `questions`, all RLS own-rows only. The coin balance is **never stored**: it is always the sum of `ok` rows in `coin_ledger`, read through the `my_coins` view (`profiles.coins` is deprecated and unused). The `coin_ledger` trigger enforces the rules above. Guests and logged-out users are sent to log in / add an email before subscribing, asking or claiming coins. Without Supabase everything runs in memory.
+- Before real payments: move `plus_until` renewals and `topup` ledger entries into a server-side payment webhook / Edge Function and revoke those client rights.
 
 ## Parked decisions (don't build yet unless asked)
-- New mentor pricing: swipe → pick a program → pay with "Maadoo coins", buy coin packages, earn free coins from missions.
-- New Plus perks (monthly coins, exclusive themes, early job alerts).
 - Prices for promoting part-time jobs (shows "free during the demo" for now).
+- Special themes/music for Plus and coin theme unlocks (shown as "coming soon").
 
 ## Before every commit
 Open the page at 360px, 768px and 1280px widths, in Thai and English, and in at least the default and night themes. Check there are no console errors and nothing overflows horizontally.

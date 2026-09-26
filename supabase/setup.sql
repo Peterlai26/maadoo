@@ -256,6 +256,269 @@ grant select on public.mentor_reviews_public to anon, authenticated;
 -- ตอบรีวิวในฐานะรุ่นพี่ (แอดมิน) / Reply as the mentor (admin):
 --   update public.mentor_reviews set reply = 'ขอบคุณมากนะ!' where id = '<review id>';
 
+-- =====================================================================
+-- 6) พรีเมียม: Maadoo Plus · เหรียญมาดู · ถามรุ่นพี่
+--    Premium: Maadoo Plus · Maadoo coins · Ask a mentor
+--    ⚠️ เดโม: ยังไม่มีการชำระเงินจริง ผู้ใช้จึง "จ่าย (จำลอง)" แล้วต่ออายุ Plus / เติมเหรียญเองได้
+--       ก่อนเปิดรับเงินจริง ต้องย้ายการต่ออายุ plus_until และการเติมเหรียญ (kind = 'topup')
+--       ไปทำใน Edge Function / webhook ของผู้ให้บริการชำระเงิน แล้วถอดสิทธิ์ส่วนนั้นจากผู้ใช้
+--    ⚠️ Demo: there is no real payment yet, so users "pay (simulated)" and extend Plus / top up
+--       coins themselves. Before taking real money, move plus_until renewals and top-ups
+--       (kind = 'topup') into an Edge Function / payment webhook and revoke those rights from users.
+-- =====================================================================
+
+-- ---------- 6.1 profiles: สถานะ Plus + ยอดเหรียญ / Plus status + coin balance ----------
+create table if not exists public.profiles (
+  id                  uuid primary key default auth.uid() references auth.users (id) on delete cascade,
+  plus_until          timestamptz,
+  coins               integer not null default 0 check (coins >= 0),
+  free_month_claimed  boolean not null default false,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now()
+);
+
+alter table public.profiles enable row level security;
+drop policy if exists "profiles: read own"   on public.profiles;
+drop policy if exists "profiles: insert own" on public.profiles;
+drop policy if exists "profiles: update own" on public.profiles;
+create policy "profiles: read own" on public.profiles
+  for select to authenticated using (id = (select auth.uid()));
+create policy "profiles: insert own" on public.profiles
+  for insert to authenticated with check (id = (select auth.uid()));
+create policy "profiles: update own" on public.profiles
+  for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
+
+-- ยอดเหรียญ (coins) เขียนเองไม่ได้ มาจาก coin_ledger เท่านั้น / coins can't be written; only coin_ledger changes it
+revoke all on public.profiles from anon, authenticated;
+grant select on public.profiles to authenticated;
+grant insert (id) on public.profiles to authenticated;
+grant update (plus_until, free_month_claimed) on public.profiles to authenticated;
+
+create or replace function public.profiles_before_update()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at := now();
+  if current_user in ('authenticated', 'anon') then
+    -- Plus ต่อได้ไม่เกิน ~13 เดือนล่วงหน้า และย่อให้สั้นลงเองไม่ได้ / at most ~13 months ahead, never shortened
+    if new.plus_until is distinct from old.plus_until then
+      if new.plus_until is null or new.plus_until > now() + interval '400 days'
+         or (old.plus_until is not null and new.plus_until < old.plus_until) then
+        raise exception 'invalid plus_until' using errcode = 'check_violation';
+      end if;
+    end if;
+    -- รับ Plus ฟรีจากภารกิจได้ครั้งเดียว และต้องมีรีวิวบริษัทอย่างน้อย 3 รีวิว
+    -- The free Plus month can be claimed once, and needs at least 3 company reviews.
+    if old.free_month_claimed and not new.free_month_claimed then
+      new.free_month_claimed := true;
+    end if;
+    if new.free_month_claimed and not old.free_month_claimed
+       and (select count(*) from public.reviews r where r.user_id = new.id) < 3 then
+      raise exception 'need 3 reviews' using errcode = 'check_violation';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists profiles_before_update on public.profiles;
+create trigger profiles_before_update
+  before update on public.profiles
+  for each row execute function public.profiles_before_update();
+
+-- ---------- 6.2 coin_ledger: ทุกการได้/ใช้เหรียญ / every coin earned or spent ----------
+--   kind: mission (ภารกิจ) · review (จากรีวิว รอตรวจก่อน) · topup (เติม) · plus (100/เดือนของ Plus) · spend (ใช้)
+--   ref:  กันรับซ้ำ เช่น 'mission:answers:2026-W39', 'plus:2026-09' / prevents double claims
+create table if not exists public.coin_ledger (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  delta       integer not null check (delta <> 0 and delta between -5000 and 5000),
+  kind        text not null check (kind in ('mission', 'review', 'topup', 'plus', 'spend')),
+  ref         text check (char_length(ref) <= 80),
+  status      text not null default 'ok' check (status in ('ok', 'pending')),
+  created_at  timestamptz not null default now()
+);
+create unique index if not exists coin_ledger_user_ref_idx on public.coin_ledger (user_id, ref) where ref is not null;
+create index if not exists coin_ledger_user_idx on public.coin_ledger (user_id, created_at desc);
+
+alter table public.coin_ledger enable row level security;
+drop policy if exists "coin_ledger: read own"   on public.coin_ledger;
+drop policy if exists "coin_ledger: insert own" on public.coin_ledger;
+create policy "coin_ledger: read own" on public.coin_ledger
+  for select to authenticated using (user_id = (select auth.uid()));
+create policy "coin_ledger: insert own" on public.coin_ledger
+  for insert to authenticated
+  with check (user_id = (select auth.uid())
+              and (select (auth.jwt() ->> 'is_anonymous')::boolean) is not true);
+
+-- ผู้ใช้เพิ่มรายการได้ แต่แก้/ลบไม่ได้ (สถานะ pending → ok ทำโดยแอดมินหลังตรวจรีวิว)
+-- Users can add entries but never edit/delete them (admins flip pending → ok after moderation).
+revoke all on public.coin_ledger from anon, authenticated;
+grant select on public.coin_ledger to authenticated;
+grant insert (delta, kind, ref) on public.coin_ledger to authenticated;
+
+create or replace function public.coin_ledger_before_insert()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  bal integer;
+  month_earned integer;
+begin
+  -- ยอดเหรียญ = ผลรวมรายการที่ ok ใน coin_ledger (ไม่เก็บยอดแยก จึงไม่มีทางไม่ตรงกัน)
+  -- Balance = sum of 'ok' ledger rows (no separately stored balance, so it can't drift)
+  perform pg_advisory_xact_lock(hashtext(new.user_id::text));
+  select coalesce(sum(delta), 0) into bal from public.coin_ledger where user_id = new.user_id and status = 'ok';
+  -- security definer: current_user คือเจ้าของฟังก์ชัน จึงดู role ของผู้เรียกจาก setting แทน
+  -- security definer: current_user is the owner here, so read the caller's role from the setting
+  if coalesce(current_setting('role', true), 'none') in ('authenticated', 'anon') then
+    new.status := case when new.kind = 'review' then 'pending' else 'ok' end;
+    if new.kind in ('mission', 'review') then
+      if new.delta not in (15, 20, 30, 50) then
+        raise exception 'invalid mission reward' using errcode = 'check_violation';
+      end if;
+      -- เหรียญจากภารกิจรวมไม่เกิน 300/เดือน / mission coins capped at 300 a month
+      select coalesce(sum(delta), 0) into month_earned from public.coin_ledger
+        where user_id = new.user_id and kind in ('mission', 'review')
+          and created_at >= date_trunc('month', now());
+      if month_earned + new.delta > 300 then
+        raise exception 'monthly mission cap reached' using errcode = 'check_violation';
+      end if;
+    elsif new.kind = 'topup' then
+      if new.delta not in (100, 300, 600) then
+        raise exception 'invalid top-up' using errcode = 'check_violation';
+      end if;
+    elsif new.kind = 'plus' then
+      if new.delta <> 100 or new.ref is distinct from 'plus:' || to_char(now(), 'YYYY-MM')
+         or not exists (select 1 from public.profiles p where p.id = new.user_id and p.plus_until > now()) then
+        raise exception 'invalid plus coins' using errcode = 'check_violation';
+      end if;
+    elsif new.kind = 'spend' then
+      if new.delta >= 0 or bal + new.delta < 0 then
+        raise exception 'not enough coins' using errcode = 'check_violation';
+      end if;
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+revoke execute on function public.coin_ledger_before_insert() from public, anon, authenticated;
+
+drop trigger if exists coin_ledger_before_insert on public.coin_ledger;
+create trigger coin_ledger_before_insert
+  before insert on public.coin_ledger
+  for each row execute function public.coin_ledger_before_insert();
+-- รุ่นก่อนเก็บยอดไว้ใน profiles.coins ซึ่งอาจไม่ตรงกับประวัติ เลิกใช้แล้ว
+-- Earlier versions stored the balance in profiles.coins, which could drift; no longer used.
+drop trigger if exists coin_ledger_after_approve on public.coin_ledger;
+drop function if exists public.coin_ledger_after_approve();
+comment on column public.profiles.coins is 'deprecated: balance is computed from coin_ledger (see my_coins view)';
+
+-- ยอดเหรียญของฉัน (อ่านได้เฉพาะของตัวเองผ่าน RLS) / My coin balance (own rows only via RLS)
+create or replace view public.my_coins
+with (security_invoker = true) as
+  select coalesce(sum(delta) filter (where status = 'ok'), 0)::integer      as coins,
+         coalesce(sum(delta) filter (where status = 'pending'), 0)::integer as pending
+  from public.coin_ledger
+  where user_id = (select auth.uid());
+
+revoke all on public.my_coins from anon, authenticated;
+grant select on public.my_coins to authenticated;
+
+-- ---------- 6.3 questions: ถามรุ่นพี่ (สิทธิ์ Plus) / Ask a mentor (Plus) ----------
+--   status: waiting (รอคำตอบ) · answered (ตอบแล้ว) · closed (ปิดแล้ว)
+--   counted = ใช้สิทธิ์ไป 1 ครั้ง · refunded = คืนสิทธิ์ (รุ่นพี่ไม่ตอบใน 48 ชม.)
+--   ⚠️ เดโม: รุ่นพี่เป็นตัวละครสมมติ คำตอบถูกจำลองในเว็บแล้วบันทึกลง messages ของแถวนี้
+--   Demo: mentors are fictional; the site simulates their replies and saves them in messages.
+create table if not exists public.questions (
+  id                uuid primary key default gen_random_uuid(),
+  user_id           uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  mentor_id         text not null check (mentor_id ~ '^[a-z0-9_-]{1,40}$'),
+  status            text not null default 'waiting' check (status in ('waiting', 'answered', 'closed')),
+  counted           boolean not null default false,
+  refunded          boolean not null default false,
+  messages          jsonb not null default '[]'::jsonb
+                    check (jsonb_typeof(messages) = 'array' and octet_length(messages::text) <= 20000),
+  created_at        timestamptz not null default now(),
+  answered_at       timestamptz,
+  last_activity_at  timestamptz not null default now(),
+  closed_at         timestamptz
+);
+create index if not exists questions_user_idx on public.questions (user_id, created_at desc);
+
+alter table public.questions enable row level security;
+drop policy if exists "questions: read own"   on public.questions;
+drop policy if exists "questions: insert own" on public.questions;
+drop policy if exists "questions: update own" on public.questions;
+create policy "questions: read own" on public.questions
+  for select to authenticated using (user_id = (select auth.uid()));
+create policy "questions: insert own" on public.questions
+  for insert to authenticated with check (user_id = (select auth.uid()));
+create policy "questions: update own" on public.questions
+  for update to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
+
+revoke all on public.questions from anon, authenticated;
+grant select on public.questions to authenticated;
+grant insert (mentor_id, messages) on public.questions to authenticated;
+grant update (status, counted, refunded, messages, answered_at, last_activity_at, closed_at) on public.questions to authenticated;
+
+create or replace function public.questions_before_write()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+declare
+  open_n integer;
+  used_n integer;
+begin
+  if current_user not in ('authenticated', 'anon') then
+    return new;
+  end if;
+  if tg_op = 'INSERT' then
+    new.status := 'waiting'; new.counted := false; new.refunded := false;
+    if not exists (select 1 from public.profiles p where p.id = new.user_id and p.plus_until > now()) then
+      raise exception 'plus required' using errcode = 'check_violation';
+    end if;
+    select count(*) into open_n from public.questions
+      where user_id = new.user_id and status in ('waiting', 'answered');
+    if open_n >= 2 then
+      raise exception 'max 2 open questions' using errcode = 'check_violation';
+    end if;
+    -- 5 สิทธิ์/เดือน ไม่ทบ: ที่ใช้ไปเดือนนี้ + ที่เปิดค้างอยู่ / 5 a month, no rollover: used this month + open
+    select count(*) into used_n from public.questions
+      where user_id = new.user_id and counted and closed_at >= date_trunc('month', now());
+    if used_n + open_n >= 5 then
+      raise exception 'monthly quota used' using errcode = 'check_violation';
+    end if;
+  else
+    -- ปิดแล้วเปิดใหม่ไม่ได้ และใช้สิทธิ์ไปแล้วคืนเองไม่ได้ / closed stays closed, counted can't be undone
+    if old.status = 'closed' then
+      new.status := 'closed'; new.counted := old.counted; new.refunded := old.refunded; new.closed_at := old.closed_at;
+    end if;
+    if old.counted then new.counted := true; end if;
+    if new.counted and new.refunded then
+      raise exception 'counted and refunded' using errcode = 'check_violation';
+    end if;
+    if new.status = 'closed' and new.closed_at is null then new.closed_at := now(); end if;
+  end if;
+  return new;
+end;
+$$;
+
+
+drop trigger if exists questions_before_write on public.questions;
+create trigger questions_before_write
+  before insert or update on public.questions
+  for each row execute function public.questions_before_write();
+
+-- อนุมัติเหรียญจากรีวิว (หลังรีวิวผ่านการตรวจ) / Approve review coins after moderation:
+--   update public.coin_ledger set status = 'ok' where id = '<ledger id>';
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';
