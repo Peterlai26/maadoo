@@ -494,9 +494,10 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .wrap,footer.foot{position:relative;z-index:1}
 .hero{background:linear-gradient(160deg,color-mix(in srgb,var(--sky) 72%,transparent),color-mix(in srgb,var(--sky-2) 60%,transparent))}
 .sw-fx{font-size:11px;color:var(--ink-3);font-weight:400}
-.fx-sec{display:grid;gap:6px;margin-top:10px;padding-top:10px;border-top:1.5px solid var(--line)}
+.fx-sec{display:grid;gap:6px;margin:4px 0 10px;padding-bottom:10px;border-bottom:1.5px solid var(--line)}
 .fx-sec>b{font-size:13px;color:var(--ink-2);padding-left:4px}
 .fx-row{display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;text-align:left}
+.snd-vol{display:flex;align-items:center;gap:8px;padding:2px 8px 4px}.snd-vol input{flex:1;min-width:0;accent-color:var(--blue);height:24px}
 .fx-row span{display:grid}.fx-row b{font-size:14px;color:var(--navy)}.fx-row small{font-size:12px;color:var(--ink-3)}
 .tg{width:42px;height:24px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .2s}
 .tg::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
@@ -1101,7 +1102,7 @@ function applyPrefs(){
  const li=document.getElementById('logoImg');if(li&&li.getAttribute('src')!==PUP())li.setAttribute('src',PUP());
  $('#themeBtn').innerHTML=PALETTE+`<span class="tlabel">${t('ธีม','Theme')}</span>`;
  $('#themeBtn').setAttribute('aria-label',t('เลือกธีม','Choose a theme'));
- renderThemePop();renderCoach();try{FX.setSkin(S.skin)}catch(e){}
+ renderThemePop();renderCoach();try{FX.setSkin(S.skin)}catch(e){}try{SND.setSkin(S.skin)}catch(e){}
  $('#langBtn').innerHTML=`<span class="${S.lang==='th'?'on':''}">TH</span><i>/</i><span class="${S.lang==='en'?'on':''}">EN</span>`;
  $('#langBtn').setAttribute('aria-label',t('เปลี่ยนภาษาเป็นอังกฤษ','Switch language to Thai'));
  $('#demoTag').textContent=t('เดโม · ข้อมูลตัวอย่าง','Demo · sample data');
@@ -1520,10 +1521,14 @@ function renderBell(){const n=NOTIFS.filter(v=>!v.read).length;
 function foot(){$('#foot').innerHTML=`<span class="brand-s"><img src="${PUP()}" alt="">Maadoo Job</span><button class="link" data-go="employer">${t('สำหรับบริษัท','For employers')}</button><button class="link" data-go="quiz">${t('ควิซหาบริษัทที่ใช่','Company-match quiz')}</button><button class="link" data-go="rules">${t('แนวทางรีวิวและความเป็นส่วนตัว','Guidelines & privacy')}</button><span style="margin-left:auto">© 2026 ${t('มาดูจ็อบ','Maadoo Job')} · ${t('เดโม','demo')}</span>`}
 
 function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen){el.innerHTML='';return}
- el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')}</b></div><div class="swatches">${SKINS.map(k=>`<button class="sw ${S.skin===k[0]?'on':''}" data-skin="${k[0]}"><span class="sw-prev" style="background:${k[3]}"><i style="background:${k[4]}"></i><i style="background:${k[5]}"></i><img src="${PUP(k[0])}" alt=""></span><span>${k[1]} ${x(k[2])}</span><small class="sw-fx">✨ ${x(FXINFO[k[0]].n)}</small></button>`).join('')}</div>
- <div class="fx-sec"><b>${t('เอฟเฟค','Effects')}</b>
+ const old=el.querySelector('.tpop'),top=old?old.scrollTop:0;
+ el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')}</b></div><div class="fx-sec"><b>${t('เอฟเฟคและเสียง','Effects & sound')}</b>
   <button class="fx-row" data-fx="amb" role="switch" aria-checked="${S.fxAmb}"><span><b>✨ ${t('เอฟเฟคพื้นหลัง','Background effect')}</b><small>${x(FXINFO[S.skin].n)}</small></span><i class="tg ${S.fxAmb?'on':''}"></i></button>
-  <button class="fx-row" data-fx="tap" role="switch" aria-checked="${S.fxTap}"><span><b>👆 ${t('เอฟเฟคตอนกด','Tap effect')}</b><small>${t('มีอนิเมชันเด้งออกมาทุกครั้งที่กด','A little burst every time you tap')}</small></span><i class="tg ${S.fxTap?'on':''}"></i></button></div></div>`}
+  <button class="fx-row" data-fx="tap" role="switch" aria-checked="${S.fxTap}"><span><b>👆 ${t('เอฟเฟคตอนกด','Tap effect')}</b><small>${t('มีอนิเมชันเด้งออกมาทุกครั้งที่กด','A little burst every time you tap')}</small></span><i class="tg ${S.fxTap?'on':''}"></i></button>
+  <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(SNDINFO[S.skin])}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
+  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}</div>
+ <div class="swatches">${SKINS.map(k=>`<button class="sw ${S.skin===k[0]?'on':''}" data-skin="${k[0]}"><span class="sw-prev" style="background:${k[3]}"><i style="background:${k[4]}"></i><i style="background:${k[5]}"></i><img src="${PUP(k[0])}" alt=""></span><span>${k[1]} ${x(k[2])}</span><small class="sw-fx">✨ ${x(FXINFO[k[0]].n)}</small></button>`).join('')}</div></div>`;
+ const np=el.querySelector('.tpop');if(np)np.scrollTop=top}
 function renderCoach(){const el=$('#coach');if(!el)return;el.innerHTML=S.coach&&!S.themeOpen?`<div class="coach" role="status"><b>🎨 ${t('เปลี่ยนธีมได้ตรงนี้นะ!','You can change the theme here!')}</b><span>${t('มีทั้งแบบธรรมดา กลางคืน ซากุระ มินต์ และอื่น ๆ','Classic, Night, Sakura, Mint and more')}</span><button class="btn y" data-coachok>${t('เข้าใจแล้ว','Got it')}</button></div>`:''}
 /* explore: category dropdown · popover on wide screens, bottom sheet on phones (≤600px) */
 const isSheet=()=>matchMedia('(max-width:600px)').matches;
@@ -1551,7 +1556,7 @@ document.addEventListener('click',e=>{
  if(S.indOpen&&e.target.closest('[data-indclose]')){indClose(true);return}
  const b=e.target.closest('button');
  if(S.notifOpen&&(!b||(b.id!=='bellBtn'&&!b.closest('#notif')))){S.notifOpen=false;renderBell()}
- if(S.themeOpen&&(!b||(b.id!=='themeBtn'&&!b.closest('#themePop')))){S.themeOpen=false;renderThemePop();renderCoach()}
+ if(S.themeOpen&&!e.target.closest('#themePop')&&(!b||b.id!=='themeBtn')){S.themeOpen=false;renderThemePop();renderCoach()}
  if(!b)return;const d=b.dataset;
  if(b.id==='bellBtn'){S.notifOpen=!S.notifOpen;S.themeOpen=false;renderThemePop();renderBell();return}
  if(d.readall!==undefined){NOTIFS.forEach(v=>v.read=true);renderBell();return}
@@ -1600,7 +1605,8 @@ document.addEventListener('click',e=>{
  if(d.confirmplus!==undefined){S.user.plus=true;S.modal=null;render();toast(t('ยินดีต้อนรับสู่ Maadoo Plus ✦','Welcome to Maadoo Plus ✦'));return}
  if(d.emp){openModal({type:'emp',tier:d.emp});return}
  if(b.id==='themeBtn'){S.themeOpen=!S.themeOpen;S.notifOpen=false;if(S.coach){S.coach=false;store.set('maadoo-coach','1')}renderBell();applyPrefs();return}
- if(d.skin){S.skin=d.skin;store.set('maadoo-skin',S.skin);S.themeOpen=false;render();const k=SKINS.find(v=>v[0]===S.skin);toast(`${k[1]} ${t('ธีม','Theme')}: ${x(k[2])}`);return}
+ if(d.skin){S.skin=d.skin;store.set('maadoo-skin',S.skin);render();const sw=document.querySelector(`#themePop [data-skin="${S.skin}"]`);if(sw)sw.focus({preventScroll:true});const k=SKINS.find(v=>v[0]===S.skin);toast(`${k[1]} ${t('ธีม','Theme')}: ${x(k[2])}`);return}
+ if(d.snd!==undefined){SND.toggle();renderThemePop();return}
  if(d.fx){if(d.fx==='amb'){S.fxAmb=!S.fxAmb;store.set('maadoo-fx-amb',S.fxAmb?'1':'0')}else{S.fxTap=!S.fxTap;store.set('maadoo-fx-tap',S.fxTap?'1':'0')}renderThemePop();FX.kick();return}
  if(d.coachok!==undefined){S.coach=false;store.set('maadoo-coach','1');renderCoach();return}
  if(b.id==='annBtn'){S.themeOpen=false;renderThemePop();openModal({type:'welcome'});return}
@@ -1681,7 +1687,7 @@ document.addEventListener('submit',e=>{e.preventDefault();
   S.bd.open[pid]=true;addPoints(5);render();toast(t('ส่งความคิดเห็นแล้ว +5 แต้ม','Comment posted +5 pts'));}
 });
 function syncPtForm(){const g=id=>document.getElementById(id);if(!g('pf-title'))return;const f=S.ptForm;f.title=g('pf-title').value;f.kind=g('pf-kind').value;f.day=g('pf-day').value;f.when=g('pf-when').value;f.pay=g('pf-pay').value;f.unit=g('pf-unit').value;f.need=g('pf-need').value;f.how=g('pf-how').value;f.req=g('pf-req').value;f.ok=g('pf-ok').checked}
-document.addEventListener('input',e=>{if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
+document.addEventListener('input',e=>{if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.setAttribute('aria-valuetext',v+'%');return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
 document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();render()}
  if(id==='jInd'){S.jobF.ind=e.target.value;render()}if(id==='jMin'){S.jobF.min=+e.target.value;render()}if(id==='onlyJobs'){S.coOnlyJobs=e.target.checked;render()}});
 document.addEventListener('keydown',e=>{
@@ -1763,6 +1769,127 @@ const FX=(()=>{
  document.addEventListener('pointerup',e=>{if(pd&&Math.hypot(e.clientX-pd.x,e.clientY-pd.y)<10)tap(e.clientX,e.clientY);pd=null},{passive:true});
  document.addEventListener('pointercancel',()=>{pd=null},{passive:true});
  size();return {setSkin,kick,tap};
+})();
+/* ---------- ambient sound: one relaxing scene per theme, synthesized live with Web Audio (no audio files, no licensing) ----------
+   Off by default and never starts without a user gesture. Crossfades on theme change, pauses while the tab is hidden.
+   Real recordings later: put music/<theme>.mp3 in the repo and add the theme name to MUSIC_FILES; that file then loops instead. */
+const MUSIC_FILES=[]; // e.g. ['sea','night'] once music/sea.mp3 and music/night.mp3 exist
+const SNDINFO={default:['lo-fi คอร์ดเบา ๆ','Soft lo-fi chords'],night:['เปียโนช้า + จิ้งหรีด','Slow piano + crickets'],sakura:['สายลม + กระดิ่งลม','Breeze + wind chimes'],mint:['ลำธาร + มาริมบา','Brook + soft marimba'],lavender:['ambient pad นุ่ม ๆ','Soft ambient pad'],sunset:['กีตาร์อาร์เปจโจนุ่ม ๆ','Gentle guitar arpeggios'],dino:['กลองไม้ + เสียงป่า','Wood drums + jungle'],garden:['นกร้องในสวน','Garden birdsong'],sea:['คลื่น + นกนางนวล','Waves + seagulls']};
+S.snd=store.get('maadoo-snd')==='1';
+S.sndVol=(()=>{const v=parseFloat(store.get('maadoo-snd-vol'));return isFinite(v)?Math.min(1,Math.max(0,v)):.5})();
+const SND=(()=>{
+ const FADE=1.5,LOOK=.6,TICK=250;
+ let ctx=null,master=null,white=null,brown=null,cur=null,skin=S.skin,timer=0,playing=false;
+ const rnd=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)],mtof=m=>440*Math.pow(2,(m-69)/12);
+ const level=()=>S.sndVol*S.sndVol*.9;
+ function ensure(){
+  if(ctx)return true;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+  try{ctx=new AC({latencyHint:'playback'})}catch(e){try{ctx=new AC()}catch(_){return false}}
+  master=ctx.createGain();master.gain.value=level();const comp=ctx.createDynamicsCompressor();master.connect(comp);comp.connect(ctx.destination);
+  const n=ctx.sampleRate*2;white=ctx.createBuffer(1,n,ctx.sampleRate);brown=ctx.createBuffer(1,n,ctx.sampleRate);
+  const w=white.getChannelData(0),b=brown.getChannelData(0);let last=0;
+  for(let i=0;i<n;i++){const r=Math.random()*2-1;w[i]=r;last=(last+.02*r)/1.02;b[i]=last*3.5}
+  return true}
+ /* building blocks (each scene gets its own output gain `o`) */
+ function loop(buf){const s=ctx.createBufferSource();s.buffer=buf;s.loop=true;s.start(0,rnd(0,1.9));return s}
+ function filt(type,f,q){const x=ctx.createBiquadFilter();x.type=type;x.frequency.value=f;if(q!=null)x.Q.value=q;return x}
+ function amp(v){const g=ctx.createGain();g.gain.value=v;return g}
+ function pan(p){if(!ctx.createStereoPanner)return amp(1);const s=ctx.createStereoPanner();s.pan.value=p;return s}
+ function lfo(param,rate,depth){const l=ctx.createOscillator(),g=amp(depth);l.frequency.value=rate;l.connect(g);g.connect(param);l.start();return l}
+ function chain(...n){for(let i=0;i<n.length-1;i++)n[i].connect(n[i+1]);return n[n.length-1]}
+ function echo(dest,time,fb,wet){const i=amp(1),d=ctx.createDelay(2),f=amp(fb),lp=filt('lowpass',2200),w=amp(wet);d.delayTime.value=time;
+  i.connect(dest);i.connect(d);chain(d,lp,f,d);d.connect(w);w.connect(dest);return i}
+ function tone(dest,t,f,o){o=o||{};const s=ctx.createOscillator(),g=ctx.createGain(),a=o.a||.01,d=o.d||1,v=o.v||.05;
+  s.type=o.type||'sine';s.frequency.setValueAtTime(f,t);if(o.to)s.frequency.exponentialRampToValueAtTime(o.to,t+(o.glide||d*.5));if(o.detune)s.detune.value=o.detune;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d);
+  s.connect(g);g.connect(o.via?o.via(g):dest);s.start(t);s.stop(t+a+d+.05);return g}
+ function burst(dest,t,d,v,f,type){const s=ctx.createBufferSource(),g=ctx.createGain(),x=filt(type||'bandpass',f,1.2);s.buffer=white;
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);chain(s,x,g,dest);s.start(t,rnd(0,1.5));s.stop(t+d+.02)}
+ function stream(min,max,fn){let n=0;return h=>{const now=ctx.currentTime;if(n<now-.1)n=now+rnd(.05,min);while(n<h){fn(n);n+=rnd(min,max)}}}
+ function steady(step,fn){let n=0,i=0;return h=>{const now=ctx.currentTime;if(n<now-.1)n=now+.1;while(n<h){fn(n,i++);n+=step}}}
+ /* one scene per theme: returns {tick(horizon), srcs:[continuous sources]} */
+ const SCENES={
+  default(o){const bus=echo(o,.38,.25,.18),lp=filt('lowpass',1300);lp.connect(bus);
+   const hiss=chain(loop(white),filt('highpass',4000),amp(.004));hiss.connect(o);
+   const prog=[[65,69,72,76],[64,67,71,74],[62,65,69,72],[60,64,67,71]];
+   return {srcs:[hiss],tick:steady(4,(t,i)=>{const c=prog[i%4];
+    c.forEach((m,j)=>{tone(lp,t+j*.035,mtof(m),{type:'triangle',v:.045,a:.03,d:3.7});tone(lp,t+j*.035,mtof(m),{v:.02,a:.05,d:3.5,detune:8})});
+    tone(o,t,mtof(c[0]-24),{v:.1,a:.02,d:3.4});if(i%2)tone(lp,t+2,mtof(c[3]+12),{type:'triangle',v:.025,a:.02,d:1.6})})}},
+  night(o){const bus=echo(o,.47,.32,.28);
+   const cr=[[4400,-.4],[4750,.5]].map(([f,p])=>{const s=ctx.createOscillator(),g=amp(0);s.frequency.value=f;chain(s,g,pan(p),o);s.start();return {s,g}});
+   const notes=[57,60,62,64,67,69,72,74,76];
+   const piano=stream(1.3,2.8,t=>{const m=pick(notes);tone(bus,t,mtof(m),{v:.08,a:.006,d:3.4});tone(bus,t,mtof(m)*2,{v:.018,a:.004,d:1.2});
+    if(Math.random()<.3){const m2=pick(notes);tone(bus,t+.18,mtof(m2),{v:.05,a:.006,d:3})}});
+   const crick=cr.map(c=>stream(.7,1.6,t=>{const g=c.g.gain;for(let k=0;k<3;k++){const s=t+k*.07;g.setValueAtTime(0,s);g.linearRampToValueAtTime(.012,s+.012);g.linearRampToValueAtTime(0,s+.045)}}));
+   return {srcs:cr.map(c=>c.s),tick:h=>{piano(h);crick.forEach(f=>f(h))}}},
+  sakura(o){/* soft breeze: deep brown noise in slow gusts (no white-noise hiss, which reads as rain) + wind chimes */
+   const w=loop(brown),bp=filt('bandpass',320,.9),lp=filt('lowpass',900),g=amp(.03);chain(w,bp,lp,g,o);
+   const gusts=stream(5,9,t=>{const p=rnd(5,9),pk=rnd(.07,.11);g.gain.setValueAtTime(.025,t);g.gain.linearRampToValueAtTime(pk,t+p*.45);g.gain.linearRampToValueAtTime(.025,t+p*.95);
+    bp.frequency.setValueAtTime(260,t);bp.frequency.linearRampToValueAtTime(rnd(480,640),t+p*.45);bp.frequency.linearRampToValueAtTime(260,t+p*.95)});
+   const bus=echo(o,.33,.3,.3),chimes=[84,86,88,91,93,96,98];
+   const ring=stream(.8,3.2,t=>{const n=Math.random()<.35?3:1;for(let k=0;k<n;k++){const f=mtof(pick(chimes)),s=t+k*rnd(.1,.25);
+    tone(bus,s,f,{v:.04,a:.002,d:3.8});tone(bus,s,f*2.76,{v:.009,a:.002,d:1.3})}});
+   return {srcs:[w],tick:h=>{gusts(h);ring(h)}}},
+  mint(o){/* brook: low water rumble + pitched bubbling/gurgles + soft marimba (no broadband hiss) */
+   const r=loop(brown),lp=filt('lowpass',380),rg=amp(.07);chain(r,lp,rg,o);const l=lfo(rg.gain,.13,.02);
+   const gu=loop(brown),gf=filt('bandpass',700,4),gg=amp(.05);chain(gu,gf,gg,o);const l2=lfo(gf.frequency,.9,220),l3=lfo(gg.gain,.37,.03);
+   const wp=pan(-.25);wp.connect(o);
+   const bubbles=stream(.08,.5,t=>{const n=Math.random()<.4?2+Math.floor(Math.random()*3):1;for(let k=0;k<n;k++){const f=rnd(300,650),s=t+k*rnd(.04,.09);
+    tone(wp,s,f,{v:.03,a:.003,d:.06,to:f*rnd(1.8,2.6),glide:.045})}});
+   const bus=echo(o,.42,.25,.22),scale=[67,69,72,74,76,79,81];
+   const mar=stream(2.2,4.5,t=>{const m=pick(scale);tone(bus,t,mtof(m),{v:.05,a:.004,d:1.4});tone(bus,t,mtof(m)*4,{v:.008,a:.002,d:.25});
+    if(Math.random()<.4)tone(bus,t+.24,mtof(pick(scale)),{v:.035,a:.004,d:1.2})});
+   return {srcs:[r,l,gu,l2,l3],tick:h=>{bubbles(h);mar(h)}}},
+  lavender(o){const lp=filt('lowpass',900,.5);lp.connect(echo(o,.6,.35,.25));const l=lfo(lp.frequency,.05,350);
+   const prog=[[57,60,64,67],[53,57,60,64],[55,59,62,67],[52,55,59,64]];
+   return {srcs:[l],tick:steady(8,(t,i)=>{prog[i%4].forEach(m=>{[-7,7].forEach(dt=>{const s=ctx.createOscillator(),g=ctx.createGain();s.type='sawtooth';s.frequency.value=mtof(m);s.detune.value=dt;
+     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.018,t+3);g.gain.setValueAtTime(.018,t+7);g.gain.linearRampToValueAtTime(0,t+10.5);chain(s,g,lp);s.start(t);s.stop(t+10.6)})});
+    tone(o,t+1,mtof(prog[i%4][2]+12),{v:.012,a:2.5,d:5})})}},
+  sunset(o){const bus=echo(o,.36,.22,.2),prog=[[48,55,60,64,67],[45,52,57,60,64],[41,48,53,57,60],[43,50,55,59,62]],pat=[0,2,3,4,3,2,1,2];
+   return {srcs:[],tick:steady(.36,(t,i)=>{const c=prog[Math.floor(i/16)%4],m=c[pat[i%8]],s=ctx.createOscillator(),g=ctx.createGain(),lp=filt('lowpass',3500,1);
+    s.type='triangle';s.frequency.value=mtof(m);lp.frequency.setValueAtTime(3500,t);lp.frequency.exponentialRampToValueAtTime(700,t+.35);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(i%8?.06:.085,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+1.9);chain(s,lp,g,bus);s.start(t);s.stop(t+2);
+    if(i%16===0)tone(o,t,mtof(c[0]-12),{v:.07,a:.01,d:2.8})})}},
+  dino(o){const r=loop(brown),f=filt('lowpass',900),g=amp(.05);chain(r,f,g,o);const l=lfo(g.gain,.09,.025);
+   const beat=[2,0,0,1,0,0,1,0,2,0,1,0,0,0,0,0];
+   const drums=steady(.42,(t,i)=>{const b=beat[i%16];if(!b)return;const f0=b===2?150:220;
+    tone(o,t,f0,{v:.13,a:.003,d:.32,to:f0*.55,glide:.12});burst(o,t,.03,.035,1800)});
+   const calls=stream(3,8,t=>{if(Math.random()<.5){for(let k=0;k<2;k++){const s=t+k*.16;tone(o,s,170,{type:'square',v:.012,a:.005,d:.09,to:120,glide:.08,via:()=>{const x=filt('lowpass',650);x.connect(o);return x}})}}
+    else{const f0=rnd(900,1400);[0,.22,.44].forEach((d,k)=>tone(o,t+d,f0*(1+k*.08),{v:.02,a:.01,d:.16,to:f0*.8,glide:.14}))}});
+   return {srcs:[r,l],tick:h=>{drums(h);calls(h)}}},
+  garden(o){const w=loop(white),bp=filt('bandpass',420,.7);chain(w,bp,amp(.03),o);
+   const birds=[[2600,4000,-.5],[3200,5200,.45]].map(([lo,hi,p])=>{const out=pan(p);out.connect(o);
+    return stream(1.6,5,t=>{const n=3+Math.floor(Math.random()*5),base=rnd(lo,hi);let s=t;for(let k=0;k<n;k++){const d=rnd(.05,.11),f=base*rnd(.85,1.15);tone(out,s,f,{v:.08,a:.008,d,to:f*rnd(.7,1.35),glide:d});s+=d+rnd(.03,.09)}})});
+   return {srcs:[w],tick:h=>birds.forEach(b=>b(h))}},
+  sea(o){const s=loop(brown),lp=filt('lowpass',500),g=amp(.03);chain(s,lp,g,o);const foam=loop(white),hp=filt('highpass',2500),fg=amp(.002);chain(foam,hp,fg,o);
+   const waves=stream(6,10,t=>{const p=rnd(6,10);g.gain.setValueAtTime(.03,t);g.gain.linearRampToValueAtTime(.2,t+p*.4);g.gain.linearRampToValueAtTime(.03,t+p*.95);
+    lp.frequency.setValueAtTime(420,t);lp.frequency.linearRampToValueAtTime(1100,t+p*.4);lp.frequency.linearRampToValueAtTime(420,t+p*.95);
+    fg.gain.setValueAtTime(.002,t+p*.3);fg.gain.linearRampToValueAtTime(.012,t+p*.45);fg.gain.linearRampToValueAtTime(.002,t+p*.8)});
+   const gp=pan(.3);gp.connect(o);
+   const gulls=stream(7,15,t=>{const n=2+Math.floor(Math.random()*2);for(let k=0;k<n;k++){const f=rnd(1250,1500);tone(gp,t+k*.42,f,{type:'triangle',v:.02,a:.03,d:.32,to:f*.62,glide:.3})}});
+   return {srcs:[s,foam],tick:h=>{waves(h);gulls(h)}}}
+ };
+ function make(k){const o=amp(0);o.connect(master);let sc;
+  if(MUSIC_FILES.includes(k)){const el=new Audio('music/'+k+'.mp3');el.loop=true;el.preload='auto';const src=ctx.createMediaElementSource(el);src.connect(o);
+   el.play().catch(()=>{});sc={srcs:[],tick:()=>{},el}}
+  else sc=(SCENES[k]||SCENES.default)(o);
+  sc.o=o;const t=ctx.currentTime;o.gain.setValueAtTime(0,t);o.gain.linearRampToValueAtTime(1,t+FADE);return sc}
+ function kill(sc,fade){if(!sc)return;const t=ctx.currentTime;sc.o.gain.cancelScheduledValues(t);sc.o.gain.setValueAtTime(sc.o.gain.value,t);sc.o.gain.linearRampToValueAtTime(0,t+fade);
+  setTimeout(()=>{sc.srcs.forEach(s=>{try{s.stop()}catch(e){}});if(sc.el){sc.el.pause();sc.el.removeAttribute('src');sc.el.load()}try{sc.o.disconnect()}catch(e){}},fade*1000+120)}
+ function run(){clearInterval(timer);timer=0;if(!playing||document.hidden)return;const f=()=>{if(cur)cur.tick(ctx.currentTime+LOOK)};f();timer=setInterval(f,TICK)}
+ function start(){if(playing||!ensure())return;playing=true;ctx.resume().catch(()=>{});master.gain.setValueAtTime(level(),ctx.currentTime);cur=make(skin);run()}
+ function stop(){if(!playing)return;playing=false;clearInterval(timer);timer=0;const old=cur;cur=null;kill(old,.4);
+  setTimeout(()=>{if(!playing&&ctx)ctx.suspend().catch(()=>{})},600)}
+ function setSkin(k){if(k===skin)return;skin=k;if(!playing||!ctx)return;const old=cur;cur=make(k);kill(old,FADE);run()}
+ function setVol(v){S.sndVol=v;store.set('maadoo-snd-vol',String(v));if(ctx)master.gain.setTargetAtTime(level(),ctx.currentTime,.05)}
+ function toggle(){S.snd=!S.snd;store.set('maadoo-snd',S.snd?'1':'0');S.snd?start():stop()}
+ document.addEventListener('visibilitychange',()=>{if(!ctx||!playing)return;
+  if(document.hidden){clearInterval(timer);timer=0;if(cur&&cur.el)cur.el.pause();ctx.suspend().catch(()=>{})}
+  else{ctx.resume().catch(()=>{});if(cur&&cur.el)cur.el.play().catch(()=>{});run()}});
+ // remembered "on": wait for the visitor's first tap/click/key before making any sound (never autoplay)
+ const wake=()=>{['click','keydown','touchend'].forEach(e=>document.removeEventListener(e,wake,true));if(S.snd&&!playing&&!document.hidden)start()};
+ if(S.snd)['click','keydown','touchend'].forEach(e=>document.addEventListener(e,wake,true));
+ return {setSkin,setVol,toggle,get playing(){return playing}};
 })();
 
 render();

@@ -20,7 +20,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 ## Hard rules
 - Everything user-facing is **bilingual Thai + English**. Use `t('ไทย','English')` for UI strings and `[th, en]` pairs with `x(...)` for data. Never add a string in only one language.
 - **All companies, people, reviews and salaries are fictional.** Never use real company names or real people.
-- Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme and effect toggles (always wrapped in try/catch).
+- Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme, effect toggles and ambient-sound on/off + volume (always wrapped in try/catch).
 - Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email magic link, or "try without signing up" anonymous guest) and the `reviews` table. supabase-js keeps its auth session in `localStorage`.
   - New reviews are `pending`; the public sees only `approved` ones via the `approved_reviews` view (no `user_id`, no `salary`). Users can never set or change `status`; moderation happens in the Supabase dashboard.
   - Guests (anonymous users) can browse, swipe and apply, but can't add reviews (blocked in the UI and by RLS); they can keep their account by adding an email (`updateUser`).
@@ -31,6 +31,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Must work at every screen size (360px phone → desktop) with no horizontal scrolling. Phone and tablet (≤1020px) use the bottom nav; the review button floats in the middle.
 - Every theme must look right: default, night (dark), sakura, mint, lavender, sunset, dino, garden, sea. Style through CSS variables (`--bg`, `--surface`, `--ink`, `--blue`, `--navy`, `--orange`…), never hard-coded colors in components.
 - Each theme has its own background effect and tap effect (canvas), and each can be switched off in the theme menu. Respect `prefers-reduced-motion`.
+- Each theme also has an ambient sound scene (`SND` + `SCENES` in `index.html`), synthesized with the Web Audio API — no audio files, no licensing. It is off by default and must never start without a user gesture (a remembered "on" waits for the first tap/click/key). Theme changes crossfade; the tab being hidden suspends it. To use a real recording, add `music/<theme>.mp3` and put the theme name in `MUSIC_FILES`.
 - Style: cute, rounded, friendly. Fonts are Mali (display) and Anuphan (body).
 
 ## Main areas (views in `index.html`)
