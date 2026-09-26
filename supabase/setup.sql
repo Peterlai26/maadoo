@@ -369,8 +369,10 @@ declare
   bal integer;
   month_earned integer;
 begin
-  insert into public.profiles (id) values (new.user_id) on conflict (id) do nothing;
-  select coins into bal from public.profiles where id = new.user_id for update;
+  -- ยอดเหรียญ = ผลรวมรายการที่ ok ใน coin_ledger (ไม่เก็บยอดแยก จึงไม่มีทางไม่ตรงกัน)
+  -- Balance = sum of 'ok' ledger rows (no separately stored balance, so it can't drift)
+  perform pg_advisory_xact_lock(hashtext(new.user_id::text));
+  select coalesce(sum(delta), 0) into bal from public.coin_ledger where user_id = new.user_id and status = 'ok';
   -- security definer: current_user คือเจ้าของฟังก์ชัน จึงดู role ของผู้เรียกจาก setting แทน
   -- security definer: current_user is the owner here, so read the caller's role from the setting
   if coalesce(current_setting('role', true), 'none') in ('authenticated', 'anon') then
@@ -401,38 +403,32 @@ begin
       end if;
     end if;
   end if;
-  if new.status = 'ok' then
-    update public.profiles set coins = coins + new.delta where id = new.user_id;
-  end if;
-  return new;
-end;
-$$;
-
-create or replace function public.coin_ledger_after_approve()
-returns trigger
-language plpgsql
-security definer
-set search_path = ''
-as $$
-begin
-  if old.status = 'pending' and new.status = 'ok' then
-    update public.profiles set coins = coins + new.delta where id = new.user_id;
-  end if;
   return new;
 end;
 $$;
 
 revoke execute on function public.coin_ledger_before_insert() from public, anon, authenticated;
-revoke execute on function public.coin_ledger_after_approve() from public, anon, authenticated;
 
 drop trigger if exists coin_ledger_before_insert on public.coin_ledger;
 create trigger coin_ledger_before_insert
   before insert on public.coin_ledger
   for each row execute function public.coin_ledger_before_insert();
+-- รุ่นก่อนเก็บยอดไว้ใน profiles.coins ซึ่งอาจไม่ตรงกับประวัติ เลิกใช้แล้ว
+-- Earlier versions stored the balance in profiles.coins, which could drift; no longer used.
 drop trigger if exists coin_ledger_after_approve on public.coin_ledger;
-create trigger coin_ledger_after_approve
-  after update of status on public.coin_ledger
-  for each row execute function public.coin_ledger_after_approve();
+drop function if exists public.coin_ledger_after_approve();
+comment on column public.profiles.coins is 'deprecated: balance is computed from coin_ledger (see my_coins view)';
+
+-- ยอดเหรียญของฉัน (อ่านได้เฉพาะของตัวเองผ่าน RLS) / My coin balance (own rows only via RLS)
+create or replace view public.my_coins
+with (security_invoker = true) as
+  select coalesce(sum(delta) filter (where status = 'ok'), 0)::integer      as coins,
+         coalesce(sum(delta) filter (where status = 'pending'), 0)::integer as pending
+  from public.coin_ledger
+  where user_id = (select auth.uid());
+
+revoke all on public.my_coins from anon, authenticated;
+grant select on public.my_coins to authenticated;
 
 -- ---------- 6.3 questions: ถามรุ่นพี่ (สิทธิ์ Plus) / Ask a mentor (Plus) ----------
 --   status: waiting (รอคำตอบ) · answered (ตอบแล้ว) · closed (ปิดแล้ว)

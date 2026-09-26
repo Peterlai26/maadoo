@@ -1611,7 +1611,10 @@ async function ensureProfile(){const r=await SB.from('profiles').select('id').eq
  const ins=await SB.from('profiles').insert({id:S.user.id});if(ins.error&&ins.error.code!=='23505')throw ins.error}
 async function refreshAll(){if(!sbLive())return;const P=S.prem;await refreshCoins();
  try{const l=await SB.from('coin_ledger').select('id,delta,kind,ref,status,created_at').order('created_at',{ascending:false}).limit(200);if(!l.error&&S.prem===P)P.ledger=(l.data||[]).map(r=>({id:r.id,delta:r.delta,kind:r.kind,ref:r.ref,status:r.status,at:Date.parse(r.created_at)||0}))}catch(e){}}
-async function refreshCoins(){if(!sbLive())return;const P=S.prem;try{const {data,error}=await SB.from('profiles').select('coins,plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle();if(error)console.warn('[Maadoo Job] could not read profile:',error.code,error.message);if(data&&S.prem===P){S.prem.coins=data.coins|0;S.prem.plusUntil=data.plus_until?Date.parse(data.plus_until):0;S.prem.freeClaimed=!!data.free_month_claimed}}catch(e){}}
+async function refreshCoins(){if(!sbLive())return;const P=S.prem;
+ try{const [pr,cb]=await Promise.all([SB.from('profiles').select('plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle(),SB.from('my_coins').select('coins,pending').maybeSingle()]);
+  if(pr.error)console.warn('[Maadoo Job] could not read profile:',pr.error.code,pr.error.message);if(cb.error)console.warn('[Maadoo Job] could not read coin balance (my_coins):',cb.error.code,cb.error.message);
+  if(S.prem!==P)return;if(pr.data){P.plusUntil=pr.data.plus_until?Date.parse(pr.data.plus_until):0;P.freeClaimed=!!pr.data.free_month_claimed}if(cb.data)P.coins=cb.data.coins|0}catch(e){}}
 /* add a coin ledger entry (mirrors the rules enforced in supabase/setup.sql) */
 async function addCoins(delta,kind,ref){const P=S.prem;
  if(ref&&claimed(ref))throw {message:'duplicate'};
@@ -1630,14 +1633,15 @@ async function setPlusUntil(until,extra){const P=S.prem;
  P.plusUntil=until;if(extra&&extra.free_month_claimed)P.freeClaimed=true;return grantPlusCoins()}
 async function grantPlusCoins(){if(!isPlus())return 0;const ref='plus:'+monthKey();if(claimed(ref))return 0;try{await addCoins(100,'plus',ref);return 100}catch(e){console.warn('[Maadoo Job] monthly Plus coins not added:',e&&(e.code||''),e&&(e.message||e));if(!(e&&e.code==='23505'))toast(premErr(e));return 0}}
 async function loadPrem(){const P=S.prem;if(!sbLive()){P.loaded=true;return}const rev0=P.rev;
- try{let {data}=await SB.from('profiles').select('coins,plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle();
-  if(!data){await ensureProfile();({data}=await SB.from('profiles').select('coins,plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle())}
+ try{let {data}=await SB.from('profiles').select('plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle();
+  if(!data){await ensureProfile();({data}=await SB.from('profiles').select('plus_until,free_month_claimed').eq('id',S.user.id).maybeSingle())}
   const l=await SB.from('coin_ledger').select('id,delta,kind,ref,status,created_at').order('created_at',{ascending:false}).limit(200);
   const q=await SB.from('questions').select('*').order('created_at',{ascending:false}).limit(100);
+  const cb=await SB.from('my_coins').select('coins,pending').maybeSingle();if(cb.error)console.warn('[Maadoo Job] could not read coin balance (my_coins):',cb.error.code,cb.error.message);
   if(S.prem!==P)return;
   const lq=q.error?[]:(q.data||[]).map(r=>({id:r.id,mid:r.mentor_id,status:r.status,counted:r.counted,refunded:r.refunded,msgs:Array.isArray(r.messages)?r.messages:[],createdAt:Date.parse(r.created_at),answeredAt:r.answered_at?Date.parse(r.answered_at):0,lastAt:Date.parse(r.last_activity_at),closedAt:r.closed_at?Date.parse(r.closed_at):0}));const seen=new Set(P.qs.map(v=>v.id));P.qs=P.qs.concat(lq.filter(v=>!seen.has(v.id)));
   if(P.rev!==rev0){P.loaded=true;await refreshAll();rerender();return}
-  if(data){P.coins=data.coins|0;P.plusUntil=data.plus_until?Date.parse(data.plus_until):0;P.freeClaimed=!!data.free_month_claimed}
+  if(data){P.plusUntil=data.plus_until?Date.parse(data.plus_until):0;P.freeClaimed=!!data.free_month_claimed}if(cb.data)P.coins=cb.data.coins|0;
   if(!l.error)P.ledger=(l.data||[]).map(r=>({id:r.id,delta:r.delta,kind:r.kind,ref:r.ref,status:r.status,at:Date.parse(r.created_at)||0}));
  }catch(e){console.warn('[Maadoo Job] could not load premium data (profiles / coin_ledger / questions):',e&&(e.message||e))}
  P.loaded=true;await grantPlusCoins();P.qs.forEach(q=>{if(q.status==='waiting')scheduleReply(q)});qTick();rerender()}
