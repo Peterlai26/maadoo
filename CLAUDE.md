@@ -36,7 +36,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Style: cute, rounded, friendly. Fonts are Mali (display) and Anuphan (body).
 
 ## Main areas (views in `index.html`)
-home · explore (companies) · company (overview / reviews / salaries / interviews / open jobs) · jobs (tabs: full-time/internships and ⚡ quick part-time) · write (5-question quick review) · ask (Tinder-style mentor swipe + community board) · me (profile, Plus + coin cards, level, badges, my questions, mentor sessions, applications) · plus (Maadoo Plus page) · wallet (coin wallet + weekly missions) · employer (plans) · rules (guidelines, PDPA, part-time safety) · quiz.
+home · explore (companies) · company (overview / reviews / salaries / interviews / open jobs) · jobs (tabs: full-time/internships and ⚡ quick part-time) · write (5-question quick review) · ask (Tinder-style mentor swipe + community board) · me (profile, Plus + coin cards, level, badges, my questions, mentor sessions, applications) · plus (Maadoo Plus page) · wallet (coin wallet + weekly missions) · invite (my invite code, invite stats, how it works, Pioneer card; linked from Me so the code stays reachable after the home promo block is hidden) · employer (plans) · rules (guidelines, PDPA, part-time safety) · quiz.
 
 ## Premium (decided) — Maadoo Plus, Maadoo coins, Ask a mentor
 - **Always free:** reading/writing reviews, salaries and applying to jobs. Paying never removes, hides or edits reviews.
