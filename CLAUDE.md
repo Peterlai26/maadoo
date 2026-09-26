@@ -38,3 +38,13 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
 
 ## Before every commit
 Open the page at 360px, 768px and 1280px widths, in Thai and English, and in at least the default and night themes. Check there are no console errors and nothing overflows horizontally.
+
+## Workflow กับ Hb
+- ทุกครั้งที่แก้เสร็จ ให้ push ขึ้น branch ของ session แล้วส่งลิงก์ Preview ของ Cloudflare ให้ Hb
+  (รูปแบบ: ชื่อ branch เปลี่ยน / เป็น - แล้วต่อด้วย .maadoo.pages.dev
+  เช่น claude/abc-xyz → https://claude-abc-xyz.maadoo.pages.dev)
+  บอกให้รอประมาณ 1 นาทีก่อนเปิด และสรุปสั้นๆ เป็นภาษาไทยว่าแก้อะไรบ้าง
+- ห้าม merge เข้า main จนกว่า Hb จะพิมพ์ว่า "ยืนยัน"
+- พอ Hb ยืนยันแล้ว ให้ merge branch เข้า main แล้ว push เอง
+  (ถ้าสร้าง PR และ merge ได้ ให้ทำผ่าน PR) จากนั้นบอก Hb ว่าขึ้นเว็บจริงแล้ว
+- ถ้า push ขึ้น main ไม่ได้เพราะติดสิทธิ์ ให้บอก Hb ตรงๆ และส่งลิงก์ PR ให้กด Merge เอง
