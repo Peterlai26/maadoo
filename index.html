@@ -280,6 +280,33 @@ textarea.field{min-height:84px;resize:vertical}
 .report:hover{color:var(--bad)}
 .del-rv{background:var(--bad-bg);color:var(--bad);border:0;font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px}
 .rv-actions .del-rv+.report{margin-left:0}.rv-actions .del-rv{margin-left:auto}
+.exp-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:14px}
+.dd{position:relative;min-width:0;max-width:100%}
+.dd-pill{display:flex;align-items:center;max-width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:99px;transition:border-color .15s}
+.dd-pill:hover,.dd-pill.open{border-color:var(--blue)}.dd-pill.set{border-color:var(--blue);background:var(--sky)}
+.dd-btn{display:flex;align-items:center;gap:6px;min-width:0;background:none;border:0;color:var(--ink);padding:9px 16px;border-radius:99px;font-weight:500}
+.dd-pill.set .dd-btn{padding-right:6px}
+.dd-btn .dd-k{color:var(--ink-2);flex:none}.dd-btn b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.dd-car{flex:none;font-size:12px;color:var(--ink-2);transition:transform .15s}.dd-pill.open .dd-car{transform:rotate(180deg)}
+.dd-x{flex:none;width:28px;height:28px;margin-right:6px;border:0;border-radius:50%;background:var(--surface);color:var(--ink-2);font-size:16px;line-height:1;display:grid;place-items:center}
+.dd-x:hover{color:var(--bad)}
+.dd-menu{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 32px));background:var(--surface);border:1.5px solid var(--line);border-radius:20px;box-shadow:var(--shadow);z-index:45;overflow:hidden}
+.dd-list{max-height:320px;overflow-y:auto;overscroll-behavior:contain;padding:6px;display:grid;gap:2px}
+.dd-opt{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;border-radius:14px;padding:9px 12px;color:var(--ink);font-weight:500}
+.dd-opt:hover,.dd-opt:focus-visible{background:var(--sky)}.dd-opt:focus-visible{outline-offset:-3px}
+.dd-opt[aria-selected="true"]{color:var(--blue);font-weight:700}
+.dd-opt .dd-n{color:var(--ink-3);font-weight:500}.dd-opt .dd-ck{margin-left:auto;flex:none;width:18px;text-align:center;color:var(--blue);font-weight:700}
+.dd-sheet-h{display:none}
+.sheet-bg{position:fixed;inset:0;background:rgba(12,22,48,.45);z-index:60}
+.dd-menu.sheet{position:fixed;top:auto;left:0;right:0;bottom:0;width:auto;border-radius:24px 24px 0 0;border-bottom:0;z-index:61;padding-bottom:env(safe-area-inset-bottom,0px);animation:sheetUp .22s ease-out}
+.dd-menu.sheet .dd-list{max-height:min(60vh,440px);padding:4px 10px 14px}
+.dd-menu.sheet .dd-opt{padding:12px 14px}
+.dd-menu.sheet .dd-sheet-h{display:flex;align-items:center;justify-content:space-between;padding:8px 14px 6px 20px;font-family:var(--display);font-weight:700;color:var(--navy);position:relative}
+.dd-menu.sheet .dd-sheet-h::before{content:"";position:absolute;top:6px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:99px;background:var(--line)}
+.dd-menu.sheet .dd-sheet-h span{padding-top:12px}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
+@media(prefers-reduced-motion:reduce){.dd-menu.sheet{animation:none}}
+body.sheet-open{overflow:hidden}
 .btn.danger{background:var(--bad);color:var(--surface);box-shadow:none}
 .otp-code{font-size:24px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
 .otp-links{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center}
@@ -392,11 +419,6 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .cform{display:flex;gap:8px;align-items:center}
 .cform .field{border-radius:99px;padding:8px 14px}
 .cform .btn{padding:8px 14px}
-.indwrap{margin-top:14px;min-width:0;--fl:0px;--fr:0px;-webkit-mask-image:linear-gradient(to right,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent);mask-image:linear-gradient(to right,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent)}
-.indwrap.fl{--fl:36px}.indwrap.fr{--fr:36px}
-.indrow{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:2px 0 4px;cursor:grab}
-.indrow::-webkit-scrollbar{display:none}.indrow .opt{white-space:nowrap;flex:none}
-.indrow.drag{cursor:grabbing;user-select:none}.indrow.drag .opt{pointer-events:none}
 /* v11 home hero (orange accent) */
 .topnav button.on{background:var(--orange);color:var(--orange-ink)}
 .hero{padding:36px 36px 56px;grid-template-columns:1fr auto;align-items:center;gap:28px}
@@ -548,6 +570,7 @@ html,body{overflow-x:clip}
 </div>
 <footer class="foot" id="foot"></footer>
 <div id="modal"></div>
+<div id="sheet"></div>
 <nav class="bnav" id="bnav"></nav>
 <div class="toast" id="toast" hidden></div>
 
@@ -1123,8 +1146,8 @@ function explore(){
  const keys=Object.keys(IND);
  let list=S.filter===-1?CO:CO.filter(c=>c.ind===keys[S.filter]);if(S.coOnlyJobs)list=list.filter(c=>JOBS.some(j=>j.co===c.id));
  return `<h1 style="font-size:28px;margin-top:8px">${t('สำรวจบริษัท','Explore companies')}</h1>
- <div class="indwrap" id="indwrap"><div class="opts indrow" id="indrow" role="toolbar" aria-label="${t('หมวดหมู่บริษัท','Company categories')}"><button class="opt ${S.filter===-1?'on':''}" data-filter="-1">${t('ทั้งหมด','All')}</button>${keys.map((k,i)=>`<button class="opt ${S.filter===i?'on':''}" data-filter="${i}">${x(IND[k])}</button>`).join('')}</div></div>
- <label class="row" style="margin-top:12px;gap:8px;cursor:pointer"><input type="checkbox" id="onlyJobs" ${S.coOnlyJobs?'checked':''} style="width:18px;height:18px;accent-color:var(--blue)"> ${t('เฉพาะบริษัทที่เปิดรับงาน/ฝึกงาน','Only companies that are hiring')}</label>
+ <div class="exp-bar">${indDropdown()}
+ <label class="row" style="gap:8px;cursor:pointer"><input type="checkbox" id="onlyJobs" ${S.coOnlyJobs?'checked':''} style="width:18px;height:18px;accent-color:var(--blue)"> ${t('เฉพาะบริษัทที่เปิดรับงาน/ฝึกงาน','Only companies that are hiring')}</label></div>
  <div class="grid g3" style="margin-top:16px">${list.map(coCard).join('')}</div>`;
 }
 function company(){
@@ -1483,30 +1506,30 @@ function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen)
   <button class="fx-row" data-fx="amb" role="switch" aria-checked="${S.fxAmb}"><span><b>✨ ${t('เอฟเฟคพื้นหลัง','Background effect')}</b><small>${x(FXINFO[S.skin].n)}</small></span><i class="tg ${S.fxAmb?'on':''}"></i></button>
   <button class="fx-row" data-fx="tap" role="switch" aria-checked="${S.fxTap}"><span><b>👆 ${t('เอฟเฟคตอนกด','Tap effect')}</b><small>${t('มีอนิเมชันเด้งออกมาทุกครั้งที่กด','A little burst every time you tap')}</small></span><i class="tg ${S.fxTap?'on':''}"></i></button></div></div>`}
 function renderCoach(){const el=$('#coach');if(!el)return;el.innerHTML=S.coach&&!S.themeOpen?`<div class="coach" role="status"><b>🎨 ${t('เปลี่ยนธีมได้ตรงนี้นะ!','You can change the theme here!')}</b><span>${t('มีทั้งแบบธรรมดา กลางคืน ซากุระ มินต์ และอื่น ๆ','Classic, Night, Sakura, Mint and more')}</span><button class="btn y" data-coachok>${t('เข้าใจแล้ว','Got it')}</button></div>`:''}
-function render(){const ir=$('#indrow');S.indX=ir?ir.scrollLeft:0;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();if(S.view==='explore')bindIndRow();}
-/* explore: one-line category chips · swipe on touch, drag / wheel on desktop, edge fades, selected chip scrolled into view */
-let indDragged=false;
-function indFade(el){const w=el.parentNode,max=el.scrollWidth-el.clientWidth;w.classList.toggle('fl',el.scrollLeft>2);w.classList.toggle('fr',el.scrollLeft<max-2)}
-function indGlide(el,to){const from=el.scrollLeft,d=to-from;if(Math.abs(d)<2||matchMedia('(prefers-reduced-motion: reduce)').matches){el.scrollLeft=to;return}
- const t0=performance.now(),dur=280;const step=now=>{if(!el.isConnected)return;const k=Math.min(1,(now-t0)/dur);el.scrollLeft=from+d*(1-Math.pow(1-k,3));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
-function bindIndRow(){const el=$('#indrow');if(!el)return;
- el.scrollLeft=S.indX||0;
- const on=el.querySelector('.opt.on');if(on){const tgt=Math.max(0,on.offsetLeft-el.offsetLeft-(el.clientWidth-on.offsetWidth)/2);
-  indGlide(el,Math.min(tgt,el.scrollWidth-el.clientWidth))}
- indFade(el);el.addEventListener('scroll',()=>indFade(el),{passive:true});
- el.addEventListener('wheel',e=>{const max=el.scrollWidth-el.clientWidth;if(max<=0||Math.abs(e.deltaX)>Math.abs(e.deltaY))return;
-  const nx=Math.max(0,Math.min(max,el.scrollLeft+e.deltaY));if(nx===el.scrollLeft)return;e.preventDefault();el.scrollLeft=nx},{passive:false});
- let sx=0,sl=0,down=false;
- el.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;down=true;indDragged=false;sx=e.clientX;sl=el.scrollLeft});
- el.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(!indDragged&&Math.abs(dx)>5){indDragged=true;el.classList.add('drag');try{el.setPointerCapture(e.pointerId)}catch(_){}}if(indDragged)el.scrollLeft=sl-dx});
- const up=()=>{if(!down)return;down=false;el.classList.remove('drag');setTimeout(()=>{indDragged=false},0)};
- el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('lostpointercapture',up);
-}
-addEventListener('resize',()=>{const el=$('#indrow');if(el)indFade(el)});
+/* explore: category dropdown · popover on wide screens, bottom sheet on phones (≤600px) */
+const isSheet=()=>matchMedia('(max-width:600px)').matches;
+function indMenu(sheet){const keys=Object.keys(IND);const opt=(i,label,n)=>`<button type="button" class="dd-opt" role="option" id="indopt${i}" aria-selected="${S.filter===i}" data-indpick="${i}" tabindex="-1"><span>${label}</span>${n!=null?`<span class="dd-n">(${n})</span>`:''}<span class="dd-ck" aria-hidden="true">${S.filter===i?'✓':''}</span></button>`;
+ return `<div class="dd-menu ${sheet?'sheet':''}" id="indMenu" role="dialog" aria-label="${t('หมวดหมู่บริษัท','Company categories')}">
+  <div class="dd-sheet-h"><span>${t('เลือกหมวดหมู่','Choose a category')}</span><button type="button" class="x" data-indclose aria-label="${t('ปิด','Close')}">×</button></div>
+  <div class="dd-list" role="listbox" aria-label="${t('หมวดหมู่บริษัท','Company categories')}">${opt(-1,t('ทั้งหมด','All'),CO.length)}${keys.map((k,i)=>opt(i,x(IND[k]),CO.filter(c=>c.ind===k).length)).join('')}</div></div>`}
+function indDropdown(){const keys=Object.keys(IND);const set=S.filter!==-1;const name=set?x(IND[keys[S.filter]]):t('ทั้งหมด','All');
+ return `<div class="dd"><div class="dd-pill ${set?'set':''} ${S.indOpen?'open':''}"><button type="button" class="dd-btn" id="indBtn" data-indtoggle aria-haspopup="listbox" aria-expanded="${!!S.indOpen}" aria-controls="indMenu"><span class="dd-k">${t('หมวดหมู่:','Category:')}</span><b>${name}</b><span class="dd-car" aria-hidden="true">▾</span></button>${set?`<button type="button" class="dd-x" data-indclear aria-label="${t('ล้างตัวกรองหมวดหมู่','Clear category filter')}">×</button>`:''}</div>
+ ${S.indOpen&&!isSheet()?indMenu(false):''}</div>`}
+function renderIndSheet(){const el=$('#sheet');if(!el)return;const on=S.view==='explore'&&S.indOpen&&isSheet();
+ el.innerHTML=on?`<div class="sheet-bg" data-indclose></div>${indMenu(true)}`:'';document.body.classList.toggle('sheet-open',on)}
+function indFocus(i){const o=document.getElementById('indopt'+i)||document.querySelector('#indMenu .dd-opt');if(!o)return;o.focus({preventScroll:true});
+ const l=o.parentNode;if(o.offsetTop<l.scrollTop)l.scrollTop=o.offsetTop-6;else if(o.offsetTop+o.offsetHeight>l.scrollTop+l.clientHeight)l.scrollTop=o.offsetTop+o.offsetHeight-l.clientHeight+6}
+function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
+function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
+function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
+addEventListener('resize',()=>{if(S.indOpen&&S.view==='explore'&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
+function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
  if(e.target.matches('[data-bg]')){closeModal();return}
+ if(S.indOpen&&!e.target.closest('#indMenu .dd-list,#indBtn,.dd-sheet-h')){indClose(false);if(!e.target.closest('#app'))return}
+ if(S.indOpen&&e.target.closest('[data-indclose]')){indClose(true);return}
  const b=e.target.closest('button');
  if(S.notifOpen&&(!b||(b.id!=='bellBtn'&&!b.closest('#notif')))){S.notifOpen=false;renderBell()}
  if(S.themeOpen&&(!b||(b.id!=='themeBtn'&&!b.closest('#themePop')))){S.themeOpen=false;renderThemePop();renderCoach()}
@@ -1573,7 +1596,9 @@ document.addEventListener('click',e=>{
  if(d.help){S.helped[d.help]=!S.helped[d.help];render();return}
  if(d.follow){S.follow[d.follow]=!S.follow[d.follow];render();toast(S.follow[d.follow]?t('จะแจ้งเตือนเมื่อมีรีวิวหรือเงินเดือนใหม่','We’ll notify you about new reviews and salaries'):t('เลิกติดตามแล้ว','Unfollowed'));return}
  if(d.writefor){S.done=null;S.form=blankForm();S.form.co=d.writefor;go('write');return}
- if(d.filter){if(indDragged)return;S.filter=+d.filter;render();return}
+ if(d.indtoggle!==undefined){S.indOpen?indClose(true):indOpen();return}
+ if(d.indpick!==undefined){indPick(+d.indpick);return}
+ if(d.indclear!==undefined){S.filter=-1;S.indOpen=false;render();const bb=$('#indBtn');if(bb)bb.focus({preventScroll:true});return}
  if(d.f){syncForm();S.form[d.f]=d.f==='mood'?+d.v:d.v;render();return}
  if(d.star){syncForm();S.form.r=+d.star;render();return}
  if(d.again!==undefined){S.done=null;S.form=blankForm();render();return}
@@ -1640,7 +1665,15 @@ function syncPtForm(){const g=id=>document.getElementById(id);if(!g('pf-title'))
 document.addEventListener('input',e=>{if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
 document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();render()}
  if(id==='jInd'){S.jobF.ind=e.target.value;render()}if(id==='jMin'){S.jobF.min=+e.target.value;render()}if(id==='onlyJobs'){S.coOnlyJobs=e.target.checked;render()}});
-document.addEventListener('keydown',e=>{if(!S.modal&&S.view==='ask'&&S.askTab==='swipe'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){if(e.key==='ArrowRight')swipeGo('right');if(e.key==='ArrowLeft')swipeGo('left')}if(e.key==='Escape'){if(S.modal)closeModal();if(S.notifOpen){S.notifOpen=false;renderBell()}}});
+document.addEventListener('keydown',e=>{
+ if(S.view==='explore'){const inMenu=e.target.closest&&e.target.closest('#indMenu'),onBtn=e.target.id==='indBtn';
+  if(S.indOpen&&e.key==='Escape'){e.preventDefault();indClose(true);return}
+  if(onBtn&&!S.indOpen&&(e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();indOpen();return}
+  if(S.indOpen&&(inMenu||onBtn)){const os=[...document.querySelectorAll('#indMenu .dd-opt')];const cur=os.indexOf(document.activeElement);
+   const go=i=>{e.preventDefault();const o=os[Math.max(0,Math.min(os.length-1,i))];if(o)indFocus(+o.dataset.indpick)};
+   if(e.key==='ArrowDown')return go(cur<0?0:cur+1);if(e.key==='ArrowUp')return go(cur<0?os.length-1:cur-1);
+   if(e.key==='Home')return go(0);if(e.key==='End')return go(os.length-1);
+   if(e.key==='Tab'){indClose(false);return}}}if(!S.modal&&S.view==='ask'&&S.askTab==='swipe'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){if(e.key==='ArrowRight')swipeGo('right');if(e.key==='ArrowLeft')swipeGo('left')}if(e.key==='Escape'){if(S.modal)closeModal();if(S.notifOpen){S.notifOpen=false;renderBell()}}});
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(!S.theme)applyPrefs()})}catch(e){}
 /* ---------- theme effects ---------- */
 const FXINFO={default:{c:['#2F6FD6','#FF9A1F','#FFC53D','#8EC5FF'],n:['ประกายวิบวับ','Sparkles'],amb:'spark',tap:'spark'},
