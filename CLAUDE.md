@@ -10,7 +10,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Header logo = mascot circle + "Maadoo" wordmark + an orange "JOB" tag hung through the last "o", built in HTML/CSS/SVG (no image). It is a fixed brand mark: always the Classic pup (`maadoo-icon.webp`) and `--logo-ink` (brand navy; light blue only in the night theme for readability) — it does not follow the theme. Tag colors come from `--tag`, `--tag-shade`, `--tag-ink`. At ≤350px only the circle and a small JOB badge show.
 - Home hero mascot (theme image) has a "JOB!" speech bubble in inline SVG (`.m-say`, colors from `--surface`, `--navy`, `--tag`).
 - `maadoo-job-icon-512.png` — favicon and apple-touch-icon.
-- `maadoo-job-round.png` — round Maadoo Job logo shown in the first-visit welcome popup (on a light `--logo-bg` panel in the night theme).
+- `maadoo-job-round.png` — round Maadoo Job logo, shown small at the top of the first-visit onboarding (on a light `--logo-bg` circle in the night theme).
 - `maadoo-icon.webp` — the mascot (a white puppy with a magnifying glass) for the Classic theme.
 - `maadoo-icon-<theme>.webp` — mascot variants: night, sakura, mint, lavender, sunset, dino, garden, sea.
 - `og-image.jpg` — 1200×630 link-preview image. When you replace it, bump the `?v=` query on `og:image` / `twitter:image` so caches refresh.
@@ -21,7 +21,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Everything user-facing is **bilingual Thai + English**. Use `t('ไทย','English')` for UI strings and `[th, en]` pairs with `x(...)` for data. Never add a string in only one language.
 - **All sample companies, people, reviews, salaries and sample mentors are fictional.** Never use real company names or real people in sample data. Sample mentors (m1–m9) carry a "ตัวอย่าง / Sample" chip and keep auto-replying.
 - **Real mentors (step 1) are the only real people:** users who applied and an admin approved. They appear by **nickname only** with a "✓ รุ่นพี่จริง / Real mentor" chip; their LinkedIn/work-email contact is for verification and only admins see it.
-- Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme, effect toggles, ambient-sound on/off + volume, and the "promotions hidden" timestamp (7 days) (always wrapped in try/catch).
+- Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme, effect toggles, ambient-sound on/off + volume, the "promotions hidden" timestamp (7 days), onboarding seen (`maadoo-welcome`), onboarding answers + first-steps progress (`maadoo-onboard`) and which coach-mark tours were seen (`maadoo-coach`) (always wrapped in try/catch through `store`).
 - Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email code/OTP, or "try without signing up" anonymous guest), the `reviews` and `mentor_reviews` tables, the premium tables `profiles`, `coin_ledger` and `questions`, `employer_signups`, the real-mentor tables `admins`, `mentor_applications`, `mentors`, `chat_rooms`, `messages`, `chat_reports`, `mentor_availability`, `mentor_days_off`, `bookings`, `session_notes`, the private Storage bucket `chat-files`, Realtime (messages, chat_rooms, bookings, session_notes, typing broadcast), and the RPCs `pioneer_stats`, `use_invite_code`, `claim_referral_reward`, `early_bird_left`, `is_admin`, `review_mentor_application`, `chat_mark_read`, `chat_confirm_live`, `chat_set_block`, `mentor_taken_slots`, `book_session`, `cancel_booking`, `report_noshow`, `complete_booking`, `set_meet_link`, `save_session_notes`, `toggle_note_saved`. supabase-js keeps its auth session in `localStorage`.
   - New reviews are `pending`; the public sees only `approved` ones via the `approved_reviews` view (no `user_id`, no `salary`). Users can never set or change `status`; moderation happens in the Supabase dashboard.
   - Guests (anonymous users) can browse, swipe and apply, but can't add reviews (blocked in the UI and by RLS); they can keep their account by adding an email (`updateUser`).
@@ -48,7 +48,7 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
 - **Ask a mentor (Plus):** open-ended chat until answered. "ได้คำตอบแล้ว พอใจ" closes it and uses 1 question, then offers a mentor review. No mentor reply within 48 h → refunded. 7 days quiet after a mentor reply → auto-closes and uses 1. Max 2 open at once; 5 per calendar month, no rollover (used this month + open ≤ 5). Sample mentors reply by simulation a few seconds after sending; real mentors reply in the realtime chat room. Statuses: รอคำตอบ / ตอบแล้ว / ปิดแล้ว.
 - **Plus look on the mentor swipe cards (ask view):** Plus members see a 5px gold outer frame (`.scard.gold`, tokens `--gold-*`; the inside keeps the theme colors), 2 small gold ✦ sparkles in the image area, an orange "💬 ถามฟรี X/5" button next to the price, and a pale-gold "✨ Plus" tag by the ask heading. Non-Plus users see the normal card.
 - **Maadoo coins:** 1 coin = 1 THB off (mentor bookings, theme unlocks); never exchangeable for cash. Top-ups: 100 = 99, 300 = 279, 600 = 529 THB. Weekly missions: company review +30, salary (in a review) +20, interview review +20, answer 3 juniors on the board +15, invite a friend +50 — each once per ISO week. Coins from reviews stay pending until the review passes moderation. Mission coins (missions + reviews) are capped at 300 per calendar month.
-- **Storage:** logged-in (non-guest) users sync to Supabase `profiles` (`plus_until`, `free_month_claimed`), `coin_ledger` and `questions`, all RLS own-rows only. The coin balance is **never stored**: it is always the sum of `ok` rows in `coin_ledger`, read through the `my_coins` view (`profiles.coins` is deprecated and unused). The `coin_ledger` trigger enforces the rules above. Guests and logged-out users are sent to log in / add an email before subscribing, asking or claiming coins. Without Supabase everything runs in memory.
+- **Storage:** logged-in (non-guest) users sync to Supabase `profiles` (`plus_until`, `free_month_claimed`, and the onboarding answers `onboard_goal`, `onboard_inds`), `coin_ledger` and `questions`, all RLS own-rows only. The coin balance is **never stored**: it is always the sum of `ok` rows in `coin_ledger`, read through the `my_coins` view (`profiles.coins` is deprecated and unused). The `coin_ledger` trigger enforces the rules above. Guests and logged-out users are sent to log in / add an email before subscribing, asking or claiming coins. Without Supabase everything runs in memory.
 - Before real payments: move `plus_until` renewals and `topup` ledger entries into a server-side payment webhook / Edge Function and revoke those client rights.
 
 ## Real mentors, step 1 (decided)
@@ -80,6 +80,29 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
   - The student is asked to rate the mentor with the existing mentor-review flow (booking id = booking id). Those reviews get `live = true` and show "✓ คุยสดจริง".
 - **Mentor earnings (simulated)** = 80% of the price after the Plus discount (the platform covers the coin part), counted for done and student-no-show calls. It is shown with the question earnings in mentor mode.
 - **Reminders** in the site (bell + toast, and a browser notification if allowed and the tab is hidden) for both sides: 1 h before, at the start, and 5 minutes before the end.
+
+## Onboarding (decided)
+- **First visit** (no `maadoo-welcome`): a 2-step welcome in the modal layer (`onboard`), replacing the old welcome popup. No login is needed. It shows step dots and a "ข้าม" on every step.
+  - Step 1: the pup asks "มาหาอะไรที่ Maadoo Job?" with 6 big cards (pick one): intern, first job, part-time, salary, mentor, just looking.
+  - Step 2: multi-select field chips from `IND`.
+  - Answers go to `maadoo-onboard`, and to `profiles` when logged in (pulled on login if the device has none).
+- **Home, top:** one "เริ่มตรงนี้เลย" card with a big button that routes by goal and filters by the first chosen field that has matching posts:
+  - intern / first job → jobs filtered by type + field.
+  - part-time → quick jobs.
+  - salary → the home salary checker, with a role preselected and focused.
+  - mentor → the swipe deck.
+  - just looking → explore filtered by field.
+  - "เปลี่ยนเป้าหมาย" reopens the welcome. Skipping shows "เลือกเป้าหมาย" instead.
+- **First day after onboarding:** the promo block shows only the "รีวิวแรก แลก Plus ฟรี!" banner.
+- **"ก้าวแรกของฉัน" card** (below the start card): 4 auto-ticked steps with a progress bar.
+  - Steps: open a company (+5 points), follow a company (+5 points), swipe a mentor (+5 points), first review (+30 coins, a `review` ledger row with ref `onboard:first-review`, pending until moderation and counted in the monthly mission cap).
+  - Ticks work logged out; rewards are paid once, only for a logged-in non-guest (paid on login if ticked earlier).
+  - All 4 done → a pup + confetti celebration (static under reduced motion) and the card disappears. The × hides it.
+- **Coach marks:** on the first visit to Home and the Ask swipe tab (after onboarding), a small pup bubble points at up to 3 targets.
+  - Home: the write button, search, the theme menu. Ask: the swipe card, the star badge, ask-free.
+  - A tap anywhere goes on; "ข้ามทั้งหมด" or Esc ends all tours.
+  - It uses no dimming (it must not cover the phone screen) and is kept inside the viewport.
+  - The theme menu's "❓ พาเที่ยวอีกครั้ง" resets and replays. A legacy `maadoo-coach = '1'` counts as all seen.
 
 ## Promotions (decided)
 - **Home promo block** (below the hero/search, hidden while searching): swipeable banner carousel with dots — "รีวิวแรก แลก Plus ฟรี!" (links to the existing 3-reviews → 1 free month mission; there is no separate first-review trial), "1,000 คนแรก", "ชวนเพื่อน", "โปรตามฤดูกาล" — plus a Pioneer card and an Invite card. The × hides the whole block for 7 days.
