@@ -1774,7 +1774,7 @@ const FX=(()=>{
    Off by default and never starts without a user gesture. Crossfades on theme change, pauses while the tab is hidden.
    Real recordings later: put music/<theme>.mp3 in the repo and add the theme name to MUSIC_FILES; that file then loops instead. */
 const MUSIC_FILES=[]; // e.g. ['sea','night'] once music/sea.mp3 and music/night.mp3 exist
-const SNDINFO={default:['lo-fi คอร์ดเบา ๆ','Soft lo-fi chords'],night:['เปียโนช้า + จิ้งหรีด','Slow piano + crickets'],sakura:['สายลม + กระดิ่งลม','Breeze + wind chimes'],mint:['เสียงลำธาร','Babbling brook'],lavender:['ambient pad นุ่ม ๆ','Soft ambient pad'],sunset:['กีตาร์อาร์เปจโจนุ่ม ๆ','Gentle guitar arpeggios'],dino:['กลองไม้ + เสียงป่า','Wood drums + jungle'],garden:['นกร้องในสวน','Garden birdsong'],sea:['คลื่น + นกนางนวล','Waves + seagulls']};
+const SNDINFO={default:['lo-fi คอร์ดเบา ๆ','Soft lo-fi chords'],night:['เปียโนช้า + จิ้งหรีด','Slow piano + crickets'],sakura:['สายลม + กระดิ่งลม','Breeze + wind chimes'],mint:['ลำธาร + มาริมบา','Brook + soft marimba'],lavender:['ambient pad นุ่ม ๆ','Soft ambient pad'],sunset:['กีตาร์อาร์เปจโจนุ่ม ๆ','Gentle guitar arpeggios'],dino:['กลองไม้ + เสียงป่า','Wood drums + jungle'],garden:['นกร้องในสวน','Garden birdsong'],sea:['คลื่น + นกนางนวล','Waves + seagulls']};
 S.snd=store.get('maadoo-snd')==='1';
 S.sndVol=(()=>{const v=parseFloat(store.get('maadoo-snd-vol'));return isFinite(v)?Math.min(1,Math.max(0,v)):.5})();
 const SND=(()=>{
@@ -1822,13 +1822,24 @@ const SND=(()=>{
     if(Math.random()<.3){const m2=pick(notes);tone(bus,t+.18,mtof(m2),{v:.05,a:.006,d:3})}});
    const crick=cr.map(c=>stream(.7,1.6,t=>{const g=c.g.gain;for(let k=0;k<3;k++){const s=t+k*.07;g.setValueAtTime(0,s);g.linearRampToValueAtTime(.012,s+.012);g.linearRampToValueAtTime(0,s+.045)}}));
    return {srcs:cr.map(c=>c.s),tick:h=>{piano(h);crick.forEach(f=>f(h))}}},
-  sakura(o){const bp=filt('bandpass',500,.8),g=amp(.07),w=loop(white);chain(w,bp,g,o);const l1=lfo(bp.frequency,.07,280),l2=lfo(g.gain,.11,.045);
+  sakura(o){/* soft breeze: deep brown noise in slow gusts (no white-noise hiss, which reads as rain) + wind chimes */
+   const w=loop(brown),bp=filt('bandpass',320,.9),lp=filt('lowpass',900),g=amp(.03);chain(w,bp,lp,g,o);
+   const gusts=stream(5,9,t=>{const p=rnd(5,9),pk=rnd(.07,.11);g.gain.setValueAtTime(.025,t);g.gain.linearRampToValueAtTime(pk,t+p*.45);g.gain.linearRampToValueAtTime(.025,t+p*.95);
+    bp.frequency.setValueAtTime(260,t);bp.frequency.linearRampToValueAtTime(rnd(480,640),t+p*.45);bp.frequency.linearRampToValueAtTime(260,t+p*.95)});
    const bus=echo(o,.33,.3,.3),chimes=[84,86,88,91,93,96,98];
-   return {srcs:[w,l1,l2],tick:stream(.5,3,t=>{const n=Math.random()<.35?3:1;for(let k=0;k<n;k++){const f=mtof(pick(chimes)),s=t+k*rnd(.08,.22);
-    tone(bus,s,f,{v:.035,a:.002,d:3.8});tone(bus,s,f*2.76,{v:.008,a:.002,d:1.3})}})}},
-  mint(o){const a=loop(white),b=loop(white),c=loop(brown);const f1=filt('bandpass',1100,.7),f2=filt('bandpass',2600,1.4);
-   chain(a,f1,amp(.07),o);const g2=amp(.022);chain(b,f2,g2,o);chain(c,filt('lowpass',420),amp(.08),o);const l=lfo(f2.frequency,.3,500),l2=lfo(g2.gain,.23,.012);
-   return {srcs:[a,b,c,l,l2],tick:stream(.12,.8,t=>{const f=rnd(500,900);tone(o,t,f,{v:.025,a:.004,d:.07,to:f*rnd(1.6,2.3),glide:.05})})}},
+   const ring=stream(.8,3.2,t=>{const n=Math.random()<.35?3:1;for(let k=0;k<n;k++){const f=mtof(pick(chimes)),s=t+k*rnd(.1,.25);
+    tone(bus,s,f,{v:.04,a:.002,d:3.8});tone(bus,s,f*2.76,{v:.009,a:.002,d:1.3})}});
+   return {srcs:[w],tick:h=>{gusts(h);ring(h)}}},
+  mint(o){/* brook: low water rumble + pitched bubbling/gurgles + soft marimba (no broadband hiss) */
+   const r=loop(brown),lp=filt('lowpass',380),rg=amp(.07);chain(r,lp,rg,o);const l=lfo(rg.gain,.13,.02);
+   const gu=loop(brown),gf=filt('bandpass',700,4),gg=amp(.05);chain(gu,gf,gg,o);const l2=lfo(gf.frequency,.9,220),l3=lfo(gg.gain,.37,.03);
+   const wp=pan(-.25);wp.connect(o);
+   const bubbles=stream(.08,.5,t=>{const n=Math.random()<.4?2+Math.floor(Math.random()*3):1;for(let k=0;k<n;k++){const f=rnd(300,650),s=t+k*rnd(.04,.09);
+    tone(wp,s,f,{v:.03,a:.003,d:.06,to:f*rnd(1.8,2.6),glide:.045})}});
+   const bus=echo(o,.42,.25,.22),scale=[67,69,72,74,76,79,81];
+   const mar=stream(2.2,4.5,t=>{const m=pick(scale);tone(bus,t,mtof(m),{v:.05,a:.004,d:1.4});tone(bus,t,mtof(m)*4,{v:.008,a:.002,d:.25});
+    if(Math.random()<.4)tone(bus,t+.24,mtof(pick(scale)),{v:.035,a:.004,d:1.2})});
+   return {srcs:[r,l,gu,l2,l3],tick:h=>{bubbles(h);mar(h)}}},
   lavender(o){const lp=filt('lowpass',900,.5);lp.connect(echo(o,.6,.35,.25));const l=lfo(lp.frequency,.05,350);
    const prog=[[57,60,64,67],[53,57,60,64],[55,59,62,67],[52,55,59,64]];
    return {srcs:[l],tick:steady(8,(t,i)=>{prog[i%4].forEach(m=>{[-7,7].forEach(dt=>{const s=ctx.createOscillator(),g=ctx.createGain();s.type='sawtooth';s.frequency.value=mtof(m);s.detune.value=dt;
