@@ -64,6 +64,13 @@ create policy "reviews: update own" on public.reviews
   using (user_id = (select auth.uid()))
   with check (user_id = (select auth.uid()));
 
+-- ลบรีวิว: ปุ่ม "ลบ" ในเว็บใช้ policy นี้ ลบได้เฉพาะแถวที่ user_id ตรงกับคนที่ล็อกอินอยู่
+-- ไม่มี policy อื่นที่ให้ลบรีวิวของคนอื่น (บริษัท/คนจ่ายเงิน/Plus ลบหรือซ่อนรีวิวใครไม่ได้)
+-- ลบได้ทั้งรีวิวที่รอตรวจและที่เผยแพร่แล้ว — ลบแล้วหายจาก approved_reviews ทันที
+-- Deleting: the website's "Delete" button relies on this policy. Only rows whose user_id is the
+-- logged-in user can be deleted. No other policy lets anyone delete someone else's review
+-- (companies, paying users and Plus can never remove or hide reviews).
+-- Works for pending and approved reviews; a deleted review leaves approved_reviews right away.
 create policy "reviews: delete own" on public.reviews
   for delete to authenticated
   using (user_id = (select auth.uid()));

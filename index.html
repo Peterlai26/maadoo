@@ -278,6 +278,11 @@ textarea.field{min-height:84px;resize:vertical}
 .rv-actions{display:flex;gap:8px;align-items:center}
 .report{background:none;border:0;color:var(--ink-3);font-size:12px;margin-left:auto;padding:3px 6px;border-radius:8px}
 .report:hover{color:var(--bad)}
+.del-rv{background:var(--bad-bg);color:var(--bad);border:0;font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px}
+.rv-actions .del-rv+.report{margin-left:0}.rv-actions .del-rv{margin-left:auto}
+.btn.danger{background:var(--bad);color:var(--surface);box-shadow:none}
+.otp-code{font-size:24px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
+.otp-links{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center}
 .segs{display:inline-flex;background:var(--surface);border:1.5px solid var(--line);border-radius:99px;padding:4px;gap:4px;margin-top:14px}
 .segs button{border:0;background:none;padding:7px 16px;border-radius:99px;font-weight:500;color:var(--ink-2)}
 .segs button.on{background:var(--blue);color:var(--blue-ink)}
@@ -387,7 +392,11 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .cform{display:flex;gap:8px;align-items:center}
 .cform .field{border-radius:99px;padding:8px 14px}
 .cform .btn{padding:8px 14px}
-@media(max-width:760px){.indrow{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.indrow .opt{white-space:nowrap;flex:none}}
+.indwrap{margin-top:14px;min-width:0;--fl:0px;--fr:0px;-webkit-mask-image:linear-gradient(to right,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent);mask-image:linear-gradient(to right,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent)}
+.indwrap.fl{--fl:36px}.indwrap.fr{--fr:36px}
+.indrow{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:2px 0 4px;cursor:grab}
+.indrow::-webkit-scrollbar{display:none}.indrow .opt{white-space:nowrap;flex:none}
+.indrow.drag{cursor:grabbing;user-select:none}.indrow.drag .opt{pointer-events:none}
 /* v11 home hero (orange accent) */
 .topnav button.on{background:var(--orange);color:var(--orange-ink)}
 .hero{padding:36px 36px 56px;grid-template-columns:1fr auto;align-items:center;gap:28px}
@@ -554,7 +563,7 @@ const x=v=>Array.isArray(v)?(S.lang==='en'?v[1]:v[0]):v;
 const blankForm=()=>({co:'',role:'',type:'emp',r:0,mood:null,ot:null,rec:null,title:'',pro:'',con:'',sal:''});
 S.form=blankForm();
 
-/* ---------- Supabase: real login (magic link) + reviews · falls back to the demo when unavailable ---------- */
+/* ---------- Supabase: real login (password · email code · guest) + reviews · falls back to the demo when unavailable ---------- */
 // Publishable key only. Never put a secret / service_role key here. Tables & rules: supabase/setup.sql
 const SB_URL='https://tzltoimzpzlpzjljmxla.supabase.co',SB_KEY='sb_publishable_jv0Orjkw0FwOQBnRc13Idw_8jgjcqoS';
 let SB=null;
@@ -584,11 +593,11 @@ async function sbUser(ev,session){
  S.user=mkUser(u,same?S.user:null);
  if(same){rerender();return}
  await loadMine();loadApproved();
- if(ev==='SIGNED_IN'){if(S.modal&&S.modal.type==='login')S.modal=null;const fn=S.after;S.after=null;rerender();
+ if(ev==='SIGNED_IN'){if(S.modal&&(S.modal.type==='login'||S.modal.type==='otp'))S.modal=null;const fn=S.after;S.after=null;rerender();
   toast(S.user.anon?t('เข้าใช้แบบชั่วคราวแล้ว · ถ้าออกจากระบบ บัญชีนี้จะหายไป','You’re in as a guest · this account is gone once you log out'):t(`สวัสดี ${S.user.name}! รับ 20 แต้มต้อนรับ`,`Hi ${S.user.name}! +20 welcome points`));if(fn)fn()}
  else rerender();
 }
-/* auth modal helpers: password · magic link · guest */
+/* auth modal helpers: password · email code · guest */
 const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ERR_EMAIL=['อีเมลไม่ถูกต้อง ลองเช็กอีกครั้ง','That email address isn’t valid. Please check it.'];
 const ERR_PW=['รหัสผ่านสั้นไป ต้องมีอย่างน้อย 6 ตัว','Password is too short. Use at least 6 characters.'];
@@ -631,7 +640,7 @@ function sbLoginModal(m,head){
    ${authFormErr(m)}
    <button class="btn y" ${dis}>${m.busy?t('กำลังดำเนินการ…','Working…'):up?t('สมัครสมาชิก','Create account'):t('เข้าสู่ระบบ','Log in')}</button></form>
   <div class="or">${t('หรือ','or')}</div>
-  <div class="auth-alt"><button type="button" class="btn ghost" data-magic ${dis}>✉️ ${t('ส่งลิงก์เข้าสู่ระบบทางอีเมล (ไม่ต้องใช้รหัสผ่าน)','Email me a login link (no password)')}</button>
+  <div class="auth-alt"><button type="button" class="btn ghost" data-magic ${dis}>✉️ ${t('รับโค้ดทางอีเมล (ไม่ต้องใช้รหัสผ่าน)','Get a code by email (no password)')}</button>
    <button type="button" class="btn ghost" data-anon ${dis}>👀 ${t('ลองใช้แบบไม่สมัคร','Try it without signing up')}</button></div>
   <p class="demo-note">${t('แบบไม่สมัคร: ดูเว็บ ปัดรุ่นพี่ และสมัครงานได้ แต่ต้องผูกอีเมลก่อนเขียนรีวิว · อีเมลที่ไม่ใช่ gmail/hotmail/yahoo/outlook จะได้ป้ายยืนยัน','As a guest you can browse, swipe mentors and apply to jobs; add an email before writing reviews · Emails not from gmail/hotmail/yahoo/outlook get verified.')}</p>`;
 }
@@ -645,12 +654,57 @@ function linkModal(m,head){
    ${authFormErr(m)}
    <button class="btn y" ${dis}>${m.busy?t('กำลังดำเนินการ…','Working…'):t('เก็บบัญชีไว้','Keep my account')}</button></form>`;
 }
-function magicLink(){
- keepAuth();const m=S.modal;const em=(m.email||'').trim();
+/* email code login (OTP): step 1 send code → step 2 verify code */
+const OTP_WAIT=60,OTP_RE=/^\d{6,8}$/;let otpTimer=null;
+function otpErr(e,ctx){
+ const c=String((e&&e.code)||''),m=String((e&&e.message)||'').toLowerCase(),st=e&&e.status;
+ if(st===429||c.startsWith('over_')||m.includes('rate limit'))return ctx==='send'?['ส่งโค้ดบ่อยเกินไป รอสักครู่แล้วลองใหม่นะ','You’ve asked for codes too often. Wait a moment and try again.']:['ลองบ่อยเกินไป รอสักครู่แล้วลองใหม่นะ','Too many tries. Wait a moment and try again.'];
+ if(ctx==='verify'&&(c==='otp_expired'||c==='otp_disabled'||m.includes('expired')||m.includes('invalid')||st===403||st===401))return ['โค้ดไม่ถูกต้องหรือหมดอายุแล้ว เช็กตัวเลขอีกครั้ง หรือกด “ส่งโค้ดใหม่”','That code is wrong or has expired. Check the numbers, or tap “Send a new code”.'];
+ return authErr(e,'email');
+}
+function otpModal(m,head){
+ const H=head(t('รับโค้ดทางอีเมล','Log in with an email code'),t('ไม่ต้องจำรหัสผ่าน ใส่โค้ดตัวเลขจากอีเมลก็เข้าได้เลย','No password to remember. Just enter the number code we email you.'));
+ const dis=m.busy?'disabled':'';
+ if(m.step!=='code')return H+`<form id="otpEmailForm" class="grid" novalidate>
+   <label class="grid" style="gap:6px"><b>${t('อีเมลของคุณ','Your email')}</b><input class="field" id="oemail" type="email" autocomplete="email" inputmode="email" placeholder="you@kmutt.ac.th" value="${esc(m.email||'')}"></label>
+   ${authFormErr(m)}
+   <button class="btn y" ${dis}>${m.busy?t('กำลังส่ง…','Sending…'):t('ส่งโค้ด','Send code')}</button></form>
+  <button type="button" class="link" data-otpback style="justify-self:center">← ${t('กลับไปใช้รหัสผ่าน','Back to password login')}</button>`;
+ const left=otpLeft();
+ return H+`<p style="margin:0">${t(`ส่งโค้ดไปที่ <b>${esc(m.email)}</b> แล้ว ใส่โค้ดตัวเลขจากอีเมลด้านล่าง`,`We sent a code to <b>${esc(m.email)}</b>. Enter the number code from the email below.`)}</p>
+  <form id="otpCodeForm" class="grid" novalidate>
+   <label class="grid" style="gap:6px"><b>${t('โค้ดจากอีเมล','Code from the email')}</b><input class="field otp-code" id="ocode" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="8" placeholder="••••••" aria-describedby="ocode-hint" value="${esc(m.code||'')}"></label>
+   <small class="muted" id="ocode-hint" style="margin-top:-6px">${t('โค้ดเป็นตัวเลข 6–8 หลัก · ไม่เจออีเมล? ลองดูในสแปมหรือโปรโมชัน','The code is 6–8 digits · Can’t find the email? Check spam or promotions.')}</small>
+   ${authFormErr(m)}
+   <button class="btn y" ${dis}>${m.busy?t('กำลังตรวจ…','Checking…'):t('ยืนยัน','Confirm')}</button></form>
+  <div class="otp-links"><button type="button" class="link" id="otpResend" data-otpresend ${left>0||m.busy?'disabled':''}>${otpResendTxt(left)}</button><button type="button" class="link" data-otpchange ${dis}>${t('เปลี่ยนอีเมล','Change email')}</button></div>`;
+}
+const otpLeft=()=>{const m=S.modal;return m&&m.until?Math.max(0,Math.ceil((m.until-Date.now())/1000)):0};
+const otpResendTxt=n=>n>0?t(`ส่งโค้ดใหม่ได้ใน ${n} วิ`,`Send a new code in ${n}s`):t('ส่งโค้ดใหม่','Send a new code');
+function otpTick(){
+ clearInterval(otpTimer);otpTimer=null;const m=S.modal;if(!m||m.type!=='otp'||m.step!=='code'||otpLeft()<=0)return;
+ otpTimer=setInterval(()=>{const b=document.getElementById('otpResend'),n=otpLeft();
+  if(!S.modal||S.modal.type!=='otp'||S.modal.step!=='code'||!b){clearInterval(otpTimer);otpTimer=null;return}
+  b.textContent=otpResendTxt(n);if(n<=0){if(!S.modal.busy)b.disabled=false;clearInterval(otpTimer);otpTimer=null}},1000);
+}
+function keepOtp(){const m=S.modal;if(!m)return;const e=document.getElementById('oemail'),c=document.getElementById('ocode');if(e)m.email=e.value;if(c)m.code=c.value}
+async function otpRun(fn,ctx){
+ const m=S.modal;if(!m||m.busy)return null;keepOtp();m.err=null;m.busy=true;renderModal();
+ let r;try{r=await fn()}catch(e){r={error:e}}
+ m.busy=false;if(r&&r.error){m.err=otpErr(r.error,ctx);if(S.modal===m){renderModal();otpTick()}return null}
+ if(S.modal===m){renderModal();otpTick()}return r||{};
+}
+function otpSend(){
+ keepOtp();const m=S.modal;if(!m||m.type!=='otp')return;const em=(m.email||'').trim();
  if(!EMAIL_RE.test(em)){m.err=ERR_EMAIL;renderModal();return}
- const nm=(m.name||'').trim()||em.split('@')[0];
- authRun(()=>SB.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.origin+location.pathname,data:{display_name:nm}}}),'email')
-  .then(r=>{if(r&&S.modal===m){m.sent=em;m.sentKind='link';renderModal()}});
+ otpRun(()=>SB.auth.signInWithOtp({email:em,options:{data:{display_name:em.split('@')[0]}}}),'send')
+  .then(r=>{if(!r||S.modal!==m)return;m.email=em;m.step='code';m.code='';m.until=Date.now()+OTP_WAIT*1000;renderModal();otpTick()});
+}
+function otpVerify(){
+ keepOtp();const m=S.modal;if(!m||m.type!=='otp')return;const code=(m.code||'').replace(/\D/g,'');
+ if(!OTP_RE.test(code)){m.err=['ใส่โค้ดตัวเลข 6–8 หลักจากอีเมล','Enter the 6–8 digit code from the email.'];renderModal();return}
+ otpRun(()=>SB.auth.verifyOtp({email:m.email,token:code,type:'email'}),'verify');
+ // success: onAuthStateChange → SIGNED_IN closes this popup and says hi
 }
 async function linkAccount(){
  keepAuth();const m=S.modal;const em=(m.email||'').trim(),pw=m.pw||'';
@@ -668,8 +722,9 @@ async function linkAccount(){
 }
 function reviewOrLink(f){if(S.user&&S.user.anon){S.after=()=>sendReview(f);openModal({type:'link',why:'review'});return}sendReview(f)}
 async function loadMine(){
- try{const {data,error}=await SB.from('reviews').select('id,company_id,rating,status,created_at').order('created_at',{ascending:false});if(error)throw error;
-  S.myReviews=data.filter(r=>getCo(r.company_id)).map(r=>({id:r.id,co:r.company_id,r:r.rating,status:r.status}))}catch(e){}
+ const uid=S.user&&S.user.id;if(!uid)return;
+ try{const {data,error}=await SB.from('reviews').select('id,user_id,company_id,rating,status,created_at').eq('user_id',uid).order('created_at',{ascending:false});if(error)throw error;
+  S.myReviews=data.filter(r=>r.user_id===uid&&getCo(r.company_id)).map(r=>({id:r.id,uid:r.user_id,co:r.company_id,r:r.rating,status:r.status}))}catch(e){}
 }
 async function loadApproved(){
  if(!SB||S.dbState==='loading')return;S.dbState='loading';S.dbAt=Date.now();
@@ -685,10 +740,28 @@ async function sendReview(f){
  if(S.sending)return;S.sending=true;
  const s=(v,n)=>(v||'').trim().slice(0,n)||null;const sal=parseInt(String(f.sal).replace(/[^\d]/g,''),10);
  const row={company_id:f.co,role:s(f.role,80),type:f.type,rating:f.r,mood:f.mood,ot:f.ot,recommend:f.rec,title:s(f.title,120),pros:s(f.pro,1000),cons:s(f.con,1000),salary:sal>=0&&sal<=1000000?sal:null};
- let ok=false;try{const {error}=await SB.from('reviews').insert(row);ok=!error}catch(e){}
+ let ok=false,id=null;try{const {data,error}=await SB.from('reviews').insert(row).select('id');ok=!error;id=data&&data[0]&&data[0].id||null}catch(e){}
  S.sending=false;
  if(!ok){toast(t('ส่งรีวิวไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t submit your review. Please try again.'));return}
- S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({co:f.co,r:f.r,status:'pending'});addPoints(50);S.form=blankForm();S.view='write';render();window.scrollTo({top:0});
+ S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({id,uid:S.user&&S.user.id,co:f.co,r:f.r,status:'pending'});addPoints(50);S.form=blankForm();S.view='write';render();window.scrollTo({top:0});
+}
+
+/* delete your own review · only rows whose user_id is the logged-in user (also enforced by RLS in supabase/setup.sql) */
+const canDelete=id=>!!(SB&&id&&S.user&&S.user.id&&!S.user.anon&&S.myReviews.some(r=>r.id===id&&r.uid===S.user.id));
+function delRevModal(m,head){const r=S.myReviews.find(v=>v.id===m.id);const c=r&&getCo(r.co);const dis=m.busy?'disabled':'';
+ return head(t('ลบรีวิวนี้?','Delete this review?'),c?`${x(c.name)} · ${stars(r.r)}`:'')+`<p style="margin:0">${t('รีวิวจะถูกลบถาวร กู้คืนไม่ได้ และแต้มที่ได้จากรีวิวนี้จะไม่ถูกหักคืน','The review is deleted for good and can’t be restored. You keep the points you earned for it.')}</p>
+  ${authFormErr(m)}
+  <div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close ${dis}>${t('ยกเลิก','Cancel')}</button><button class="btn danger" data-delrevok ${dis}>${m.busy?t('กำลังลบ…','Deleting…'):t('ลบรีวิว','Delete review')}</button></div>`}
+async function deleteReview(){
+ const m=S.modal;if(!m||m.type!=='delrev'||m.busy)return;const id=m.id;
+ if(!canDelete(id)){m.err=['ลบได้เฉพาะรีวิวของคุณเองเท่านั้น','You can only delete your own reviews.'];renderModal();return}
+ m.err=null;m.busy=true;renderModal();
+ let ok=false,err=null;try{const {data,error}=await SB.from('reviews').delete().eq('id',id).eq('user_id',S.user.id).select('id');if(error)err=error;else ok=Array.isArray(data)&&data.length>0}catch(e){err=e}
+ m.busy=false;
+ if(!ok){m.err=err&&(err.status===429)?['ลองบ่อยเกินไป รอสักครู่แล้วลองใหม่','Too many tries. Wait a moment and try again.']:err&&!err.status?['เชื่อมต่อไม่ได้ เช็กอินเทอร์เน็ตแล้วลองใหม่','Can’t connect. Check your internet and try again.']:['ลบรีวิวไม่สำเร็จ รีวิวนี้อาจถูกลบไปแล้ว ลองรีเฟรชหน้า','Couldn’t delete the review. It may already be gone. Try refreshing.'];if(S.modal===m)renderModal();return}
+ S.myReviews=S.myReviews.filter(r=>r.id!==id);
+ for(const k in S.dbRev)S.dbRev[k]=S.dbRev[k].filter(r=>r.id!==id);
+ if(S.modal===m)S.modal=null;rerender();toast(t('ลบรีวิวแล้ว','Review deleted'));
 }
 
 /* ---------- data (fictional) ---------- */
@@ -1005,11 +1078,11 @@ function coCard(c){return `<button class="co" data-co="${c.id}">
  <div class="moodlegend"><span>😊 ${c.mood[0]}%</span><span>😐 ${c.mood[1]}%</span><span>😵 ${c.mood[2]}%</span><span style="margin-left:auto" class="chip">${trendTxt(c.trend)}</span></div></button>`}
 function review(r,co,i){const m=MOODS[r.mood];const k=r.real?'db-'+r.id:(co?co.id:(S.co||''))+i;
  return `<article class="card rv"><div class="rv-h"><span class="chip ${m[2]}">${m[0]} ${x(m[1])}</span><span class="stars" style="font-size:14px">${stars(r.r)}</span>
- ${r.real?`<span class="chip ad">🙋 ${t('รีวิวจากผู้ใช้จริง','Real user review')}</span>`:''}${r.v?`<span class="chip ver">✓ ${t('พนักงานจริง','Verified employee')}</span>`:''}<span class="chip">${x(TYPE[r.type])}</span><span class="muted" style="margin-left:auto">${r.d}</span></div>
+ ${r.real?`<span class="chip ad">🙋 ${t('รีวิวจากผู้ใช้จริง','Real user review')}</span>`:''}${r.real&&canDelete(r.id)?`<span class="chip mid">${t('รีวิวของคุณ','Your review')}</span>`:''}${r.v?`<span class="chip ver">✓ ${t('พนักงานจริง','Verified employee')}</span>`:''}<span class="chip">${x(TYPE[r.type])}</span><span class="muted" style="margin-left:auto">${r.d}</span></div>
  <h3>“${esc(x(r.t))}”</h3><div class="muted">${esc(x(r.role))}${co?` · <button class="link" data-co="${co.id}">${x(co.name)}</button>`:''}</div>
  <dl class="pc"><dt class="p">${t('ข้อดี','Pros')}</dt><dd>${esc(x(r.p))}</dd><dt class="c">${t('ข้อเสีย','Cons')}</dt><dd>${esc(x(r.c))}</dd></dl>
  ${r.reply?`<div class="reply"><b>🏢 ${t('บริษัทตอบกลับ','Company response')}</b><span>${esc(x(r.reply))}</span></div>`:''}
- <div class="rv-actions"><button class="help ${S.helped[k]?'on':''}" data-help="${k}">👍 ${t('มีประโยชน์','Helpful')} ${r.h+(S.helped[k]?1:0)}</button><button class="report" data-report="1">⚑ ${t('รายงาน','Report')}</button></div></article>`}
+ <div class="rv-actions"><button class="help ${S.helped[k]?'on':''}" data-help="${k}">👍 ${t('มีประโยชน์','Helpful')} ${r.h+(S.helped[k]?1:0)}</button>${r.real&&canDelete(r.id)?`<button class="del-rv" data-delrev="${esc(r.id)}">🗑️ ${t('ลบ','Delete')}</button>`:''}<button class="report" data-report="1">⚑ ${t('รายงาน','Report')}</button></div></article>`}
 const brand=(label='Maadoo')=>`<div class="brand"><img src="${PUP()}" alt="">${label}</div><img class="pup" src="${PUP()}" alt="">`;
 const allRoles=()=>{const seen=new Map();CO.forEach(c=>c.salary.filter(s=>!s[5]).forEach(s=>{if(!seen.has(s[0][1]))seen.set(s[0][1],s[0])}));return [...seen.values()]};
 
@@ -1050,7 +1123,7 @@ function explore(){
  const keys=Object.keys(IND);
  let list=S.filter===-1?CO:CO.filter(c=>c.ind===keys[S.filter]);if(S.coOnlyJobs)list=list.filter(c=>JOBS.some(j=>j.co===c.id));
  return `<h1 style="font-size:28px;margin-top:8px">${t('สำรวจบริษัท','Explore companies')}</h1>
- <div class="opts indrow" style="margin-top:14px"><button class="opt ${S.filter===-1?'on':''}" data-filter="-1">${t('ทั้งหมด','All')}</button>${keys.map((k,i)=>`<button class="opt ${S.filter===i?'on':''}" data-filter="${i}">${x(IND[k])}</button>`).join('')}</div>
+ <div class="indwrap" id="indwrap"><div class="opts indrow" id="indrow" role="toolbar" aria-label="${t('หมวดหมู่บริษัท','Company categories')}"><button class="opt ${S.filter===-1?'on':''}" data-filter="-1">${t('ทั้งหมด','All')}</button>${keys.map((k,i)=>`<button class="opt ${S.filter===i?'on':''}" data-filter="${i}">${x(IND[k])}</button>`).join('')}</div></div>
  <label class="row" style="margin-top:12px;gap:8px;cursor:pointer"><input type="checkbox" id="onlyJobs" ${S.coOnlyJobs?'checked':''} style="width:18px;height:18px;accent-color:var(--blue)"> ${t('เฉพาะบริษัทที่เปิดรับงาน/ฝึกงาน','Only companies that are hiring')}</label>
  <div class="grid g3" style="margin-top:16px">${list.map(coCard).join('')}</div>`;
 }
@@ -1246,7 +1319,7 @@ function me(){
  ${sec(t('นัดคุยกับรุ่นพี่','Mentor sessions'),S.booked.length?`<div class="list">${S.booked.map(b=>`<div class="li"><span class="ava" style="width:36px;height:36px;font-size:18px;background:${b.m.bg}">${b.m.ava}</span><b>${x(b.m.name)}</b><span class="muted">${x(SLOTS[b.slot])}</span><span class="chip ver grow">${t('ยืนยันแล้ว','Confirmed')}</span></div>`).join('')}</div>`:'',t('ยังไม่มีนัด','No sessions booked'))}
  ${sec(t('งานที่บันทึกไว้','Saved jobs'),saved.length?`<div class="grid g2">${saved.map(jobCard).join('')}</div>`:'',t('กด ♡ ที่ประกาศงานเพื่อบันทึก','Tap ♡ on a job to save it'))}
  ${sec(t('บริษัทที่ติดตาม','Following'),followed.length?`<div class="grid g3">${followed.map(coCard).join('')}</div>`:'',t('ยังไม่ได้ติดตามบริษัทไหน','Not following any companies yet'))}
- ${sec(t('รีวิวของฉัน','My reviews'),S.myReviews.length?`<div class="list">${S.myReviews.map(r=>`<div class="li"><b>${x(getCo(r.co).name)}</b><span class="stars">${stars(r.r)}</span>${r.status==='approved'?`<span class="chip ver grow">✓ ${t('เผยแพร่แล้ว','Published')}</span>`:`<span class="chip mid grow">${t('รอตรวจ','In review')}</span>`}</div>`).join('')}</div>`:'',t('ยังไม่มีรีวิว เขียนรีวิวแรกรับ 50 แต้ม','No reviews yet. Your first one earns 50 pts.'))}
+ ${sec(t('รีวิวของฉัน','My reviews'),S.myReviews.length?`<div class="list">${S.myReviews.map(r=>`<div class="li"><b>${x(getCo(r.co).name)}</b><span class="stars">${stars(r.r)}</span>${r.status==='approved'?`<span class="chip ver grow">✓ ${t('เผยแพร่แล้ว','Published')}</span>`:`<span class="chip mid grow">${t('รอตรวจ','In review')}</span>`}${canDelete(r.id)?`<button class="del-rv" data-delrev="${esc(r.id)}">🗑️ ${t('ลบ','Delete')}</button>`:''}</div>`).join('')}</div>`:'',t('ยังไม่มีรีวิว เขียนรีวิวแรกรับ 50 แต้ม','No reviews yet. Your first one earns 50 pts.'))}
  <section class="sec row"><button class="btn ghost" data-logout>${t('ออกจากระบบ','Log out')}</button><button class="link" data-go="rules">${t('แนวทางรีวิวและความเป็นส่วนตัว','Review guidelines & privacy')}</button></section>`;
 }
 function employer(){
@@ -1369,6 +1442,8 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
   <form id="loginForm" class="grid"><input class="field" id="lname" placeholder="${t('ชื่อที่ใช้แสดง เช่น น้องมาดู','Display name')}" required><input class="field" id="lemail" type="email" placeholder="you@kmutt.ac.th" required>
   <button class="btn y">${t('เข้าสู่ระบบ / สมัคร','Log in / Sign up')}</button></form><p class="demo-note">${t('เดโม: ไม่มีการส่งอีเมลจริง อีเมลที่ไม่ใช่ gmail/hotmail/yahoo/outlook จะได้ป้ายยืนยัน','Demo: no email is sent. Emails not from gmail/hotmail/yahoo/outlook get verified.')}</p>`;
  if(m.type==='link')body=linkModal(m,head);
+ if(m.type==='otp')body=otpModal(m,head);
+ if(m.type==='delrev')body=delRevModal(m,head);
  if(m.type==='pt')body=ptModal(m);
  if(m.type==='ptpost')body=ptPostModal();
  if(m.type==='ptappl')body=ptApplModal(m);
@@ -1408,7 +1483,26 @@ function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen)
   <button class="fx-row" data-fx="amb" role="switch" aria-checked="${S.fxAmb}"><span><b>✨ ${t('เอฟเฟคพื้นหลัง','Background effect')}</b><small>${x(FXINFO[S.skin].n)}</small></span><i class="tg ${S.fxAmb?'on':''}"></i></button>
   <button class="fx-row" data-fx="tap" role="switch" aria-checked="${S.fxTap}"><span><b>👆 ${t('เอฟเฟคตอนกด','Tap effect')}</b><small>${t('มีอนิเมชันเด้งออกมาทุกครั้งที่กด','A little burst every time you tap')}</small></span><i class="tg ${S.fxTap?'on':''}"></i></button></div></div>`}
 function renderCoach(){const el=$('#coach');if(!el)return;el.innerHTML=S.coach&&!S.themeOpen?`<div class="coach" role="status"><b>🎨 ${t('เปลี่ยนธีมได้ตรงนี้นะ!','You can change the theme here!')}</b><span>${t('มีทั้งแบบธรรมดา กลางคืน ซากุระ มินต์ และอื่น ๆ','Classic, Night, Sakura, Mint and more')}</span><button class="btn y" data-coachok>${t('เข้าใจแล้ว','Got it')}</button></div>`:''}
-function render(){applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();}
+function render(){const ir=$('#indrow');S.indX=ir?ir.scrollLeft:0;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();if(S.view==='explore')bindIndRow();}
+/* explore: one-line category chips · swipe on touch, drag / wheel on desktop, edge fades, selected chip scrolled into view */
+let indDragged=false;
+function indFade(el){const w=el.parentNode,max=el.scrollWidth-el.clientWidth;w.classList.toggle('fl',el.scrollLeft>2);w.classList.toggle('fr',el.scrollLeft<max-2)}
+function indGlide(el,to){const from=el.scrollLeft,d=to-from;if(Math.abs(d)<2||matchMedia('(prefers-reduced-motion: reduce)').matches){el.scrollLeft=to;return}
+ const t0=performance.now(),dur=280;const step=now=>{if(!el.isConnected)return;const k=Math.min(1,(now-t0)/dur);el.scrollLeft=from+d*(1-Math.pow(1-k,3));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+function bindIndRow(){const el=$('#indrow');if(!el)return;
+ el.scrollLeft=S.indX||0;
+ const on=el.querySelector('.opt.on');if(on){const tgt=Math.max(0,on.offsetLeft-el.offsetLeft-(el.clientWidth-on.offsetWidth)/2);
+  indGlide(el,Math.min(tgt,el.scrollWidth-el.clientWidth))}
+ indFade(el);el.addEventListener('scroll',()=>indFade(el),{passive:true});
+ el.addEventListener('wheel',e=>{const max=el.scrollWidth-el.clientWidth;if(max<=0||Math.abs(e.deltaX)>Math.abs(e.deltaY))return;
+  const nx=Math.max(0,Math.min(max,el.scrollLeft+e.deltaY));if(nx===el.scrollLeft)return;e.preventDefault();el.scrollLeft=nx},{passive:false});
+ let sx=0,sl=0,down=false;
+ el.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;down=true;indDragged=false;sx=e.clientX;sl=el.scrollLeft});
+ el.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(!indDragged&&Math.abs(dx)>5){indDragged=true;el.classList.add('drag');try{el.setPointerCapture(e.pointerId)}catch(_){}}if(indDragged)el.scrollLeft=sl-dx});
+ const up=()=>{if(!down)return;down=false;el.classList.remove('drag');setTimeout(()=>{indDragged=false},0)};
+ el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('lostpointercapture',up);
+}
+addEventListener('resize',()=>{const el=$('#indrow');if(el)indFade(el)});
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
@@ -1438,7 +1532,12 @@ document.addEventListener('click',e=>{
  if(d.login!==undefined){openModal({type:'login'});return}
  if(d.lmode){keepAuth();S.modal.mode=d.lmode;S.modal.err=null;renderModal();const f=document.getElementById(d.lmode==='up'?'lname':'lemail');if(f)f.focus();return}
  if(d.pwtoggle){const i=document.getElementById(d.pwtoggle);if(i){const show=i.type==='password';i.type=show?'text':'password';b.textContent=show?t('ซ่อน','Hide'):t('แสดง','Show');b.setAttribute('aria-pressed',String(show))}return}
- if(d.magic!==undefined){if(SB)magicLink();return}
+ if(d.magic!==undefined){if(SB){keepAuth();const em=S.modal&&S.modal.email||'';openModal({type:'otp',step:'email',email:EMAIL_RE.test(em.trim())?em.trim():'',fromLogin:true})}return}
+ if(d.otpresend!==undefined){if(SB&&otpLeft()<=0)otpSend();return}
+ if(d.otpchange!==undefined){keepOtp();const m=S.modal;if(m){m.step='email';m.code='';m.err=null;renderModal()}return}
+ if(d.otpback!==undefined){keepOtp();const em=S.modal&&S.modal.email;openModal({type:'login',mode:'in',email:em||''});return}
+ if(d.delrev){needLogin(()=>openModal({type:'delrev',id:d.delrev}));return}
+ if(d.delrevok!==undefined){deleteReview();return}
  if(d.anon!==undefined){if(SB)authRun(()=>SB.auth.signInAnonymously(),'anon');return}
  if(d.linkacct!==undefined){openModal({type:'link'});return}
  if(d.resend!==undefined){if(S.modal){S.modal.sent=null;renderModal()}return}
@@ -1474,7 +1573,7 @@ document.addEventListener('click',e=>{
  if(d.help){S.helped[d.help]=!S.helped[d.help];render();return}
  if(d.follow){S.follow[d.follow]=!S.follow[d.follow];render();toast(S.follow[d.follow]?t('จะแจ้งเตือนเมื่อมีรีวิวหรือเงินเดือนใหม่','We’ll notify you about new reviews and salaries'):t('เลิกติดตามแล้ว','Unfollowed'));return}
  if(d.writefor){S.done=null;S.form=blankForm();S.form.co=d.writefor;go('write');return}
- if(d.filter){S.filter=+d.filter;render();return}
+ if(d.filter){if(indDragged)return;S.filter=+d.filter;render();return}
  if(d.f){syncForm();S.form[d.f]=d.f==='mood'?+d.v:d.v;render();return}
  if(d.star){syncForm();S.form.r=+d.star;render();return}
  if(d.again!==undefined){S.done=null;S.form=blankForm();render();return}
@@ -1519,6 +1618,8 @@ document.addEventListener('submit',e=>{e.preventDefault();
    PT.unshift(post);S.ptForm={title:'',kind:'onsite',day:'today',when:'',pay:'',unit:'h',need:'1',how:'cash',req:'',boost:'none',ok:false};S.modal=null;S.view='jobs';S.jobTab='pt';S.ptDay='all';render();window.scrollTo({top:0});toast(t('โพสต์งานแล้ว! รอผู้สมัครสักครู่','Job posted! Applicants will arrive shortly'));
    FAKE_APPL.forEach((a,i)=>setTimeout(()=>{post.appl.push([...a]);pushNotif('🙋',`มีผู้สมัครใหม่: ${a[0]}`,`New applicant: ${a[0]}`,['jobs']);if(S.modal&&S.modal.type==='ptappl')renderModal();else if(S.view==='jobs')render()},2500+i*3000))});return}
  if(e.target.id==='linkForm'){if(SB)linkAccount();return}
+ if(e.target.id==='otpEmailForm'){if(SB)otpSend();return}
+ if(e.target.id==='otpCodeForm'){if(SB)otpVerify();return}
  if(e.target.id==='empForm'){closeModal();toast(t('ได้รับข้อมูลแล้ว ทีมจะติดต่อกลับเร็ว ๆ นี้','Got it. Our team will be in touch soon'));return}
  if(e.target.id==='rvForm'){syncForm();const f=S.form;if(!(f.co&&f.r&&f.mood!==null&&f.ot!==null&&f.rec!==null))return;
   if(SB){needLogin(()=>reviewOrLink(f));return}
@@ -1536,7 +1637,7 @@ document.addEventListener('submit',e=>{e.preventDefault();
   S.bd.open[pid]=true;addPoints(5);render();toast(t('ส่งความคิดเห็นแล้ว +5 แต้ม','Comment posted +5 pts'));}
 });
 function syncPtForm(){const g=id=>document.getElementById(id);if(!g('pf-title'))return;const f=S.ptForm;f.title=g('pf-title').value;f.kind=g('pf-kind').value;f.day=g('pf-day').value;f.when=g('pf-when').value;f.pay=g('pf-pay').value;f.unit=g('pf-unit').value;f.need=g('pf-need').value;f.how=g('pf-how').value;f.req=g('pf-req').value;f.ok=g('pf-ok').checked}
-document.addEventListener('input',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
+document.addEventListener('input',e=>{if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
 document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();render()}
  if(id==='jInd'){S.jobF.ind=e.target.value;render()}if(id==='jMin'){S.jobF.min=+e.target.value;render()}if(id==='onlyJobs'){S.coOnlyJobs=e.target.checked;render()}});
 document.addEventListener('keydown',e=>{if(!S.modal&&S.view==='ask'&&S.askTab==='swipe'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){if(e.key==='ArrowRight')swipeGo('right');if(e.key==='ArrowLeft')swipeGo('left')}if(e.key==='Escape'){if(S.modal)closeModal();if(S.notifOpen){S.notifOpen=false;renderBell()}}});
