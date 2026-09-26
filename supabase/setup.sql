@@ -149,3 +149,7 @@ grant select on public.approved_reviews to anon, authenticated;
 -- ห้ามใส่ service_role key หรือ secret key ในหน้าเว็บ เว็บใช้แค่ publishable key
 -- Never put the service_role or secret key in the website; it only uses the publishable key.
 -- =====================================================================
+
+-- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
+-- Make the Data API (PostgREST) pick up new tables/views right away.
+notify pgrst, 'reload schema';

@@ -547,7 +547,7 @@ html,body{overflow-x:clip}
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const S={lang:store.get('maadoo-lang')||'th',skin:store.get('maadoo-skin')||(store.get('maadoo-theme')==='dark'||(!store.get('maadoo-theme')&&matchMedia('(prefers-color-scheme: dark)').matches)?'night':'default'),themeOpen:false,coach:false,view:'home',co:null,tab:'overview',q:'',unlocked:false,follow:{},helped:{},poll:null,
  form:null,done:null,quiz:{i:0,a:[]},sal:{role:0,v:'22000'},askText:'',askTag:0,filter:-1,
- user:null,after:null,modal:null,notifOpen:false,saved:{},applied:{},booked:[],myReviews:[],dbRev:{},sending:false,asked:0,
+ user:null,after:null,modal:null,notifOpen:false,saved:{},applied:{},booked:[],myReviews:[],dbRev:{},dbState:'idle',dbAt:0,sending:false,asked:0,
  jobF:{type:'all',ind:'all',min:0},askTab:'swipe',ptApps:{},ptDay:'all',jobTab:'full',ptForm:{title:'',kind:'onsite',day:'today',when:'',pay:'',unit:'h',need:'1',how:'cash',req:'',boost:'none',ok:false},ptRate:{s:0,tags:{}},coOnlyJobs:false,sw:{liked:[],skipped:[],topic:'all'},bd:{sort:'hot',tag:-1,kind:'ask',open:{p1:true},anon:true},pl:{}};
 const t=(th,en)=>S.lang==='en'?en:th;
 const x=v=>Array.isArray(v)?(S.lang==='en'?v[1]:v[0]):v;
@@ -561,7 +561,7 @@ let SB=null;
 const MOOD_T=[['ที่นี่น่าอยู่','A great place to stay'],['ที่นี่พอไหว','It’s OK here'],['ที่นี่ต้องคิดดี ๆ','Think twice']];
 const isFreeMail=em=>/@(gmail|hotmail|yahoo|outlook|icloud)\./i.test(em);
 const quarter=ts=>{const d=new Date(ts);return `Q${Math.floor(d.getMonth()/3)+1} ${d.getFullYear()}`};
-const revs=c=>c.reviews.concat(S.dbRev[c.id]||[]);
+const revs=c=>(S.dbRev[c.id]||[]).concat(c.reviews);
 function rerender(){if(S.view==='write'&&!S.done)syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}render()}
 function initSB(){
  if(SB||!window.supabase||!window.supabase.createClient)return;
@@ -583,7 +583,7 @@ async function sbUser(ev,session){
  if(same&&S.user.anon===!!u.is_anonymous&&S.user.email===(u.email||''))return;
  S.user=mkUser(u,same?S.user:null);
  if(same){rerender();return}
- await loadMine();
+ await loadMine();loadApproved();
  if(ev==='SIGNED_IN'){if(S.modal&&S.modal.type==='login')S.modal=null;const fn=S.after;S.after=null;rerender();
   toast(S.user.anon?t('เข้าใช้แบบชั่วคราวแล้ว · ถ้าออกจากระบบ บัญชีนี้จะหายไป','You’re in as a guest · this account is gone once you log out'):t(`สวัสดี ${S.user.name}! รับ 20 แต้มต้อนรับ`,`Hi ${S.user.name}! +20 welcome points`));if(fn)fn()}
  else rerender();
@@ -672,11 +672,14 @@ async function loadMine(){
   S.myReviews=data.filter(r=>getCo(r.company_id)).map(r=>({id:r.id,co:r.company_id,r:r.rating,status:r.status}))}catch(e){}
 }
 async function loadApproved(){
- try{const {data,error}=await SB.from('approved_reviews').select('*').order('created_at',{ascending:false}).limit(500);if(error)throw error;
+ if(!SB||S.dbState==='loading')return;S.dbState='loading';S.dbAt=Date.now();
+ try{const {data,error}=await SB.from('approved_reviews').select('id,company_id,role,type,rating,mood,title,pros,cons,created_at').order('created_at',{ascending:false}).limit(500);if(error)throw error;
   const m={},same=v=>v?[v,v]:null;
-  data.forEach(r=>{if(!getCo(r.company_id))return;const mood=[0,1,2].includes(r.mood)?r.mood:1;
-   (m[r.company_id]=m[r.company_id]||[]).push({role:same(r.role)||['ไม่ระบุตำแหน่ง','Role not given'],type:r.type==='intern'?'intern':'emp',mood,r:Math.max(1,Math.min(5,r.rating|0)),t:same(r.title)||MOOD_T[mood],p:same(r.pros)||['—','—'],c:same(r.cons)||['—','—'],d:quarter(r.created_at),v:false,h:0})});
-  S.dbRev=m;if(S.view==='company')rerender()}catch(e){}
+  (data||[]).forEach(r=>{const co=String(r.company_id||'').trim();if(!getCo(co))return;const mood=[0,1,2].includes(r.mood)?r.mood:1;
+   (m[co]=m[co]||[]).push({id:r.id,real:true,role:same(r.role)||['ไม่ระบุตำแหน่ง','Role not given'],type:r.type==='intern'?'intern':'emp',mood,r:Math.max(1,Math.min(5,r.rating|0)),t:same(r.title)||MOOD_T[mood],p:same(r.pros)||['—','—'],c:same(r.cons)||['—','—'],d:quarter(r.created_at),v:false,h:0})});
+  S.dbRev=m;S.dbState='ok';
+ }catch(e){S.dbState='error';console.warn('[Maadoo] could not load approved reviews from Supabase (approved_reviews view):',e&&(e.message||e),e)}
+ if(S.view==='company')rerender();
 }
 async function sendReview(f){
  if(S.sending)return;S.sending=true;
@@ -989,9 +992,9 @@ function coCard(c){return `<button class="co" data-co="${c.id}">
  <div class="score"><b style="color:${col(c.overall)}">${c.overall.toFixed(1)}</b><span class="stars">${stars(c.overall)}</span></div></div>
  ${moodBar(c.mood)}
  <div class="moodlegend"><span>😊 ${c.mood[0]}%</span><span>😐 ${c.mood[1]}%</span><span>😵 ${c.mood[2]}%</span><span style="margin-left:auto" class="chip">${trendTxt(c.trend)}</span></div></button>`}
-function review(r,co,i){const m=MOODS[r.mood];const k=(co?co.id:(S.co||''))+i;
+function review(r,co,i){const m=MOODS[r.mood];const k=r.real?'db-'+r.id:(co?co.id:(S.co||''))+i;
  return `<article class="card rv"><div class="rv-h"><span class="chip ${m[2]}">${m[0]} ${x(m[1])}</span><span class="stars" style="font-size:14px">${stars(r.r)}</span>
- ${r.v?`<span class="chip ver">✓ ${t('พนักงานจริง','Verified employee')}</span>`:''}<span class="chip">${x(TYPE[r.type])}</span><span class="muted" style="margin-left:auto">${r.d}</span></div>
+ ${r.real?`<span class="chip ad">🙋 ${t('รีวิวจากผู้ใช้จริง','Real user review')}</span>`:''}${r.v?`<span class="chip ver">✓ ${t('พนักงานจริง','Verified employee')}</span>`:''}<span class="chip">${x(TYPE[r.type])}</span><span class="muted" style="margin-left:auto">${r.d}</span></div>
  <h3>“${esc(x(r.t))}”</h3><div class="muted">${esc(x(r.role))}${co?` · <button class="link" data-co="${co.id}">${x(co.name)}</button>`:''}</div>
  <dl class="pc"><dt class="p">${t('ข้อดี','Pros')}</dt><dd>${esc(x(r.p))}</dd><dt class="c">${t('ข้อเสีย','Cons')}</dt><dd>${esc(x(r.c))}</dd></dl>
  ${r.reply?`<div class="reply"><b>🏢 ${t('บริษัทตอบกลับ','Company response')}</b><span>${esc(x(r.reply))}</span></div>`:''}
@@ -1041,7 +1044,7 @@ function explore(){
  <div class="grid g3" style="margin-top:16px">${list.map(coCard).join('')}</div>`;
 }
 function company(){
- const c=getCo(S.co);if(!c){S.view='explore';return explore()}const tb=S.tab;const n=c.reviews.length*37;const all=revs(c);
+ const c=getCo(S.co);if(!c){S.view='explore';return explore()}const tb=S.tab;const n=c.reviews.length*37;const all=revs(c);if(SB&&S.dbState==='error'&&Date.now()-S.dbAt>15000)setTimeout(loadApproved,0);
  const tabs=[['overview',t('ภาพรวม','Overview')],['reviews',`${t('รีวิว','Reviews')} (${all.length})`],['salary',t('เงินเดือน','Salaries')],['interview',t('สัมภาษณ์','Interviews')],['jobs',`${t('งานที่เปิดรับ','Open jobs')} (${JOBS.filter(j=>j.co===c.id).length})`]];
  let body='';
  if(tb==='overview'){body=`<div class="grid g2" style="margin-top:18px">
@@ -1055,7 +1058,7 @@ function company(){
    <div><h3 style="font-size:17px;margin-bottom:10px">${t('ความจริง vs ที่ประกาศ','Reality vs. job ad')}</h3>
     <div class="rvp"><div class="hd">${t('บริษัทประกาศว่า','The ad says')}</div><div class="hd">${t('พนักงานบอกว่า','Employees say')}</div>${c.reality.map(r=>`<div>${x(r[0])}</div><div class="${r[2]}">${r[2]==='ok'?'✓':r[2]==='no'?'✗':'~'} ${x(r[1])}</div>`).join('')}</div></div>
   </div></div>
-  <div class="sec"><div class="sec-h"><h2>${t('รีวิวล่าสุด','Latest reviews')}</h2><button class="link" data-tab="reviews">${t('ดูทั้งหมด','See all')}</button></div><div class="grid g2">${c.reviews.slice(0,2).map((r,i)=>review(r,null,i)).join('')}</div></div>`}
+  <div class="sec"><div class="sec-h"><h2>${t('รีวิวล่าสุด','Latest reviews')}</h2><button class="link" data-tab="reviews">${t('ดูทั้งหมด','See all')}</button></div><div class="grid g2">${all.slice(0,2).map((r,i)=>review(r,null,i)).join('')}</div></div>`}
  if(tb==='reviews'){const free=all.slice(0,3),rest=all.slice(3);
   body=`<div class="grid" style="margin-top:18px">${free.map((r,i)=>review(r,null,i)).join('')}
   ${rest.length?(S.unlocked?rest.map((r,i)=>review(r,null,i+3)).join(''):`<div class="lockwrap"><div class="locked grid">${rest.map((r,i)=>review(r,null,i+3)).join('')}</div>
