@@ -11,8 +11,11 @@ const inAppBrowser=()=>/Instagram|FBAN|FBAV|FB_IAB|Line\/|KAKAOTALK|TikTok|music
 const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
 /* what we can offer: 'prompt' (Chrome's install dialog), 'ios' (Share → Add to Home Screen), 'android' (⋮ → Install app, e.g. after the dialog was cancelled),
    'inapp' (open in a real browser first) */
-function pwaMode(){if(isStandalone()||S.pwa.installed)return null;if(inAppBrowser())return 'inapp';if(S.pwa.evt)return 'prompt';if(isIOS())return 'ios';if(isAndroid())return 'android';return null}
+function pwaMode(anyway){if(isStandalone()||(S.pwa.installed&&!anyway))return null;if(inAppBrowser())return 'inapp';if(S.pwa.evt)return 'prompt';if(isIOS())return 'ios';if(isAndroid())return 'android';return null}
 const pwaOffer=()=>!S.pwa.hide&&pwaMode();
+/* theme menu row: always there — install (ignores the remembered "installed", which can be stale after the app was removed), or "installed" inside the app */
+function pwaMenuRow(){if(isStandalone())return `<div class="fx-row tour-again pwa-ok"><span><b>📲 ${t('เปิดแบบแอปอยู่','You’re in the app')}</b><small>✓ ${t('ติดตั้ง Maadoo Job แล้ว','Maadoo Job is installed')}</small></span></div>`;
+ const m=pwaMode(true);return m?`<button class="fx-row tour-again" data-pwainstall="menu"><span><b>📲 ${t('ติดตั้งแอป Maadoo Job','Install the Maadoo Job app')}</b><small>${t('เปิดจากหน้าจอโฮมได้ เร็วขึ้น ใช้ได้ตอนเน็ตหลุด','Open it from your home screen: faster, works offline')}</small></span><span aria-hidden="true">→</span></button>`:''}
 
 /* Me page card */
 function pwaCard(){const mode=pwaOffer();if(!mode)return '';
@@ -26,7 +29,7 @@ function pwaStrip(){const mode=pwaOffer();if(!mode||S.pwa.visits<2)return '';
 const IOS_SHARE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
 const IOS_ADD='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
 const AND_MENU='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>';
-function pwaIosModal(m,head){const mode=pwaMode(),inapp=mode==='inapp',ios=isIOS();
+function pwaIosModal(m,head){const mode=pwaMode(true),inapp=mode==='inapp',ios=isIOS();
  if(mode==='android')return head(t('ติดตั้งบน Android','Install on Android'),t('ผ่านเมนูของ Chrome','From Chrome’s menu'))+
  `<ol class="pwa-steps">${[[AND_MENU,t('กดปุ่ม ⋮ มุมบนขวาของ Chrome','Tap ⋮ in Chrome’s top-right corner')],['📲',t('เลือก “ติดตั้งแอป” หรือ “เพิ่มลงในหน้าจอหลัก”','Choose “Install app” or “Add to Home screen”')],[`<img src="icons/icon-192.png" alt="">`,t('กด “ติดตั้ง” แล้วเปิด Maadoo Job จากหน้าจอหลักได้เลย','Tap “Install”, then open Maadoo Job from your home screen')]].map((s,i)=>`<li><span class="pwa-n">${i+1}</span><span class="pwa-ic">${s[0]}</span><span>${s[1]}</span></li>`).join('')}</ol>
  <div class="row" style="justify-content:flex-end"><button class="link" data-pwahide>${t('ไม่ต้องแสดงอีก','Don’t show again')}</button><button class="btn y" data-close>${t('เข้าใจแล้ว','Got it')}</button></div>`;
@@ -37,7 +40,7 @@ function pwaIosModal(m,head){const mode=pwaMode(),inapp=mode==='inapp',ios=isIOS
  ${inapp?'':`<div class="pwa-demo" aria-hidden="true"><div class="pwa-phone"><div class="pwa-scr"><img src="icons/icon-192.png" alt=""><small>Maadoo Job</small></div><div class="pwa-bar"><i></i><i></i><b>${IOS_SHARE}</b><i></i><i></i></div></div><span class="pwa-arrow">⬆</span></div>`}
  <div class="row" style="justify-content:flex-end"><button class="link" data-pwahide>${t('ไม่ต้องแสดงอีก','Don’t show again')}</button><button class="btn y" data-close>${t('เข้าใจแล้ว','Got it')}</button></div>`}
 
-async function pwaInstall(){const mode=pwaMode();
+async function pwaInstall(anyway){const mode=pwaMode(anyway);
  /* Chrome allows one dialog per page load: after it, the card stays and "How to" shows the ⋮ → Install app steps instead */
  if(mode==='prompt'){const e=S.pwa.evt;S.pwa.evt=null;let ok=false;try{await e.prompt();const c=await e.userChoice;ok=!!(c&&c.outcome==='accepted')}catch(err){}
   if(ok){S.pwa.installed=true;pwaSave();toast(t('ติดตั้งแล้ว! เปิดจากหน้าจอโฮมได้เลย 🎉','Installed! Open it from your home screen 🎉'))}
@@ -70,7 +73,7 @@ addEventListener('appinstalled',()=>{S.pwa.installed=true;S.pwa.evt=null;pwaSave
 addEventListener('offline',()=>{S.pwa.offline=true;pwaBars()});
 addEventListener('online',()=>{if(!S.pwa.offline)return;S.pwa.offline=false;pwaBars();toast(t('กลับมาออนไลน์แล้ว 🐾','You’re back online 🐾'))});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-pwainstall],[data-pwahide],[data-pwaupdate],[data-pwaretry]');if(!b)return;const d=b.dataset;
- if(d.pwainstall!==undefined){if(S.themeOpen){S.themeOpen=false;renderThemePop()}pwaInstall();return}
+ if(d.pwainstall!==undefined){if(S.themeOpen){S.themeOpen=false;renderThemePop()}pwaInstall(d.pwainstall==='menu');return}
  if(d.pwahide!==undefined){pwaHide();return}
  if(d.pwaupdate!==undefined){const w=S.pwa.update;if(!w){location.reload();return}S.pwa.asked=true;b.disabled=true;w.postMessage({type:'SKIP_WAITING'});setTimeout(()=>location.reload(),3000);return}
  if(d.pwaretry!==undefined){if(navigator.onLine)location.reload();else toast(t('ยังไม่มีเน็ตเลย ลองอีกทีนะ','Still offline. Try again in a bit'))}});
