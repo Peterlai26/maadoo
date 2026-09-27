@@ -877,8 +877,3 @@ header.top::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right
 .bnav .mid{background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:8px 14px;transform:translateY(-14px);box-shadow:0 6px 16px rgba(255,197,61,.5);font-weight:600}
 .bnav .mid.on{color:var(--accent-ink);box-shadow:0 0 0 3px var(--surface),0 6px 16px rgba(255,197,61,.55)}
 .bnav .mid svg,.bnav .mid.on svg{stroke:var(--accent-ink)}
-/* LinkedIn login button (LinkedIn's brand blue) */
-:root{--li:#0A66C2;--li-ink:#FFFFFF}
-.li-btn{background:var(--li);color:var(--li-ink);display:inline-flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 3px 0 rgba(0,0,0,.18)}
-.li-btn:hover{filter:brightness(1.08)}
-.li-logo{width:22px;height:22px;flex:none}.li-logo rect{fill:var(--li-ink)}.li-logo path{fill:var(--li)}

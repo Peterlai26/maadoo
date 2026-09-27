@@ -121,7 +121,6 @@ document.addEventListener('click',e=>{
  if(d.otpback!==undefined){keepOtp();const em=S.modal&&S.modal.email;openModal({type:'login',mode:'in',email:em||''});return}
  if(d.delrev){needLogin(()=>openModal({type:'delrev',id:d.delrev}));return}
  if(d.delrevok!==undefined){deleteReview();return}
- if(d.linkedin!==undefined){linkedinLogin();return}
  if(d.anon!==undefined){if(SB)authRun(()=>SB.auth.signInAnonymously(),'anon');return}
  if(d.linkacct!==undefined){openModal({type:'link'});return}
  if(d.resend!==undefined){if(S.modal){S.modal.sent=null;renderModal()}return}
