@@ -61,7 +61,7 @@ button{cursor:pointer}
 .num{font-variant-numeric:tabular-nums}
 
 /* top bar */
-.top{display:flex;align-items:center;gap:12px;padding-block:12px;position:sticky;top:env(safe-area-inset-top,0px);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);z-index:20}
+header.top{display:flex;align-items:center;gap:12px;padding-block:12px;position:sticky;top:env(safe-area-inset-top,0px);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);z-index:20}
 .logo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:24px;font-weight:700;color:var(--navy);background:none;border:0;padding:0;letter-spacing:.02em}
 .logo img{width:44px;height:44px;border-radius:50%;transition:transform .3s}
 .logo:hover img{transform:rotate(-8deg) scale(1.06)}
@@ -251,7 +251,7 @@ textarea.field{min-height:84px;resize:vertical}
 .nitem .ic{width:34px;height:34px;border-radius:50%;background:var(--sky);display:grid;place-items:center;font-size:16px}
 .nitem.unread{background:var(--sky-2)}
 .nitem small{display:block;color:var(--ink-3);font-size:12px}
-.top{position:sticky}
+header.top{position:sticky}
 .tools{position:relative}
 .modal-bg{position:fixed;inset:0;background:rgba(12,22,48,.45);z-index:60;display:grid;place-items:center;padding:16px;backdrop-filter:blur(3px)}
 .modal{background:var(--surface);border-radius:28px;padding:24px;width:min(460px,100%);max-height:calc(100vh - 32px);overflow:auto;display:grid;gap:14px;box-shadow:var(--shadow);border:1.5px solid var(--line)}
@@ -296,7 +296,7 @@ textarea.field{min-height:84px;resize:vertical}
 .dd-car{flex:none;font-size:12px;color:var(--ink-2);transition:transform .15s}.dd-pill.open .dd-car{transform:rotate(180deg)}
 .dd-x{flex:none;width:28px;height:28px;margin-right:6px;border:0;border-radius:50%;background:var(--surface);color:var(--ink-2);font-size:16px;line-height:1;display:grid;place-items:center}
 .dd-x:hover{color:var(--bad)}
-.dd-menu{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 32px));background:var(--surface);border:1.5px solid var(--line);border-radius:20px;box-shadow:var(--shadow);z-index:45;overflow:hidden}
+.dd-menu{position:absolute;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 32px));background:var(--surface);border:1.5px solid var(--line);border-radius:20px;box-shadow:var(--shadow);z-index:60;overflow:hidden;isolation:isolate}
 .dd-list{max-height:320px;overflow-y:auto;overscroll-behavior:contain;padding:6px;display:grid;gap:2px}
 .dd-opt{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;border-radius:14px;padding:9px 12px;color:var(--ink);font-weight:500}
 .dd-opt:hover,.dd-opt:focus-visible{background:var(--sky)}.dd-opt:focus-visible{outline-offset:-3px}
@@ -623,8 +623,8 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .s-foot .s-price{position:static}
 .s-foot .s-askp{position:static;border:0;padding:5px 12px;font-size:13px;border-radius:99px;background:var(--orange-btn);color:var(--on-brand);box-shadow:0 3px 0 var(--orange-btn-shade)}
 .plus-tag{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin-left:8px;padding:2px 10px;border-radius:99px;background:var(--gold-soft);color:var(--gold-ink);border:1.5px solid var(--gold-line);font-family:var(--body);font-size:12.5px;font-weight:700;letter-spacing:.01em}
-.deck{position:relative;height:480px;max-width:360px;margin:18px auto 0}
-.scard{position:absolute;inset:0;border-radius:30px;background:var(--surface);border:1.5px solid var(--line);box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-rows:210px 1fr;touch-action:none;user-select:none;-webkit-user-select:none}
+.deck{position:relative;height:480px;max-height:max(400px,calc(100vh - 200px));max-height:max(400px,calc(100dvh - 200px));max-width:360px;margin:18px auto 0}
+.scard{position:absolute;inset:0;border-radius:30px;background:var(--surface);border:1.5px solid var(--line);box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-rows:minmax(150px,210px) minmax(0,1fr);touch-action:none;user-select:none;-webkit-user-select:none}
 .scard.top{cursor:grab}.scard.top:active{cursor:grabbing}
 .scard.back{transform:scale(.94) translateY(16px);opacity:.7;pointer-events:none}
 .s-hero{position:relative;display:grid;place-items:center}
@@ -634,7 +634,7 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .stamp{position:absolute;top:22px;padding:2px 14px;border:3px solid;border-radius:12px;font-family:var(--display);font-weight:700;font-size:24px;opacity:0;background:rgba(255,255,255,.7);z-index:2;pointer-events:none}
 .stamp.like{left:18px;color:#1C9D7F;border-color:#1C9D7F;transform:rotate(-14deg)}
 .stamp.nope{right:18px;color:#E0506A;border-color:#E0506A;transform:rotate(14deg)}
-.s-info{padding:16px 18px;display:grid;gap:8px;align-content:start}
+.s-info{padding:16px 18px;display:grid;gap:8px;align-content:start;min-height:0;overflow:hidden}
 .s-info h2{font-size:24px}
 .s-bio{font-size:14px;color:var(--ink-2)}
 .empty-deck{display:grid;place-items:center;align-content:center;gap:10px;text-align:center;padding:24px;grid-template-rows:none}
@@ -732,11 +732,15 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .fx-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
 .fx-fg{position:fixed;inset:0;z-index:90;pointer-events:none}
 .wrap,footer.foot{position:relative;z-index:1}
+/* page content (and its popovers, e.g. the category dropdown) stacks above the footer; main fills the screen so the footer stays at the bottom */
+.wrap{z-index:2}
+main#app{min-height:calc(100vh - 190px);min-height:calc(100dvh - 190px)}
 .hero{background:linear-gradient(160deg,color-mix(in srgb,var(--sky) 72%,transparent),color-mix(in srgb,var(--sky-2) 60%,transparent))}
 .sw-fx{font-size:11px;color:var(--ink-3);font-weight:400}
 .fx-sec{display:grid;gap:6px;margin:4px 0 10px;padding-bottom:10px;border-bottom:1.5px solid var(--line)}
 .fx-sec>b{font-size:13px;color:var(--ink-2);padding-left:4px}
 .fx-row{display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;text-align:left}
+.fx-sl{display:grid;gap:4px;justify-content:stretch;cursor:default}.fx-sl>span{display:grid}.fx-sl input{width:100%;accent-color:var(--blue);height:24px}.fx-v{font-style:normal;font-weight:600;color:var(--blue);font-size:12.5px;margin-left:4px}
 .snd-vol{display:flex;align-items:center;gap:8px;padding:2px 8px 4px}.snd-vol input{flex:1;min-width:0;accent-color:var(--blue);height:24px}
 .fx-row span{display:grid}.fx-row b{font-size:14px;color:var(--navy)}.fx-row small{font-size:12px;color:var(--ink-3)}
 .tg{width:42px;height:24px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .2s}
@@ -747,7 +751,7 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .sw-prev img{position:absolute;right:6px;bottom:4px;width:34px;height:34px;border-radius:50%}
 /* v19 responsive fixes */
 #notif,#themePop,#coach{position:absolute;right:0;top:0;width:0;height:0}
-.top{gap:10px}
+header.top{gap:10px}
 .logo{flex:none;min-width:0}
 @media(max-width:1020px){.topnav{display:none}.bnav{display:flex}.tools{margin-left:auto}}
 @media(max-width:420px){.logo{font-size:20px;gap:6px}.logo img{width:38px;height:38px}.tbtn{height:36px;min-width:36px;padding:0 9px}.tools{gap:5px}.lang{font-size:12px}
@@ -774,8 +778,8 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 :root[data-skin="sea"]{--bg:#EEF9FC;--surface-2:#DAF1F7;--line:#C8E7F0;--blue:#0E8FB8;--navy:#064A63;--sky:#C6ECF5;--sky-2:#E8F7FB;--ink:#10313D;--ink-2:#44687A;--ink-3:#84A3B0;--orange:#FF8F6B;--orange-soft:#FFE0D6;--shadow:0 2px 0 rgba(6,74,99,.06),0 10px 24px rgba(14,143,184,.14)}
 /* full-width sticky header */
 html,body{overflow-x:clip}
-.top{background:var(--bg);backdrop-filter:none}
-.top::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right:-100vw;background:var(--bg);z-index:-1}
+header.top{background:var(--bg);backdrop-filter:none}
+header.top::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right:-100vw;background:var(--bg);z-index:-1}
 @media(max-width:1020px){.tpop,.notif{max-height:calc(100dvh - 170px);overflow:auto}}
 /* v22 part-time */
 .pt-head{display:flex;gap:14px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-top:18px}
@@ -3008,11 +3012,13 @@ function renderBell(){const n=NOTIFS.filter(v=>!v.read).length;
 }
 function foot(){$('#foot').innerHTML=`<span class="brand-s"><img src="${PUP()}" alt="">Maadoo Job</span><button class="link" data-go="employer">${t('สำหรับบริษัท','For employers')}</button><button class="link" data-go="quiz">${t('ควิซหาบริษัทที่ใช่','Company-match quiz')}</button><button class="link" data-go="rules">${t('แนวทางรีวิวและความเป็นส่วนตัว','Guidelines & privacy')}</button><span style="margin-left:auto">© 2026 ${t('มาดูจ็อบ','Maadoo Job')} · ${t('เดโม','demo')}</span>`}
 
+const fxPct=v=>v?`${v}%`:t('ปิด','Off');
+const fxSlider=(k,ic,name,sub)=>{const v=fxLevel(k);return `<label class="fx-row fx-sl"><span><b>${ic} ${name} <em class="fx-v" id="fxv-${k}">${fxPct(v)}</em></b><small>${sub}</small></span><input type="range" id="fx-${k}" min="0" max="100" step="5" value="${v}" aria-label="${name}" aria-valuetext="${fxPct(v)}"></label>`};
 function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen){el.innerHTML='';return}
  const old=el.querySelector('.tpop'),top=old?old.scrollTop:0;
  el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')}</b></div><div class="fx-sec"><b>${t('เอฟเฟคและเสียง','Effects & sound')}</b>
-  <button class="fx-row" data-fx="amb" role="switch" aria-checked="${S.fxAmb}"><span><b>✨ ${t('เอฟเฟคพื้นหลัง','Background effect')}</b><small>${x(FXINFO[S.skin].n)}</small></span><i class="tg ${S.fxAmb?'on':''}"></i></button>
-  <button class="fx-row" data-fx="tap" role="switch" aria-checked="${S.fxTap}"><span><b>👆 ${t('เอฟเฟคตอนกด','Tap effect')}</b><small>${t('มีอนิเมชันเด้งออกมาทุกครั้งที่กด','A little burst every time you tap')}</small></span><i class="tg ${S.fxTap?'on':''}"></i></button>
+  ${fxSlider('amb','✨',t('เอฟเฟกต์พื้นหลัง','Background effect'),x(FXINFO[S.skin].n))}
+  ${fxSlider('tap','👆',t('เอฟเฟกต์ตอนแตะ','Tap effect'),t('อนิเมชันเด้งออกมาตอนแตะ','A little burst when you tap'))}
   <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(SNDINFO[S.skin])}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
   ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}<button class="fx-row tour-again" data-obopen><span><b>🎯 ${t('เปลี่ยนเป้าหมาย / คณะ','Change goal / faculty')}</b><small>${t('ตอบคำถามต้อนรับใหม่','Answer the welcome questions again')}</small></span><span aria-hidden="true">→</span></button><button class="fx-row tour-again" data-tourreplay><span><b>❓ ${t('พาเที่ยวอีกครั้ง','Show me around again')}</b><small>${t('น้องมาดูชี้ปุ่มสำคัญให้ดูใหม่','Maadoo points out the key buttons again')}</small></span><span aria-hidden="true">→</span></button></div>
  <div class="swatches">${SKINS.map(k=>`<button class="sw ${S.skin===k[0]?'on':''}" data-skin="${k[0]}"><span class="sw-prev" style="background:${k[3]}"><i style="background:${k[4]}"></i><i style="background:${k[5]}"></i><img src="${PUP(k[0])}" alt=""></span><span>${k[1]} ${x(k[2])}</span><small class="sw-fx">✨ ${x(FXINFO[k[0]].n)}</small></button>`).join('')}</div></div>`;
@@ -3127,7 +3133,6 @@ document.addEventListener('click',e=>{
  if(d.ivsend!==undefined){const m=S.modal;if(!m||m.type!=='iv')return;const q=($('#ivq').value||'').trim().slice(0,140);if(!q){m.err=['พิมพ์คำถามที่เจอก่อนนะ','Type a question they asked first.'];renderModal();return}
   const c=getCo(m.co);c.interview.qs.push([q,q]);S.prem.interviews.push({co:m.co,at:Date.now()});addPoints(10);S.modal=null;render();toast(t('ขอบคุณที่แชร์! ภารกิจ “รีวิวการสัมภาษณ์” สำเร็จ','Thanks for sharing! “Review an interview” mission done'));return}
  if(d.snd!==undefined){SND.toggle();renderThemePop();return}
- if(d.fx){if(d.fx==='amb'){S.fxAmb=!S.fxAmb;store.set('maadoo-fx-amb',S.fxAmb?'1':'0')}else{S.fxTap=!S.fxTap;store.set('maadoo-fx-tap',S.fxTap?'1':'0')}renderThemePop();FX.kick();return}
  if(b.id==='annBtn'){S.themeOpen=false;renderThemePop();openModal({type:'welcome'});return}
  if(b.id==='langBtn'){if(S.view==='write'&&!S.done)syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}S.lang=S.lang==='th'?'en':'th';store.set('maadoo-lang',S.lang);render();toast(t('เปลี่ยนเป็นภาษาไทยแล้ว','Switched to English'));return}
  if(d.go){if(d.go==='write')S.done=null;go(d.go);return}
@@ -3211,7 +3216,8 @@ document.addEventListener('submit',e=>{e.preventDefault();
   S.bd.open[pid]=true;addPoints(5);if(S.user)S.prem.comments.push(Date.now());render();toast(t('ส่งความคิดเห็นแล้ว +5 แต้ม','Comment posted +5 pts'));}
 });
 function syncPtForm(){const g=id=>document.getElementById(id);if(!g('pf-title'))return;const f=S.ptForm;f.title=g('pf-title').value;f.kind=g('pf-kind').value;f.day=g('pf-day').value;f.when=g('pf-when').value;f.pay=g('pf-pay').value;f.unit=g('pf-unit').value;f.need=g('pf-need').value;f.how=g('pf-how').value;f.req=g('pf-req').value;f.ok=g('pf-ok').checked}
-document.addEventListener('input',e=>{if(e.target.id==='mcomment'){if(S.modal)S.modal.comment=e.target.value;const c=$('#mcount');if(c)c.textContent=e.target.value.length+'/300';return}if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.setAttribute('aria-valuetext',v+'%');return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
+document.addEventListener('input',e=>{const fk=e.target.id==='fx-amb'?'amb':e.target.id==='fx-tap'?'tap':null;if(fk){fxSetLevel(fk,e.target.value);const v=fxLevel(fk),o=document.getElementById('fxv-'+fk);if(o)o.textContent=fxPct(v);e.target.setAttribute('aria-valuetext',fxPct(v));if(fk==='tap'&&v){const r=e.target.getBoundingClientRect();FX.tap(r.left+r.width*v/100,r.top+r.height/2)}return}
+ if(e.target.id==='mcomment'){if(S.modal)S.modal.comment=e.target.value;const c=$('#mcount');if(c)c.textContent=e.target.value.length+'/300';return}if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.setAttribute('aria-valuetext',v+'%');return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
 document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();render()}
  if(id==='jInd'){S.jobF.ind=e.target.value;render()}if(id==='jMin'){S.jobF.min=+e.target.value;render()}if(id==='onlyJobs'){S.coOnlyJobs=e.target.checked;render()}});
 document.addEventListener('keydown',e=>{
@@ -3235,8 +3241,13 @@ const FXINFO={default:{c:['#2F6FD6','#FF9A1F','#FFC53D','#8EC5FF'],n:['ประ
  garden:{c:['#FF6F91','#FFB347','#B28DFF','#6EC6FF','#FF8FB1'],n:['ผีเสื้อบินในสวน','Garden butterflies'],amb:'fly',tap:'flower'},
  sea:{c:['#7FD8F0','#B8ECF8','#4FC3E3','#FFFFFF'],n:['ฟองอากาศใต้ทะเล','Rising bubbles'],amb:'bubble',tap:'bubble'}};
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
-S.fxAmb=store.get('maadoo-fx-amb')?store.get('maadoo-fx-amb')==='1':!reduceMotion;
-S.fxTap=store.get('maadoo-fx-tap')?store.get('maadoo-fx-tap')==='1':!reduceMotion;
+/* effect strength per theme, 0–100 (0 = off) in `maadoo-fx` = {skin:{amb,tap}}; default 60, or 0 under reduced motion */
+S.fxLv=(()=>{try{const o=JSON.parse(store.get('maadoo-fx')||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}})();
+const FX_DEF={amb:reduceMotion||store.get('maadoo-fx-amb')==='0'?0:60,tap:reduceMotion||store.get('maadoo-fx-tap')==='0'?0:60};
+function fxLevel(k,sk=S.skin){const o=S.fxLv[sk],v=o&&+o[k];return Number.isFinite(v)&&o[k]!==undefined?Math.min(100,Math.max(0,Math.round(v))):FX_DEF[k]}
+function fxSetLevel(k,v){const o=S.fxLv[S.skin]||(S.fxLv[S.skin]={});o[k]=Math.min(100,Math.max(0,Math.round(+v||0)));store.set('maadoo-fx',JSON.stringify(S.fxLv));FX.level()}
+/* 60% = the original look; count, speed and size scale around it */
+const fxK=k=>fxLevel(k)/60;
 const FX=(()=>{
  const bg=document.createElement('canvas'),fg=document.createElement('canvas');
  bg.className='fx-bg';fg.className='fx-fg';bg.setAttribute('aria-hidden','true');fg.setAttribute('aria-hidden','true');
@@ -3255,8 +3266,10 @@ const FX=(()=>{
   else if(k==='flower'){const c=ctx.fillStyle;for(let i=0;i<5;i++){const a=i*Math.PI*2/5;ctx.beginPath();ctx.arc(Math.cos(a)*r*.55,Math.sin(a)*r*.55,r*.45,0,Math.PI*2);ctx.fill()}ctx.fillStyle='#FFD84D';ctx.beginPath();ctx.arc(0,0,r*.35,0,Math.PI*2);ctx.fill();ctx.fillStyle=c}
   else if(k==='bubble'){ctx.arc(0,0,r,0,Math.PI*2);ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=Math.max(1.2,r*.18);ctx.stroke();ctx.globalAlpha*=.25;ctx.fill();ctx.globalAlpha*=3;ctx.beginPath();ctx.arc(-r*.35,-r*.35,r*.22,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill()}
   else{ctx.arc(0,0,r,0,Math.PI*2);ctx.fill()}}
- function seed(){const I=FXINFO[skin];const n=Math.round(Math.min(38,Math.max(16,W*H/38000)));amb=[];
+ const want=()=>{const k=fxK('amb');return k?Math.max(3,Math.round(Math.min(38,Math.max(16,W*H/38000))*k)):0};
+ function seed(){const I=FXINFO[skin];const n=want();amb=[];
   for(let i=0;i<n;i++)amb.push(mk(I,true))}
+ function level(){const I=FXINFO[skin],n=want();if(amb.length>n)amb.length=n;else while(amb.length<n)amb.push(mk(I,true));kick()}
  function mk(I,init){const k=I.amb;const p={k,c:I.c[Math.random()*I.c.length|0],x:rnd(0,W),y:init?rnd(0,H):0,r:rnd(3,7),rot:rnd(0,6.28),vr:rnd(-.02,.02),ph:rnd(0,6.28),a:rnd(.35,.7)};
   if(k==='petal'||k==='leaf'){p.vy=rnd(.35,.9);p.vx=rnd(-.2,.4);p.r=rnd(5,9);if(!init)p.y=-20}
   else if(k==='heart'||k==='ember'){p.vy=-rnd(.2,.55);p.vx=rnd(-.15,.15);if(!init)p.y=H+20;if(k==='ember')p.r=rnd(1.6,3.2)}
@@ -3266,12 +3279,12 @@ const FX=(()=>{
   else if(k==='bubble'){p.vy=-rnd(.35,.9);p.vx=0;p.r=rnd(2.5,8);p.vr=0;if(!init)p.y=H+20}
   else{p.vy=-rnd(.1,.3);p.vx=rnd(-.1,.1);p.r=rnd(3,6);p.tw=rnd(.015,.035);if(!init)p.y=H+20}
   return p}
- function stepAmb(dt){bx.clearRect(0,0,W,H);if(!S.fxAmb)return;const I=FXINFO[skin];
+ function stepAmb(dt0){bx.clearRect(0,0,W,H);const K=fxK('amb');if(!K)return;const I=FXINFO[skin],dt=dt0*(.5+.5*K),sz=.7+.3*K;
   for(let i=0;i<amb.length;i++){const p=amb[i];p.ph+=.02*dt;p.rot+=p.vr*dt;
    p.x+=(p.vx+Math.sin(p.ph)*.35*(p.k==='petal'||p.k==='leaf'?1:.4))*dt;p.y+=p.vy*dt;
    if(p.y>H+30||p.y<-30||p.x<-30||p.x>W+30){amb[i]=mk(I,false);continue}
    let a=p.a;if(p.tw)a=p.a*(.35+.65*(.5+.5*Math.sin(p.ph*p.tw*50)));
-   bx.save();bx.globalAlpha=a;bx.translate(p.x,p.y);bx.rotate(p.rot);if(p.fly)bx.scale(.35+.65*Math.abs(Math.sin(p.ph*6)),1);bx.fillStyle=p.c;shape(bx,p.k,p.r);bx.restore()}
+   bx.save();bx.globalAlpha=a;bx.translate(p.x,p.y);bx.rotate(p.rot);if(p.fly)bx.scale(.35+.65*Math.abs(Math.sin(p.ph*6)),1);bx.fillStyle=p.c;shape(bx,p.k,p.r*sz);bx.restore()}
   if(skin==='night'){if(!shoot&&Math.random()<.004*dt)shoot={x:rnd(W*.2,W),y:rnd(0,H*.35),l:0};
    if(shoot){shoot.l+=dt;const t=shoot.l/45,x=shoot.x-t*260,y=shoot.y+t*110;const g=bx.createLinearGradient(x,y,x+90,y-38);g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(1,'rgba(255,255,255,0)');
     bx.strokeStyle=g;bx.lineWidth=2;bx.beginPath();bx.moveTo(x,y);bx.lineTo(x+90,y-38);bx.stroke();if(shoot.l>45)shoot=null}}}
@@ -3280,19 +3293,19 @@ const FX=(()=>{
    p.vy+=p.g*dt;p.vx*=.985;p.x+=p.vx*dt;p.y+=p.vy*dt;p.rot+=p.vr*dt;
    fx.save();fx.globalAlpha=Math.max(0,p.life/p.max);fx.translate(p.x,p.y);fx.rotate(p.rot);fx.fillStyle=p.c;shape(fx,p.k,p.r);fx.restore()}}
  function loop(ts){const dt=Math.min(3,(ts-(last||ts))/16.67)||1;last=ts;stepAmb(dt);stepBurst(dt);
-  if(S.fxAmb||burst.length)raf=requestAnimationFrame(loop);else{raf=0;last=0;bx.clearRect(0,0,W,H);fx.clearRect(0,0,W,H)}}
+  if(fxLevel('amb')||burst.length)raf=requestAnimationFrame(loop);else{raf=0;last=0;bx.clearRect(0,0,W,H);fx.clearRect(0,0,W,H)}}
  function kick(){if(!raf&&!document.hidden)raf=requestAnimationFrame(loop)}
  function setSkin(k){if(k!==skin){skin=k;seed();shoot=null}kick()}
- function tap(x,y){if(!S.fxTap)return;const I=FXINFO[skin];
-  const n=5;for(let i=0;i<n;i++){const a=rnd(0,Math.PI*2),v=rnd(.9,2.2);
-   burst.push({k:I.tap,c:I.c[i%I.c.length],x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-(['ember','heart','bubble'].includes(I.tap)?.6:.9),g:['ember','heart','bubble'].includes(I.tap)?-.01:.07,r:rnd(2.5,4.5),rot:rnd(0,6.28),vr:rnd(-.12,.12),life:rnd(24,34),max:34})}
+ function tap(x,y){const K=fxK('tap');if(!K)return;const I=FXINFO[skin],sp=.5+.5*K,sz=.7+.3*K;
+  const n=Math.max(2,Math.round(5*K));for(let i=0;i<n;i++){const a=rnd(0,Math.PI*2),v=rnd(.9,2.2)*sp;
+   burst.push({k:I.tap,c:I.c[i%I.c.length],x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-(['ember','heart','bubble'].includes(I.tap)?.6:.9),g:['ember','heart','bubble'].includes(I.tap)?-.01:.07,r:rnd(2.5,4.5)*sz,rot:rnd(0,6.28),vr:rnd(-.12,.12),life:rnd(24,34),max:34})}
   kick()}
  let lastW=innerWidth;addEventListener('resize',()=>{size();if(Math.abs(innerWidth-lastW)>40){lastW=innerWidth;seed()}});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick()});
  let pd=null;document.addEventListener('pointerdown',e=>{pd=(e.target.closest&&e.target.closest('.scard.top'))?null:{x:e.clientX,y:e.clientY}},{passive:true});
  document.addEventListener('pointerup',e=>{if(pd&&Math.hypot(e.clientX-pd.x,e.clientY-pd.y)<10)tap(e.clientX,e.clientY);pd=null},{passive:true});
  document.addEventListener('pointercancel',()=>{pd=null},{passive:true});
- size();return {setSkin,kick,tap};
+ size();return {setSkin,kick,tap,level};
 })();
 /* ---------- ambient sound: one relaxing scene per theme, synthesized live with Web Audio (no audio files, no licensing) ----------
    Off by default and never starts without a user gesture. Crossfades on theme change, pauses while the tab is hidden.
