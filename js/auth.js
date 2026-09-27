@@ -64,7 +64,7 @@ async function authRun(fn,ctx){
 const pwField=(id,ac,val)=>`<div class="pw"><input class="field" id="${id}" type="password" autocomplete="${ac}" placeholder="${t('รหัสผ่าน','Password')}" aria-describedby="${id}-hint" value="${esc(val||'')}"><button type="button" class="pw-t" data-pwtoggle="${id}" aria-controls="${id}" aria-pressed="false">${t('แสดง','Show')}</button></div><small class="muted" id="${id}-hint" style="margin-top:-6px">${t('อย่างน้อย 6 ตัว','At least 6 characters')}</small>`;
 const authFormErr=m=>m.err?`<p class="form-err" role="alert">${esc(x(m.err))}</p>`:'';
 function sbLoginModal(m,head){
- const H=head(t('เข้าสู่ระบบมาดูจ็อบ','Log in to Maadoo Job'),t('ใช้อีเมลอะไรก็ได้ เช่น Gmail · บริษัทและรุ่นพี่ที่ให้คำปรึกษาใช้อีเมลที่ทำงาน','Any email works, e.g. Gmail · companies and mentors use their work email'));
+ const H=head(t('เข้าสู่ระบบมาดูจ็อบ','Log in to Maadoo Job'),'');
  if(m.sent)return H+`<p>${m.sentKind==='confirm'?t(`ส่งอีเมลยืนยันไปที่ <b>${esc(m.sent)}</b> แล้ว กดยืนยันในอีเมล แล้วกลับมาเข้าสู่ระบบ`,`We sent a confirmation email to <b>${esc(m.sent)}</b>. Confirm it, then come back and log in.`):t(`ส่งลิงก์เข้าสู่ระบบไปที่ <b>${esc(m.sent)}</b> แล้ว กดลิงก์ในอีเมลเพื่อเข้าสู่ระบบ ไม่ต้องใช้รหัสผ่าน`,`We sent a login link to <b>${esc(m.sent)}</b>. Tap the link in the email to log in. No password needed.`)}</p>
   <p class="muted">${t('ไม่เจออีเมล? ลองดูในโฟลเดอร์สแปมหรือโปรโมชัน','Can’t find it? Check your spam or promotions folder.')}</p>
   <div class="row"><button class="btn ghost" data-resend>${t('ใช้อีเมลอื่น','Use another email')}</button><button class="btn y" data-close>${t('ตกลง','OK')}</button></div>`;
@@ -72,21 +72,21 @@ function sbLoginModal(m,head){
  return H+`<div class="segs" role="tablist" style="margin-top:0;justify-self:start">${[['in',t('เข้าสู่ระบบ','Log in')],['up',t('สมัครใหม่','Sign up')]].map(([k,n])=>`<button type="button" role="tab" aria-selected="${(up?'up':'in')===k}" class="${(up?'up':'in')===k?'on':''}" data-lmode="${k}" ${dis}>${n}</button>`).join('')}</div>
   <form id="loginForm" class="grid" novalidate>
    ${up?`<input class="field" id="lname" autocomplete="nickname" maxlength="40" placeholder="${t('ชื่อที่ใช้แสดง','Display name')}" value="${esc(m.name||'')}">`:''}
-   <input class="field" id="lemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล เช่น name@gmail.com','Email, e.g. name@gmail.com')}" value="${esc(m.email||'')}">
+   <input class="field" id="lemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล','Email')}" value="${esc(m.email||'')}">
    ${pwField('lpw',up?'new-password':'current-password',m.pw)}
    ${authFormErr(m)}
    <button class="btn y" ${dis}>${m.busy?t('กำลังดำเนินการ…','Working…'):up?t('สมัครสมาชิก','Create account'):t('เข้าสู่ระบบ','Log in')}</button></form>
   <div class="or">${t('หรือ','or')}</div>
   <div class="auth-alt"><button type="button" class="btn ghost" data-magic ${dis}>✉️ ${t('รับโค้ดทางอีเมล (ไม่ต้องใช้รหัสผ่าน)','Get a code by email (no password)')}</button>
    <button type="button" class="btn ghost" data-anon ${dis}>👀 ${t('ลองใช้แบบไม่สมัคร','Try it without signing up')}</button></div>
-  <p class="demo-note">${t('แบบไม่สมัคร: ดูเว็บ ปัดรุ่นพี่ และสมัครงานได้ แต่ต้องผูกอีเมลก่อนเขียนรีวิว · ใช้อีเมลมหาลัยหรือที่ทำงาน (ไม่บังคับ) จะได้ป้าย ✓','As a guest you can browse, swipe mentors and apply to jobs; add an email before writing reviews · A university or work email (optional) adds a ✓ badge.')}</p>`;
+  <p class="demo-note">${t('แบบไม่สมัคร: ดูเว็บ ปัดรุ่นพี่ และสมัครงานได้ แต่ต้องผูกอีเมลก่อนเขียนรีวิว','As a guest you can browse, swipe mentors and apply to jobs; add an email before writing reviews.')}</p>`;
 }
 function linkModal(m,head){
  const H=head(t('เก็บบัญชีไว้ด้วยอีเมล','Keep your account with email'),m.why==='review'?t('บัญชีชั่วคราวเขียนรีวิวไม่ได้ ผูกอีเมลก่อน แล้วรีวิวของคุณจะถูกส่งต่อทันที','Guest accounts can’t post reviews. Add an email and your review is sent right after.'):t('ตั้งอีเมลและรหัสผ่าน แล้วใช้บัญชีนี้ต่อได้ทุกเครื่อง','Add an email and password to keep this account on any device.'));
  if(m.sent)return H+`<p>${t(`ส่งอีเมลยืนยันไปที่ <b>${esc(m.sent)}</b> แล้ว กดยืนยันในอีเมล แล้วกลับมาตั้งรหัสผ่านอีกครั้ง`,`We sent a confirmation email to <b>${esc(m.sent)}</b>. Confirm it, then come back to set your password.`)}</p><button class="btn y" data-close>${t('ตกลง','OK')}</button>`;
  const dis=m.busy?'disabled':'';
  return H+`<form id="linkForm" class="grid" novalidate>
-   <input class="field" id="kemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล เช่น name@gmail.com','Email, e.g. name@gmail.com')}" value="${esc(m.email||'')}">
+   <input class="field" id="kemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล','Email')}" value="${esc(m.email||'')}">
    ${pwField('kpw','new-password',m.pw)}
    ${authFormErr(m)}
    <button class="btn y" ${dis}>${m.busy?t('กำลังดำเนินการ…','Working…'):t('เก็บบัญชีไว้','Keep my account')}</button></form>`;
@@ -103,7 +103,7 @@ function otpModal(m,head){
  const H=head(t('รับโค้ดทางอีเมล','Log in with an email code'),t('ไม่ต้องจำรหัสผ่าน ใส่โค้ดตัวเลขจากอีเมลก็เข้าได้เลย','No password to remember. Just enter the number code we email you.'));
  const dis=m.busy?'disabled':'';
  if(m.step!=='code')return H+`<form id="otpEmailForm" class="grid" novalidate>
-   <label class="grid" style="gap:6px"><b>${t('อีเมลของคุณ','Your email')}</b><input class="field" id="oemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล เช่น name@gmail.com','Email, e.g. name@gmail.com')}" value="${esc(m.email||'')}"></label>
+   <label class="grid" style="gap:6px"><b>${t('อีเมลของคุณ','Your email')}</b><input class="field" id="oemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล','Email')}" value="${esc(m.email||'')}"></label>
    ${authFormErr(m)}
    <button class="btn y" ${dis}>${m.busy?t('กำลังส่ง…','Sending…'):t('ส่งโค้ด','Send code')}</button></form>
   <button type="button" class="link" data-otpback style="justify-self:center">← ${t('กลับไปใช้รหัสผ่าน','Back to password login')}</button>`;
