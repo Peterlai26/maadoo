@@ -178,7 +178,7 @@ function jobCard(j){const c=getCo(j.co);
   <div class="muted job-tags">${j.tags.map(g=>x(g)).join(' · ')}</div>
   <div class="job-foot"><span class="muted">${agoTxt(j.days)}</span><div class="grow"><button class="save ${S.saved[j.id]?'on':''}" data-save="${j.id}" aria-label="${t('บันทึกงาน','Save job')}">${S.saved[j.id]?'♥':'♡'}</button>
   ${S.applied[j.id]?`<button class="btn ghost" disabled>✓ ${t('สมัครแล้ว','Applied')}</button>`:`<button class="btn" data-apply="${j.id}">${t('สมัครเลย','Apply')}</button>`}</div></div></article>`}
-const JTABS=[['full',['💼 งาน/ฝึกงาน','💼 Jobs & internships'],['💼 งาน','💼 Jobs']],['co',['🏢 บริษัท','🏢 Companies'],['🏢 บริษัท','🏢 Companies']],['pt',['⚡ งานด่วน','⚡ Part-time'],['⚡ ด่วน','⚡ Quick']],['sal',['💰 เงินเดือน','💰 Salaries'],['💰 เงินเดือน','💰 Pay']],['map',['🗺️ แผนที่อาชีพ','🗺️ Career map'],['🗺️ แผนที่','🗺️ Map']]];
+const JTABS=[['full',['💼 งาน/ฝึกงาน','💼 Jobs & internships'],['💼 งาน','💼 Jobs']],['pt',['⚡ งานด่วน','⚡ Part-time'],['⚡ ด่วน','⚡ Quick']],['map',['🗺️ แผนที่อาชีพ','🗺️ Career map'],['🗺️ แผนที่','🗺️ Map']],['co',['🏢 บริษัท','🏢 Companies'],['🏢 บริษัท','🏢 Companies']],['sal',['💰 เงินเดือน','💰 Salaries'],['💰 เงินเดือน','💰 Pay']]];
 function jobs(){if(!JTABS.some(v=>v[0]===S.jobTab))S.jobTab='full';
  return `<div class="segs jsegs" role="tablist">${JTABS.map(([k,n,sn])=>`<button role="tab" class="${S.jobTab===k?'on':''}" data-jtab="${k}" aria-selected="${S.jobTab===k}"><span class="ll">${x(n)}</span><span class="ls">${x(sn)}</span>${k==='map'&&!S.ob.mapSeen&&S.jobTab!=='map'?`<i class="cm-new">${t('ใหม่','New')}</i>`:''}</button>`).join('')}</div>`+(S.jobTab==='pt'?ptFeed():S.jobTab==='map'?careerMap():S.jobTab==='co'?explore():S.jobTab==='sal'?salaries():jobsFull())}
 /* jobs › salaries: the salary checker (moved from home) + a starting-salary table by role */
@@ -200,10 +200,10 @@ function jobsFull(){
  let list=JOBS.filter(j=>(F.type==='all'||j.type===F.type)&&(F.ind==='all'||getCo(j.co).ind===F.ind)&&(!F.min||(j.unit==='month'&&j.pay[0]>=F.min)));
  list=list.slice().sort((a,b)=>(b.spon-a.spon)||(a.days-b.days));
  return `<h1 class="pg-t">${t('งานและฝึกงาน','Jobs & internships')}</h1><p class="muted pg-sub">${t('ทุกประกาศมีคะแนนรีวิวจริงของบริษัทแนบไว้ให้ดูก่อนสมัคร','Every listing shows the company’s real review score before you apply')}</p>
- <div class="filters"><div class="segs" style="margin:0">${[['all',t('ทั้งหมด','All')],['intern',t('ฝึกงาน','Internships')],['full',t('งานประจำ','Full-time')]].map(([k,n])=>`<button class="${F.type===k?'on':''}" data-jt="${k}">${n}</button>`).join('')}</div>
+ <div class="filters"><div class="segs jf-type">${[['all',t('ทั้งหมด','All')],['intern',t('ฝึกงาน','Internships')],['full',t('งานประจำ','Full-time')]].map(([k,n])=>`<button class="${F.type===k?'on':''}" data-jt="${k}">${n}</button>`).join('')}</div>
   <select class="field" id="jInd" aria-label="${t('อุตสาหกรรม','Industry')}"><option value="all">${t('ทุกอุตสาหกรรม','All industries')}</option>${keys.map(k=>`<option value="${k}" ${F.ind===k?'selected':''}>${x(IND[k])}</option>`).join('')}</select>
   <select class="field" id="jMin" aria-label="${t('เงินเดือนขั้นต่ำ','Minimum salary')}">${[0,20000,25000,30000].map(v=>`<option value="${v}" ${F.min===v?'selected':''}>${v?t(`เงินเดือน ${fmt(v)}+`,`Salary ${fmt(v)}+`):t('ทุกช่วงเงินเดือน','Any salary')}</option>`).join('')}</select>
-  <span class="muted">${list.length} ${t('ตำแหน่ง','positions')}</span></div>
+  <p class="jf-n">${t(`${list.length} ตำแหน่งงาน`,`${list.length} positions`)}</p></div>
  <div class="grid g2" style="margin-top:16px">${list.length?list.map(jobCard).join(''):`<div class="card empty">${t('ไม่พบงานที่ตรงเงื่อนไข ลองปรับตัวกรองดูนะ','No jobs match. Try loosening the filters.')}</div>`}</div>
  <div class="card sec" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:space-between"><div><h2 style="font-size:19px">${t('บริษัทของคุณกำลังหาคนอยู่?','Is your company hiring?')}</h2><p class="muted">${t('ลงประกาศข้าง ๆ รีวิวจริง เข้าถึงนักศึกษาและคนจบใหม่ที่ตั้งใจหางาน','Post next to real reviews and reach students and new grads who are actively looking')}</p></div><button class="btn y" data-go="employer">${t('ดูแพ็กเกจสำหรับบริษัท','See employer plans')}</button></div>`;
 }

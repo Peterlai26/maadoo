@@ -877,3 +877,10 @@ header.top::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right
 .bnav .mid{background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:8px 14px;transform:translateY(-14px);box-shadow:0 6px 16px rgba(255,197,61,.5);font-weight:600}
 .bnav .mid.on{color:var(--accent-ink);box-shadow:0 0 0 3px var(--surface),0 6px 16px rgba(255,197,61,.55)}
 .bnav .mid svg,.bnav .mid.on svg{stroke:var(--accent-ink)}
+/* jobs › jobs & internships: type toggle on its own row, the two dropdowns side by side, then the count */
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:560px;align-items:center}
+.filters .jf-type{grid-column:1/-1;display:flex;margin:0;justify-self:start}
+.filters .jf-type button{flex:1;justify-content:center;min-width:84px}
+.filters select{width:100%;min-width:0}
+.jf-n{grid-column:1/-1;margin:6px 0 0;font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy)}
+@media(max-width:560px){.filters .jf-type{justify-self:stretch}}
