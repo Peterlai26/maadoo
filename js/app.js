@@ -8,9 +8,9 @@ function addPoints(n){if(S.user)S.user.points+=n}
 function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML='';return}
  const head=(h,sub)=>`<div class="modal-h"><img src="${PUP()}" alt=""><div><h2>${h}</h2>${sub?`<p class="muted">${sub}</p>`:''}</div><button class="x" data-close aria-label="${t('ปิด','Close')}">×</button></div>`;
  let body='';
- if(m.type==='login')body=SB?sbLoginModal(m,head):`${head(t('เข้าสู่ระบบมาดูจ็อบ','Log in to Maadoo Job'),t('ใช้อีเมลมหาลัยหรือบริษัทเพื่อรับป้าย ✓','Use a university or work email to get the ✓ badge'))}
-  <form id="loginForm" class="grid"><input class="field" id="lname" placeholder="${t('ชื่อที่ใช้แสดง เช่น น้องมาดู','Display name')}" required><input class="field" id="lemail" type="email" placeholder="you@kmutt.ac.th" required>
-  <button class="btn y">${t('เข้าสู่ระบบ / สมัคร','Log in / Sign up')}</button></form><p class="demo-note">${t('เดโม: ไม่มีการส่งอีเมลจริง อีเมลที่ไม่ใช่ gmail/hotmail/yahoo/outlook จะได้ป้ายยืนยัน','Demo: no email is sent. Emails not from gmail/hotmail/yahoo/outlook get verified.')}</p>`;
+ if(m.type==='login')body=SB?sbLoginModal(m,head):`${head(t('เข้าสู่ระบบมาดูจ็อบ','Log in to Maadoo Job'),t('ใช้อีเมลอะไรก็ได้ เช่น Gmail · บริษัทและรุ่นพี่ที่ให้คำปรึกษาใช้อีเมลที่ทำงาน','Any email works, e.g. Gmail · companies and mentors use their work email'))}
+  <form id="loginForm" class="grid"><input class="field" id="lname" placeholder="${t('ชื่อที่ใช้แสดง เช่น น้องมาดู','Display name')}" required><input class="field" id="lemail" type="email" placeholder="${t('อีเมล เช่น name@gmail.com','Email, e.g. name@gmail.com')}" required>
+  <button class="btn y">${t('เข้าสู่ระบบ / สมัคร','Log in / Sign up')}</button></form><p class="demo-note">${t('เดโม: ไม่มีการส่งอีเมลจริง · ใช้อีเมลมหาลัยหรือที่ทำงาน (ไม่บังคับ) จะได้ป้าย ✓','Demo: no email is sent · a university or work email (optional) adds a ✓ badge.')}</p>`;
  if(m.type==='link')body=linkModal(m,head);
  if(m.type==='otp')body=otpModal(m,head);
  if(m.type==='mrevs')body=mrevsModal(m,head);
