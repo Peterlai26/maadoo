@@ -5,7 +5,7 @@ function closeModal(){const m=S.modal;if(m&&m.type==='onboard'){obFinish(m);retu
 function needLogin(fn){if(S.user){fn();return}S.after=fn;openModal({type:'login'})}
 function pushNotif(ic,th,en,go){NOTIFS.unshift({ic,t:[th,en],w:['เมื่อสักครู่','Just now'],go,read:false});renderBell()}
 function addPoints(n){if(S.user)S.user.points+=n}
-function renderModal(){const m=S.modal;const el=$('#modal');document.documentElement.classList.toggle('modal-open',!!m);if(!m){el.innerHTML='';el._m=null;return}
+function renderModal(){const m=S.modal;const el=$('#modal');document.documentElement.classList.toggle('modal-open',!!m);if(S.tour)tourRender();if(!m){el.innerHTML='';el._m=null;return}
  const head=(h,sub)=>`<div class="modal-h"><img src="${PUP()}" alt=""><div><h2>${h}</h2>${sub?`<p class="muted">${sub}</p>`:''}</div><button class="x" data-close aria-label="${t('ปิด','Close')}">×</button></div>`;
  let body='';
  if(m.type==='login')body=SB?sbLoginModal(m,head):`${head(t('เข้าสู่ระบบมาดูจ็อบ','Log in to Maadoo Job'),'')}
@@ -37,6 +37,7 @@ function renderModal(){const m=S.modal;const el=$('#modal');document.documentEle
   body=`<div class="match"><button class="x" data-close aria-label="${t('ปิด','Close')}" style="justify-self:end">×</button><div class="match-t">${t('แมตช์แล้ว!','It’s a match!')}</div><div class="match-av"><span class="me-ava">${ini}</span><span class="me-ava" style="background:${mt.bg};font-size:38px">${mt.ava}</span></div><p>${t(`${x(mt.name)}พร้อมให้คำปรึกษาคุณแล้ว 🎉`,`${x(mt.name)} is ready to chat with you 🎉`)}</p><button class="btn y" data-book="${mt.id}">${t('จองเวลาคุยเลย','Book a session')}</button><button class="link" data-close>${t('ปัดต่อ','Keep swiping')}</button></div>`}
  if(m.type==='onboard')body=onboardModal(m);
  if(m.type==='write')body=writeModal(m,head);
+ if(m.type==='pwaios')body=pwaIosModal(m,head);
  if(m.type==='fac')body=facModal(m,head);
  if(m.type==='emp'){const e=EMP[m.tier],pay=m.tier==='Pro'?proPrice():0;body=`${head(t(`แพ็กเกจ ${m.tier}`,`${m.tier} plan`),m.tier==='Enterprise'?t('ทีมมาดูจ็อบจะติดต่อกลับภายใน 1 วันทำการ','The Maadoo Job team will get back to you within 1 business day'):m.tier==='Pro'?t(`${fmt(pay)} บาท/เดือน${pay<3900?' · 3 เดือนแรก':''}`,`${fmt(pay)} THB/month${pay<3900?' · first 3 months':''}`):t('ฟรีตลอด','Free forever'))}
   <form id="empForm" class="grid"><input class="field" id="ecn" maxlength="120" placeholder="${t('ชื่อบริษัท','Company name')}" required><input class="field" id="eem" type="email" placeholder="${t('อีเมลที่ทำงาน','Work email')}" required>${m.tier==='Enterprise'?`<input class="field" id="eph" placeholder="${t('เบอร์โทร (ไม่บังคับ)','Phone (optional)')}">`:''}
@@ -84,7 +85,7 @@ function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
 function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
 function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
 addEventListener('resize',()=>{if(S.indOpen&&isExp()&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
-function render(){if(!isExp())S.indOpen=false;if(S.view==='explore'){S.view='jobs';S.jobTab='co'}if(S.view==='write')S.view='reviews';applyPrefs();nav();$('#app').innerHTML={home,company,reviews,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='reviews')bindFeed();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour){const st=TOURS[S.tour.p][S.tour.i];if(!st||stView(S.tour.p,st)!==S.view)S.tour=null}tourRender();maybeTour();}
+function render(){if(!isExp())S.indOpen=false;if(S.view==='explore'){S.view='jobs';S.jobTab='co'}if(S.view==='write')S.view='reviews';applyPrefs();nav();$('#app').innerHTML={home,company,reviews,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='reviews')bindFeed();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour){const st=TOURS[S.tour.p][S.tour.i];if(!st||stView(S.tour.p,st)!==S.view)S.tour=null}tourRender();maybeTour();pwaBars();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
@@ -284,5 +285,6 @@ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if
 render();
 setInterval(()=>{if(qTick())rerender()},60000);
 setTimeout(loadPromoStats,SB?0:300);
+pwaInit();
 if(!welcomed())openOnboard();
 if(window.supabase)initSB();else{const sbjs=document.getElementById('sbjs');if(sbjs)sbjs.addEventListener('load',initSB)}

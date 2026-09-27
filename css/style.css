@@ -892,3 +892,34 @@ html.modal-open,html.modal-open body{overflow:hidden}
 .modal,.modal-bg{overscroll-behavior:contain}
 /* picked chips and cards only change colour; they never move or change size */
 .ob-goal:hover{transform:none}
+/* PWA: install card (Me) + strip (home), iPhone guide, "new version" / offline bars */
+.pwa-card{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px 12px;padding:14px 16px;max-width:520px;margin-inline:auto}
+@media(max-width:480px){.pwa-card{grid-template-columns:auto 1fr auto}.pwa-card [data-pwainstall]{grid-column:1/-1;grid-row:2;width:100%}}
+.pwa-card img{width:52px;height:52px;border-radius:14px;flex:none}.pwa-t{display:grid;gap:2px;flex:1;min-width:0}.pwa-t .muted{font-size:13px}.pwa-card .x{margin-left:0}
+.pwa-strip{display:flex;align-items:center;gap:6px;background:var(--surface);border:1.5px solid var(--line);border-radius:99px;padding:5px 6px 5px 5px}
+.pwa-strip .ps-ic{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--sky-2);font-size:18px}.pwa-strip .x{margin-left:0}
+.pwa-steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.pwa-steps li{display:flex;align-items:center;gap:10px;background:var(--surface-2);border-radius:16px;padding:10px 12px;font-size:14.5px}
+.pwa-n{width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:var(--blue-ink);font-weight:700;font-size:13px}
+.pwa-ic{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--surface);font-size:18px}
+.pwa-ic svg{width:22px;height:22px;fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.pwa-ic img{width:30px;height:30px;border-radius:8px}
+.pwa-demo{position:relative;display:grid;justify-items:center;padding-top:4px}
+.pwa-phone{width:150px;border:3px solid var(--ink-3);border-radius:22px;padding:8px 8px 0;background:var(--bg);overflow:hidden}
+.pwa-scr{height:92px;display:grid;justify-items:center;align-content:center;gap:4px}.pwa-scr img{width:44px;height:44px;border-radius:12px}.pwa-scr small{font-size:10px;color:var(--ink-2)}
+.pwa-bar{display:flex;justify-content:space-around;align-items:center;border-top:1.5px solid var(--line);margin:0 -8px;padding:6px 4px 8px;background:var(--surface)}
+.pwa-bar i{width:14px;height:4px;border-radius:9px;background:var(--line)}.pwa-bar b{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;box-shadow:0 0 0 3px var(--accent)}
+.pwa-bar svg{width:18px;height:18px;fill:none;stroke:var(--blue);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.pwa-arrow{font-size:22px;color:var(--orange-btn);animation:pwaUp 1.2s ease-in-out infinite}@keyframes pwaUp{50%{transform:translateY(-6px)}}
+#pwaBar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:70;display:grid;gap:8px;width:min(440px,calc(100vw - 24px));pointer-events:none}
+@media(min-width:1021px){#pwaBar{bottom:20px}}
+.pwa-bar-b{pointer-events:auto;display:flex;align-items:center;gap:10px;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:99px;padding:6px 8px 6px 12px;box-shadow:var(--shadow);font-size:14px;font-weight:500}
+.pwa-bar-b span{flex:1;min-width:0}.pwa-bar-b img{width:30px;height:30px;border-radius:50%;flex:none}.pwa-bar-b.off{border-color:var(--orange-btn)}.pwa-bar-b.upd{border-color:var(--blue)}
+@media(prefers-reduced-motion:reduce){.pwa-arrow{animation:none}}
+/* app-like touches: no double-tap zoom on controls (pinch zoom still works), room for the notch / home bar */
+button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipulation}
+header.top{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+body{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bnav{padding-left:max(4px,env(safe-area-inset-left,0px));padding-right:max(4px,env(safe-area-inset-right,0px))}
+.toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+/* opened as an installed app: no browser pull-to-refresh / bounce */
+@media (display-mode: standalone){html,body{overscroll-behavior-y:none}}
