@@ -1672,6 +1672,70 @@ alter table public.profiles add constraint profiles_onboard_inds_check
   check (cardinality(onboard_inds) <= 12 and array_to_string(onboard_inds, ',') ~ '^[a-z,]*$');
 grant update (onboard_goal, onboard_inds) on public.profiles to authenticated;
 
+-- =====================================================================
+-- 11) แผนที่อาชีพ: คณะของผู้ใช้ + คณะที่จบของรุ่นพี่ / career map: the user's faculty + the mentor's faculty
+--     รหัสคณะเป็นคีย์สั้นตัวพิมพ์เล็กจาก FAC ใน index.html (เช่น sci, eng, bus) / faculty codes are the short FAC keys in index.html
+--     ไม่บังคับทั้งหมด เว็บทำงานได้แม้ยังไม่ได้รันส่วนนี้ / all optional; the site still works before this section is run
+-- =====================================================================
+alter table public.profiles add column if not exists onboard_fac text;
+alter table public.profiles add column if not exists onboard_major text;
+alter table public.profiles drop constraint if exists profiles_onboard_fac_check;
+alter table public.profiles add constraint profiles_onboard_fac_check
+  check ((onboard_fac is null or onboard_fac ~ '^[a-z]{2,12}$')
+         and (onboard_major is null or onboard_major ~ '^[a-z]{2,16}$'));
+grant update (onboard_fac, onboard_major) on public.profiles to authenticated;
+
+alter table public.mentor_applications add column if not exists faculty text;
+alter table public.mentor_applications drop constraint if exists mentor_applications_faculty_check;
+alter table public.mentor_applications add constraint mentor_applications_faculty_check
+  check (faculty is null or faculty ~ '^[a-z]{2,12}$');
+grant insert (faculty) on public.mentor_applications to authenticated;
+
+alter table public.mentors add column if not exists faculty text;
+alter table public.mentors drop constraint if exists mentors_faculty_check;
+alter table public.mentors add constraint mentors_faculty_check
+  check (faculty is null or faculty ~ '^[a-z]{2,12}$');
+-- รุ่นพี่แก้คณะที่จบของตัวเองได้ในโหมดรุ่นพี่ / mentors can set their own faculty in mentor mode
+grant update (faculty) on public.mentors to authenticated;
+
+-- อนุมัติแล้วคัดลอกคณะไปที่ mentors ด้วย (แทนที่ฟังก์ชันในส่วนที่ 8) / approval also copies the faculty (replaces the section 8 version)
+create or replace function public.review_mentor_application(app uuid, approve boolean, note text default null)
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  a public.mentor_applications;
+begin
+  if not public.is_admin() then
+    raise exception 'admins only' using errcode = 'insufficient_privilege';
+  end if;
+  select * into a from public.mentor_applications where id = app for update;
+  if not found then
+    raise exception 'application not found' using errcode = 'no_data_found';
+  end if;
+  update public.mentor_applications
+     set status = case when approve then 'approved' else 'rejected' end,
+         admin_note = left(note, 300), reviewed_at = now()
+   where id = app;
+  if approve then
+    insert into public.mentors (id, nickname, field, company, years, topics, price, bio, faculty, active, approved_at)
+    values (a.user_id, btrim(a.nickname), btrim(a.field), nullif(btrim(coalesce(a.company, '')), ''), a.years,
+            a.topics, a.price, a.bio, a.faculty, true, now())
+    on conflict (id) do update
+      set nickname = excluded.nickname, field = excluded.field, company = excluded.company,
+          years = excluded.years, topics = excluded.topics, price = excluded.price,
+          bio = excluded.bio, faculty = coalesce(excluded.faculty, public.mentors.faculty), active = true;
+  else
+    update public.mentors set active = false where id = a.user_id;
+  end if;
+  return case when approve then 'approved' else 'rejected' end;
+end;
+$$;
+revoke execute on function public.review_mentor_application(uuid, boolean, text) from public, anon;
+grant execute on function public.review_mentor_application(uuid, boolean, text) to authenticated;
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';
