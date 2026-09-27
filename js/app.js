@@ -243,7 +243,8 @@ document.addEventListener('submit',e=>{e.preventDefault();
   q.msgs.push({f:'me',t:v,at:Date.now()});q.status='waiting';q.lastAt=Date.now();q.skipped=false;qSave(q);scheduleReply(q);renderModal();return}
  if(e.target.id==='otpEmailForm'){if(SB)otpSend();return}
  if(e.target.id==='otpCodeForm'){if(SB)otpVerify();return}
- if(e.target.id==='empForm'){const m=S.modal,co=($('#ecn').value||'').trim().slice(0,120);if(!m||!co)return;const tier=m.tier;
+ if(e.target.id==='empForm'){const m=S.modal,co=($('#ecn').value||'').trim().slice(0,120),em=($('#eem').value||'').trim();if(!m||!co)return;const tier=m.tier;
+  if(!EMAIL_RE.test(em)||isFreeMail(em)){toast(t('ใช้อีเมลที่ทำงานของบริษัท ไม่ใช่ Gmail/Hotmail','Use your company work email, not Gmail/Hotmail'));$('#eem').focus();return}
   if(tier==='Pro'){openPay({what:'emp',tier,company:co,amount:proPrice()});return}
   needMember(async()=>{try{await saveEmp(co,tier)}catch(err){toast(premErr(err));return}closeModal();render();
    toast(tier==='Starter'?t('เปิดใช้ Starter แล้ว! ยืนยันเจ้าของหน้าบริษัทได้เลย','Starter is on! You can claim your company page now'):t('ได้รับข้อมูลแล้ว ทีมจะติดต่อกลับเร็ว ๆ นี้','Got it. Our team will be in touch soon'))});return}

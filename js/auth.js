@@ -4,7 +4,7 @@
 const SB_URL='https://tzltoimzpzlpzjljmxla.supabase.co',SB_KEY='sb_publishable_jv0Orjkw0FwOQBnRc13Idw_8jgjcqoS';
 let SB=null;
 const MOOD_T=[['ที่นี่น่าอยู่','A great place to stay'],['ที่นี่พอไหว','It’s OK here'],['ที่นี่ต้องคิดดี ๆ','Think twice']];
-const isFreeMail=em=>/@(gmail|hotmail|yahoo|outlook|icloud)\./i.test(em);
+const isFreeMail=em=>/@(gmail|googlemail|hotmail|yahoo|ymail|outlook|live|msn|icloud|me|aol|proton|protonmail)\./i.test(em);
 const quarter=ts=>{const d=new Date(ts);return `Q${Math.floor(d.getMonth()/3)+1} ${d.getFullYear()}`};
 const revs=c=>(S.dbRev[c.id]||[]).concat(c.reviews);
 function rerender(){if(S.modal&&S.modal.type==='write')syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}render()}
