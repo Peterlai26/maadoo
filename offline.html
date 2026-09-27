@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Maadoo Job · ออฟไลน์</title>
+<meta name="theme-color" content="#2F6FD6">
+<style>
+:root{--bg:#F1F7FF;--surface:#FFFFFF;--ink:#1B2E57;--ink-2:#4A5F8A;--blue:#2F6FD6;--accent:#FFC53D;--accent-ink:#0D3C94;--line:#D5E3F6}
+@media (prefers-color-scheme:dark){:root{--bg:#0C1630;--surface:#132248;--ink:#E6EEFF;--ink-2:#A9BBE0;--blue:#5B93F5;--accent:#FFC94D;--accent-ink:#0D2A66;--line:#26396B}}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Anuphan",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{min-height:100%;display:grid;place-items:center;padding:24px max(16px,env(safe-area-inset-left)) calc(24px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-right));box-sizing:border-box}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:28px;padding:28px 22px;max-width:360px;width:100%;text-align:center;display:grid;gap:12px;justify-items:center}
+img{width:140px;height:140px;border-radius:50%;animation:bob 3s ease-in-out infinite}
+h1{font-size:22px;margin:4px 0 0;color:var(--ink)}p{margin:0;color:var(--ink-2);line-height:1.6}
+button{margin-top:8px;border:0;border-radius:99px;padding:12px 26px;font:inherit;font-weight:700;background:var(--accent);color:var(--accent-ink);cursor:pointer;touch-action:manipulation}
+@keyframes bob{50%{transform:translateY(-8px)}}@media (prefers-reduced-motion:reduce){img{animation:none}}
+</style>
+</head>
+<body>
+<main><div class="card">
+<img src="/maadoo-icon.webp" alt="น้องมาดู / Maadoo the pup">
+<h1>ตอนนี้ไม่มีเน็ต ลองใหม่อีกครั้งนะ</h1>
+<p>No internet right now. Please try again.</p>
+<p>น้องมาดูจะรออยู่ตรงนี้ 🐾</p>
+<button onclick="location.reload()">ลองใหม่ · Try again</button>
+</div></main>
+</body>
+</html>

@@ -159,7 +159,7 @@ function tourStep(){const T=S.tour;if(!T)return;const steps=TOURS[T.p];while(T.i
  if(T.i>=steps.length||S.view!==stView(T.p,steps[T.i])){tourEnd(false);return}const e=steps[T.i][0](),r=e.getBoundingClientRect();
  if(r.top<70||r.bottom>innerHeight-90){e.scrollIntoView({block:'center',behavior:'auto'})}tourRender()}
 function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour){o[S.tour.p]=1;if(S.tour.p==='home'||S.tour.p==='map'){o.map=1;o.jobsmap=1}if(S.tour.p==='home')o.nav2=1}setSeen(o);S.tour=null;tourRender()}
-function tourRender(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="tour"></div>');el=$('#tour')}const T=S.tour;if(!T){el.innerHTML='';return}
+function tourRender(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="tour"></div>');el=$('#tour')}const T=S.tour;if(!T||S.modal){el.innerHTML='';return}
  const steps=TOURS[T.p],st=steps[T.i],tg=st&&stView(T.p,st)===S.view&&st[0]();if(!tg){el.innerHTML='';return}const r=tg.getBoundingClientRect(),W=Math.min(300,innerWidth-24),pad=6;
  const below=r.bottom+170<innerHeight||r.top<200,top=below?r.bottom+14:Math.max(8,r.top-14),left=Math.max(12,Math.min(innerWidth-W-12,r.left+r.width/2-W/2)),ax=Math.max(18,Math.min(W-18,r.left+r.width/2-left));
  const last=T.i>=steps.length-1;
