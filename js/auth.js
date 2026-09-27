@@ -4,10 +4,10 @@
 const SB_URL='https://tzltoimzpzlpzjljmxla.supabase.co',SB_KEY='sb_publishable_jv0Orjkw0FwOQBnRc13Idw_8jgjcqoS';
 let SB=null;
 const MOOD_T=[['ที่นี่น่าอยู่','A great place to stay'],['ที่นี่พอไหว','It’s OK here'],['ที่นี่ต้องคิดดี ๆ','Think twice']];
-const isFreeMail=em=>/@(gmail|hotmail|yahoo|outlook|icloud)\./i.test(em);
+const isFreeMail=em=>/@(gmail|googlemail|hotmail|yahoo|ymail|outlook|live|msn|icloud|me|aol|proton|protonmail)\./i.test(em);
 const quarter=ts=>{const d=new Date(ts);return `Q${Math.floor(d.getMonth()/3)+1} ${d.getFullYear()}`};
 const revs=c=>(S.dbRev[c.id]||[]).concat(c.reviews);
-function rerender(){if(S.view==='write'&&!S.done)syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}render()}
+function rerender(){if(S.modal&&S.modal.type==='write')syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}render()}
 function initSB(){
  if(SB||!window.supabase||!window.supabase.createClient)return;
  try{SB=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){SB=null;return}
@@ -64,7 +64,7 @@ async function authRun(fn,ctx){
 const pwField=(id,ac,val)=>`<div class="pw"><input class="field" id="${id}" type="password" autocomplete="${ac}" placeholder="${t('รหัสผ่าน','Password')}" aria-describedby="${id}-hint" value="${esc(val||'')}"><button type="button" class="pw-t" data-pwtoggle="${id}" aria-controls="${id}" aria-pressed="false">${t('แสดง','Show')}</button></div><small class="muted" id="${id}-hint" style="margin-top:-6px">${t('อย่างน้อย 6 ตัว','At least 6 characters')}</small>`;
 const authFormErr=m=>m.err?`<p class="form-err" role="alert">${esc(x(m.err))}</p>`:'';
 function sbLoginModal(m,head){
- const H=head(t('เข้าสู่ระบบมาดูจ็อบ','Log in to Maadoo Job'),t('ใช้อีเมลมหาลัยหรือบริษัทเพื่อรับป้าย ✓','Use a university or work email to get the ✓ badge'));
+ const H=head(t('เข้าสู่ระบบมาดูจ็อบ','Log in to Maadoo Job'),'');
  if(m.sent)return H+`<p>${m.sentKind==='confirm'?t(`ส่งอีเมลยืนยันไปที่ <b>${esc(m.sent)}</b> แล้ว กดยืนยันในอีเมล แล้วกลับมาเข้าสู่ระบบ`,`We sent a confirmation email to <b>${esc(m.sent)}</b>. Confirm it, then come back and log in.`):t(`ส่งลิงก์เข้าสู่ระบบไปที่ <b>${esc(m.sent)}</b> แล้ว กดลิงก์ในอีเมลเพื่อเข้าสู่ระบบ ไม่ต้องใช้รหัสผ่าน`,`We sent a login link to <b>${esc(m.sent)}</b>. Tap the link in the email to log in. No password needed.`)}</p>
   <p class="muted">${t('ไม่เจออีเมล? ลองดูในโฟลเดอร์สแปมหรือโปรโมชัน','Can’t find it? Check your spam or promotions folder.')}</p>
   <div class="row"><button class="btn ghost" data-resend>${t('ใช้อีเมลอื่น','Use another email')}</button><button class="btn y" data-close>${t('ตกลง','OK')}</button></div>`;
@@ -72,21 +72,21 @@ function sbLoginModal(m,head){
  return H+`<div class="segs" role="tablist" style="margin-top:0;justify-self:start">${[['in',t('เข้าสู่ระบบ','Log in')],['up',t('สมัครใหม่','Sign up')]].map(([k,n])=>`<button type="button" role="tab" aria-selected="${(up?'up':'in')===k}" class="${(up?'up':'in')===k?'on':''}" data-lmode="${k}" ${dis}>${n}</button>`).join('')}</div>
   <form id="loginForm" class="grid" novalidate>
    ${up?`<input class="field" id="lname" autocomplete="nickname" maxlength="40" placeholder="${t('ชื่อที่ใช้แสดง','Display name')}" value="${esc(m.name||'')}">`:''}
-   <input class="field" id="lemail" type="email" autocomplete="email" inputmode="email" placeholder="you@kmutt.ac.th" value="${esc(m.email||'')}">
+   <input class="field" id="lemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล','Email')}" value="${esc(m.email||'')}">
    ${pwField('lpw',up?'new-password':'current-password',m.pw)}
    ${authFormErr(m)}
    <button class="btn y" ${dis}>${m.busy?t('กำลังดำเนินการ…','Working…'):up?t('สมัครสมาชิก','Create account'):t('เข้าสู่ระบบ','Log in')}</button></form>
   <div class="or">${t('หรือ','or')}</div>
   <div class="auth-alt"><button type="button" class="btn ghost" data-magic ${dis}>✉️ ${t('รับโค้ดทางอีเมล (ไม่ต้องใช้รหัสผ่าน)','Get a code by email (no password)')}</button>
    <button type="button" class="btn ghost" data-anon ${dis}>👀 ${t('ลองใช้แบบไม่สมัคร','Try it without signing up')}</button></div>
-  <p class="demo-note">${t('แบบไม่สมัคร: ดูเว็บ ปัดรุ่นพี่ และสมัครงานได้ แต่ต้องผูกอีเมลก่อนเขียนรีวิว · อีเมลที่ไม่ใช่ gmail/hotmail/yahoo/outlook จะได้ป้ายยืนยัน','As a guest you can browse, swipe mentors and apply to jobs; add an email before writing reviews · Emails not from gmail/hotmail/yahoo/outlook get verified.')}</p>`;
+  <p class="demo-note">${t('แบบไม่สมัคร: ดูเว็บ ปัดรุ่นพี่ และสมัครงานได้ แต่ต้องผูกอีเมลก่อนเขียนรีวิว','As a guest you can browse, swipe mentors and apply to jobs; add an email before writing reviews.')}</p>`;
 }
 function linkModal(m,head){
  const H=head(t('เก็บบัญชีไว้ด้วยอีเมล','Keep your account with email'),m.why==='review'?t('บัญชีชั่วคราวเขียนรีวิวไม่ได้ ผูกอีเมลก่อน แล้วรีวิวของคุณจะถูกส่งต่อทันที','Guest accounts can’t post reviews. Add an email and your review is sent right after.'):t('ตั้งอีเมลและรหัสผ่าน แล้วใช้บัญชีนี้ต่อได้ทุกเครื่อง','Add an email and password to keep this account on any device.'));
  if(m.sent)return H+`<p>${t(`ส่งอีเมลยืนยันไปที่ <b>${esc(m.sent)}</b> แล้ว กดยืนยันในอีเมล แล้วกลับมาตั้งรหัสผ่านอีกครั้ง`,`We sent a confirmation email to <b>${esc(m.sent)}</b>. Confirm it, then come back to set your password.`)}</p><button class="btn y" data-close>${t('ตกลง','OK')}</button>`;
  const dis=m.busy?'disabled':'';
  return H+`<form id="linkForm" class="grid" novalidate>
-   <input class="field" id="kemail" type="email" autocomplete="email" inputmode="email" placeholder="you@kmutt.ac.th" value="${esc(m.email||'')}">
+   <input class="field" id="kemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล','Email')}" value="${esc(m.email||'')}">
    ${pwField('kpw','new-password',m.pw)}
    ${authFormErr(m)}
    <button class="btn y" ${dis}>${m.busy?t('กำลังดำเนินการ…','Working…'):t('เก็บบัญชีไว้','Keep my account')}</button></form>`;
@@ -103,7 +103,7 @@ function otpModal(m,head){
  const H=head(t('รับโค้ดทางอีเมล','Log in with an email code'),t('ไม่ต้องจำรหัสผ่าน ใส่โค้ดตัวเลขจากอีเมลก็เข้าได้เลย','No password to remember. Just enter the number code we email you.'));
  const dis=m.busy?'disabled':'';
  if(m.step!=='code')return H+`<form id="otpEmailForm" class="grid" novalidate>
-   <label class="grid" style="gap:6px"><b>${t('อีเมลของคุณ','Your email')}</b><input class="field" id="oemail" type="email" autocomplete="email" inputmode="email" placeholder="you@kmutt.ac.th" value="${esc(m.email||'')}"></label>
+   <label class="grid" style="gap:6px"><b>${t('อีเมลของคุณ','Your email')}</b><input class="field" id="oemail" type="email" autocomplete="email" inputmode="email" placeholder="${t('อีเมล','Email')}" value="${esc(m.email||'')}"></label>
    ${authFormErr(m)}
    <button class="btn y" ${dis}>${m.busy?t('กำลังส่ง…','Sending…'):t('ส่งโค้ด','Send code')}</button></form>
   <button type="button" class="link" data-otpback style="justify-self:center">← ${t('กลับไปใช้รหัสผ่าน','Back to password login')}</button>`;
@@ -160,8 +160,8 @@ async function linkAccount(){
 function reviewOrLink(f){if(S.user&&S.user.anon){S.after=()=>sendReview(f);openModal({type:'link',why:'review'});return}sendReview(f)}
 async function loadMine(){
  const uid=S.user&&S.user.id;if(!uid)return;
- try{const {data,error}=await SB.from('reviews').select('id,user_id,company_id,rating,salary,status,created_at').eq('user_id',uid).order('created_at',{ascending:false});if(error)throw error;
-  S.myReviews=data.filter(r=>r.user_id===uid&&getCo(r.company_id)).map(r=>({id:r.id,uid:r.user_id,co:r.company_id,r:r.rating,status:r.status,at:Date.parse(r.created_at)||0,sal:r.salary!=null}))}catch(e){}
+ try{const {data,error}=await SB.from('reviews').select('id,user_id,company_id,rating,salary,status,created_at,role,type,mood,title,pros,cons').eq('user_id',uid).order('created_at',{ascending:false});if(error)throw error;
+  S.myReviews=data.filter(r=>r.user_id===uid&&getCo(r.company_id)).map(r=>({id:r.id,uid:r.user_id,co:r.company_id,r:r.rating,status:r.status,at:Date.parse(r.created_at)||0,sal:r.salary!=null,mood:r.mood,type:r.type,role:r.role,title:r.title,pro:r.pros,con:r.cons}))}catch(e){}
 }
 async function loadApproved(){
  if(!SB||S.dbState==='loading')return;S.dbState='loading';S.dbAt=Date.now();
@@ -171,7 +171,7 @@ async function loadApproved(){
    (m[co]=m[co]||[]).push({id:r.id,real:true,role:same(r.role)||['ไม่ระบุตำแหน่ง','Role not given'],type:r.type==='intern'?'intern':'emp',mood,r:Math.max(1,Math.min(5,r.rating|0)),t:same(r.title)||MOOD_T[mood],p:same(r.pros)||['—','—'],c:same(r.cons)||['—','—'],d:quarter(r.created_at),v:false,h:0})});
   S.dbRev=m;S.dbState='ok';
  }catch(e){S.dbState='error';console.warn('[Maadoo] could not load approved reviews from Supabase (approved_reviews view):',e&&(e.message||e),e)}
- if(S.view==='company')rerender();
+ if(S.view==='company'||S.view==='reviews')rerender();
 }
 async function sendReview(f){
  if(S.sending)return;S.sending=true;
@@ -180,7 +180,7 @@ async function sendReview(f){
  let ok=false,id=null;try{const {data,error}=await SB.from('reviews').insert(row).select('id');ok=!error;id=data&&data[0]&&data[0].id||null}catch(e){}
  S.sending=false;
  if(!ok){toast(t('ส่งรีวิวไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t submit your review. Please try again.'));return}
- S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({id,uid:S.user&&S.user.id,co:f.co,r:f.r,at:Date.now(),sal:!!row.salary,status:'pending'});claimReferral();addPoints(50);S.form=blankForm();S.view='write';render();window.scrollTo({top:0});
+ S.unlocked=true;S.myReviews.unshift({id,uid:S.user&&S.user.id,co:f.co,r:f.r,at:Date.now(),sal:!!row.salary,status:'pending',mood:f.mood,type:f.type,role:row.role,title:row.title,pro:row.pros,con:row.cons});claimReferral();addPoints(50);reviewSent();
 }
 
 /* delete your own review · only rows whose user_id is the logged-in user (also enforced by RLS in supabase/setup.sql) */

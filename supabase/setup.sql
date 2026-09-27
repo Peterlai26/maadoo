@@ -785,8 +785,7 @@ create table if not exists public.mentor_applications (
                check (cardinality(topics) between 1 and 5
                       and topics <@ array['intern','resume','salary','switch','rights']::text[]),
   contact      text not null check (char_length(contact) <= 200
-                      and (contact ~* '^(https?://)?([a-z]{2,3}\.)?linkedin\.com/\S+$'
-                           or contact ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$')),
+                      and contact ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'),
   price        smallint not null check (price between 99 and 249),
   bio          text check (char_length(bio) <= 200),
   rules_ok     boolean not null check (rules_ok),
@@ -1769,6 +1768,13 @@ end;
 $$;
 revoke execute on function public.review_mentor_application(uuid, boolean, text) from public, anon;
 grant execute on function public.review_mentor_application(uuid, boolean, text) to authenticated;
+
+-- ---------- ใบสมัครรุ่นพี่: ช่องติดต่อเป็นอีเมลอย่างเดียว (ไม่รับลิงก์ LinkedIn แล้ว) ----------
+-- Mentor applications: the contact is an email only (no LinkedIn links any more).
+-- NOT VALID = older applications that hold a link stay as they are; new ones must be an email.
+alter table public.mentor_applications drop constraint if exists mentor_applications_contact_check;
+alter table public.mentor_applications add constraint mentor_applications_contact_check
+  check (char_length(contact) <= 200 and contact ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$') not valid;
 
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
