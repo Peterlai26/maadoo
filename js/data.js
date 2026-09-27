@@ -2,9 +2,8 @@
 /* ---------- data (fictional) ---------- */
 const NAV=[
  {id:'home',t:['หน้าแรก','Home'],i:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>'},
- {id:'explore',t:['บริษัท','Companies'],i:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>'},
  {id:'jobs',t:['งาน','Jobs'],i:'<rect x="3" y="7" width="18" height="13" rx="3"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>'},
- {id:'write',t:['เขียนรีวิว','Write'],i:'<path d="M12 5v14M5 12h14"/>'},
+ {id:'reviews',t:['รีวิว','Reviews'],i:'<path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>'},
  {id:'ask',t:['ปรึกษา','Ask'],i:'<path d="M4 5h16v11H9l-5 4z"/>'},
  {id:'me',t:['ฉัน','Me'],i:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'},
 ];

@@ -4,10 +4,10 @@ const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},se
 const S={lang:store.get('maadoo-lang')||'th',skin:store.get('maadoo-skin')||(store.get('maadoo-theme')==='dark'||(!store.get('maadoo-theme')&&matchMedia('(prefers-color-scheme: dark)').matches)?'night':'default'),themeOpen:false,coach:false,view:'home',co:null,tab:'overview',q:'',unlocked:false,follow:{},helped:{},poll:null,
  form:null,done:null,quiz:{i:0,a:[]},sal:{role:0,v:'22000'},askText:'',askTag:0,filter:-1,
  user:null,after:null,modal:null,mdb:{},notifOpen:false,saved:{},applied:{},booked:[],myReviews:[],dbRev:{},dbState:'idle',dbAt:0,sending:false,asked:0,
- jobF:{type:'all',ind:'all',min:0},askTab:'swipe',ptApps:{},ptDay:'all',jobTab:'full',ptForm:{title:'',kind:'onsite',day:'today',when:'',pay:'',unit:'h',need:'1',how:'cash',req:'',boost:'none',ok:false},ptRate:{s:0,tags:{}},coOnlyJobs:false,sw:{liked:[],skipped:[],topic:'all'},bd:{sort:'hot',tag:-1,kind:'ask',open:{p1:true},anon:true},pl:{}};
+ jobF:{type:'all',ind:'all',min:0},askTab:'swipe',ptApps:{},ptDay:'all',jobTab:'full',ptForm:{title:'',kind:'onsite',day:'today',when:'',pay:'',unit:'h',need:'1',how:'cash',req:'',boost:'none',ok:false},ptRate:{s:0,tags:{}},coOnlyJobs:false,homeTab:null,rf:{sort:'help',intern:false,mine:false,co:''},rfN:6,wStep:1,sw:{liked:[],skipped:[],topic:'all'},bd:{sort:'hot',tag:-1,kind:'ask',open:{p1:true},anon:true},pl:{}};
 const t=(th,en)=>S.lang==='en'?en:th;
 const x=v=>Array.isArray(v)?(S.lang==='en'?v[1]:v[0]):v;
-const blankForm=()=>({co:'',role:'',type:'emp',r:0,mood:null,ot:null,rec:null,title:'',pro:'',con:'',sal:''});
+const blankForm=()=>({co:'',role:'',type:'emp',r:0,mood:null,ot:null,rec:null,title:'',pro:'',con:'',sal:'',more:false});
 S.form=blankForm();
 
 /* ---------- helpers ---------- */
@@ -18,7 +18,8 @@ const stars=r=>'★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));
 const col=v=>v>=4?'var(--good)':v>=3.3?'var(--mid)':'var(--bad)';
 const getCo=id=>CO.find(c=>c.id===id);
 function toast(m){const e=$('#toast');e.textContent=m;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2200)}
-function go(v,extra={}){Object.assign(S,{view:v},extra);render();window.scrollTo({top:0})}
+/* old routes: "write" opens the review sheet, "explore" is the Companies tab of Jobs */
+function go(v,extra={}){if(v==='write'){openWrite();return}if(v==='explore'){v='jobs';extra=Object.assign({jobTab:'co'},extra)}Object.assign(S,{view:v},extra);render();window.scrollTo({top:0})}
 /* themes: see js/themes.js (THEMES, TH) */
 const isDark=()=>!!TH(S.skin).dark;
 const PUP=(k=S.skin)=>k==='default'?'maadoo-icon.webp':`maadoo-icon-${k}.webp`;
@@ -42,25 +43,26 @@ function applyPrefs(){
  $('#demoTag').textContent=t('เดโม · ข้อมูลตัวอย่าง','Demo · sample data');
 }
 function nav(){
- const act=S.view==='company'?'explore':['chat','book'].includes(S.view)?'ask':S.view==='live'?'me':S.view;
+ const act=S.view==='company'?'jobs':['chat','book'].includes(S.view)?'ask':['live','quiz'].includes(S.view)?'me':S.view;
  const cu=S.user&&S.rooms?chatUnread():0,dot=id=>id==='ask'&&cu?`<i class="ndot" aria-label="${t('ข้อความใหม่','New messages')}"></i>`:'';
  $('#topnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}">${x(n.t)}${dot(n.id)}</button>`).join('');
- $('#bnav').innerHTML=NAV.filter(n=>n.id!=='explore').map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''} ${n.id==='write'?'write':''}"><svg viewBox="0 0 24 24">${n.i}</svg>${x(n.t)}${dot(n.id)}</button>`).join('');
+ $('#bnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}"><svg viewBox="0 0 24 24">${n.i}</svg>${x(n.t)}${dot(n.id)}</button>`).join('');
 }
 function moodBar(m){return `<div class="moodbar" aria-hidden="true"><i style="flex:${m[0]};background:var(--good)"></i><i style="flex:${m[1]};background:var(--mid)"></i><i style="flex:${m[2]};background:var(--bad)"></i></div>`}
 const trendTxt=n=>t(`+${n} รีวิวเดือนนี้`,`+${n} reviews this month`);
-function coCard(c){return `<button class="co" data-co="${c.id}">
- <div class="co-top"><span class="mark" style="background:${c.hue}">${x(c.mk)}</span><div><div class="co-name">${x(c.name)}</div><div class="muted">${x(IND[c.ind])} · ${x(c.loc)}</div></div>
- <div class="score"><b style="color:${col(c.overall)}">${c.overall.toFixed(1)}</b><span class="stars">${stars(c.overall)}</span></div></div>
- ${moodBar(c.mood)}
- <div class="moodlegend"><span>😊 ${c.mood[0]}%</span><span>😐 ${c.mood[1]}%</span><span>😵 ${c.mood[2]}%</span><span style="margin-left:auto" class="chip">${trendTxt(c.trend)}</span></div></button>`}
-function review(r,co,i){const m=MOODS[r.mood];const k=r.real?'db-'+r.id:(co?co.id:(S.co||''))+i;
- return `<article class="card rv"><div class="rv-h"><span class="chip ${m[2]}">${m[0]} ${x(m[1])}</span><span class="stars" style="font-size:14px">${stars(r.r)}</span>
- ${r.real?`<span class="chip ad">🙋 ${t('รีวิวจากผู้ใช้จริง','Real user review')}</span>`:''}${r.real&&canDelete(r.id)?`<span class="chip mid">${t('รีวิวของคุณ','Your review')}</span>`:''}${r.v?`<span class="chip ver">✓ ${t('พนักงานจริง','Verified employee')}</span>`:''}<span class="chip">${x(TYPE[r.type])}</span><span class="muted" style="margin-left:auto">${r.d}</span></div>
- <h3>“${esc(x(r.t))}”</h3><div class="muted">${esc(x(r.role))}${co?` · <button class="link" data-co="${co.id}">${x(co.name)}</button>`:''}</div>
+/* compact company card: letter logo, name, category, ★ score and one tag (mood split + trend live on the company page) */
+function coTag(c){const js=JOBS.filter(j=>j.co===c.id),ni=js.filter(j=>j.type==='intern').length;
+ return ni?`<span class="chip">${t(`ฝึกงาน ${ni}`,`${ni} internship${ni>1?'s':''}`)}</span>`:js.length?`<span class="chip">${t(`งาน ${js.length}`,`${js.length} job${js.length>1?'s':''}`)}</span>`:PTRATE[c.id]?`<span class="chip">⚡ ${t('พาร์ทไทม์','Part-time')}</span>`:''}
+function coCard(c){return `<button class="co" data-co="${c.id}"><span class="mark" style="background:${c.hue}">${x(c.mk)}</span><span class="co-t"><span class="co-name">${x(c.name)}</span><span class="muted">${x(IND[c.ind])}</span></span><span class="co-r"><b class="co-sc"><span aria-hidden="true">★</span> ${c.overall.toFixed(1)}</b>${coTag(c)}</span></button>`}
+/* review card: at most 2 chips (mood + one status) */
+function review(r,co,i){const m=MOODS[r.mood];const k=r.pend?'p-'+r.id:r.real?'db-'+r.id:(co?co.id:(S.co||''))+i;const del=r.real&&r.id&&canDelete(r.id);
+ const tag=r.pend?`<span class="chip mid">⏳ ${t('รอตรวจ · เห็นเฉพาะคุณ','Pending · only you see it')}</span>`:r.v?`<span class="chip ver">✓ ${t('พนักงานจริง','Verified employee')}</span>`:r.real?`<span class="chip ad">🙋 ${del?t('รีวิวของคุณ','Your review'):t('ผู้ใช้จริง','Real user')}</span>`:'';
+ return `<article class="card rv ${r.pend?'pend':''}"><div class="rv-h"><span class="chip ${m[2]}">${m[0]} ${x(m[1])}</span>${tag}<span class="muted rv-d">${r.d}</span></div>
+ <div class="rv-s"><span class="stars" aria-label="${r.r} ${t('ดาว','stars')}">${stars(r.r)}</span><span class="muted">${esc(x(r.role))} · ${x(TYPE[r.type])}${co?` · <button class="link" data-co="${co.id}">${x(co.name)}</button>`:''}</span></div>
+ <h3>“${esc(x(r.t))}”</h3>
  <dl class="pc"><dt class="p">${t('ข้อดี','Pros')}</dt><dd>${esc(x(r.p))}</dd><dt class="c">${t('ข้อเสีย','Cons')}</dt><dd>${esc(x(r.c))}</dd></dl>
  ${r.reply?`<div class="reply"><b>🏢 ${t('บริษัทตอบกลับ','Company response')}</b><span>${esc(x(r.reply))}</span></div>`:''}
- <div class="rv-actions"><button class="help ${S.helped[k]?'on':''}" data-help="${k}">👍 ${t('มีประโยชน์','Helpful')} ${r.h+(S.helped[k]?1:0)}</button>${r.real&&canDelete(r.id)?`<button class="del-rv" data-delrev="${esc(r.id)}">🗑️ ${t('ลบ','Delete')}</button>`:''}<button class="report" data-report="1">⚑ ${t('รายงาน','Report')}</button></div></article>`}
+ <div class="rv-actions">${r.pend?`<span class="muted">${t('จะแสดงต่อสาธารณะหลังผ่านการตรวจ','Goes public once it passes moderation')}</span>`:`<button class="help ${S.helped[k]?'on':''}" data-help="${k}">👍 ${t('มีประโยชน์','Helpful')} ${r.h+(S.helped[k]?1:0)}</button>`}${del?`<button class="del-rv" data-delrev="${esc(r.id)}">🗑️ ${t('ลบ','Delete')}</button>`:''}${r.pend?'':`<button class="report" data-report="1">⚑ ${t('รายงาน','Report')}</button>`}</div></article>`}
 const brand=(label='Maadoo')=>`<div class="brand"><img src="${PUP()}" alt="">${label}</div><img class="pup" src="${PUP()}" alt="">`;
 const allRoles=()=>{const seen=new Map();CO.forEach(c=>c.salary.filter(s=>!s[5]).forEach(s=>{if(!seen.has(s[0][1]))seen.set(s[0][1],s[0])}));return [...seen.values()]};
 

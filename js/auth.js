@@ -7,7 +7,7 @@ const MOOD_T=[['ที่นี่น่าอยู่','A great place to stay'
 const isFreeMail=em=>/@(gmail|hotmail|yahoo|outlook|icloud)\./i.test(em);
 const quarter=ts=>{const d=new Date(ts);return `Q${Math.floor(d.getMonth()/3)+1} ${d.getFullYear()}`};
 const revs=c=>(S.dbRev[c.id]||[]).concat(c.reviews);
-function rerender(){if(S.view==='write'&&!S.done)syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}render()}
+function rerender(){if(S.modal&&S.modal.type==='write')syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}render()}
 function initSB(){
  if(SB||!window.supabase||!window.supabase.createClient)return;
  try{SB=window.supabase.createClient(SB_URL,SB_KEY)}catch(e){SB=null;return}
@@ -160,8 +160,8 @@ async function linkAccount(){
 function reviewOrLink(f){if(S.user&&S.user.anon){S.after=()=>sendReview(f);openModal({type:'link',why:'review'});return}sendReview(f)}
 async function loadMine(){
  const uid=S.user&&S.user.id;if(!uid)return;
- try{const {data,error}=await SB.from('reviews').select('id,user_id,company_id,rating,salary,status,created_at').eq('user_id',uid).order('created_at',{ascending:false});if(error)throw error;
-  S.myReviews=data.filter(r=>r.user_id===uid&&getCo(r.company_id)).map(r=>({id:r.id,uid:r.user_id,co:r.company_id,r:r.rating,status:r.status,at:Date.parse(r.created_at)||0,sal:r.salary!=null}))}catch(e){}
+ try{const {data,error}=await SB.from('reviews').select('id,user_id,company_id,rating,salary,status,created_at,role,type,mood,title,pros,cons').eq('user_id',uid).order('created_at',{ascending:false});if(error)throw error;
+  S.myReviews=data.filter(r=>r.user_id===uid&&getCo(r.company_id)).map(r=>({id:r.id,uid:r.user_id,co:r.company_id,r:r.rating,status:r.status,at:Date.parse(r.created_at)||0,sal:r.salary!=null,mood:r.mood,type:r.type,role:r.role,title:r.title,pro:r.pros,con:r.cons}))}catch(e){}
 }
 async function loadApproved(){
  if(!SB||S.dbState==='loading')return;S.dbState='loading';S.dbAt=Date.now();
@@ -171,7 +171,7 @@ async function loadApproved(){
    (m[co]=m[co]||[]).push({id:r.id,real:true,role:same(r.role)||['ไม่ระบุตำแหน่ง','Role not given'],type:r.type==='intern'?'intern':'emp',mood,r:Math.max(1,Math.min(5,r.rating|0)),t:same(r.title)||MOOD_T[mood],p:same(r.pros)||['—','—'],c:same(r.cons)||['—','—'],d:quarter(r.created_at),v:false,h:0})});
   S.dbRev=m;S.dbState='ok';
  }catch(e){S.dbState='error';console.warn('[Maadoo] could not load approved reviews from Supabase (approved_reviews view):',e&&(e.message||e),e)}
- if(S.view==='company')rerender();
+ if(S.view==='company'||S.view==='reviews')rerender();
 }
 async function sendReview(f){
  if(S.sending)return;S.sending=true;
@@ -180,7 +180,7 @@ async function sendReview(f){
  let ok=false,id=null;try{const {data,error}=await SB.from('reviews').insert(row).select('id');ok=!error;id=data&&data[0]&&data[0].id||null}catch(e){}
  S.sending=false;
  if(!ok){toast(t('ส่งรีวิวไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t submit your review. Please try again.'));return}
- S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({id,uid:S.user&&S.user.id,co:f.co,r:f.r,at:Date.now(),sal:!!row.salary,status:'pending'});claimReferral();addPoints(50);S.form=blankForm();S.view='write';render();window.scrollTo({top:0});
+ S.unlocked=true;S.myReviews.unshift({id,uid:S.user&&S.user.id,co:f.co,r:f.r,at:Date.now(),sal:!!row.salary,status:'pending',mood:f.mood,type:f.type,role:row.role,title:row.title,pro:row.pros,con:row.cons});claimReferral();addPoints(50);reviewSent();
 }
 
 /* delete your own review · only rows whose user_id is the logged-in user (also enforced by RLS in supabase/setup.sql) */

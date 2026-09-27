@@ -1,4 +1,4 @@
-/* Maadoo Job · js/onboard.js — career map view, welcome onboarding, start card, first steps, coach marks. Classic script sharing one global scope; see CLAUDE.md for load order. */
+/* Maadoo Job · js/onboard.js — career map view, welcome onboarding, home start card + first steps, coach marks. Classic script sharing one global scope; see CLAUDE.md for load order. */
 /* ---------- onboarding: welcome (goal + fields) · start card · first steps · coach marks ---------- */
 /* which role a mentor works in: samples carry `roles`; real mentors are matched from the free-text field */
 function roleOfField(s){s=String(s||'').toLowerCase();if(!s)return null;let best=null,bl=0;Object.keys(ROLES).forEach(r=>{ROLES[r].n.concat(ROLES[r].sal).forEach(n=>{const k=String(n).toLowerCase().replace(/\s*\(.*\)$/,'');if(k.length>bl&&s.includes(k)){best=r;bl=k.length}})});return best}
@@ -74,10 +74,12 @@ function facModal(m,head){return head(t('เรียนคณะ/สาขา�
  `<div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close>${t('ยกเลิก','Cancel')}</button><button class="btn y" data-fsave ${m.fac?'':'disabled'}>${t('บันทึก','Save')}</button></div>`}
 function facSet(fac,major){S.ob.fac=FAC[fac]?fac:null;S.ob.major=S.ob.fac&&major&&FAC[fac].mj[major]?major:null;obSave();obSync()}
 const OB_GOALS=[['intern','🎓',['หาที่ฝึกงาน','Find an internship']],['first','💼',['หางานแรกหลังจบ','Find my first job']],['pt','⚡',['หางานพาร์ทไทม์','Find part-time work']],['salary','💰',['อยากรู้เงินเดือนจริง','See real salaries']],['mentor','💬',['อยากปรึกษารุ่นพี่','Talk to a mentor']],['browse','👀',['แค่มาดูเฉยๆ','Just looking around']]];
+const OB_STEPS=[['co','🏢',['ดูหน้าบริษัท 1 ที่','Open a company page'],5,'data-go="explore"'],['follow','➕',['ติดตามบริษัท 1 ที่','Follow a company'],5,'data-go="explore"'],['swipe','🐾',['ลองปัดหารุ่นพี่','Try swiping mentors'],5,'data-go="ask"'],['review','✍️',['เขียนรีวิวแรก','Write your first review'],30,'data-wopen']];
 const OB_KEY='maadoo-onboard';
-function obLoad(){let v=null;try{v=JSON.parse(store.get(OB_KEY)||'null')}catch(e){}const o={goal:null,inds:[],fac:null,major:null,roles:[],at:0};if(!v||typeof v!=='object')return o;
+function obLoad(){let v=null;try{v=JSON.parse(store.get(OB_KEY)||'null')}catch(e){}const o={goal:null,inds:[],fac:null,major:null,roles:[],at:0,steps:{},paid:{},closed:false,done:false};if(!v||typeof v!=='object')return o;
  if(OB_GOALS.some(g=>g[0]===v.goal))o.goal=v.goal;if(Array.isArray(v.inds))o.inds=v.inds.filter(k=>IND[k]).slice(0,12);o.at=+v.at||0;
- if(facOk(v.fac)){o.fac=v.fac;if(facOk(v.fac,v.major))o.major=v.major||null}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);o.mapSeen=!!v.mapSeen;return o}
+ if(facOk(v.fac)){o.fac=v.fac;if(facOk(v.fac,v.major))o.major=v.major||null}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);o.mapSeen=!!v.mapSeen;o.startClosed=!!v.startClosed;
+ ['steps','paid'].forEach(k=>{if(v[k]&&typeof v[k]==='object')OB_STEPS.forEach(s=>{if(v[k][s[0]])o[k][s[0]]=+v[k][s[0]]||1})});o.closed=!!v.closed;o.done=!!v.done;return o}
 S.ob=obLoad();S.tour=null;
 const obSave=()=>store.set(OB_KEY,JSON.stringify(S.ob));
 const obNewDay=()=>!!(S.ob.at&&Date.now()-S.ob.at<DAY);
@@ -94,16 +96,43 @@ function onboardModal(m){const dots=`<div class="ob-dots" role="img" aria-label=
  return `<div class="ob">${top}<div class="ob-hero"><img class="ob-pup" src="${PUP()}" alt=""><div class="ob-bubble"><b>${t('สนใจสายไหน?','Which fields interest you?')}</b><small>${G?`${G[1]} ${x(G[2])} · `:''}${t('เลือกได้หลายอัน','Pick as many as you like')}</small></div></div>
   <div class="ob-inds" role="group" aria-label="${t('สายงาน','Fields')}">${Object.keys(IND).map(k=>`<button class="opt ${m.inds.includes(k)?'on':''}" data-obind="${k}" aria-pressed="${m.inds.includes(k)}">${m.inds.includes(k)?'✓ ':''}${x(IND[k])}</button>`).join('')}</div>
   <button class="btn orange big" data-obnext>${m.inds.length?t(`ถัดไป (${m.inds.length})`,`Next (${m.inds.length})`):t('ถัดไป','Next')}</button></div>`}
-function obFinish(m){const first=!S.ob.at;S.ob.goal=m.goal||S.ob.goal||null;S.ob.inds=(m.inds||[]).filter(k=>IND[k]);if(facOk(m.fac)){S.ob.fac=m.fac;S.ob.major=facOk(m.fac,m.major)?m.major||null:null}if(first)S.ob.at=Date.now();obSave();store.set('maadoo-welcome','1');
+function obFinish(m){const first=!S.ob.at;S.ob.goal=m.goal||S.ob.goal||null;S.ob.inds=(m.inds||[]).filter(k=>IND[k]);S.ob.startClosed=false;if(facOk(m.fac)){S.ob.fac=m.fac;S.ob.major=facOk(m.fac,m.major)?m.major||null:null}if(first)S.ob.at=Date.now();obSave();store.set('maadoo-welcome','1');
  S.modal=null;renderModal();obSync();S.q='';go('home');setTimeout(maybeTour,500)}
 async function obSync(){if(!sbLive())return;try{await ensureProfile();const {error}=await SB.from('profiles').update({onboard_goal:S.ob.goal,onboard_inds:S.ob.inds}).eq('id',S.user.id);if(error)console.warn('[Maadoo Job] onboarding answers not saved (run the SQL, section 10):',error.code,error.message);
  const r=await SB.from('profiles').update({onboard_fac:S.ob.fac,onboard_major:S.ob.major}).eq('id',S.user.id);if(r.error)console.warn('[Maadoo Job] faculty not saved (run the SQL, section 11):',r.error.code,r.error.message)}catch(e){}}
-async function obAfterLogin(){if(!sbLive())return;try{const {data,error}=await SB.from('profiles').select('onboard_goal,onboard_inds').eq('id',S.user.id).maybeSingle();if(error){console.warn('[Maadoo Job] onboarding answers not loaded (run the SQL, section 10):',error.code,error.message);return}
+async function obAfterLogin(){obPay();if(!sbLive())return;try{const {data,error}=await SB.from('profiles').select('onboard_goal,onboard_inds').eq('id',S.user.id).maybeSingle();if(error){console.warn('[Maadoo Job] onboarding answers not loaded (run the SQL, section 10):',error.code,error.message);return}
  if(data&&data.onboard_goal&&!S.ob.goal){S.ob.goal=OB_GOALS.some(g=>g[0]===data.onboard_goal)?data.onboard_goal:null;S.ob.inds=(data.onboard_inds||[]).filter(k=>IND[k]);obSave();if(S.view==='home')render()}
  else if(S.ob.goal&&!(data&&data.onboard_goal))obSync();
  const f=await SB.from('profiles').select('onboard_fac,onboard_major').eq('id',S.user.id).maybeSingle();if(f.error){console.warn('[Maadoo Job] faculty not loaded (run the SQL, section 11):',f.error.code,f.error.message);return}
  if(f.data&&facOk(f.data.onboard_fac)&&!S.ob.fac){S.ob.fac=f.data.onboard_fac;S.ob.major=facOk(f.data.onboard_fac,f.data.onboard_major)?f.data.onboard_major||null:null;obSave();if(S.view==='home'||S.view==='jobs')render()}
  else if(S.ob.fac&&!(f.data&&f.data.onboard_fac))obSync()}catch(e){}}
+/* ---------- home: start card (by goal) + compact first steps ---------- */
+function firstInd(pred){const hit=S.ob.inds.find(k=>JOBS.some(j=>pred(j)&&getCo(j.co).ind===k));return hit||'all'}
+const OB_CTA={intern:['ดูที่ฝึกงาน','See internships'],first:['ดูแผนที่อาชีพของคณะคุณ','See your career map'],pt:['ดูงานพาร์ทไทม์ด่วน','See quick part-time jobs'],salary:['เช็กเงินเดือนจริง','Check real salaries'],mentor:['ปัดหารุ่นพี่','Swipe for mentors'],browse:['สำรวจบริษัท','Explore companies']};
+function startCard(){if(!welcomed()||S.ob.startClosed)return '';const X=`<button class="x sm sc-x" data-scclose aria-label="${t('ปิดการ์ดนี้','Close this card')}">×</button>`;const g=OB_GOALS.find(v=>v[0]===S.ob.goal);
+ if(!g)return `<div class="card start-card"><img class="sc-pup" src="${PUP()}" alt=""><div class="sc-t"><small>${t('เริ่มตรงนี้','Start here')}</small><b>${t('บอกน้องมาดูหน่อย มาหาอะไร?','Tell Maadoo what you’re looking for')}</b></div><button class="btn orange sc-go" data-obopen>${t('เลือกเป้าหมาย','Pick a goal')}</button>${X}</div>`;
+ const inds=(g[0]==='first'&&FAC[S.ob.fac]?[facName()]:[]).concat(S.ob.inds.map(k=>x(IND[k])));
+ return `<div class="card start-card"><span class="sc-ic" aria-hidden="true">${g[1]}</span><div class="sc-t"><small>${t('เริ่มตรงนี้','Start here')} · <button class="link" data-obopen>${t('เปลี่ยน','Change')}</button></small><b>${x(g[2])}</b>${inds.length?`<span class="muted">${inds.slice(0,3).join(' · ')}${inds.length>3?` +${inds.length-3}`:''}</span>`:''}</div>
+ <button class="btn orange sc-go" data-obstart>${x(OB_CTA[g[0]])} →</button>${X}</div>`}
+function obStart(){const g=S.ob.goal;
+ if(g==='first'){openMap();return}
+ if(g==='intern'){const type='intern',ind=firstInd(j=>j.type===type);S.jobTab='full';S.jobF={type,ind,min:0};go('jobs');if(S.ob.inds.length&&ind==='all')toast(t('ยังไม่มีประกาศในสายที่เลือก แสดงทั้งหมดแทน','No posts in your fields yet, showing everything'));return}
+ if(g==='pt'){S.jobTab='pt';go('jobs');return}
+ if(g==='mentor'){S.askTab='swipe';go('ask');return}
+ if(g==='browse'){const keys=Object.keys(IND),k=S.ob.inds.find(v=>CO.some(c=>c.ind===v));S.filter=k?keys.indexOf(k):-1;go('explore');return}
+ if(g==='salary'){const roles=allRoles(),c=CO.find(v=>S.ob.inds.includes(v.ind));if(c){const r=c.salary.find(s=>!s[5]);const i=r?roles.findIndex(v=>v[1]===r[0][1]):-1;if(i>=0)S.sal.role=i}
+  S.jobTab='sal';go('jobs');setTimeout(()=>{const v=$('#salV');if(v)v.focus({preventScroll:true})},200)}}
+/* first steps: one line with a progress bar; tap to open the list */
+function firstSteps(){if(!welcomed()||S.ob.closed||S.ob.done)return '';const n=OB_STEPS.filter(s=>S.ob.steps[s[0]]).length,member=S.user&&!S.user.anon,op=!!S.fsOpen;
+ return `<div class="card fs-card ${op?'open':''}"><div class="fs-h"><button class="fs-tg" data-fstoggle aria-expanded="${op}" aria-controls="fsList"><b>🐾 ${t('ก้าวแรกของฉัน','My first steps')}</b><span class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${n}"><i style="width:${n/4*100}%"></i></span><span class="muted num">${n}/4</span><span class="fs-car" aria-hidden="true">▾</span></button><button class="x sm" data-obclose aria-label="${t('ปิดการ์ดนี้','Close this card')}">×</button></div>
+ ${op?`<div class="fs-list" id="fsList">${OB_STEPS.map(s=>{const done=!!S.ob.steps[s[0]];return `<button class="fs-item ${done?'done':''}" ${done?'aria-disabled="true"':s[4]}><span class="fs-chk" aria-hidden="true">${done?'✓':s[1]}</span><span class="fs-l">${x(s[2])}</span><span class="muted fs-p">+${s[3]} ${s[0]==='review'?t('เหรียญ','coins'):t('แต้ม','pts')}</span></button>`}).join('')}</div>
+ ${member?'':`<small class="muted">${t('เข้าสู่ระบบเพื่อรับแต้มและเหรียญ (ติ๊กได้เลยโดยไม่ต้องล็อกอิน)','Log in to collect the points and coins (the ticks work without logging in)')}</small>`}`:''}</div>`}
+function obMark(k){if(S.ob.steps[k]||!welcomed())return;S.ob.steps[k]=Date.now();obSave();const s=OB_STEPS.find(v=>v[0]===k),n=OB_STEPS.filter(v=>S.ob.steps[v[0]]).length;
+ toast(`✓ ${t('ก้าวแรก','First steps')} ${n}/4 · ${x(s[2])}`);obPay();if(n===4&&!S.ob.done){S.ob.done=true;obSave();setTimeout(()=>toast(t('ครบ 4 ก้าวแรกแล้ว! 🎉','All 4 first steps done! 🎉')),2400)}}
+async function obPay(){if(!S.user||S.user.anon)return;for(const s of OB_STEPS){const k=s[0];if(!S.ob.steps[k]||S.ob.paid[k])continue;S.ob.paid[k]=Date.now();obSave();
+  if(k!=='review'){addPoints(s[3]);continue}
+  try{await addCoins(30,'review','onboard:first-review');toast(t('+30 เหรียญจากรีวิวแรก (เข้ากระเป๋าหลังรีวิวผ่านการตรวจ)','+30 coins for your first review (they arrive once it’s approved)'))}catch(e){if(!(e&&(e.code==='23505'||e.message==='duplicate'))){delete S.ob.paid[k];obSave()}}}}
+function obTrack(){if(!welcomed())return;if(S.view==='company')obMark('co');if(Object.values(S.follow).some(Boolean))obMark('follow');if(S.myReviews.length)obMark('review')}
 /* ---------- coach marks ---------- */
 const vis=sel=>{const e=document.querySelector(sel);if(!e)return null;const r=e.getBoundingClientRect();return r.width&&r.height&&getComputedStyle(e).visibility!=='hidden'?e:null};
 /* steps: [target, text, view (default = the tour's view), go]. A "go" step opens its target on tap or "Next"
@@ -111,22 +140,25 @@ const vis=sel=>{const e=document.querySelector(sel);if(!e)return null;const r=e.
 const JOBS_BTN=()=>vis('#bnav [data-go="jobs"]')||vis('#topnav [data-go="jobs"]');
 const T_MAPTAB=[()=>vis('.jsegs [data-jtab="map"]'),['🗺️ แผนที่อาชีพอยู่ตรงนี้นะ! แตะเพื่อดูว่าคณะคุณไปทางไหนได้บ้าง','🗺️ The career map is right here! Tap it to see where your faculty can take you'],'jobs',1];
 const T_WORLD=[()=>vis('.cm-w'),['แตะวงเพื่อซูมเข้าไปดูกลุ่มงานและตำแหน่ง วงยิ่งใหญ่ = คณะคุณเข้าได้ยิ่งเยอะ','Tap a circle to zoom into its job groups and roles. Bigger circle = more roles your faculty can reach'],'jobs'];
-const TOUR_VIEW={map:'home',jobsmap:'jobs'},tourView=k=>TOUR_VIEW[k]||k;
-const TOURS={home:[[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],[()=>vis('#themeBtn'),['เปลี่ยนธีม เอฟเฟค และเสียงได้ตรงนี้','Change the theme, effects and sound here']],
-  [()=>vis('#bnav .write')||vis('#topnav [data-go="write"]'),['ปุ่มนี้ไว้เขียนรีวิวที่ทำงาน ได้แต้มและเหรียญด้วย แตะเพื่อไปดูกัน','Write a workplace review here and earn points and coins. Tap to have a look'],'home',1],
-  [JOBS_BTN,['เขียนรีวิวได้ที่หน้านี้ ต่อไปไปดูงานกัน 🗺️ ยังไม่รู้ว่าอยากทำงานอะไร? ที่เมนู “งาน” มีแผนที่อาชีพ','This is where reviews are written. Next, jobs 🗺️ Not sure what you want to do yet? “Jobs” has a career map'],'write',1],T_MAPTAB,T_WORLD],
+const TOUR_VIEW={map:'home',nav2:'home',jobsmap:'jobs'},tourView=k=>TOUR_VIEW[k]||k;
+const REV_BTN=()=>vis('#bnav [data-go="reviews"]')||vis('#topnav [data-go="reviews"]');
+const T_REV=[REV_BTN,['รีวิวอยู่ตรงนี้ อ่านและเขียนรีวิวได้ในหน้าเดียว ได้แต้มและเหรียญด้วย','Reviews live here: read and write them on one page, and earn points and coins']];
+const TOURS={home:[[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],T_REV,
+  [JOBS_BTN,['“งาน” มีทั้งงาน/ฝึกงาน บริษัท งานด่วน เงินเดือน และ 🗺️ แผนที่อาชีพ แตะเพื่อไปดูกัน','“Jobs” holds jobs & internships, companies, part-time, salaries and a 🗺️ career map. Tap to have a look'],'home',1],T_MAPTAB,T_WORLD],
+ nav2:[T_REV,[JOBS_BTN,['บริษัท งานด่วน และเงินเดือน ย้ายมาเป็นแท็บในหน้า “งาน” แล้ว','Companies, part-time and salaries are now tabs in “Jobs”']]],
+ reviews:[[()=>vis('.rv-in'),['แตะตรงนี้เพื่อเขียนรีวิว 5 ข้อ ไม่ถึง 1 นาที','Tap here to write a 5-question review in under a minute']],[()=>vis('.rv-filters'),['กรองรีวิว: มีประโยชน์ ล่าสุด ฝึกงาน หรือสายของคุณ','Filter reviews: helpful, latest, internships or your fields']]],
  map:[[JOBS_BTN,['🗺️ ยังไม่รู้ว่าอยากทำงานอะไร? ที่เมนู “งาน” มีแผนที่อาชีพ ช่วยวางแผนจากคณะที่เรียน ว่าไปทางไหนได้บ้าง','🗺️ Not sure what you want to do yet? “Jobs” has a career map that plans from your faculty and shows where it can take you'],'home',1],T_MAPTAB,T_WORLD],
  jobsmap:[T_MAPTAB,T_WORLD],
  ask:[[()=>vis('.scard.top'),['ปัดขวา = สนใจ · ปัดซ้าย = ข้าม (หรือกดปุ่มด้านล่าง)','Swipe right to like, left to skip (or use the buttons below)']],[()=>vis('.scard.top .s-rate'),['ดาวมาจากคนที่ปรึกษาจริง แตะเพื่ออ่านรีวิว','Stars come from real sessions. Tap to read the reviews']],[()=>vis('.scard.top .s-ask'),['ถามรุ่นพี่ฟรีได้เดือนละ 5 คำถามกับ Plus','Ask mentors for free: 5 questions a month with Plus']]]};
 const stView=(p,st)=>st[2]||tourView(p);
 function coachSeen(){const v=store.get('maadoo-coach');if(v==='1')return {home:1,ask:1};try{const o=JSON.parse(v||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
 const setSeen=o=>store.set('maadoo-coach',JSON.stringify(o));
-function maybeTour(){if(S.tour||S.modal||!welcomed())return;const v=S.view==='ask'&&S.askTab!=='swipe'?null:S.view,seen=coachSeen();const p=v==='home'?(seen.home?'map':'home'):v==='jobs'?(S.jobTab==='map'||S.ob.mapSeen?null:'jobsmap'):v;if(!p||!TOURS[p]||seen[p])return;
+function maybeTour(){if(S.tour||S.modal||!welcomed())return;const v=S.view==='ask'&&S.askTab!=='swipe'?null:S.view,seen=coachSeen();const p=v==='home'?(!seen.home?'home':!seen.map?'map':'nav2'):v==='jobs'?(S.jobTab==='map'||S.ob.mapSeen?null:'jobsmap'):v;if(!p||!TOURS[p]||seen[p])return;
  setTimeout(()=>{if(S.tour||S.modal||S.view!==v||coachSeen()[p])return;S.tour={p,i:0};tourStep()},450)}
 function tourStep(){const T=S.tour;if(!T)return;const steps=TOURS[T.p];while(T.i<steps.length&&stView(T.p,steps[T.i])===S.view&&!steps[T.i][0]())T.i++;
  if(T.i>=steps.length||S.view!==stView(T.p,steps[T.i])){tourEnd(false);return}const e=steps[T.i][0](),r=e.getBoundingClientRect();
  if(r.top<70||r.bottom>innerHeight-90){e.scrollIntoView({block:'center',behavior:'auto'})}tourRender()}
-function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour){o[S.tour.p]=1;if(S.tour.p==='home'||S.tour.p==='map'){o.map=1;o.jobsmap=1}}setSeen(o);S.tour=null;tourRender()}
+function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour){o[S.tour.p]=1;if(S.tour.p==='home'||S.tour.p==='map'){o.map=1;o.jobsmap=1}if(S.tour.p==='home')o.nav2=1}setSeen(o);S.tour=null;tourRender()}
 function tourRender(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="tour"></div>');el=$('#tour')}const T=S.tour;if(!T){el.innerHTML='';return}
  const steps=TOURS[T.p],st=steps[T.i],tg=st&&stView(T.p,st)===S.view&&st[0]();if(!tg){el.innerHTML='';return}const r=tg.getBoundingClientRect(),W=Math.min(300,innerWidth-24),pad=6;
  const below=r.bottom+170<innerHeight||r.top<200,top=below?r.bottom+14:Math.max(8,r.top-14),left=Math.max(12,Math.min(innerWidth-W-12,r.left+r.width/2-W/2)),ax=Math.max(18,Math.min(W-18,r.left+r.width/2-left));
@@ -143,18 +175,22 @@ function tourNext(hit){const T=S.tour;if(!T)return;const steps=TOURS[T.p],st=ste
 addEventListener('resize',()=>{if(S.tour)tourRender()});addEventListener('scroll',()=>{if(S.tour)tourRender()},{passive:true});
 document.addEventListener('keydown',e=>{if(S.tour&&e.key==='Escape'){e.preventDefault();tourEnd(true)}});
 /* ---------- events ---------- */
-document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obnext],[data-fpick],[data-obopen],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
+document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obnext],[data-fpick],[data-obopen],[data-obstart],[data-fstoggle],[data-scclose],[data-obclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
  if(d.tournext!==undefined){e.preventDefault();e.stopPropagation();tourNext(el.classList.contains('tour-catch')&&tourHit(e));return}
  if(d.tourskip!==undefined){e.preventDefault();e.stopPropagation();tourEnd(true);return}
  if(d.tourreplay!==undefined){setSeen({});S.themeOpen=false;renderThemePop();S.q='';go('home');maybeTour();return}
  if(d.obopen!==undefined){openOnboard();return}
+ if(d.obstart!==undefined){obStart();return}
+ if(d.fstoggle!==undefined){S.fsOpen=!S.fsOpen;render();return}
+ if(d.scclose!==undefined){S.ob.startClosed=true;obSave();render();toast(t('ซ่อนแล้ว เปลี่ยนเป้าหมายได้ที่เมนูธีม','Hidden. You can change your goal from the theme menu'));return}
+ if(d.obclose!==undefined){S.ob.closed=true;obSave();render();toast(t('ซ่อนการ์ดก้าวแรกแล้ว','First-steps card hidden'));return}
  if(!m||m.type!=='onboard')return;
  if(d.obgoal){m.goal=d.obgoal;m.step=2;renderModal();const f=document.querySelector('.ob [data-obind]');if(f)f.focus({preventScroll:true});return}
  if(d.obind){const i=m.inds.indexOf(d.obind);if(i>=0)m.inds.splice(i,1);else m.inds.push(d.obind);renderModal();return}
  if(d.fpick){m.fac=d.fpick;m.major=d.fmaj||null;if(d.fmaj)m.q='';renderModal();return}
  if(d.obback!==undefined){m.step--;renderModal();return}
  if(d.obnext!==undefined){m.step=3;renderModal();return}
- if(d.obskip!==undefined){if(m.step<3){m.step++;renderModal()}else obFinish(m);return}
+ if(d.obskip!==undefined){obFinish(m);return}
  if(d.obdone!==undefined){obFinish(m);return}},true);
 /* career map events */
 document.addEventListener('click',e=>{const el=e.target.closest('[data-cmw],[data-cmg],[data-cmr],[data-cmup],[data-cmfac],[data-cmmore],[data-cmfollow],[data-cmswipe],[data-cmopen],[data-fsave]');if(!el){const f=e.target.closest('[data-fpick]');if(f&&S.modal&&S.modal.type==='fac'){S.modal.fac=f.dataset.fpick;S.modal.major=f.dataset.fmaj||null;if(f.dataset.fmaj)S.modal.q='';renderModal()}return}const d=el.dataset;

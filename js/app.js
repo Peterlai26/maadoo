@@ -1,7 +1,7 @@
 /* Maadoo Job · js/app.js — modals, bell, theme menu, render(), main event handlers, start-up (loads last). Classic script sharing one global scope; see CLAUDE.md for load order. */
 /* ---------- modals & notifications ---------- */
 function openModal(m){S.modal=m;renderModal()}
-function closeModal(){const m=S.modal;if(m&&m.type==='onboard'){obFinish(m);return}S.modal=null;renderModal()}
+function closeModal(){const m=S.modal;if(m&&m.type==='onboard'){obFinish(m);return}if(m&&m.type==='write')syncForm();S.modal=null;renderModal()}
 function needLogin(fn){if(S.user){fn();return}S.after=fn;openModal({type:'login'})}
 function pushNotif(ic,th,en,go){NOTIFS.unshift({ic,t:[th,en],w:['เมื่อสักครู่','Just now'],go,read:false});renderBell()}
 function addPoints(n){if(S.user)S.user.points+=n}
@@ -36,13 +36,14 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
  if(m.type==='match'){const mt=MENTORS.find(v=>v.id===m.id);const ini=S.user?esc(S.user.name.slice(0,1).toUpperCase()):'🙂';
   body=`<div class="match"><button class="x" data-close aria-label="${t('ปิด','Close')}" style="justify-self:end">×</button><div class="match-t">${t('แมตช์แล้ว!','It’s a match!')}</div><div class="match-av"><span class="me-ava">${ini}</span><span class="me-ava" style="background:${mt.bg};font-size:38px">${mt.ava}</span></div><p>${t(`${x(mt.name)}พร้อมให้คำปรึกษาคุณแล้ว 🎉`,`${x(mt.name)} is ready to chat with you 🎉`)}</p><button class="btn y" data-book="${mt.id}">${t('จองเวลาคุยเลย','Book a session')}</button><button class="link" data-close>${t('ปัดต่อ','Keep swiping')}</button></div>`}
  if(m.type==='onboard')body=onboardModal(m);
+ if(m.type==='write')body=writeModal(m,head);
  if(m.type==='fac')body=facModal(m,head);
  if(m.type==='emp'){const e=EMP[m.tier],pay=m.tier==='Pro'?proPrice():0;body=`${head(t(`แพ็กเกจ ${m.tier}`,`${m.tier} plan`),m.tier==='Enterprise'?t('ทีมมาดูจ็อบจะติดต่อกลับภายใน 1 วันทำการ','The Maadoo Job team will get back to you within 1 business day'):m.tier==='Pro'?t(`${fmt(pay)} บาท/เดือน${pay<3900?' · 3 เดือนแรก':''}`,`${fmt(pay)} THB/month${pay<3900?' · first 3 months':''}`):t('ฟรีตลอด','Free forever'))}
   <form id="empForm" class="grid"><input class="field" id="ecn" maxlength="120" placeholder="${t('ชื่อบริษัท','Company name')}" required><input class="field" id="eem" type="email" placeholder="${t('อีเมลที่ทำงาน','Work email')}" required>${m.tier==='Enterprise'?`<input class="field" id="eph" placeholder="${t('เบอร์โทร (ไม่บังคับ)','Phone (optional)')}">`:''}
   <button class="btn ${m.tier==='Pro'?'orange':''}">${m.tier==='Pro'?t('ไปหน้าชำระเงิน (จำลอง)','Continue to checkout (simulated)'):m.tier==='Starter'?t('เริ่มใช้ฟรี','Start free'):t('ส่งข้อมูล','Send')}</button></form>
   <p class="demo-note">${t('เดโม: ไม่มีการตัดเงินจริง','Demo: no money is taken')}</p>`}
- const fresh=el._m!==m;el._m=m;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview','qchat','qnew','creport','amsgs'].includes(m.type)?'sheet-m':''} ${m.type==='onboard'?'ob-bg':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''} ${m.type==='onboard'?'ob-m':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}if(m.type==='qchat'){const cb=$('#chatBox');if(cb)cb.scrollTop=cb.scrollHeight;const qi=$('#qmsg');if(qi&&matchMedia('(hover:hover)').matches)qi.focus({preventScroll:true});return}
- const f=el.querySelector('input');if(f&&!['onboard','fac'].includes(m.type))f.focus();
+ const fresh=el._m!==m;el._m=m;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview','qchat','qnew','creport','amsgs','write'].includes(m.type)?'sheet-m':''} ${m.type==='onboard'?'ob-bg':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''} ${m.type==='onboard'?'ob-m':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}if(m.type==='write'&&!fresh){const ab=el.querySelector('.w-nav .btn.y:not([disabled])');if(ab&&matchMedia('(hover:hover)').matches)ab.focus({preventScroll:true});return}if(m.type==='qchat'){const cb=$('#chatBox');if(cb)cb.scrollTop=cb.scrollHeight;const qi=$('#qmsg');if(qi&&matchMedia('(hover:hover)').matches)qi.focus({preventScroll:true});return}
+ const f=el.querySelector('input,select');if(f&&!['onboard','fac','write'].includes(m.type))f.focus();else if(f&&m.type==='write'&&fresh&&matchMedia('(hover:hover)').matches)f.focus({preventScroll:true});
 }
 function renderBell(){const n=NOTIFS.filter(v=>!v.read).length;
  $('#bellBtn').innerHTML=`<svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>${n?`<span class="dot">${n}</span>`:''}`;
@@ -65,6 +66,7 @@ function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen)
  const np=el.querySelector('.tpop');if(np){np.scrollTop=top;const g=np.querySelector('.swatches');if(g){if(gtop!=null)g.scrollTop=gtop;else{const on=g.querySelector('.sw.on');if(on&&on.offsetTop>g.clientHeight-20)g.scrollTop=on.offsetTop-g.clientHeight/3}}}}
 function renderCoach(){tourRender()}
 /* explore: category dropdown · popover on wide screens, bottom sheet on phones (≤600px) */
+const isExp=()=>S.view==='jobs'&&S.jobTab==='co';
 const isSheet=()=>matchMedia('(max-width:600px)').matches;
 function indMenu(sheet){const keys=Object.keys(IND);const opt=(i,label,n)=>`<button type="button" class="dd-opt" role="option" id="indopt${i}" aria-selected="${S.filter===i}" data-indpick="${i}" tabindex="-1"><span>${label}</span>${n!=null?`<span class="dd-n">(${n})</span>`:''}<span class="dd-ck" aria-hidden="true">${S.filter===i?'✓':''}</span></button>`;
  return `<div class="dd-menu ${sheet?'sheet':''}" id="indMenu" role="dialog" aria-label="${t('หมวดหมู่บริษัท','Company categories')}">
@@ -73,15 +75,15 @@ function indMenu(sheet){const keys=Object.keys(IND);const opt=(i,label,n)=>`<but
 function indDropdown(){const keys=Object.keys(IND);const set=S.filter!==-1;const name=set?x(IND[keys[S.filter]]):t('ทั้งหมด','All');
  return `<div class="dd"><div class="dd-pill ${set?'set':''} ${S.indOpen?'open':''}"><button type="button" class="dd-btn" id="indBtn" data-indtoggle aria-haspopup="listbox" aria-expanded="${!!S.indOpen}" aria-controls="indMenu"><span class="dd-k">${t('หมวดหมู่:','Category:')}</span><b>${name}</b><span class="dd-car" aria-hidden="true">▾</span></button>${set?`<button type="button" class="dd-x" data-indclear aria-label="${t('ล้างตัวกรองหมวดหมู่','Clear category filter')}">×</button>`:''}</div>
  ${S.indOpen&&!isSheet()?indMenu(false):''}</div>`}
-function renderIndSheet(){const el=$('#sheet');if(!el)return;const on=S.view==='explore'&&S.indOpen&&isSheet();
+function renderIndSheet(){const el=$('#sheet');if(!el)return;const on=isExp()&&S.indOpen&&isSheet();
  el.innerHTML=on?`<div class="sheet-bg" data-indclose></div>${indMenu(true)}`:'';document.body.classList.toggle('sheet-open',on)}
 function indFocus(i){const o=document.getElementById('indopt'+i)||document.querySelector('#indMenu .dd-opt');if(!o)return;o.focus({preventScroll:true});
  const l=o.parentNode;if(o.offsetTop<l.scrollTop)l.scrollTop=o.offsetTop-6;else if(o.offsetTop+o.offsetHeight>l.scrollTop+l.clientHeight)l.scrollTop=o.offsetTop+o.offsetHeight-l.clientHeight+6}
 function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
 function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
 function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
-addEventListener('resize',()=>{if(S.indOpen&&S.view==='explore'&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
-function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();if(S.tour){const st=TOURS[S.tour.p][S.tour.i];if(!st||stView(S.tour.p,st)!==S.view)S.tour=null}tourRender();maybeTour();}
+addEventListener('resize',()=>{if(S.indOpen&&isExp()&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
+function render(){if(!isExp())S.indOpen=false;if(S.view==='explore'){S.view='jobs';S.jobTab='co'}if(S.view==='write')S.view='reviews';applyPrefs();nav();$('#app').innerHTML={home,company,reviews,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='reviews')bindFeed();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour){const st=TOURS[S.tour.p][S.tour.i];if(!st||stView(S.tour.p,st)!==S.view)S.tour=null}tourRender();maybeTour();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
@@ -144,8 +146,6 @@ document.addEventListener('click',e=>{
  if(d.mrevdelok!==undefined){mrevDelete();return}
  if(d.mrevsend!==undefined){mrevSubmit();return}
  if(d.mtag){const m=S.modal;if(m&&m.type==='mreview'){const i=m.tags.indexOf(d.mtag);i<0?m.tags.push(d.mtag):m.tags.splice(i,1);b.setAttribute('aria-pressed',i<0)}return}
- if(d.pdot!==undefined){promoGo(+d.pdot);return}
- if(d.pgo){const c=document.getElementById(d.pgo==='invite'?'inviteCard':'pioneerCard');if(c){c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});c.classList.add('flash');setTimeout(()=>c.classList.remove('flash'),1200)}return}
  if(d.season){const a=d.season;if(a==='plan-t'||a==='plan-y'){S.planSel=a.slice(5);go('plus')}else if(a==='theme-sea'){S.skin='sea';store.set('maadoo-skin','sea');render();toast(t('เปลี่ยนเป็นธีมทะเลแล้ว 🌊','Switched to the Ocean theme 🌊'))}else if(a==='pt'){S.jobTab='pt';go('jobs')}else if(a==='ask'){S.askTab='swipe';go('ask')}else go('wallet');return}
  if(d.promohide!==undefined){S.promoHidden=true;store.set('maadoo-promo-hide',String(Date.now()));render();toast(t('ซ่อนโปรโมชัน 7 วันแล้ว · ดูโค้ดชวนเพื่อนได้ที่หน้าโปรไฟล์','Promotions hidden for 7 days · your invite code is on your profile'));return}
  if(d.promoshow!==undefined){S.promoHidden=false;store.set('maadoo-promo-hide','0');render();toast(t('แสดงโปรโมชันบนหน้าแรกอีกครั้งแล้ว','Promotions are back on the home page'));return}
@@ -168,28 +168,35 @@ document.addEventListener('click',e=>{
  if(d.qopen){qTick();const q=S.prem.qs.find(v=>v.id===d.qopen),rm=q&&roomOfQ(q);if(rm){S.chatDraft='';go('chat',{chat:rm.id});return}if(q&&isUuid(q.mid)){toast(t('กำลังโหลดห้องแชท…','Loading the chat…'));loadChat();return}openModal({type:'qchat',id:d.qopen});return}
  if(d.qdone!==undefined){if(S.modal&&S.modal.type==='qchat')qDone(S.modal.id);return}
  if(d.qskip){const q=S.modal&&S.prem.qs.find(v=>v.id===S.modal.id);if(q){const ms=+d.qskip*36e5;q.createdAt-=ms;q.lastAt-=ms;if(q.answeredAt)q.answeredAt-=ms;if(!q.answeredAt)q.skipped=true;qTick();renderModal();rerender()}return}
- if(d.ivopen){needMember(()=>openModal({type:'iv',co:d.ivopen,diff:'mid',q:''}));return}
- if(d.ivdiff){const m=S.modal;if(m&&m.type==='iv'){const v=$('#ivq');if(v)m.q=v.value;m.diff=d.ivdiff;renderModal()}return}
- if(d.ivsend!==undefined){const m=S.modal;if(!m||m.type!=='iv')return;const q=($('#ivq').value||'').trim().slice(0,140);if(!q){m.err=['พิมพ์คำถามที่เจอก่อนนะ','Type a question they asked first.'];renderModal();return}
+ if(d.ivopen){needMember(()=>openModal({type:'iv',co:d.ivopen==='any'?'':d.ivopen,diff:'mid',q:''}));return}
+ if(d.ivdiff){const m=S.modal;if(m&&m.type==='iv'){const v=$('#ivq');if(v)m.q=v.value;const ic=$('#ivco');if(ic)m.pick=ic.value;m.diff=d.ivdiff;renderModal()}return}
+ if(d.ivsend!==undefined){const m=S.modal;if(!m||m.type!=='iv')return;const q=($('#ivq').value||'').trim().slice(0,140);const ic=$('#ivco');if(ic){m.pick=ic.value;m.q=q;if(!getCo(ic.value)){m.err=['เลือกบริษัทก่อนนะ','Pick the company first.'];renderModal();return}m.co=ic.value}if(!q){m.err=['พิมพ์คำถามที่เจอก่อนนะ','Type a question they asked first.'];renderModal();return}
   const c=getCo(m.co);c.interview.qs.push([q,q]);S.prem.interviews.push({co:m.co,at:Date.now()});addPoints(10);S.modal=null;render();toast(t('ขอบคุณที่แชร์! ภารกิจ “รีวิวการสัมภาษณ์” สำเร็จ','Thanks for sharing! “Review an interview” mission done'));return}
  if(d.snd!==undefined){SND.toggle();renderThemePop();return}
  if(b.id==='annBtn'){S.themeOpen=false;renderThemePop();openModal({type:'welcome'});return}
- if(b.id==='langBtn'){if(S.view==='write'&&!S.done)syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}S.lang=S.lang==='th'?'en':'th';store.set('maadoo-lang',S.lang);render();toast(t('เปลี่ยนเป็นภาษาไทยแล้ว','Switched to English'));return}
- if(d.go){if(d.go==='write')S.done=null;go(d.go);return}
+ if(b.id==='langBtn'){if(S.modal&&S.modal.type==='write')syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}S.lang=S.lang==='th'?'en':'th';store.set('maadoo-lang',S.lang);render();toast(t('เปลี่ยนเป็นภาษาไทยแล้ว','Switched to English'));return}
+ if(d.go){go(d.go);return}
  if(d.co){go('company',{co:d.co,tab:d.tabto||'overview'});return}
  if(d.tab){S.tab=d.tab;render();return}
  if(d.clear!==undefined){S.q='';render();return}
- if(d.qk){if(d.qk==='ฝึกงาน'||d.qk==='intern'){S.q='';go('explore');toast(t('ทุกบริษัทมีรีวิวฝึกงานแยกให้ดู','Every company has separate intern reviews'));return}S.q=d.qk;render();return}
  if(d.poll!==undefined){if(S.poll===null){S.poll=+d.poll;render()}return}
  if(d.help){S.helped[d.help]=!S.helped[d.help];render();return}
  if(d.follow){S.follow[d.follow]=!S.follow[d.follow];render();toast(S.follow[d.follow]?t('จะแจ้งเตือนเมื่อมีรีวิวหรือเงินเดือนใหม่','We’ll notify you about new reviews and salaries'):t('เลิกติดตามแล้ว','Unfollowed'));return}
- if(d.writefor){S.done=null;S.form=blankForm();S.form.co=d.writefor;go('write');return}
+ if(d.writefor){openWrite({co:d.writefor});return}
+ if(d.wopen!==undefined){openWrite({sal:d.wopen==='sal'});return}
+ if(d.wnext!==undefined){syncForm();if(wOk(S.form,S.wStep)&&S.wStep<5){S.wStep++;renderModal()}return}
+ if(d.wback!==undefined){syncForm();if(S.wStep>1){S.wStep--;renderModal()}return}
+ if(d.htab){S.homeTab=d.htab;render();return}
+ if(d.fyall){S.jobTab='full';S.jobF.type=d.fyall;go('jobs');return}
+ if(d.rfsort){S.rf.sort=d.rfsort;S.rfN=6;render();return}
+ if(d.rfk){if(d.rfk==='mine'&&!S.ob.inds.length){toast(t('เลือกสายที่สนใจก่อนนะ','Pick the fields you’re into first'));openOnboard();return}S.rf[d.rfk]=!S.rf[d.rfk];S.rfN=6;render();return}
+ if(d.salall!==undefined){S.salAll=!S.salAll;render();return}
+ if(d.rfmore!==undefined){S.rfN+=6;render();return}
  if(d.indtoggle!==undefined){S.indOpen?indClose(true):indOpen();return}
  if(d.indpick!==undefined){indPick(+d.indpick);return}
  if(d.indclear!==undefined){S.filter=-1;S.indOpen=false;render();const bb=$('#indBtn');if(bb)bb.focus({preventScroll:true});return}
- if(d.f){syncForm();S.form[d.f]=d.f==='mood'?+d.v:d.v;render();return}
- if(d.star){syncForm();S.form.r=+d.star;render();return}
- if(d.again!==undefined){S.done=null;S.form=blankForm();render();return}
+ if(d.f){syncForm();S.form[d.f]=d.f==='mood'?+d.v:d.v;renderModal();return}
+ if(d.star){syncForm();S.form.r=+d.star;renderModal();return}
  if(d.asktag){S.askText=$('#askq').value;S.askTag=+d.asktag;render();return}
  if(d.bkind){S.askText=$('#askq').value;S.bd.kind=d.bkind;render();return}
  if(d.bsort){S.bd.sort=d.bsort;render();return}
@@ -240,12 +247,12 @@ document.addEventListener('submit',e=>{e.preventDefault();
   if(tier==='Pro'){openPay({what:'emp',tier,company:co,amount:proPrice()});return}
   needMember(async()=>{try{await saveEmp(co,tier)}catch(err){toast(premErr(err));return}closeModal();render();
    toast(tier==='Starter'?t('เปิดใช้ Starter แล้ว! ยืนยันเจ้าของหน้าบริษัทได้เลย','Starter is on! You can claim your company page now'):t('ได้รับข้อมูลแล้ว ทีมจะติดต่อกลับเร็ว ๆ นี้','Got it. Our team will be in touch soon'))});return}
- if(e.target.id==='rvForm'){syncForm();const f=S.form;if(!(f.co&&f.r&&f.mood!==null&&f.ot!==null&&f.rec!==null))return;
+ if(e.target.id==='rvForm'){syncForm();const f=S.form;if(S.wStep<5){if(wOk(f,S.wStep)){S.wStep++;renderModal()}return}if(!wAll(f)||S.sending)return;
   if(SB){needLogin(()=>reviewOrLink(f));return}
-  const c=getCo(f.co);const def=MOOD_T[f.mood];
-  const same=v=>v?[v,v]:null;
-  c.reviews.unshift({role:same(f.role)||['ไม่ระบุตำแหน่ง','Role not given'],type:f.type,mood:f.mood,r:f.r,t:same(f.title)||def,p:same(f.pro)||['—','—'],c:same(f.con)||['—','—'],d:'Q3 2026',v:false,h:0});
-  S.unlocked=true;S.done={co:f.co,r:f.r,mood:f.mood};S.myReviews.unshift({co:f.co,r:f.r,at:Date.now(),sal:!!String(f.sal||'').replace(/[^\d]/g,'')});claimReferral();addPoints(50);S.form=blankForm();render();window.scrollTo({top:0});return}
+  /* demo without Supabase: kept in memory as a pending review that only you see */
+  const tx=(v,n)=>String(v||'').trim().slice(0,n);
+  S.myReviews.unshift({id:'local-'+Date.now(),uid:null,co:f.co,r:f.r,at:Date.now(),sal:!!String(f.sal||'').replace(/[^\d]/g,''),status:'pending',mood:f.mood,type:f.type,role:tx(f.role,80),title:tx(f.title,120),pro:tx(f.pro,1000),con:tx(f.con,1000)});
+  S.unlocked=true;claimReferral();addPoints(50);reviewSent();return}
  if(e.target.id==='askForm'){const q=$('#askq').value.trim();if(!q){toast(t('พิมพ์คำถามก่อนนะ','Type a question first'));return}
   const an=$('#anon').checked;S.bd.anon=an;const nm=!an&&S.user?[S.user.name,S.user.name]:['คุณ (ไม่ระบุตัวตน)','You (anonymous)'];
   POSTS.unshift({id:'u'+Date.now(),kind:S.bd.kind,tag:S.askTag,by:nm,ava:'🙂',bg:'#CFEAFF',ver:!an&&S.user&&S.user.verified,ts:0,likes:0,text:[q,q],comments:[]});
@@ -258,10 +265,10 @@ document.addEventListener('submit',e=>{e.preventDefault();
 function syncPtForm(){const g=id=>document.getElementById(id);if(!g('pf-title'))return;const f=S.ptForm;f.title=g('pf-title').value;f.kind=g('pf-kind').value;f.day=g('pf-day').value;f.when=g('pf-when').value;f.pay=g('pf-pay').value;f.unit=g('pf-unit').value;f.need=g('pf-need').value;f.how=g('pf-how').value;f.req=g('pf-req').value;f.ok=g('pf-ok').checked}
 document.addEventListener('input',e=>{const fk=e.target.id==='fx-amb'?'amb':e.target.id==='fx-tap'?'tap':null;if(fk){fxSetLevel(fk,e.target.value);const v=fxLevel(fk),o=document.getElementById('fxv-'+fk);if(o)o.textContent=fxPct(v);e.target.style.setProperty('--p',v+'%');e.target.setAttribute('aria-valuetext',fxPct(v));if(fk==='tap'&&v){const r=e.target.getBoundingClientRect();FX.tap(r.left+r.width*v/100,r.top+r.height/2)}return}
  if(e.target.id==='mcomment'){if(S.modal)S.modal.comment=e.target.value;const c=$('#mcount');if(c)c.textContent=e.target.value.length+'/300';return}if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.style.setProperty('--p',v+'%');e.target.setAttribute('aria-valuetext',v+'%');return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
-document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();render()}
+document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();renderModal()}if(id==='rfCo'){S.rf.co=e.target.value;S.rfN=6;render()}
  if(id==='jInd'){S.jobF.ind=e.target.value;render()}if(id==='jMin'){S.jobF.min=+e.target.value;render()}if(id==='onlyJobs'){S.coOnlyJobs=e.target.checked;render()}});
 document.addEventListener('keydown',e=>{
- if(S.view==='explore'){const inMenu=e.target.closest&&e.target.closest('#indMenu'),onBtn=e.target.id==='indBtn';
+ if(isExp()){const inMenu=e.target.closest&&e.target.closest('#indMenu'),onBtn=e.target.id==='indBtn';
   if(S.indOpen&&e.key==='Escape'){e.preventDefault();indClose(true);return}
   if(onBtn&&!S.indOpen&&(e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();indOpen();return}
   if(S.indOpen&&(inMenu||onBtn)){const os=[...document.querySelectorAll('#indMenu .dd-opt')];const cur=os.indexOf(document.activeElement);
@@ -269,6 +276,7 @@ document.addEventListener('keydown',e=>{
    if(e.key==='ArrowDown')return go(cur<0?0:cur+1);if(e.key==='ArrowUp')return go(cur<0?os.length-1:cur-1);
    if(e.key==='Home')return go(0);if(e.key==='End')return go(os.length-1);
    if(e.key==='Tab'){indClose(false);return}}}if(!S.modal&&S.view==='ask'&&S.askTab==='swipe'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){if(e.key==='ArrowRight')swipeGo('right');if(e.key==='ArrowLeft')swipeGo('left')}if(e.key==='Escape'){if(S.modal)closeModal();if(S.notifOpen){S.notifOpen=false;renderBell()}}});
+document.addEventListener('toggle',e=>{if(e.target.id==='wmore')S.form.more=e.target.open},true);
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(!S.theme)applyPrefs()})}catch(e){}
 /* ---------- start ---------- */
 render();
