@@ -2668,33 +2668,45 @@ function celebrate(){const rm=matchMedia('(prefers-reduced-motion: reduce)').mat
  document.body.appendChild(el);setTimeout(()=>el.remove(),rm?2600:3400);if(S.view==='home')render()}
 /* ---------- coach marks ---------- */
 const vis=sel=>{const e=document.querySelector(sel);if(!e)return null;const r=e.getBoundingClientRect();return r.width&&r.height&&getComputedStyle(e).visibility!=='hidden'?e:null};
-const MAP_TIP=[()=>vis('#bnav [data-go="jobs"]')||vis('#topnav [data-go="jobs"]'),['🗺️ ยังไม่รู้ว่าอยากทำงานอะไร? ที่เมนู “งาน” มีแผนที่อาชีพ ช่วยวางแผนจากคณะที่เรียน ว่าไปทางไหนได้บ้าง','🗺️ Not sure what you want to do yet? “Jobs” has a career map that plans from your faculty and shows where it can take you']];
+/* steps: [target, text, view (default = the tour's view), go]. A "go" step opens its target on tap or "Next"
+   and the tour carries on in the next page, so Home → Write → Jobs → career map is one continuous walk. */
+const JOBS_BTN=()=>vis('#bnav [data-go="jobs"]')||vis('#topnav [data-go="jobs"]');
+const T_MAPTAB=[()=>vis('.jsegs [data-jtab="map"]'),['🗺️ แผนที่อาชีพอยู่ตรงนี้นะ! แตะเพื่อดูว่าคณะคุณไปทางไหนได้บ้าง','🗺️ The career map is right here! Tap it to see where your faculty can take you'],'jobs',1];
+const T_WORLD=[()=>vis('.cm-w'),['แตะวงเพื่อซูมเข้าไปดูกลุ่มงานและตำแหน่ง วงยิ่งใหญ่ = คณะคุณเข้าได้ยิ่งเยอะ','Tap a circle to zoom into its job groups and roles. Bigger circle = more roles your faculty can reach'],'jobs'];
 const TOUR_VIEW={map:'home',jobsmap:'jobs'},tourView=k=>TOUR_VIEW[k]||k;
-const TOURS={map:[MAP_TIP],jobsmap:[[()=>vis('.jsegs [data-jtab="map"]'),['🗺️ แผนที่อาชีพอยู่ตรงนี้นะ! แตะเพื่อดูว่าคณะคุณไปทางไหนได้บ้าง','🗺️ The career map is right here! Tap it to see where your faculty can take you']]],home:[MAP_TIP,[()=>vis('#bnav .write')||vis('#topnav [data-go="write"]'),['ปุ่มนี้ไว้เขียนรีวิวที่ทำงาน ได้แต้มและเหรียญด้วย','Write a workplace review here and earn points and coins']],[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],[()=>vis('#themeBtn'),['เปลี่ยนธีม เอฟเฟค และเสียงได้ตรงนี้','Change the theme, effects and sound here']]],
+const TOURS={home:[[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],[()=>vis('#themeBtn'),['เปลี่ยนธีม เอฟเฟค และเสียงได้ตรงนี้','Change the theme, effects and sound here']],
+  [()=>vis('#bnav .write')||vis('#topnav [data-go="write"]'),['ปุ่มนี้ไว้เขียนรีวิวที่ทำงาน ได้แต้มและเหรียญด้วย แตะเพื่อไปดูกัน','Write a workplace review here and earn points and coins. Tap to have a look'],'home',1],
+  [JOBS_BTN,['เขียนรีวิวได้ที่หน้านี้ ต่อไปไปดูงานกัน 🗺️ ยังไม่รู้ว่าอยากทำงานอะไร? ที่เมนู “งาน” มีแผนที่อาชีพ','This is where reviews are written. Next, jobs 🗺️ Not sure what you want to do yet? “Jobs” has a career map'],'write',1],T_MAPTAB,T_WORLD],
+ map:[[JOBS_BTN,['🗺️ ยังไม่รู้ว่าอยากทำงานอะไร? ที่เมนู “งาน” มีแผนที่อาชีพ ช่วยวางแผนจากคณะที่เรียน ว่าไปทางไหนได้บ้าง','🗺️ Not sure what you want to do yet? “Jobs” has a career map that plans from your faculty and shows where it can take you'],'home',1],T_MAPTAB,T_WORLD],
+ jobsmap:[T_MAPTAB,T_WORLD],
  ask:[[()=>vis('.scard.top'),['ปัดขวา = สนใจ · ปัดซ้าย = ข้าม (หรือกดปุ่มด้านล่าง)','Swipe right to like, left to skip (or use the buttons below)']],[()=>vis('.scard.top .s-rate'),['ดาวมาจากคนที่ปรึกษาจริง แตะเพื่ออ่านรีวิว','Stars come from real sessions. Tap to read the reviews']],[()=>vis('.scard.top .s-ask'),['ถามรุ่นพี่ฟรีได้เดือนละ 5 คำถามกับ Plus','Ask mentors for free: 5 questions a month with Plus']]]};
+const stView=(p,st)=>st[2]||tourView(p);
 function coachSeen(){const v=store.get('maadoo-coach');if(v==='1')return {home:1,ask:1};try{const o=JSON.parse(v||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
 const setSeen=o=>store.set('maadoo-coach',JSON.stringify(o));
-function maybeTour(){if(S.tour||S.modal||!welcomed())return;const v=S.view==='ask'&&S.askTab!=='swipe'?null:S.view,seen=coachSeen();const p=v==='home'&&seen.home?'map':v==='jobs'?(S.jobTab==='map'||S.ob.mapSeen?null:'jobsmap'):v;if(!p||!TOURS[p]||seen[p])return;
+function maybeTour(){if(S.tour||S.modal||!welcomed())return;const v=S.view==='ask'&&S.askTab!=='swipe'?null:S.view,seen=coachSeen();const p=v==='home'?(seen.home?'map':'home'):v==='jobs'?(S.jobTab==='map'||S.ob.mapSeen?null:'jobsmap'):v;if(!p||!TOURS[p]||seen[p])return;
  setTimeout(()=>{if(S.tour||S.modal||S.view!==v||coachSeen()[p])return;S.tour={p,i:0};tourStep()},450)}
-function tourStep(){const T=S.tour;if(!T)return;const steps=TOURS[T.p];while(T.i<steps.length&&!steps[T.i][0]())T.i++;
- if(T.i>=steps.length||S.view!==tourView(T.p)){tourEnd(false);return}const el=steps[T.i][0];const e=el(),r=e.getBoundingClientRect();
+function tourStep(){const T=S.tour;if(!T)return;const steps=TOURS[T.p];while(T.i<steps.length&&stView(T.p,steps[T.i])===S.view&&!steps[T.i][0]())T.i++;
+ if(T.i>=steps.length||S.view!==stView(T.p,steps[T.i])){tourEnd(false);return}const e=steps[T.i][0](),r=e.getBoundingClientRect();
  if(r.top<70||r.bottom>innerHeight-90){e.scrollIntoView({block:'center',behavior:'auto'})}tourRender()}
-function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour){o[S.tour.p]=1;if(S.tour.p==='home')o.map=1}setSeen(o);S.tour=null;tourRender()}
+function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour){o[S.tour.p]=1;if(S.tour.p==='home'||S.tour.p==='map'){o.map=1;o.jobsmap=1}}setSeen(o);S.tour=null;tourRender()}
 function tourRender(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="tour"></div>');el=$('#tour')}const T=S.tour;if(!T){el.innerHTML='';return}
- const steps=TOURS[T.p],st=steps[T.i],tg=st&&st[0]();if(!tg){el.innerHTML='';return}const r=tg.getBoundingClientRect(),W=Math.min(300,innerWidth-24),pad=6;
+ const steps=TOURS[T.p],st=steps[T.i],tg=st&&stView(T.p,st)===S.view&&st[0]();if(!tg){el.innerHTML='';return}const r=tg.getBoundingClientRect(),W=Math.min(300,innerWidth-24),pad=6;
  const below=r.bottom+170<innerHeight||r.top<200,top=below?r.bottom+14:Math.max(8,r.top-14),left=Math.max(12,Math.min(innerWidth-W-12,r.left+r.width/2-W/2)),ax=Math.max(18,Math.min(W-18,r.left+r.width/2-left));
- const last=T.i>=steps.length-1||!steps.slice(T.i+1).some(s=>s[0]());
+ const last=T.i>=steps.length-1;
  el.innerHTML=`<div class="tour-catch" data-tournext aria-hidden="true"></div><div class="tour-ring" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px"></div>
  <div class="tour-tip ${below?'below':'above'}" role="dialog" aria-live="polite" aria-label="${t('คำแนะนำ','Tip')}" style="left:${left}px;${below?`top:${top}px`:`bottom:${innerHeight-top}px`};width:${W}px;--ax:${ax}px"><img src="${PUP()}" alt=""><div><small>${T.i+1}/${steps.length}</small><p>${x(st[1])}</p>
- <div class="row"><button class="btn y sm" data-tournext>${last?t('เข้าใจแล้ว','Got it'):t('ถัดไป','Next')}</button><button class="link" data-tourskip>${t('ข้ามทั้งหมด','Skip all')}</button></div></div></div>`;
+ <div class="row"><button class="btn y sm" data-tournext>${last?t('เข้าใจแล้ว','Got it'):st[3]?t('ไปกันเลย →','Let’s go →'):t('ถัดไป','Next')}</button><button class="link" data-tourskip>${t('ข้ามทั้งหมด','Skip all')}</button></div></div></div>`;
  const b=el.querySelector('.tour-tip [data-tournext]');if(b)b.focus({preventScroll:true})}
 function tourHit(e){const T=S.tour,st=T&&TOURS[T.p][T.i],tg=st&&st[0]();if(!tg)return false;const r=tg.getBoundingClientRect(),p=8;return e.clientX>=r.left-p&&e.clientX<=r.right+p&&e.clientY>=r.top-p&&e.clientY<=r.bottom+p}
-function tourNext(){if(!S.tour)return;S.tour.i++;tourStep()}
+/* hit = the tap landed on the highlighted target. A "go" step (or a tap on the last step's target) opens the target; the walk goes on. */
+function tourNext(hit){const T=S.tour;if(!T)return;const steps=TOURS[T.p],st=steps[T.i],tg=st&&st[0](),last=T.i>=steps.length-1;
+ if(tg&&(st[3]||(hit&&last))){if(last)tourEnd(false);else T.i++;tg.click();if(!last)setTimeout(tourStep,350);return}
+ if(last){tourEnd(false);return}T.i++;tourStep()}
 addEventListener('resize',()=>{if(S.tour)tourRender()});addEventListener('scroll',()=>{if(S.tour)tourRender()},{passive:true});
 document.addEventListener('keydown',e=>{if(S.tour&&e.key==='Escape'){e.preventDefault();tourEnd(true)}});
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obnext],[data-fpick],[data-obopen],[data-obstart],[data-obclose],[data-scclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
- if(d.tournext!==undefined){e.preventDefault();e.stopPropagation();if(el.classList.contains('tour-catch')&&tourHit(e)){const T=S.tour,tg=TOURS[T.p][T.i][0]();tourEnd(false);if(tg)setTimeout(()=>{tg.click();if(tg.matches('input'))tg.focus()},0);return}tourNext();return}
+ if(d.tournext!==undefined){e.preventDefault();e.stopPropagation();tourNext(el.classList.contains('tour-catch')&&tourHit(e));return}
  if(d.tourskip!==undefined){e.preventDefault();e.stopPropagation();tourEnd(true);return}
  if(d.tourreplay!==undefined){setSeen({});S.themeOpen=false;renderThemePop();S.q='';go('home');maybeTour();return}
  if(d.obopen!==undefined){openOnboard();return}
@@ -3023,7 +3035,7 @@ function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
 function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
 function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
 addEventListener('resize',()=>{if(S.indOpen&&S.view==='explore'&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
-function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour&&tourView(S.tour.p)!==S.view){S.tour=null}tourRender();maybeTour();}
+function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour){const st=TOURS[S.tour.p][S.tour.i];if(!st||stView(S.tour.p,st)!==S.view)S.tour=null}tourRender();maybeTour();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{

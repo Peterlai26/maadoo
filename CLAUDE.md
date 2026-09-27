@@ -101,18 +101,12 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
   - Steps: open a company (+5 points), follow a company (+5 points), swipe a mentor (+5 points), first review (+30 coins, a `review` ledger row with ref `onboard:first-review`, pending until moderation and counted in the monthly mission cap).
   - Ticks work logged out; rewards are paid once, only for a logged-in non-guest (paid on login if ticked earlier).
   - All 4 done → a pup + confetti celebration (static under reduced motion) and the card disappears. The × hides it.
-- **Coach marks:** on the first visit to Home and the Ask swipe tab (after onboarding), a small pup bubble points at up to 3 targets.
-  - Home: the Jobs button (🗺️ career map, "ยังไม่รู้ว่าอยากทำงานอะไร?"), the write button, search, the theme menu. Users who saw the older Home tour get only the Jobs step once (`map` key). Ask: the swipe card, the star badge, ask-free.
-  - Tapping the highlighted button opens it (and ends that tour); a tap anywhere else goes on; "ข้ามทั้งหมด" or Esc ends all tours.
-  - Jobs: on the first Jobs visit before the map was opened, the pup points at the 🗺️ tab ("แผนที่อาชีพอยู่ตรงนี้นะ!", `jobsmap` key).
-  - It uses no dimming (it must not cover the phone screen) and is kept inside the viewport.
-  - The theme menu's "❓ พาเที่ยวอีกครั้ง" resets and replays. A legacy `maadoo-coach = '1'` counts as all seen.
-
-## Career map (decided) — "🗺️ แผนที่อาชีพ"
-- Lives in the jobs view as the third tab (`S.jobTab='map'`, state in `S.cm`). Entry points: that tab (orange "ใหม่" chip / dot until first opened) (flag `mapSeen` in `maadoo-onboard`), the first Home coach mark pointing at the Jobs button, a small home card "คณะคุณไปได้ไกลกว่าที่คิด" (hidden when the goal is "first job", whose start card already goes there), and bell notifications for followed roles.
-- **Data (sample guidance, labelled "💡 ข้อมูลแนะนำเบื้องต้น"):** `FAC` (15 faculties, each with majors, the skills it builds, and per-major extra skills/direct roles) · `WORLDS` (7) → `GROUPS` → `ROLES` (skills used, CO salary-row names, related job ids) · `FIT_SRC` = the faculty → role → fit table (`d` 🟢 ตรงสาย, `b` 🟡 ข้ามสายได้, `s` 🟠 ต้องเพิ่มทักษะ). Every faculty needs 8+ roles and 3+ non-direct ones. Skills to reuse / add come from `SK` (with rough months to learn) by comparing the faculty's skills with the role's.
-- **Layer 1:** 7 world circles sized by how many roles the user's faculty reaches, tagged "ตรงสาย" / "ข้ามสายได้ 🌉". Scattered circles on desktop (≥1021px), a grid of round cards below that. **Layers 2–3:** zoom (scale animation from the tapped item, off under reduced motion) into groups, then roles with badge + skills; breadcrumb "ทั้งหมด › world › group › role" goes back. **Layer 4 (role page):** starting salary from the site's salary rows, companies, open jobs, "🌉 รุ่นพี่ที่ข้ามสายมา" (mentors whose faculty isn't a direct fit, with ask/book), and "ติดตามตำแหน่งนี้" (followed roles kept in `maadoo-onboard`; bell notification).
-- **Mentor faculty:** sample mentors carry `fac` + `roles`; real mentors pick "คณะที่จบ" in the application (optional) or in mentor mode (`mentor_applications.faculty` → `mentors.faculty`, SQL section 11); their role is matched from the free-text field.
+- **Coach marks:** a small pup bubble points at one target at a time (no dimming, kept inside the viewport). Shown once per tour after onboarding.
+  - Home is one continuous walk (6 steps): search → theme menu → write button → (on the write page) the Jobs button → (on Jobs) the 🗺️ tab → (on the map) a world circle.
+  - Steps that lead to another page open it on a tap on the highlighted target or on "ไปกันเลย →", and the walk carries on there. Other steps: any tap goes on. "ข้ามทั้งหมด" or Esc ends all tours.
+  - Users who saw the older Home tour get the short `map` walk once (Jobs button → 🗺️ tab → circle); a first Jobs visit before the map was opened gets `jobsmap` (🗺️ tab → circle).
+  - Ask: the swipe card, the star badge, ask-free.
+  - The theme menu's "❓ พาเที่ยวอีกครั้ง" resets and replays. A legacy `maadoo-coach = '1'` counts as Home + Ask seen.
 
 ## Promotions (decided)
 - **Home promo block** (below the hero/search, hidden while searching): swipeable banner carousel with dots — "รีวิวแรก แลก Plus ฟรี!" (links to the existing 3-reviews → 1 free month mission; there is no separate first-review trial), "1,000 คนแรก", "ชวนเพื่อน", "โปรตามฤดูกาล" — plus a Pioneer card and an Invite card. The × hides the whole block for 7 days.
