@@ -1658,6 +1658,20 @@ begin
 end;
 $$;
 
+-- =====================================================================
+-- 10) คำตอบหน้าต้อนรับ (เป้าหมาย + สายที่สนใจ) / onboarding answers (goal + fields)
+--     เก็บในเครื่องเสมอ และเก็บที่นี่ด้วยเมื่อล็อกอิน / always kept on the device, and here when logged in
+-- =====================================================================
+alter table public.profiles add column if not exists onboard_goal text;
+alter table public.profiles add column if not exists onboard_inds text[] not null default '{}';
+alter table public.profiles drop constraint if exists profiles_onboard_goal_check;
+alter table public.profiles add constraint profiles_onboard_goal_check
+  check (onboard_goal is null or onboard_goal in ('intern', 'first', 'pt', 'salary', 'mentor', 'browse'));
+alter table public.profiles drop constraint if exists profiles_onboard_inds_check;
+alter table public.profiles add constraint profiles_onboard_inds_check
+  check (cardinality(onboard_inds) <= 12 and array_to_string(onboard_inds, ',') ~ '^[a-z,]*$');
+grant update (onboard_goal, onboard_inds) on public.profiles to authenticated;
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';

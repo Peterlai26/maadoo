@@ -503,6 +503,50 @@ footer.foot{max-width:1040px;margin:40px auto 0;padding-block:20px;border-top:1.
 footer.foot .link{font-size:14px}
 footer.foot .brand-s{display:flex;gap:6px;align-items:center;font-family:var(--display);font-weight:700;color:var(--navy)}
 footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
+/* onboarding: welcome steps, start card, first steps, celebration, coach marks */
+.modal-bg.ob-bg{align-items:center}
+.modal.ob-m{width:min(640px,100%);max-height:min(94dvh,860px)}
+.ob{display:grid;gap:14px}
+.ob-top{display:flex;align-items:center;gap:10px;min-height:32px}.ob-top .link{font-size:14px}.ob-top>.link:last-child{margin-left:auto}
+.ob-brand{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:700;color:var(--navy);font-size:14px}.ob-brand img{width:28px;height:28px;border-radius:50%;background:var(--logo-bg)}
+.ob-dots{display:flex;gap:6px;margin-left:auto}.ob-dots i{width:8px;height:8px;border-radius:99px;background:var(--line);transition:width .25s}.ob-dots i.on{width:22px;background:var(--orange-btn)}
+.ob-n{font-size:12px;color:var(--ink-3)}
+.ob-hero{display:flex;align-items:flex-end;gap:10px}.ob-pup{width:78px;height:78px;border-radius:50%;flex:none;animation:obBob 2.4s ease-in-out infinite}
+@keyframes obBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.ob-bubble{position:relative;background:var(--sky-2);border:1.5px solid var(--line);border-radius:20px 20px 20px 6px;padding:12px 14px;display:grid;gap:2px;min-width:0}.ob-bubble b{font-family:var(--display);font-size:clamp(18px,4.6vw,22px);color:var(--navy);line-height:1.3}.ob-bubble small{color:var(--ink-2);font-size:13px}
+.ob-goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ob-goal{display:grid;justify-items:center;align-content:center;gap:6px;min-height:104px;padding:14px 8px;border-radius:20px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:center;cursor:pointer;transition:transform .15s,border-color .15s}
+.ob-goal span{font-size:30px;line-height:1}.ob-goal b{font-size:14.5px;line-height:1.3}.ob-goal:hover{border-color:var(--blue);transform:translateY(-2px)}.ob-goal.on{border-color:var(--orange-btn);background:var(--orange-soft)}
+.ob-inds{display:flex;flex-wrap:wrap;gap:8px}.ob-note{text-align:center;font-size:12.5px;margin:0}
+@media (max-width:520px){.ob-goals{grid-template-columns:1fr 1fr;gap:8px}.ob-goal{min-height:88px;padding:10px 6px}.ob-goal span{font-size:26px}.ob-pup{width:62px;height:62px}}
+.start-card{display:grid;grid-template-columns:auto 1fr auto;gap:12px 14px;align-items:center;padding:16px 18px;margin-top:10px;border:2px solid var(--orange-btn);background:linear-gradient(135deg,var(--orange-soft),var(--surface) 70%)}
+.sc-ic{font-size:38px;line-height:1}.sc-pup{width:52px;height:52px;border-radius:50%}.sc-t{display:grid;gap:2px;min-width:0}.sc-t small{font-weight:700;color:var(--orange-btn);font-size:12.5px;letter-spacing:.02em}.sc-t b{font-family:var(--display);font-size:20px;color:var(--navy)}.sc-t .muted{font-size:13px;overflow-wrap:anywhere}
+.sc-go{width:auto;white-space:nowrap}.sc-change{grid-column:1/-1;justify-self:start;font-size:13px}
+@media (max-width:640px){.start-card{grid-template-columns:auto 1fr}.sc-go{grid-column:1/-1;width:100%;white-space:normal}}
+.fs-card{display:grid;gap:10px;padding:14px 16px;margin-top:12px}.fs-h{display:flex;align-items:center;gap:8px}.fs-h .x{margin-left:auto}
+.fs-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.fs-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
+.fs-item:hover{border-color:var(--blue)}.fs-l{flex:1;min-width:0;font-size:14px}.fs-chk{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--sky-2);font-size:15px}
+.fs-item.done{background:var(--good-bg);border-color:transparent;cursor:default}.fs-item.done .fs-chk{background:var(--good);color:var(--surface);font-weight:700}.fs-item.done .fs-l{text-decoration:line-through;color:var(--ink-2)}
+.chip.coin{background:var(--orange-soft);color:var(--ink)}
+.promo-solo .pslide{border-radius:24px}
+.ob-party{position:fixed;inset:0;z-index:90;pointer-events:none;overflow:hidden}
+.ob-party i{position:absolute;top:-16px;width:9px;height:14px;border-radius:3px;animation:obFall linear forwards}
+@keyframes obFall{to{transform:translateY(105vh) rotate(var(--r))}}
+.ob-cheer{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:8px;background:var(--surface);border:2px solid var(--orange-btn);border-radius:24px;padding:16px 22px;box-shadow:var(--shadow);animation:obPop .5s cubic-bezier(.3,1.6,.5,1)}
+.ob-cheer img{width:84px;height:84px;border-radius:50%;animation:obJump .6s ease-in-out 3}.ob-cheer b{font-family:var(--display);font-size:19px;color:var(--navy);text-align:center}
+@keyframes obPop{from{transform:translate(-50%,-50%) scale(.5);opacity:0}}@keyframes obJump{50%{transform:translateY(-14px)}}
+.ob-party.still .ob-cheer,.ob-party.still .ob-cheer img{animation:none}
+#tour{position:relative;z-index:80}
+.tour-catch{position:fixed;inset:0;z-index:80;background:transparent;cursor:pointer}
+.tour-ring{position:fixed;z-index:81;border-radius:16px;box-shadow:0 0 0 3px var(--orange-btn),0 0 0 7px var(--orange-soft);pointer-events:none;animation:tourPulse 1.6s ease-in-out infinite}
+@keyframes tourPulse{50%{box-shadow:0 0 0 3px var(--orange-btn),0 0 0 11px transparent}}
+.tour-tip{position:fixed;z-index:82;display:flex;gap:10px;align-items:flex-start;background:var(--surface);color:var(--ink);border:2px solid var(--orange-btn);border-radius:18px;padding:10px 12px;box-shadow:var(--shadow);animation:pop .3s ease}
+.tour-tip img{width:40px;height:40px;border-radius:50%;flex:none}.tour-tip>div{display:grid;gap:4px;min-width:0}.tour-tip small{color:var(--ink-3);font-size:11.5px}.tour-tip p{margin:0;font-size:14px;line-height:1.45}.tour-tip .row{gap:10px}
+.tour-tip::before{content:"";position:absolute;left:calc(var(--ax) - 8px);border:8px solid transparent}
+.tour-tip.below::before{top:-16px;border-bottom-color:var(--orange-btn)}.tour-tip.above::before{bottom:-16px;border-top-color:var(--orange-btn)}
+.tour-again{margin-top:4px}
+@media (prefers-reduced-motion:reduce){.ob-pup,.tour-ring,.tour-tip,.ob-cheer,.ob-cheer img{animation:none}.ob-goal{transition:none}}
 /* live-call booking, live room, availability editor */
 .bkv,.lvv{display:grid;gap:12px;max-width:760px;margin:8px auto 0}
 .bk-head{display:flex;align-items:center;gap:12px;padding:12px 14px;min-width:0}.bk-head .cv-t b{font-size:17px}
@@ -675,21 +719,7 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .sw.on{border-color:var(--blue)}
 .sw-prev{height:40px;border-radius:10px;display:flex;align-items:flex-end;gap:4px;padding:6px;border:1px solid rgba(0,0,0,.06)}
 .sw-prev i{width:16px;height:16px;border-radius:50%;display:block}
-.coach{position:absolute;right:60px;top:60px;width:240px;background:var(--navy);color:var(--bg);border-radius:18px;padding:14px;display:grid;gap:6px;z-index:42;box-shadow:var(--shadow);animation:pop .35s ease}
-.coach::before{content:"";position:absolute;top:-8px;right:50px;border:8px solid transparent;border-top:0;border-bottom-color:var(--navy)}
-.coach span{font-size:13px;opacity:.85}
-.coach .btn{justify-self:start;padding:6px 14px;font-size:13px}
 @keyframes pop{from{transform:translateY(-6px);opacity:0}}
-.welcome{display:grid;gap:12px;justify-items:center;text-align:center}
-.w-logo{width:min(200px,62%);height:auto;margin-top:-14px;background:var(--logo-bg);border-radius:28px;padding:6px}
-.w-kicker{font-size:13px;font-weight:600;color:var(--orange);background:var(--orange-soft);padding:3px 12px;border-radius:99px}
-.welcome h2{font-size:24px}
-.w-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
-.w-item{display:grid;gap:2px;justify-items:start;text-align:left;background:var(--sky-2);border:1.5px solid var(--line);border-radius:16px;padding:10px 12px}
-.w-item span{font-size:20px}.w-item b{color:var(--navy);font-size:14px}.w-item small{color:var(--ink-2);font-size:12px;line-height:1.4}
-.w-item:hover{border-color:var(--blue)}
-.w-tip{display:grid;gap:4px;font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-radius:12px;padding:8px 10px}
-.modal:has(.welcome){width:min(520px,100%)}
 .back-btn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:99px;padding:10px 20px 10px 14px;font-size:16px;font-weight:600;color:var(--navy);box-shadow:var(--shadow)}
 .back-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .back-btn:hover{border-color:var(--blue);color:var(--blue)}
@@ -844,7 +874,7 @@ async function sbUser(ev,session){
  if(same&&S.user.anon===!!u.is_anonymous&&S.user.email===(u.email||''))return;
  S.user=mkUser(u,same?S.user:null);
  if(same){rerender();return}
- await loadMine();loadApproved();loadMentorReviews();resetPrem();loadPrem().then(afterLoginPromo);loadChat();
+ await loadMine();loadApproved();loadMentorReviews();resetPrem();loadPrem().then(afterLoginPromo).then(obAfterLogin);loadChat();
  if(ev==='SIGNED_IN'){if(S.modal&&(S.modal.type==='login'||S.modal.type==='otp'))S.modal=null;const fn=S.after;S.after=null;rerender();
   toast(S.user.anon?t('เข้าใช้แบบชั่วคราวแล้ว · ถ้าออกจากระบบ บัญชีนี้จะหายไป','You’re in as a guest · this account is gone once you log out'):t(`สวัสดี ${S.user.name}! รับ 20 แต้มต้อนรับ`,`Hi ${S.user.name}! +20 welcome points`));if(fn)fn()}
  else rerender();
@@ -1396,7 +1426,7 @@ function home(){
  const tot=POLL.o.reduce((a,o)=>a+o[1],0)+(S.poll!==null?1:0);
  const quick=[['QC','QC'],['สตาร์ทอัพ','startup'],['MRT','MRT'],['ยา','pharma'],['ฝึกงาน','intern']];
  const roles=allRoles();
- return `<section class="hero"><div class="hero-txt">
+ return `${q?'':startCard()+firstSteps()}<section class="hero"><div class="hero-txt">
   <h1>${t('ก่อนไปทำงาน <em>มาดู</em>ก่อน','Before you go, <em>Maadoo</em> first')}</h1>
   <p class="hero-sub">${t('รีวิวที่ทำงานจากคนในตัวจริง','Real workplace reviews from real insiders')}</p>
  </div><div class="hero-side"><div class="mascot"><img src="${PUP()}" alt="${t('น้องมาดู น้องหมาผู้ช่วยหางาน','Maadoo, the job-hunting pup')}"><svg class="m-say" viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(69 12) rotate(6)"><path d="M6 0H32Q38 0 38 6V17Q38 23 32 23H14L2.5 32.5L7.5 23H6Q0 23 0 17V6Q0 0 6 0Z"/><text x="19" y="12.2" text-anchor="middle" dominant-baseline="central">JOB!</text></g></svg><span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span></div>
@@ -1584,7 +1614,7 @@ function swipe(){const sw=S.sw;const deck=deckList();const liked=MENTORS.filter(
  <p class="muted" style="text-align:center;margin-top:8px">${(matchMedia('(hover:hover) and (pointer:fine)').matches?t('ลากการ์ดด้วยเมาส์ · ปัดสองนิ้วบนทัชแพด · หรือกด ← →','Drag with the mouse · two-finger swipe on the trackpad · or press ← →'):t('ปัดขวา = สนใจ · ปัดซ้าย = ข้าม · 📅 = จองทันที','Swipe right to like · left to skip · 📅 to book now'))}</p>`:''}
  ${liked.length?`<section class="sec"><div class="sec-h"><h2>${t('รุ่นพี่ที่คุณปัดขวา','Mentors you liked')} (${liked.length})</h2></div><div class="list">${liked.map(m=>`<div class="li"><span class="ava" style="width:40px;height:40px;font-size:20px;background:${m.bg}">${m.ava}</span><div><b>${x(m.name)}</b><div class="muted">${x(m.role)}</div></div><button class="btn grow" data-book="${m.id}">${t('จองเวลา','Book')}</button></div>`).join('')}</div></section>`:''}
  <div class="sec">${plusBanner()}</div><p class="muted" style="margin-top:8px">${t('Maadoo หักค่าธรรมเนียม 15% จากแต่ละการจอง รุ่นพี่ได้รับ 85%','Maadoo keeps a 15% fee per booking; mentors receive 85%')}</p>`}
-function swipeGo(dir){const card=document.querySelector('.scard.top');if(!card||card.dataset.gone)return;const id=card.dataset.mid;if(dir!=='book')card.dataset.gone='1';
+function swipeGo(dir){const card=document.querySelector('.scard.top');if(!card||card.dataset.gone)return;const id=card.dataset.mid;if(dir!=='book')obMark('swipe');if(dir!=='book')card.dataset.gone='1';
  if(dir==='book'){openBook(id);return}
  card.style.transition='transform .35s ease, opacity .35s';card.style.transform=`translateX(${dir==='right'?600:-600}px) rotate(${dir==='right'?24:-24}deg)`;card.style.opacity='0';
  const st=card.querySelector(dir==='right'?'.stamp.like':'.stamp.nope');if(st)st.style.opacity=1;
@@ -2312,6 +2342,100 @@ document.addEventListener('submit',e=>{if(e.target.id==='meetForm'){e.preventDef
   SB.rpc('set_meet_link',{bk:b.id,url:url||null}).then(({error})=>{if(error){toast(liveErr(error));return}b.meet_custom=url||null;render();toast(t('บันทึกลิงก์แล้ว','Link saved'))});return}
  if(e.target.id==='noteForm'){e.preventDefault();const b=S.bookings.find(v=>v.id===S.liveId);if(b)bkSaveNote(b)}});
 document.addEventListener('input',e=>{if(e.target.id==='bkCoins')bkCoinsInput(e.target.value);if(e.target.id==='bkTopic'&&S.bk)S.bk.topic=e.target.value});
+/* ---------- onboarding: welcome (goal + fields) · start card · first steps · coach marks ---------- */
+const OB_GOALS=[['intern','🎓',['หาที่ฝึกงาน','Find an internship']],['first','💼',['หางานแรกหลังจบ','Find my first job']],['pt','⚡',['หางานพาร์ทไทม์','Find part-time work']],['salary','💰',['อยากรู้เงินเดือนจริง','See real salaries']],['mentor','💬',['อยากปรึกษารุ่นพี่','Talk to a mentor']],['browse','👀',['แค่มาดูเฉยๆ','Just looking around']]];
+const OB_STEPS=[['co','🏢',['ดูหน้าบริษัท 1 ที่','Open a company page'],5,'explore'],['follow','➕',['ติดตามบริษัท 1 ที่','Follow a company'],5,'explore'],['swipe','🐾',['ลองปัดหารุ่นพี่','Try swiping mentors'],5,'ask'],['review','✍️',['เขียนรีวิวแรก','Write your first review'],30,'write']];
+const OB_KEY='maadoo-onboard';
+function obLoad(){let v=null;try{v=JSON.parse(store.get(OB_KEY)||'null')}catch(e){}const o={goal:null,inds:[],at:0,steps:{},paid:{},closed:false,done:false};if(!v||typeof v!=='object')return o;
+ if(OB_GOALS.some(g=>g[0]===v.goal))o.goal=v.goal;if(Array.isArray(v.inds))o.inds=v.inds.filter(k=>IND[k]).slice(0,12);o.at=+v.at||0;
+ ['steps','paid'].forEach(k=>{if(v[k]&&typeof v[k]==='object')OB_STEPS.forEach(s=>{if(v[k][s[0]])o[k][s[0]]=+v[k][s[0]]||1})});o.closed=!!v.closed;o.done=!!v.done;return o}
+S.ob=obLoad();S.tour=null;
+const obSave=()=>store.set(OB_KEY,JSON.stringify(S.ob));
+const obNewDay=()=>!!(S.ob.at&&Date.now()-S.ob.at<DAY);
+const welcomed=()=>!!store.get('maadoo-welcome');
+function openOnboard(){S.tour=null;tourRender();openModal({type:'onboard',step:1,goal:S.ob.goal,inds:S.ob.inds.slice()})}
+function onboardModal(m){const dots=`<div class="ob-dots" role="img" aria-label="${t(`ขั้นที่ ${m.step} จาก 2`,`Step ${m.step} of 2`)}"><i class="${m.step===1?'on':''}"></i><i class="${m.step===2?'on':''}"></i></div>`;
+ const top=`<div class="ob-top">${m.step===2?`<button class="link" data-obback>← ${t('ย้อน','Back')}</button>`:`<span class="ob-brand"><img src="maadoo-job-round.png" width="1182" height="1231" decoding="async" alt="">${t('มาดูจ็อบ','Maadoo Job')}</span>`}${dots}<span class="ob-n">${m.step}/2</span><button class="link" data-obskip>${t('ข้าม','Skip')}</button></div>`;
+ if(m.step===1)return `<div class="ob">${top}<div class="ob-hero"><img class="ob-pup" src="${PUP()}" alt="${t('น้องมาดู','Maadoo the pup')}"><div class="ob-bubble"><b>${t('มาหาอะไรที่ Maadoo Job?','What brings you to Maadoo Job?')}</b><small>${t('เลือก 1 อย่าง น้องมาดูจะพาไปถูกที่','Pick one and Maadoo will take you to the right place')}</small></div></div>
+  <div class="ob-goals" role="group" aria-label="${t('เป้าหมาย','Goal')}">${OB_GOALS.map(g=>`<button class="ob-goal ${m.goal===g[0]?'on':''}" data-obgoal="${g[0]}" aria-pressed="${m.goal===g[0]}"><span aria-hidden="true">${g[1]}</span><b>${x(g[2])}</b></button>`).join('')}</div>
+  <p class="muted ob-note">${t('ไม่ต้องล็อกอิน เปลี่ยนทีหลังได้เสมอ','No login needed. You can change this any time')}</p></div>`;
+ const G=OB_GOALS.find(g=>g[0]===m.goal);
+ return `<div class="ob">${top}<div class="ob-hero"><img class="ob-pup" src="${PUP()}" alt=""><div class="ob-bubble"><b>${t('สนใจสายไหน?','Which fields interest you?')}</b><small>${G?`${G[1]} ${x(G[2])} · `:''}${t('เลือกได้หลายอัน','Pick as many as you like')}</small></div></div>
+  <div class="ob-inds" role="group" aria-label="${t('สายงาน','Fields')}">${Object.keys(IND).map(k=>`<button class="opt ${m.inds.includes(k)?'on':''}" data-obind="${k}" aria-pressed="${m.inds.includes(k)}">${m.inds.includes(k)?'✓ ':''}${x(IND[k])}</button>`).join('')}</div>
+  <button class="btn orange big" data-obdone>${m.inds.length?t(`เสร็จแล้ว ไปกันเลย (${m.inds.length})`,`Done, let’s go (${m.inds.length})`):t('ไปกันเลย','Let’s go')}</button></div>`}
+function obFinish(goal,inds){const first=!S.ob.at;S.ob.goal=goal||S.ob.goal||null;S.ob.inds=(inds||[]).filter(k=>IND[k]);if(first)S.ob.at=Date.now();obSave();store.set('maadoo-welcome','1');
+ S.modal=null;renderModal();obSync();S.q='';go('home');setTimeout(maybeTour,500)}
+async function obSync(){if(!sbLive())return;try{await ensureProfile();const {error}=await SB.from('profiles').update({onboard_goal:S.ob.goal,onboard_inds:S.ob.inds}).eq('id',S.user.id);if(error)console.warn('[Maadoo Job] onboarding answers not saved (run the SQL, section 10):',error.code,error.message)}catch(e){}}
+async function obAfterLogin(){obPay();if(!sbLive())return;try{const {data,error}=await SB.from('profiles').select('onboard_goal,onboard_inds').eq('id',S.user.id).maybeSingle();if(error){console.warn('[Maadoo Job] onboarding answers not loaded (run the SQL, section 10):',error.code,error.message);return}
+ if(data&&data.onboard_goal&&!S.ob.goal){S.ob.goal=OB_GOALS.some(g=>g[0]===data.onboard_goal)?data.onboard_goal:null;S.ob.inds=(data.onboard_inds||[]).filter(k=>IND[k]);obSave();if(S.view==='home')render()}
+ else if(S.ob.goal&&!(data&&data.onboard_goal))obSync()}catch(e){}}
+/* ---------- home: start card + first steps ---------- */
+function firstInd(pred){const hit=S.ob.inds.find(k=>JOBS.some(j=>pred(j)&&getCo(j.co).ind===k));return hit||'all'}
+const OB_CTA={intern:['ดูที่ฝึกงาน','See internships'],first:['ดูงานสำหรับเด็กจบใหม่','See jobs for new grads'],pt:['ดูงานพาร์ทไทม์ด่วน','See quick part-time jobs'],salary:['เช็กเงินเดือนจริง','Check real salaries'],mentor:['ปัดหารุ่นพี่','Swipe for mentors'],browse:['สำรวจบริษัท','Explore companies']};
+function startCard(){if(!welcomed())return '';const g=OB_GOALS.find(v=>v[0]===S.ob.goal);
+ if(!g)return `<section class="card start-card"><img class="sc-pup" src="${PUP()}" alt=""><div class="sc-t"><small>${t('เริ่มตรงนี้เลย','Start here')}</small><b>${t('บอกน้องมาดูหน่อย มาหาอะไร?','Tell Maadoo what you’re looking for')}</b></div><button class="btn orange" data-obopen>${t('เลือกเป้าหมาย','Pick a goal')}</button></section>`;
+ const inds=S.ob.inds.map(k=>x(IND[k]));
+ return `<section class="card start-card"><span class="sc-ic" aria-hidden="true">${g[1]}</span><div class="sc-t"><small>${t('เริ่มตรงนี้เลย','Start here')}</small><b>${x(g[2])}</b>${inds.length?`<span class="muted">${inds.slice(0,3).join(' · ')}${inds.length>3?` +${inds.length-3}`:''}</span>`:''}</div>
+ <button class="btn orange big sc-go" data-obstart>${x(OB_CTA[g[0]])} →</button><button class="link sc-change" data-obopen>${t('เปลี่ยนเป้าหมาย','Change goal')}</button></section>`}
+function obStart(){const g=S.ob.goal;
+ if(g==='intern'||g==='first'){const type=g==='intern'?'intern':'full',ind=firstInd(j=>j.type===type);S.jobTab='full';S.jobF={type,ind,min:0};go('jobs');if(S.ob.inds.length&&ind==='all')toast(t('ยังไม่มีประกาศในสายที่เลือก แสดงทั้งหมดแทน','No posts in your fields yet, showing everything'));return}
+ if(g==='pt'){S.jobTab='pt';go('jobs');return}
+ if(g==='mentor'){S.askTab='swipe';go('ask');return}
+ if(g==='browse'){const keys=Object.keys(IND),k=S.ob.inds.find(v=>CO.some(c=>c.ind===v));S.filter=k?keys.indexOf(k):-1;go('explore');return}
+ if(g==='salary'){const roles=allRoles(),c=CO.find(v=>S.ob.inds.includes(v.ind));if(c){const r=c.salary.find(s=>!s[5]);const i=r?roles.findIndex(v=>v[1]===r[0][1]):-1;if(i>=0)S.sal.role=i}
+  render();const el=$('#salRole');if(el){el.closest('.card').scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});setTimeout(()=>{const v=$('#salV');if(v)v.focus({preventScroll:true})},400)}}}
+function firstSteps(){if(!welcomed()||S.ob.closed||S.ob.done)return '';const n=OB_STEPS.filter(s=>S.ob.steps[s[0]]).length,member=S.user&&!S.user.anon;
+ return `<section class="card fs-card" aria-label="${t('ก้าวแรกของฉัน','My first steps')}"><div class="fs-h"><b>🐾 ${t('ก้าวแรกของฉัน','My first steps')}</b><span class="muted">${n}/4</span><button class="x sm" data-obclose aria-label="${t('ปิดการ์ดนี้','Close this card')}">×</button></div>
+ <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${n}"><i style="width:${n/4*100}%"></i></div>
+ <div class="fs-list">${OB_STEPS.map(s=>{const done=!!S.ob.steps[s[0]];return `<button class="fs-item ${done?'done':''}" data-go="${s[4]}" ${done?'aria-disabled="true"':''}><span class="fs-chk" aria-hidden="true">${done?'✓':s[1]}</span><span class="fs-l">${x(s[2])}</span><span class="chip ${s[0]==='review'?'coin':''}">+${s[3]} ${s[0]==='review'?t('เหรียญ','coins'):t('แต้ม','pts')}</span></button>`}).join('')}</div>
+ ${member?'':`<small class="muted">${t('เข้าสู่ระบบเพื่อรับแต้มและเหรียญ (ติ๊กได้เลยโดยไม่ต้องล็อกอิน)','Log in to collect the points and coins (the ticks work without logging in)')}</small>`}</section>`}
+function obMark(k){if(S.ob.steps[k]||!welcomed())return;S.ob.steps[k]=Date.now();obSave();const s=OB_STEPS.find(v=>v[0]===k),n=OB_STEPS.filter(v=>S.ob.steps[v[0]]).length;
+ toast(`✓ ${t('ก้าวแรก','First steps')} ${n}/4 · ${x(s[2])}`);obPay();if(n===4&&!S.ob.done){S.ob.done=true;obSave();setTimeout(celebrate,700)}}
+async function obPay(){if(!S.user||S.user.anon)return;for(const s of OB_STEPS){const k=s[0];if(!S.ob.steps[k]||S.ob.paid[k])continue;S.ob.paid[k]=Date.now();obSave();
+  if(k!=='review'){addPoints(s[3]);continue}
+  try{await addCoins(30,'review','onboard:first-review');toast(t('+30 เหรียญจากรีวิวแรก (เข้ากระเป๋าหลังรีวิวผ่านการตรวจ)','+30 coins for your first review (they arrive once it’s approved)'))}catch(e){if(!(e&&(e.code==='23505'||e.message==='duplicate'))){delete S.ob.paid[k];obSave()}}}}
+function obTrack(){if(!welcomed())return;if(S.view==='company')obMark('co');if(Object.values(S.follow).some(Boolean))obMark('follow');if(S.myReviews.length)obMark('review')}
+function celebrate(){const rm=matchMedia('(prefers-reduced-motion: reduce)').matches,C=['--orange','--blue','--accent','--good','--plus-c','--plus-b'];document.querySelectorAll('.ob-party').forEach(e=>e.remove());
+ const el=document.createElement('div');el.className='ob-party'+(rm?' still':'');el.setAttribute('role','status');
+ el.innerHTML=(rm?'':[...Array(40)].map((_,i)=>`<i style="left:${Math.random()*100}%;background:var(${C[i%C.length]});animation-delay:${(Math.random()*.6).toFixed(2)}s;animation-duration:${(1.8+Math.random()*1.2).toFixed(2)}s;--r:${Math.round(Math.random()*720-360)}deg"></i>`).join(''))+`<div class="ob-cheer"><img src="${PUP()}" alt=""><b>${t('ครบ 4 ก้าวแรกแล้ว! 🎉','All 4 first steps done! 🎉')}</b></div>`;
+ document.body.appendChild(el);setTimeout(()=>el.remove(),rm?2600:3400);if(S.view==='home')render()}
+/* ---------- coach marks ---------- */
+const vis=sel=>{const e=document.querySelector(sel);if(!e)return null;const r=e.getBoundingClientRect();return r.width&&r.height&&getComputedStyle(e).visibility!=='hidden'?e:null};
+const TOURS={home:[[()=>vis('#bnav .write')||vis('#topnav [data-go="write"]'),['ปุ่มนี้ไว้เขียนรีวิวที่ทำงาน ได้แต้มและเหรียญด้วย','Write a workplace review here and earn points and coins']],[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],[()=>vis('#themeBtn'),['เปลี่ยนธีม เอฟเฟค และเสียงได้ตรงนี้','Change the theme, effects and sound here']]],
+ ask:[[()=>vis('.scard.top'),['ปัดขวา = สนใจ · ปัดซ้าย = ข้าม (หรือกดปุ่มด้านล่าง)','Swipe right to like, left to skip (or use the buttons below)']],[()=>vis('.scard.top .s-rate'),['ดาวมาจากคนที่ปรึกษาจริง แตะเพื่ออ่านรีวิว','Stars come from real sessions. Tap to read the reviews']],[()=>vis('.scard.top .s-ask'),['ถามรุ่นพี่ฟรีได้เดือนละ 5 คำถามกับ Plus','Ask mentors for free: 5 questions a month with Plus']]]};
+function coachSeen(){const v=store.get('maadoo-coach');if(v==='1')return {home:1,ask:1};try{const o=JSON.parse(v||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
+const setSeen=o=>store.set('maadoo-coach',JSON.stringify(o));
+function maybeTour(){if(S.tour||S.modal||!welcomed())return;const p=S.view==='ask'&&S.askTab!=='swipe'?null:S.view;if(!p||!TOURS[p]||coachSeen()[p])return;
+ setTimeout(()=>{if(S.tour||S.modal||S.view!==p||coachSeen()[p])return;S.tour={p,i:0};tourStep()},450)}
+function tourStep(){const T=S.tour;if(!T)return;const steps=TOURS[T.p];while(T.i<steps.length&&!steps[T.i][0]())T.i++;
+ if(T.i>=steps.length||S.view!==T.p){tourEnd(false);return}const el=steps[T.i][0];const e=el(),r=e.getBoundingClientRect();
+ if(r.top<70||r.bottom>innerHeight-90){e.scrollIntoView({block:'center',behavior:'auto'})}tourRender()}
+function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour)o[S.tour.p]=1;setSeen(o);S.tour=null;tourRender()}
+function tourRender(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="tour"></div>');el=$('#tour')}const T=S.tour;if(!T){el.innerHTML='';return}
+ const steps=TOURS[T.p],st=steps[T.i],tg=st&&st[0]();if(!tg){el.innerHTML='';return}const r=tg.getBoundingClientRect(),W=Math.min(300,innerWidth-24),pad=6;
+ const below=r.bottom+170<innerHeight||r.top<200,top=below?r.bottom+14:Math.max(8,r.top-14),left=Math.max(12,Math.min(innerWidth-W-12,r.left+r.width/2-W/2)),ax=Math.max(18,Math.min(W-18,r.left+r.width/2-left));
+ const last=T.i>=steps.length-1||!steps.slice(T.i+1).some(s=>s[0]());
+ el.innerHTML=`<div class="tour-catch" data-tournext aria-hidden="true"></div><div class="tour-ring" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px"></div>
+ <div class="tour-tip ${below?'below':'above'}" role="dialog" aria-live="polite" aria-label="${t('คำแนะนำ','Tip')}" style="left:${left}px;${below?`top:${top}px`:`bottom:${innerHeight-top}px`};width:${W}px;--ax:${ax}px"><img src="${PUP()}" alt=""><div><small>${T.i+1}/${steps.length}</small><p>${x(st[1])}</p>
+ <div class="row"><button class="btn y sm" data-tournext>${last?t('เข้าใจแล้ว','Got it'):t('ถัดไป','Next')}</button><button class="link" data-tourskip>${t('ข้ามทั้งหมด','Skip all')}</button></div></div></div>`;
+ const b=el.querySelector('.tour-tip [data-tournext]');if(b)b.focus({preventScroll:true})}
+function tourNext(){if(!S.tour)return;S.tour.i++;tourStep()}
+addEventListener('resize',()=>{if(S.tour)tourRender()});addEventListener('scroll',()=>{if(S.tour)tourRender()},{passive:true});
+document.addEventListener('keydown',e=>{if(S.tour&&e.key==='Escape'){e.preventDefault();tourEnd(true)}});
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obopen],[data-obstart],[data-obclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
+ if(d.tournext!==undefined){e.preventDefault();e.stopPropagation();tourNext();return}
+ if(d.tourskip!==undefined){e.preventDefault();e.stopPropagation();tourEnd(true);return}
+ if(d.tourreplay!==undefined){setSeen({});S.themeOpen=false;renderThemePop();S.q='';go('home');maybeTour();return}
+ if(d.obopen!==undefined){openOnboard();return}
+ if(d.obstart!==undefined){obStart();return}
+ if(d.obclose!==undefined){S.ob.closed=true;obSave();render();toast(t('ซ่อนการ์ดก้าวแรกแล้ว','First-steps card hidden'));return}
+ if(!m||m.type!=='onboard')return;
+ if(d.obgoal){m.goal=d.obgoal;m.step=2;renderModal();const f=document.querySelector('.ob [data-obind]');if(f)f.focus({preventScroll:true});return}
+ if(d.obind){const i=m.inds.indexOf(d.obind);if(i>=0)m.inds.splice(i,1);else m.inds.push(d.obind);renderModal();return}
+ if(d.obback!==undefined){m.step=1;renderModal();return}
+ if(d.obskip!==undefined){if(m.step===1){m.step=2;renderModal()}else obFinish(m.goal,m.inds);return}
+ if(d.obdone!==undefined){obFinish(m.goal,m.inds);return}},true);
 /* ---------- interview review (for the weekly mission) ---------- */
 function ivModal(m,head){const c=getCo(m.co);return head(t('รีวิวการสัมภาษณ์','Review your interview'),x(c.name))+
  `<b style="font-size:14px">${t('ความยาก','Difficulty')}</b><div class="opts">${Object.keys(DIFF).map(k=>`<button type="button" class="opt ${m.diff===k?'on':''}" data-ivdiff="${k}">${x(DIFF[k])}</button>`).join('')}</div>
@@ -2343,6 +2467,7 @@ function promoSection(){if(S.promoHidden)return '';const se=seasonal(),pi=pionee
   `<div class="pslide ps-pioneer"><span class="ps-ic">🚩</span><div class="ps-b"><span class="ps-tag">${t('1,000 คนแรก','First 1,000')}</span><h3>${t('ป้ายผู้บุกเบิก ติดโปรไฟล์ถาวร','A permanent Pioneer badge')}</h3><p>${pi?t(`เหลืออีก ${fmt(pi.left)} ที่`,`${fmt(pi.left)} spots left`):t('สำหรับสมาชิก 1,000 คนแรก','For our first 1,000 members')}</p><button class="btn ps-btn" data-pgo="pioneer">${t('ดูรายละเอียด','Details')}</button></div></div>`,
   `<div class="pslide ps-invite"><span class="ps-ic">🤝</span><div class="ps-b"><span class="ps-tag">${t('ชวนเพื่อน','Invite friends')}</span><h3>${t('ชวนเพื่อน ได้คนละ 50 เหรียญ','Invite a friend, you both get 50 coins')}</h3><p>${t('เมื่อเพื่อนสมัครด้วยโค้ดของคุณแล้วเขียนรีวิวแรก','When they sign up with your code and write their first review')}</p><button class="btn ps-btn" data-pgo="invite">${t('ดูโค้ดของฉัน','See my code')}</button></div></div>`,
   `<div class="pslide ps-season"><span class="ps-ic">${se.ic}</span><div class="ps-b"><span class="ps-tag">${t('โปรตามฤดูกาล','Seasonal')} · ${x(MONTHS[promoMonth()-1])}</span><h3>${x(se.h)}</h3><p>${x(se.p)}</p><button class="btn ps-btn" data-season="${se.act}">${x(se.b)}</button></div></div>`];
+ if(obNewDay())return `<section class="sec promo-wrap promo-solo" aria-label="${t('โปรโมชัน','Promotions')}">${slides[0]}</section>`;
  const code=myCode();
  return `<section class="sec promo-wrap" aria-label="${t('โปรโมชัน','Promotions')}"><div class="promo-top"><b>🎉 ${t('โปรโมชัน','Promotions')}</b><button class="x sm" data-promohide aria-label="${t('ซ่อนโปรโมชัน 7 วัน','Hide promotions for 7 days')}" title="${t('ซ่อน 7 วัน','Hide for 7 days')}">×</button></div>
  <div class="promo" id="promo" tabindex="0" role="region" aria-roledescription="carousel" aria-label="${t('แบนเนอร์โปรโมชัน','Promotion banners')}">${slides.map((sl,i)=>`<div class="pcell" role="group" aria-roledescription="slide" aria-label="${i+1} / ${slides.length}">${sl}</div>`).join('')}</div>
@@ -2535,7 +2660,7 @@ function rules(){return `<div class="rules" style="margin-top:8px"><h1 style="fo
 
 /* ---------- modals & notifications ---------- */
 function openModal(m){S.modal=m;renderModal()}
-function closeModal(){const wasW=S.modal&&S.modal.type==='welcome';S.modal=null;renderModal();if(wasW){store.set('maadoo-welcome','1');if(!store.get('maadoo-coach')){S.coach=true;renderCoach()}}}
+function closeModal(){const m=S.modal;if(m&&m.type==='onboard'){obFinish(m.goal,m.inds);return}S.modal=null;renderModal()}
 function needLogin(fn){if(S.user){fn();return}S.after=fn;openModal({type:'login'})}
 function pushNotif(ic,th,en,go){NOTIFS.unshift({ic,t:[th,en],w:['เมื่อสักครู่','Just now'],go,read:false});renderBell()}
 function addPoints(n){if(S.user)S.user.points+=n}
@@ -2569,15 +2694,12 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
   <div class="grid">${[['ระบุชื่อบุคคล','Names an individual'],['ข้อมูลเท็จ','False information'],['คำหยาบ / คุกคาม','Abusive or harassing'],['สแปม / ไม่ใช่ประสบการณ์จริง','Spam or not a real experience']].map((r,i)=>`<button class="opt" style="text-align:left;border-radius:16px" data-reason="${i}">${x(r)}</button>`).join('')}</div>`;
  if(m.type==='match'){const mt=MENTORS.find(v=>v.id===m.id);const ini=S.user?esc(S.user.name.slice(0,1).toUpperCase()):'🙂';
   body=`<div class="match"><button class="x" data-close aria-label="${t('ปิด','Close')}" style="justify-self:end">×</button><div class="match-t">${t('แมตช์แล้ว!','It’s a match!')}</div><div class="match-av"><span class="me-ava">${ini}</span><span class="me-ava" style="background:${mt.bg};font-size:38px">${mt.ava}</span></div><p>${t(`${x(mt.name)}พร้อมให้คำปรึกษาคุณแล้ว 🎉`,`${x(mt.name)} is ready to chat with you 🎉`)}</p><button class="btn y" data-book="${mt.id}">${t('จองเวลาคุยเลย','Book a session')}</button><button class="link" data-close>${t('ปัดต่อ','Keep swiping')}</button></div>`}
- if(m.type==='welcome')body=`<div class="welcome"><button class="x" data-close aria-label="${t('ปิด','Close')}" style="justify-self:end">×</button><img src="maadoo-job-round.png" width="1182" height="1231" decoding="async" alt="${t('โลโก้มาดูจ็อบ','Maadoo Job logo')}" class="w-logo"><div class="w-kicker">📢 ${t('ยินดีต้อนรับสู่มาดูจ็อบ','Welcome to Maadoo Job')}</div>
-  <h2>${t('ก่อนไปทำงาน มาดูก่อน','Before you go, Maadoo first')}</h2><p class="muted" style="font-size:15px">${t('น้องมาดูช่วยส่องที่ทำงานให้ รีวิวจากคนในตัวจริง เงินเดือนจริง คำถามสัมภาษณ์จริง และรุ่นพี่ที่พร้อมให้คำปรึกษา','Maadoo the pup sniffs out workplaces for you: real reviews from insiders, real salaries, real interview questions, and seniors ready to help.')}</p>
-  <div class="w-grid">${[['⭐','explore',['รีวิวบริษัท','Company reviews'],['คะแนน 6 หมวด และความจริง vs ที่ประกาศ','6 ratings and reality vs. the job ad']],['💰','explore',['เงินเดือนจริง','Real salaries'],['เทียบเงินเดือนตำแหน่งเดียวกัน','Compare pay for the same role']],['💼','jobs',['งานและฝึกงาน','Jobs & internships'],['ทุกประกาศมีคะแนนรีวิวแนบ','Every post shows its review score']],['🐾','ask',['ปัดหารุ่นพี่','Swipe for mentors'],['คุย 1:1 หรือถามในบอร์ด','Chat 1:1 or ask the board']]].map(f=>`<button class="w-item" data-welcomego="${f[1]}"><span>${f[0]}</span><b>${x(f[2])}</b><small>${x(f[3])}</small></button>`).join('')}</div>
-  <button class="btn y" data-close style="justify-self:stretch">${t('เริ่มใช้งานเลย','Let’s go')}</button></div>`;
+ if(m.type==='onboard')body=onboardModal(m);
  if(m.type==='emp'){const e=EMP[m.tier],pay=m.tier==='Pro'?proPrice():0;body=`${head(t(`แพ็กเกจ ${m.tier}`,`${m.tier} plan`),m.tier==='Enterprise'?t('ทีมมาดูจ็อบจะติดต่อกลับภายใน 1 วันทำการ','The Maadoo Job team will get back to you within 1 business day'):m.tier==='Pro'?t(`${fmt(pay)} บาท/เดือน${pay<3900?' · 3 เดือนแรก':''}`,`${fmt(pay)} THB/month${pay<3900?' · first 3 months':''}`):t('ฟรีตลอด','Free forever'))}
   <form id="empForm" class="grid"><input class="field" id="ecn" maxlength="120" placeholder="${t('ชื่อบริษัท','Company name')}" required><input class="field" id="eem" type="email" placeholder="${t('อีเมลที่ทำงาน','Work email')}" required>${m.tier==='Enterprise'?`<input class="field" id="eph" placeholder="${t('เบอร์โทร (ไม่บังคับ)','Phone (optional)')}">`:''}
   <button class="btn ${m.tier==='Pro'?'orange':''}">${m.tier==='Pro'?t('ไปหน้าชำระเงิน (จำลอง)','Continue to checkout (simulated)'):m.tier==='Starter'?t('เริ่มใช้ฟรี','Start free'):t('ส่งข้อมูล','Send')}</button></form>
   <p class="demo-note">${t('เดโม: ไม่มีการตัดเงินจริง','Demo: no money is taken')}</p>`}
- const fresh=el._m!==m;el._m=m;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview','qchat','qnew','creport','amsgs'].includes(m.type)?'sheet-m':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}if(m.type==='qchat'){const cb=$('#chatBox');if(cb)cb.scrollTop=cb.scrollHeight;const qi=$('#qmsg');if(qi&&matchMedia('(hover:hover)').matches)qi.focus({preventScroll:true});return}
+ const fresh=el._m!==m;el._m=m;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview','qchat','qnew','creport','amsgs'].includes(m.type)?'sheet-m':''} ${m.type==='onboard'?'ob-bg':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''} ${m.type==='onboard'?'ob-m':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}if(m.type==='qchat'){const cb=$('#chatBox');if(cb)cb.scrollTop=cb.scrollHeight;const qi=$('#qmsg');if(qi&&matchMedia('(hover:hover)').matches)qi.focus({preventScroll:true});return}
  const f=el.querySelector('input');if(f)f.focus();
 }
 function renderBell(){const n=NOTIFS.filter(v=>!v.read).length;
@@ -2593,10 +2715,10 @@ function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen)
   <button class="fx-row" data-fx="amb" role="switch" aria-checked="${S.fxAmb}"><span><b>✨ ${t('เอฟเฟคพื้นหลัง','Background effect')}</b><small>${x(FXINFO[S.skin].n)}</small></span><i class="tg ${S.fxAmb?'on':''}"></i></button>
   <button class="fx-row" data-fx="tap" role="switch" aria-checked="${S.fxTap}"><span><b>👆 ${t('เอฟเฟคตอนกด','Tap effect')}</b><small>${t('มีอนิเมชันเด้งออกมาทุกครั้งที่กด','A little burst every time you tap')}</small></span><i class="tg ${S.fxTap?'on':''}"></i></button>
   <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(SNDINFO[S.skin])}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
-  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}</div>
+  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}<button class="fx-row tour-again" data-tourreplay><span><b>❓ ${t('พาเที่ยวอีกครั้ง','Show me around again')}</b><small>${t('น้องมาดูชี้ปุ่มสำคัญให้ดูใหม่','Maadoo points out the key buttons again')}</small></span><span aria-hidden="true">→</span></button></div>
  <div class="swatches">${SKINS.map(k=>`<button class="sw ${S.skin===k[0]?'on':''}" data-skin="${k[0]}"><span class="sw-prev" style="background:${k[3]}"><i style="background:${k[4]}"></i><i style="background:${k[5]}"></i><img src="${PUP(k[0])}" alt=""></span><span>${k[1]} ${x(k[2])}</span><small class="sw-fx">✨ ${x(FXINFO[k[0]].n)}</small></button>`).join('')}</div></div>`;
  const np=el.querySelector('.tpop');if(np)np.scrollTop=top}
-function renderCoach(){const el=$('#coach');if(!el)return;el.innerHTML=S.coach&&!S.themeOpen?`<div class="coach" role="status"><b>🎨 ${t('เปลี่ยนธีมได้ตรงนี้นะ!','You can change the theme here!')}</b><span>${t('มีทั้งแบบธรรมดา กลางคืน ซากุระ มินต์ และอื่น ๆ','Classic, Night, Sakura, Mint and more')}</span><button class="btn y" data-coachok>${t('เข้าใจแล้ว','Got it')}</button></div>`:''}
+function renderCoach(){tourRender()}
 /* explore: category dropdown · popover on wide screens, bottom sheet on phones (≤600px) */
 const isSheet=()=>matchMedia('(max-width:600px)').matches;
 function indMenu(sheet){const keys=Object.keys(IND);const opt=(i,label,n)=>`<button type="button" class="dd-opt" role="option" id="indopt${i}" aria-selected="${S.filter===i}" data-indpick="${i}" tabindex="-1"><span>${label}</span>${n!=null?`<span class="dd-n">(${n})</span>`:''}<span class="dd-ck" aria-hidden="true">${S.filter===i?'✓':''}</span></button>`;
@@ -2614,7 +2736,7 @@ function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
 function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
 function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
 addEventListener('resize',()=>{if(S.indOpen&&S.view==='explore'&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
-function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();}
+function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour&&S.tour.p!==S.view){S.tour=null}tourRender();maybeTour();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
@@ -2668,7 +2790,7 @@ document.addEventListener('click',e=>{
  if(d.book){if(S.modal)closeModal();openBook(d.book);return}
  if(d.slot!==undefined){S.modal.slot=+d.slot;renderModal();return}
  if(d.emp){openModal({type:'emp',tier:d.emp});return}
- if(b.id==='themeBtn'){S.themeOpen=!S.themeOpen;S.notifOpen=false;if(S.coach){S.coach=false;store.set('maadoo-coach','1')}renderBell();applyPrefs();return}
+ if(b.id==='themeBtn'){S.themeOpen=!S.themeOpen;S.notifOpen=false;renderBell();applyPrefs();return}
  if(d.skin){S.skin=d.skin;store.set('maadoo-skin',S.skin);render();const sw=document.querySelector(`#themePop [data-skin="${S.skin}"]`);if(sw)sw.focus({preventScroll:true});const k=SKINS.find(v=>v[0]===S.skin);toast(`${k[1]} ${t('ธีม','Theme')}: ${x(k[2])}`);return}
  if(d.mrevs){openModal({type:'mrevs',id:d.mrevs});return}
  if(d.mdone){const bk=S.booked.find(v=>v.id===d.mdone);if(bk){bk.st='done';render();openMrev(bk.id)}return}
@@ -2707,9 +2829,7 @@ document.addEventListener('click',e=>{
   const c=getCo(m.co);c.interview.qs.push([q,q]);S.prem.interviews.push({co:m.co,at:Date.now()});addPoints(10);S.modal=null;render();toast(t('ขอบคุณที่แชร์! ภารกิจ “รีวิวการสัมภาษณ์” สำเร็จ','Thanks for sharing! “Review an interview” mission done'));return}
  if(d.snd!==undefined){SND.toggle();renderThemePop();return}
  if(d.fx){if(d.fx==='amb'){S.fxAmb=!S.fxAmb;store.set('maadoo-fx-amb',S.fxAmb?'1':'0')}else{S.fxTap=!S.fxTap;store.set('maadoo-fx-tap',S.fxTap?'1':'0')}renderThemePop();FX.kick();return}
- if(d.coachok!==undefined){S.coach=false;store.set('maadoo-coach','1');renderCoach();return}
  if(b.id==='annBtn'){S.themeOpen=false;renderThemePop();openModal({type:'welcome'});return}
- if(d.welcomego){closeModal();go(d.welcomego);return}
  if(b.id==='langBtn'){if(S.view==='write'&&!S.done)syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}S.lang=S.lang==='th'?'en':'th';store.set('maadoo-lang',S.lang);render();toast(t('เปลี่ยนเป็นภาษาไทยแล้ว','Switched to English'));return}
  if(d.go){if(d.go==='write')S.done=null;go(d.go);return}
  if(d.co){go('company',{co:d.co,tab:d.tabto||'overview'});return}
@@ -3000,7 +3120,7 @@ const SND=(()=>{
 render();
 setInterval(()=>{if(qTick())rerender()},60000);
 setTimeout(loadPromoStats,SB?0:300);
-if(!store.get('maadoo-welcome'))openModal({type:'welcome'});
+if(!welcomed())openOnboard();
 if(window.supabase)initSB();else{const sbjs=document.getElementById('sbjs');if(sbjs)sbjs.addEventListener('load',initSB)}
 </script>
 
