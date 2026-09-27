@@ -19,8 +19,8 @@ const col=v=>v>=4?'var(--good)':v>=3.3?'var(--mid)':'var(--bad)';
 const getCo=id=>CO.find(c=>c.id===id);
 function toast(m){const e=$('#toast');e.textContent=m;e.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>e.hidden=true,2200)}
 function go(v,extra={}){Object.assign(S,{view:v},extra);render();window.scrollTo({top:0})}
-const SKINS=[['default','☀️',['ธรรมดา','Classic'],'#F1F7FF','#2F6FD6','#FF9A1F'],['night','🌙',['กลางคืน','Night'],'#0C1630','#5B93F5','#FFA940'],['sakura','🌸',['ซากุระ','Sakura'],'#FFF4F7','#E0507F','#FF7AA2'],['mint','🌿',['มินต์','Mint'],'#F0FBF6','#16A085','#FF8A5B'],['lavender','💜',['ลาเวนเดอร์','Lavender'],'#F6F3FF','#7B5CE0','#FF9A1F'],['sunset','🍊',['พระอาทิตย์ตก','Sunset'],'#FFF6EC','#E8743B','#2F6FD6'],['dino','🦖',['ไดโนเสาร์','Dinosaur'],'#F4F8EA','#4F8A2B','#FF8A3D'],['garden','🌷',['สวนดอกไม้','Flower garden'],'#FFFCF2','#3FA34D','#FF5E7E'],['sea','🌊',['ทะเล','Ocean'],'#EEF9FC','#0E8FB8','#FF8F6B']];
-const isDark=()=>S.skin==='night';
+/* themes: see js/themes.js (THEMES, TH) */
+const isDark=()=>!!TH(S.skin).dark;
 const PUP=(k=S.skin)=>k==='default'?'maadoo-icon.webp':`maadoo-icon-${k}.webp`;
 const PALETTE='<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.8-.9 1.4-1.9-.5-1.1.2-2.1 1.4-2.1H17a4 4 0 0 0 4-4c0-5.5-4-10-9-10z"/><circle cx="7.5" cy="11" r="1.3"/><circle cx="10.5" cy="7" r="1.3"/><circle cx="15" cy="7.5" r="1.3"/></svg>';
 const MEGA='<svg viewBox="0 0 24 24"><path d="M3 10v4a1 1 0 0 0 1 1h2l5 4V5L6 9H4a1 1 0 0 0-1 1z"/><path d="M15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/></svg>';
@@ -29,8 +29,10 @@ const MOON='<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0
 
 function applyPrefs(){
  const r=document.documentElement;
- r.setAttribute('data-theme',S.skin==='night'?'dark':'light');
+ const th=TH(S.skin);r.setAttribute('data-theme',th.dark?'dark':'light');
  if(S.skin==='default'||S.skin==='night')r.removeAttribute('data-skin');else r.setAttribute('data-skin',S.skin);
+ (applyPrefs.vars||[]).forEach(v=>r.style.removeProperty(v));applyPrefs.vars=Object.keys(th.vars||{}).map(v=>'--'+v);
+ applyPrefs.vars.forEach((v,i)=>r.style.setProperty(v,th.vars[v.slice(2)]));
  r.lang=S.lang;document.title=t('มาดูจ็อบ · ก่อนไปทำงาน มาดูก่อน','Maadoo Job · Before you go, Maadoo first');
  $('#themeBtn').innerHTML=PALETTE+`<span class="tlabel">${t('ธีม','Theme')}</span>`;
  $('#themeBtn').setAttribute('aria-label',t('เลือกธีม','Choose a theme'));

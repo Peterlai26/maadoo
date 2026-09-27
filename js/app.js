@@ -54,14 +54,15 @@ function foot(){$('#foot').innerHTML=`<span class="brand-s"><img src="${PUP()}" 
 const fxPct=v=>v?`${v}%`:t('ปิด','Off');
 const fxSlider=(k,ic,name,sub)=>{const v=fxLevel(k);return `<label class="fx-row fx-sl"><span><b>${ic} ${name} <em class="fx-v" id="fxv-${k}">${fxPct(v)}</em></b><small>${sub}</small></span><input type="range" id="fx-${k}" min="0" max="100" step="5" value="${v}" aria-label="${name}" aria-valuetext="${fxPct(v)}"></label>`};
 function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen){el.innerHTML='';return}
- const old=el.querySelector('.tpop'),top=old?old.scrollTop:0;
- el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')}</b></div><div class="fx-sec"><b>${t('เอฟเฟคและเสียง','Effects & sound')}</b>
-  ${fxSlider('amb','✨',t('เอฟเฟกต์พื้นหลัง','Background effect'),x(FXINFO[S.skin].n))}
+ const old=el.querySelector('.tpop'),top=old?old.scrollTop:0,gs=old?old.querySelector('.swatches'):null,gtop=gs?gs.scrollTop:null;
+ el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')}</b><small class="muted">${THEMES.length} ${t('ธีม','themes')}</small></div>
+ <div class="swatches" role="radiogroup" aria-label="${t('ธีม','Themes')}">${THEMES.map(k=>`<button class="sw ${S.skin===k.k?'on':''}" data-skin="${k.k}" role="radio" aria-checked="${S.skin===k.k}" title="✨ ${esc(x(k.fx.n))}"><span class="sw-prev" style="background:${k.prev[0]}"><i style="background:${k.prev[1]}"></i><i style="background:${k.prev[2]}"></i><img src="${PUP(k.k)}" alt="" loading="lazy"></span><span class="sw-n">${k.ic} ${x(k.n)}</span></button>`).join('')}</div>
+ <div class="fx-sec"><b>${t('เอฟเฟคและเสียง','Effects & sound')} · ${TH(S.skin).ic} ${x(TH(S.skin).n)}</b>
+  ${fxSlider('amb','✨',t('เอฟเฟกต์พื้นหลัง','Background effect'),x(TH(S.skin).fx.n))}
   ${fxSlider('tap','👆',t('เอฟเฟกต์ตอนแตะ','Tap effect'),t('อนิเมชันเด้งออกมาตอนแตะ','A little burst when you tap'))}
-  <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(SNDINFO[S.skin])}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
-  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}<button class="fx-row tour-again" data-obopen><span><b>🎯 ${t('เปลี่ยนเป้าหมาย / คณะ','Change goal / faculty')}</b><small>${t('ตอบคำถามต้อนรับใหม่','Answer the welcome questions again')}</small></span><span aria-hidden="true">→</span></button><button class="fx-row tour-again" data-tourreplay><span><b>❓ ${t('พาเที่ยวอีกครั้ง','Show me around again')}</b><small>${t('น้องมาดูชี้ปุ่มสำคัญให้ดูใหม่','Maadoo points out the key buttons again')}</small></span><span aria-hidden="true">→</span></button></div>
- <div class="swatches">${SKINS.map(k=>`<button class="sw ${S.skin===k[0]?'on':''}" data-skin="${k[0]}"><span class="sw-prev" style="background:${k[3]}"><i style="background:${k[4]}"></i><i style="background:${k[5]}"></i><img src="${PUP(k[0])}" alt=""></span><span>${k[1]} ${x(k[2])}</span><small class="sw-fx">✨ ${x(FXINFO[k[0]].n)}</small></button>`).join('')}</div></div>`;
- const np=el.querySelector('.tpop');if(np)np.scrollTop=top}
+  <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(TH(S.skin).snd.n)}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
+  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}<button class="fx-row tour-again" data-obopen><span><b>🎯 ${t('เปลี่ยนเป้าหมาย / คณะ','Change goal / faculty')}</b><small>${t('ตอบคำถามต้อนรับใหม่','Answer the welcome questions again')}</small></span><span aria-hidden="true">→</span></button><button class="fx-row tour-again" data-tourreplay><span><b>❓ ${t('พาเที่ยวอีกครั้ง','Show me around again')}</b><small>${t('น้องมาดูชี้ปุ่มสำคัญให้ดูใหม่','Maadoo points out the key buttons again')}</small></span><span aria-hidden="true">→</span></button></div></div>`;
+ const np=el.querySelector('.tpop');if(np){np.scrollTop=top;const g=np.querySelector('.swatches');if(g){if(gtop!=null)g.scrollTop=gtop;else{const on=g.querySelector('.sw.on');if(on&&on.offsetTop>g.clientHeight-20)g.scrollTop=on.offsetTop-g.clientHeight/3}}}}
 function renderCoach(){tourRender()}
 /* explore: category dropdown · popover on wide screens, bottom sheet on phones (≤600px) */
 const isSheet=()=>matchMedia('(max-width:600px)').matches;
@@ -135,7 +136,7 @@ document.addEventListener('click',e=>{
  if(d.slot!==undefined){S.modal.slot=+d.slot;renderModal();return}
  if(d.emp){openModal({type:'emp',tier:d.emp});return}
  if(b.id==='themeBtn'){S.themeOpen=!S.themeOpen;S.notifOpen=false;renderBell();applyPrefs();return}
- if(d.skin){S.skin=d.skin;store.set('maadoo-skin',S.skin);render();const sw=document.querySelector(`#themePop [data-skin="${S.skin}"]`);if(sw)sw.focus({preventScroll:true});const k=SKINS.find(v=>v[0]===S.skin);toast(`${k[1]} ${t('ธีม','Theme')}: ${x(k[2])}`);return}
+ if(d.skin){S.skin=d.skin;store.set('maadoo-skin',S.skin);render();const sw=document.querySelector(`#themePop [data-skin="${S.skin}"]`);if(sw)sw.focus({preventScroll:true});const k=TH(S.skin);toast(`${k.ic} ${t('ธีม','Theme')}: ${x(k.n)}`);return}
  if(d.mrevs){openModal({type:'mrevs',id:d.mrevs});return}
  if(d.mdone){const bk=S.booked.find(v=>v.id===d.mdone);if(bk){bk.st='done';render();openMrev(bk.id)}return}
  if(d.mrevopen||d.mrevedit){openMrev(d.mrevopen||d.mrevedit);return}
