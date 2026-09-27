@@ -64,12 +64,13 @@ function pwaInit(){try{if(!sessionStorage.getItem('maadoo-pwa-s')){sessionStorag
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update().catch(()=>{})});
  }).catch(e=>console.warn('[Maadoo Job] service worker not registered:',e&&e.message))}
 
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();if(isStandalone())return;S.pwa.evt=e;if(['home','me'].includes(S.view))render()});
+/* Chrome only fires this when the app is NOT installed, so it also clears a stale "installed" (the app was removed) */
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();if(isStandalone())return;S.pwa.evt=e;if(S.pwa.installed){S.pwa.installed=false;pwaSave()}if(S.themeOpen)renderThemePop();if(['home','me'].includes(S.view))render()});
 addEventListener('appinstalled',()=>{S.pwa.installed=true;S.pwa.evt=null;pwaSave();if(['home','me'].includes(S.view))render()});
 addEventListener('offline',()=>{S.pwa.offline=true;pwaBars()});
 addEventListener('online',()=>{if(!S.pwa.offline)return;S.pwa.offline=false;pwaBars();toast(t('กลับมาออนไลน์แล้ว 🐾','You’re back online 🐾'))});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-pwainstall],[data-pwahide],[data-pwaupdate],[data-pwaretry]');if(!b)return;const d=b.dataset;
- if(d.pwainstall!==undefined){pwaInstall();return}
+ if(d.pwainstall!==undefined){if(S.themeOpen){S.themeOpen=false;renderThemePop()}pwaInstall();return}
  if(d.pwahide!==undefined){pwaHide();return}
  if(d.pwaupdate!==undefined){const w=S.pwa.update;if(!w){location.reload();return}S.pwa.asked=true;b.disabled=true;w.postMessage({type:'SKIP_WAITING'});setTimeout(()=>location.reload(),3000);return}
  if(d.pwaretry!==undefined){if(navigator.onLine)location.reload();else toast(t('ยังไม่มีเน็ตเลย ลองอีกทีนะ','Still offline. Try again in a bit'))}});
