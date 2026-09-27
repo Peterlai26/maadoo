@@ -273,7 +273,7 @@ async function applyRef(code){code=String(code||'').trim().toUpperCase();if(!REF
   S.prem.referredBy=code}else S.prem.referredBy=code;
  setRef(null);render();toast(t('ใช้โค้ดเพื่อนแล้ว! เขียนรีวิวแรกเพื่อรับ 50 เหรียญทั้งคู่','Code applied! Write your first review and you both get 50 coins'));claimReferral();return true}
 async function claimReferral(){if(!S.user||!S.prem.referredBy||!S.myReviews.length)return;
- if(sbLive()){try{const {data,error}=await SB.rpc('claim_referral_reward');if(error)throw error;if(data>0){await refreshAll();render();toast(t('+50 เหรียญจากการชวนเพื่อน 🎉','+50 coins from your invite 🎉'))}}catch(e){console.warn('[Maadoo Job] referral reward:',e&&(e.message||e))}return}
+ if(sbLive()){try{const {data,error}=await SB.rpc('claim_referral_reward');if(error)throw error;if(data>0){await refreshAll();render();toast(t('+50 เหรียญจากการชวนเพื่อน 🎉','+50 coins from your invite 🎉'))}}catch(e){console.warn('[Maadoo Job] referral reward:',e&&(e.message||e));toast(t('รับเหรียญชวนเพื่อนไม่สำเร็จ: ','Couldn’t add the invite coins: ')+String(e&&(e.message||e.code)||e).slice(0,120))}return}
  const ref='referral:me';if(claimed(ref))return;S.prem.ledger.unshift({id:'l-ref',delta:50,kind:'referral',ref,status:'ok',at:Date.now()});S.prem.coins+=50;render();toast(t('+50 เหรียญจากการชวนเพื่อน 🎉','+50 coins from your invite 🎉'))}
 async function loadPromoStats(){
  if(SB){try{const [a,b]=await Promise.all([SB.rpc('pioneer_stats'),SB.rpc('early_bird_left')]);
