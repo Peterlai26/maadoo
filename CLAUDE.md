@@ -103,7 +103,8 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
   - All 4 done → a pup + confetti celebration (static under reduced motion) and the card disappears. The × hides it.
 - **Coach marks:** on the first visit to Home and the Ask swipe tab (after onboarding), a small pup bubble points at up to 3 targets.
   - Home: the Jobs button (🗺️ career map, "ยังไม่รู้ว่าอยากทำงานอะไร?"), the write button, search, the theme menu. Users who saw the older Home tour get only the Jobs step once (`map` key). Ask: the swipe card, the star badge, ask-free.
-  - A tap anywhere goes on; "ข้ามทั้งหมด" or Esc ends all tours.
+  - Tapping the highlighted button opens it (and ends that tour); a tap anywhere else goes on; "ข้ามทั้งหมด" or Esc ends all tours.
+  - Jobs: on the first Jobs visit before the map was opened, the pup points at the 🗺️ tab ("แผนที่อาชีพอยู่ตรงนี้นะ!", `jobsmap` key).
   - It uses no dimming (it must not cover the phone screen) and is kept inside the viewport.
   - The theme menu's "❓ พาเที่ยวอีกครั้ง" resets and replays. A legacy `maadoo-coach = '1'` counts as all seen.
 

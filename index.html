@@ -2669,12 +2669,12 @@ function celebrate(){const rm=matchMedia('(prefers-reduced-motion: reduce)').mat
 /* ---------- coach marks ---------- */
 const vis=sel=>{const e=document.querySelector(sel);if(!e)return null;const r=e.getBoundingClientRect();return r.width&&r.height&&getComputedStyle(e).visibility!=='hidden'?e:null};
 const MAP_TIP=[()=>vis('#bnav [data-go="jobs"]')||vis('#topnav [data-go="jobs"]'),['🗺️ ยังไม่รู้ว่าอยากทำงานอะไร? ที่เมนู “งาน” มีแผนที่อาชีพ ช่วยวางแผนจากคณะที่เรียน ว่าไปทางไหนได้บ้าง','🗺️ Not sure what you want to do yet? “Jobs” has a career map that plans from your faculty and shows where it can take you']];
-const TOUR_VIEW={map:'home'},tourView=k=>TOUR_VIEW[k]||k;
-const TOURS={map:[MAP_TIP],home:[MAP_TIP,[()=>vis('#bnav .write')||vis('#topnav [data-go="write"]'),['ปุ่มนี้ไว้เขียนรีวิวที่ทำงาน ได้แต้มและเหรียญด้วย','Write a workplace review here and earn points and coins']],[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],[()=>vis('#themeBtn'),['เปลี่ยนธีม เอฟเฟค และเสียงได้ตรงนี้','Change the theme, effects and sound here']]],
+const TOUR_VIEW={map:'home',jobsmap:'jobs'},tourView=k=>TOUR_VIEW[k]||k;
+const TOURS={map:[MAP_TIP],jobsmap:[[()=>vis('.jsegs [data-jtab="map"]'),['🗺️ แผนที่อาชีพอยู่ตรงนี้นะ! แตะเพื่อดูว่าคณะคุณไปทางไหนได้บ้าง','🗺️ The career map is right here! Tap it to see where your faculty can take you']]],home:[MAP_TIP,[()=>vis('#bnav .write')||vis('#topnav [data-go="write"]'),['ปุ่มนี้ไว้เขียนรีวิวที่ทำงาน ได้แต้มและเหรียญด้วย','Write a workplace review here and earn points and coins']],[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],[()=>vis('#themeBtn'),['เปลี่ยนธีม เอฟเฟค และเสียงได้ตรงนี้','Change the theme, effects and sound here']]],
  ask:[[()=>vis('.scard.top'),['ปัดขวา = สนใจ · ปัดซ้าย = ข้าม (หรือกดปุ่มด้านล่าง)','Swipe right to like, left to skip (or use the buttons below)']],[()=>vis('.scard.top .s-rate'),['ดาวมาจากคนที่ปรึกษาจริง แตะเพื่ออ่านรีวิว','Stars come from real sessions. Tap to read the reviews']],[()=>vis('.scard.top .s-ask'),['ถามรุ่นพี่ฟรีได้เดือนละ 5 คำถามกับ Plus','Ask mentors for free: 5 questions a month with Plus']]]};
 function coachSeen(){const v=store.get('maadoo-coach');if(v==='1')return {home:1,ask:1};try{const o=JSON.parse(v||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
 const setSeen=o=>store.set('maadoo-coach',JSON.stringify(o));
-function maybeTour(){if(S.tour||S.modal||!welcomed())return;const v=S.view==='ask'&&S.askTab!=='swipe'?null:S.view,seen=coachSeen();const p=v==='home'&&seen.home?'map':v;if(!p||!TOURS[p]||seen[p])return;
+function maybeTour(){if(S.tour||S.modal||!welcomed())return;const v=S.view==='ask'&&S.askTab!=='swipe'?null:S.view,seen=coachSeen();const p=v==='home'&&seen.home?'map':v==='jobs'?(S.jobTab==='map'||S.ob.mapSeen?null:'jobsmap'):v;if(!p||!TOURS[p]||seen[p])return;
  setTimeout(()=>{if(S.tour||S.modal||S.view!==v||coachSeen()[p])return;S.tour={p,i:0};tourStep()},450)}
 function tourStep(){const T=S.tour;if(!T)return;const steps=TOURS[T.p];while(T.i<steps.length&&!steps[T.i][0]())T.i++;
  if(T.i>=steps.length||S.view!==tourView(T.p)){tourEnd(false);return}const el=steps[T.i][0];const e=el(),r=e.getBoundingClientRect();
@@ -2688,12 +2688,13 @@ function tourRender(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML
  <div class="tour-tip ${below?'below':'above'}" role="dialog" aria-live="polite" aria-label="${t('คำแนะนำ','Tip')}" style="left:${left}px;${below?`top:${top}px`:`bottom:${innerHeight-top}px`};width:${W}px;--ax:${ax}px"><img src="${PUP()}" alt=""><div><small>${T.i+1}/${steps.length}</small><p>${x(st[1])}</p>
  <div class="row"><button class="btn y sm" data-tournext>${last?t('เข้าใจแล้ว','Got it'):t('ถัดไป','Next')}</button><button class="link" data-tourskip>${t('ข้ามทั้งหมด','Skip all')}</button></div></div></div>`;
  const b=el.querySelector('.tour-tip [data-tournext]');if(b)b.focus({preventScroll:true})}
+function tourHit(e){const T=S.tour,st=T&&TOURS[T.p][T.i],tg=st&&st[0]();if(!tg)return false;const r=tg.getBoundingClientRect(),p=8;return e.clientX>=r.left-p&&e.clientX<=r.right+p&&e.clientY>=r.top-p&&e.clientY<=r.bottom+p}
 function tourNext(){if(!S.tour)return;S.tour.i++;tourStep()}
 addEventListener('resize',()=>{if(S.tour)tourRender()});addEventListener('scroll',()=>{if(S.tour)tourRender()},{passive:true});
 document.addEventListener('keydown',e=>{if(S.tour&&e.key==='Escape'){e.preventDefault();tourEnd(true)}});
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obnext],[data-fpick],[data-obopen],[data-obstart],[data-obclose],[data-scclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
- if(d.tournext!==undefined){e.preventDefault();e.stopPropagation();tourNext();return}
+ if(d.tournext!==undefined){e.preventDefault();e.stopPropagation();if(el.classList.contains('tour-catch')&&tourHit(e)){const T=S.tour,tg=TOURS[T.p][T.i][0]();tourEnd(false);if(tg)setTimeout(()=>{tg.click();if(tg.matches('input'))tg.focus()},0);return}tourNext();return}
  if(d.tourskip!==undefined){e.preventDefault();e.stopPropagation();tourEnd(true);return}
  if(d.tourreplay!==undefined){setSeen({});S.themeOpen=false;renderThemePop();S.q='';go('home');maybeTour();return}
  if(d.obopen!==undefined){openOnboard();return}
