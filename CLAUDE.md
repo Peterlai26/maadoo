@@ -95,19 +95,20 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
   - mentor → the swipe deck.
   - just looking → explore filtered by field.
   - "เปลี่ยนเป้าหมาย" reopens the welcome. Skipping shows "เลือกเป้าหมาย" instead.
+  - The card has a × (`startClosed` in `maadoo-onboard`); finishing the welcome again brings it back. The theme menu has "🎯 เปลี่ยนเป้าหมาย / คณะ" to reopen the welcome.
 - **First day after onboarding:** the promo block shows only the "รีวิวแรก แลก Plus ฟรี!" banner.
 - **"ก้าวแรกของฉัน" card** (below the start card): 4 auto-ticked steps with a progress bar.
   - Steps: open a company (+5 points), follow a company (+5 points), swipe a mentor (+5 points), first review (+30 coins, a `review` ledger row with ref `onboard:first-review`, pending until moderation and counted in the monthly mission cap).
   - Ticks work logged out; rewards are paid once, only for a logged-in non-guest (paid on login if ticked earlier).
   - All 4 done → a pup + confetti celebration (static under reduced motion) and the card disappears. The × hides it.
 - **Coach marks:** on the first visit to Home and the Ask swipe tab (after onboarding), a small pup bubble points at up to 3 targets.
-  - Home: the write button, search, the theme menu. Ask: the swipe card, the star badge, ask-free.
+  - Home: the Jobs button (🗺️ career map, "ยังไม่รู้ว่าอยากทำงานอะไร?"), the write button, search, the theme menu. Users who saw the older Home tour get only the Jobs step once (`map` key). Ask: the swipe card, the star badge, ask-free.
   - A tap anywhere goes on; "ข้ามทั้งหมด" or Esc ends all tours.
   - It uses no dimming (it must not cover the phone screen) and is kept inside the viewport.
   - The theme menu's "❓ พาเที่ยวอีกครั้ง" resets and replays. A legacy `maadoo-coach = '1'` counts as all seen.
 
 ## Career map (decided) — "🗺️ แผนที่อาชีพ"
-- Lives in the jobs view as the third tab (`S.jobTab='map'`, state in `S.cm`). Entry points: that tab (orange "ใหม่" chip / dot until first opened), a dismissible pup tip on the other jobs tabs "ยังไม่รู้ว่าตัวเองชอบงานแบบไหน? ไม่เป็นไรเลย" (hidden for good once the map is opened or the tip is closed; flag `mapSeen` in `maadoo-onboard`), a small home card "คณะคุณไปได้ไกลกว่าที่คิด" (hidden when the goal is "first job", whose start card already goes there), and bell notifications for followed roles.
+- Lives in the jobs view as the third tab (`S.jobTab='map'`, state in `S.cm`). Entry points: that tab (orange "ใหม่" chip / dot until first opened) (flag `mapSeen` in `maadoo-onboard`), the first Home coach mark pointing at the Jobs button, a small home card "คณะคุณไปได้ไกลกว่าที่คิด" (hidden when the goal is "first job", whose start card already goes there), and bell notifications for followed roles.
 - **Data (sample guidance, labelled "💡 ข้อมูลแนะนำเบื้องต้น"):** `FAC` (15 faculties, each with majors, the skills it builds, and per-major extra skills/direct roles) · `WORLDS` (7) → `GROUPS` → `ROLES` (skills used, CO salary-row names, related job ids) · `FIT_SRC` = the faculty → role → fit table (`d` 🟢 ตรงสาย, `b` 🟡 ข้ามสายได้, `s` 🟠 ต้องเพิ่มทักษะ). Every faculty needs 8+ roles and 3+ non-direct ones. Skills to reuse / add come from `SK` (with rough months to learn) by comparing the faculty's skills with the role's.
 - **Layer 1:** 7 world circles sized by how many roles the user's faculty reaches, tagged "ตรงสาย" / "ข้ามสายได้ 🌉". Scattered circles on desktop (≥1021px), a grid of round cards below that. **Layers 2–3:** zoom (scale animation from the tapped item, off under reduced motion) into groups, then roles with badge + skills; breadcrumb "ทั้งหมด › world › group › role" goes back. **Layer 4 (role page):** starting salary from the site's salary rows, companies, open jobs, "🌉 รุ่นพี่ที่ข้ามสายมา" (mentors whose faculty isn't a direct fit, with ask/book), and "ติดตามตำแหน่งนี้" (followed roles kept in `maadoo-onboard`; bell notification).
 - **Mentor faculty:** sample mentors carry `fac` + `roles`; real mentors pick "คณะที่จบ" in the application (optional) or in mentor mode (`mentor_applications.faculty` → `mentors.faculty`, SQL section 11); their role is matched from the free-text field.

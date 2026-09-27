@@ -519,9 +519,9 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .ob-goal span{font-size:30px;line-height:1}.ob-goal b{font-size:14.5px;line-height:1.3}.ob-goal:hover{border-color:var(--blue);transform:translateY(-2px)}.ob-goal.on{border-color:var(--orange-btn);background:var(--orange-soft)}
 .ob-inds{display:flex;flex-wrap:wrap;gap:8px}.ob-note{text-align:center;font-size:12.5px;margin:0}
 @media (max-width:520px){.ob-goals{grid-template-columns:1fr 1fr;gap:8px}.ob-goal{min-height:88px;padding:10px 6px}.ob-goal span{font-size:26px}.ob-pup{width:62px;height:62px}}
-.start-card{display:grid;grid-template-columns:auto 1fr auto;gap:12px 14px;align-items:center;padding:16px 18px;margin-top:10px;border:2px solid var(--orange-btn);background:linear-gradient(135deg,var(--orange-soft),var(--surface) 70%)}
+.start-card{position:relative;padding-right:44px!important;display:grid;grid-template-columns:auto 1fr auto;gap:12px 14px;align-items:center;padding:16px 18px;margin-top:10px;border:2px solid var(--orange-btn);background:linear-gradient(135deg,var(--orange-soft),var(--surface) 70%)}
 .sc-ic{font-size:38px;line-height:1}.sc-pup{width:52px;height:52px;border-radius:50%}.sc-t{display:grid;gap:2px;min-width:0}.sc-t small{font-weight:700;color:var(--orange-btn);font-size:12.5px;letter-spacing:.02em}.sc-t b{font-family:var(--display);font-size:20px;color:var(--navy)}.sc-t .muted{font-size:13px;overflow-wrap:anywhere}
-.sc-go{width:auto;white-space:nowrap}.sc-change{grid-column:1/-1;justify-self:start;font-size:13px}
+.sc-go{width:auto;white-space:nowrap}.sc-x{position:absolute;top:8px;right:8px;margin:0}.sc-change{grid-column:1/-1;justify-self:start;font-size:13px}
 @media (max-width:640px){.start-card{grid-template-columns:auto 1fr}.sc-go{grid-column:1/-1;width:100%;white-space:normal}}
 .fs-card{display:grid;gap:10px;padding:14px 16px;margin-top:12px}.fs-h{display:flex;align-items:center;gap:8px}.fs-h .x{margin-left:auto}
 .fs-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
@@ -816,9 +816,7 @@ html,body{overflow-x:clip}
 .jsegs .ls{display:none}@media (max-width:560px){.jsegs{display:flex;width:100%}.jsegs button{flex:1;padding:7px 8px}.jsegs .ll{display:none}.jsegs .ls{display:inline}}
 .cm{overflow-x:clip}
 .cm-new{font-style:normal;font-size:10.5px;font-weight:700;background:var(--orange-btn);color:var(--on-brand);border-radius:99px;padding:1px 6px;margin-left:5px;vertical-align:2px}
-.cm-hint{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;padding:12px 14px;border-radius:20px;border:2px dashed var(--orange-btn);background:linear-gradient(135deg,var(--orange-soft),var(--surface) 75%)}
-.cm-hint img{width:46px;height:46px;border-radius:50%;flex:none}.cm-hint div{display:grid;gap:2px;flex:1;min-width:180px}.cm-hint b{font-family:var(--display);color:var(--navy);font-size:16px}.cm-hint span{font-size:13.5px;color:var(--ink-2)}.cm-hint .x{margin-left:0;align-self:flex-start}
-@media (max-width:560px){.cm-hint{position:relative;padding-right:44px}.cm-hint .x{position:absolute;top:8px;right:8px}.cm-hint .btn{width:100%}.cm-new{font-size:0;width:8px;height:8px;padding:0;display:inline-block;margin-left:3px;vertical-align:4px}}
+@media (max-width:560px){.cm-new{font-size:0;width:8px;height:8px;padding:0;display:inline-block;margin-left:3px;vertical-align:4px}}
 .cm-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}.cm-head h1{font-size:28px}
 .cm-fac{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:10px 14px;margin-top:12px}
 .cm-fe{font-size:28px;line-height:1}.cm-ft{display:grid;flex:1;min-width:0}.cm-ft small{font-size:12px;color:var(--ink-3)}.cm-ft b{color:var(--navy);overflow-wrap:anywhere;font-size:15px}
@@ -1639,8 +1637,7 @@ function jobCard(j){const c=getCo(j.co);
   <div class="row" style="gap:6px">${j.tags.map(g=>`<span class="chip">${x(g)}</span>`).join('')}</div>
   <div class="job-foot"><span class="muted">${agoTxt(j.days)}</span><div class="grow"><button class="save ${S.saved[j.id]?'on':''}" data-save="${j.id}" aria-label="${t('บันทึกงาน','Save job')}">${S.saved[j.id]?'♥':'♡'}</button>
   ${S.applied[j.id]?`<button class="btn ghost" disabled>✓ ${t('สมัครแล้ว','Applied')}</button>`:`<button class="btn" data-apply="${j.id}">${t('สมัครเลย','Apply')}</button>`}</div></div></article>`}
-function jobs(){return `<div class="segs jsegs" style="margin-top:10px">${[['full',t('💼 งานประจำ / ฝึกงาน','💼 Jobs & internships'),t('💼 งาน','💼 Jobs')],['pt',t('⚡ งานด่วน พาร์ทไทม์','⚡ Quick part-time'),t('⚡ พาร์ทไทม์','⚡ Part-time')],['map',t('🗺️ แผนที่อาชีพ','🗺️ Career map'),t('🗺️ แผนที่','🗺️ Map')]].map(([k,n,sn])=>`<button class="${S.jobTab===k?'on':''}" data-jtab="${k}" aria-pressed="${S.jobTab===k}"><span class="ll">${n}</span><span class="ls">${sn}</span>${k==='map'&&!S.ob.mapSeen&&S.jobTab!=='map'?`<i class="cm-new">${t('ใหม่','New')}</i>`:''}</button>`).join('')}</div>`+(S.jobTab!=='map'&&!S.ob.mapSeen?mapHint():'')+(S.jobTab==='pt'?ptFeed():S.jobTab==='map'?careerMap():jobsFull())}
-function mapHint(){return `<section class="cm-hint" aria-label="${t('แผนที่อาชีพ','Career map')}"><img src="${PUP()}" alt=""><div><b>${t('ยังไม่รู้ว่าตัวเองชอบงานแบบไหน? ไม่เป็นไรเลย','Not sure what kind of work suits you yet? That’s okay')}</b><span>${t('ลอง 🗺️ แผนที่อาชีพ ดูว่าคณะคุณไปทางไหนได้บ้าง ทั้งตรงสายและข้ามสาย แล้วค่อย ๆ ซูมหาตำแหน่งที่ใช่','Try the 🗺️ career map to see where your faculty can take you, direct and cross-over, then zoom in to find your fit')}</span></div><button class="btn orange sm" data-cmopen>${t('ลองดูแผนที่ →','Try the map →')}</button><button class="x sm" data-cmhintx aria-label="${t('ปิดคำแนะนำนี้','Close this tip')}">×</button></section>`}
+function jobs(){return `<div class="segs jsegs" style="margin-top:10px">${[['full',t('💼 งานประจำ / ฝึกงาน','💼 Jobs & internships'),t('💼 งาน','💼 Jobs')],['pt',t('⚡ งานด่วน พาร์ทไทม์','⚡ Quick part-time'),t('⚡ พาร์ทไทม์','⚡ Part-time')],['map',t('🗺️ แผนที่อาชีพ','🗺️ Career map'),t('🗺️ แผนที่','🗺️ Map')]].map(([k,n,sn])=>`<button class="${S.jobTab===k?'on':''}" data-jtab="${k}" aria-pressed="${S.jobTab===k}"><span class="ll">${n}</span><span class="ls">${sn}</span>${k==='map'&&!S.ob.mapSeen&&S.jobTab!=='map'?`<i class="cm-new">${t('ใหม่','New')}</i>`:''}</button>`).join('')}</div>`+(S.jobTab==='pt'?ptFeed():S.jobTab==='map'?careerMap():jobsFull())}
 function jobsFull(){
  const F=S.jobF;const keys=Object.keys(IND);
  let list=JOBS.filter(j=>(F.type==='all'||j.type===F.type)&&(F.ind==='all'||getCo(j.co).ind===F.ind)&&(!F.min||(j.unit==='month'&&j.pay[0]>=F.min)));
@@ -2610,13 +2607,13 @@ const OB_STEPS=[['co','🏢',['ดูหน้าบริษัท 1 ที่'
 const OB_KEY='maadoo-onboard';
 function obLoad(){let v=null;try{v=JSON.parse(store.get(OB_KEY)||'null')}catch(e){}const o={goal:null,inds:[],fac:null,major:null,roles:[],at:0,steps:{},paid:{},closed:false,done:false};if(!v||typeof v!=='object')return o;
  if(OB_GOALS.some(g=>g[0]===v.goal))o.goal=v.goal;if(Array.isArray(v.inds))o.inds=v.inds.filter(k=>IND[k]).slice(0,12);o.at=+v.at||0;
- if(facOk(v.fac)){o.fac=v.fac;if(facOk(v.fac,v.major))o.major=v.major||null}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);o.mapSeen=!!v.mapSeen;
+ if(facOk(v.fac)){o.fac=v.fac;if(facOk(v.fac,v.major))o.major=v.major||null}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);o.mapSeen=!!v.mapSeen;o.startClosed=!!v.startClosed;
  ['steps','paid'].forEach(k=>{if(v[k]&&typeof v[k]==='object')OB_STEPS.forEach(s=>{if(v[k][s[0]])o[k][s[0]]=+v[k][s[0]]||1})});o.closed=!!v.closed;o.done=!!v.done;return o}
 S.ob=obLoad();S.tour=null;
 const obSave=()=>store.set(OB_KEY,JSON.stringify(S.ob));
 const obNewDay=()=>!!(S.ob.at&&Date.now()-S.ob.at<DAY);
 const welcomed=()=>!!store.get('maadoo-welcome');
-function openOnboard(){S.tour=null;tourRender();openModal({type:'onboard',step:1,goal:S.ob.goal,inds:S.ob.inds.slice(),fac:S.ob.fac,major:S.ob.major,q:''})}
+function openOnboard(){S.tour=null;S.themeOpen=false;renderThemePop();tourRender();openModal({type:'onboard',step:1,goal:S.ob.goal,inds:S.ob.inds.slice(),fac:S.ob.fac,major:S.ob.major,q:''})}
 function onboardModal(m){const dots=`<div class="ob-dots" role="img" aria-label="${t(`ขั้นที่ ${m.step} จาก 3`,`Step ${m.step} of 3`)}">${[1,2,3].map(i=>`<i class="${m.step===i?'on':''}"></i>`).join('')}</div>`;
  const top=`<div class="ob-top">${m.step>1?`<button class="link" data-obback>← ${t('ย้อน','Back')}</button>`:`<span class="ob-brand"><img src="maadoo-job-round.png" width="1182" height="1231" decoding="async" alt="">${t('มาดูจ็อบ','Maadoo Job')}</span>`}${dots}<span class="ob-n">${m.step}/3</span><button class="link" data-obskip>${t('ข้าม','Skip')}</button></div>`;
  if(m.step===1)return `<div class="ob">${top}<div class="ob-hero"><img class="ob-pup" src="${PUP()}" alt="${t('น้องมาดู','Maadoo the pup')}"><div class="ob-bubble"><b>${t('มาหาอะไรที่ Maadoo Job?','What brings you to Maadoo Job?')}</b><small>${t('เลือก 1 อย่าง น้องมาดูจะพาไปถูกที่','Pick one and Maadoo will take you to the right place')}</small></div></div>
@@ -2628,7 +2625,7 @@ function onboardModal(m){const dots=`<div class="ob-dots" role="img" aria-label=
  return `<div class="ob">${top}<div class="ob-hero"><img class="ob-pup" src="${PUP()}" alt=""><div class="ob-bubble"><b>${t('สนใจสายไหน?','Which fields interest you?')}</b><small>${G?`${G[1]} ${x(G[2])} · `:''}${t('เลือกได้หลายอัน','Pick as many as you like')}</small></div></div>
   <div class="ob-inds" role="group" aria-label="${t('สายงาน','Fields')}">${Object.keys(IND).map(k=>`<button class="opt ${m.inds.includes(k)?'on':''}" data-obind="${k}" aria-pressed="${m.inds.includes(k)}">${m.inds.includes(k)?'✓ ':''}${x(IND[k])}</button>`).join('')}</div>
   <button class="btn orange big" data-obnext>${m.inds.length?t(`ถัดไป (${m.inds.length})`,`Next (${m.inds.length})`):t('ถัดไป','Next')}</button></div>`}
-function obFinish(m){const first=!S.ob.at;S.ob.goal=m.goal||S.ob.goal||null;S.ob.inds=(m.inds||[]).filter(k=>IND[k]);if(facOk(m.fac)){S.ob.fac=m.fac;S.ob.major=facOk(m.fac,m.major)?m.major||null:null}if(first)S.ob.at=Date.now();obSave();store.set('maadoo-welcome','1');
+function obFinish(m){const first=!S.ob.at;S.ob.goal=m.goal||S.ob.goal||null;S.ob.inds=(m.inds||[]).filter(k=>IND[k]);S.ob.startClosed=false;if(facOk(m.fac)){S.ob.fac=m.fac;S.ob.major=facOk(m.fac,m.major)?m.major||null:null}if(first)S.ob.at=Date.now();obSave();store.set('maadoo-welcome','1');
  S.modal=null;renderModal();obSync();S.q='';go('home');setTimeout(maybeTour,500)}
 async function obSync(){if(!sbLive())return;try{await ensureProfile();const {error}=await SB.from('profiles').update({onboard_goal:S.ob.goal,onboard_inds:S.ob.inds}).eq('id',S.user.id);if(error)console.warn('[Maadoo Job] onboarding answers not saved (run the SQL, section 10):',error.code,error.message);
  const r=await SB.from('profiles').update({onboard_fac:S.ob.fac,onboard_major:S.ob.major}).eq('id',S.user.id);if(r.error)console.warn('[Maadoo Job] faculty not saved (run the SQL, section 11):',r.error.code,r.error.message)}catch(e){}}
@@ -2641,11 +2638,11 @@ async function obAfterLogin(){obPay();if(!sbLive())return;try{const {data,error}
 /* ---------- home: start card + first steps ---------- */
 function firstInd(pred){const hit=S.ob.inds.find(k=>JOBS.some(j=>pred(j)&&getCo(j.co).ind===k));return hit||'all'}
 const OB_CTA={intern:['ดูที่ฝึกงาน','See internships'],first:['ดูแผนที่อาชีพของคณะคุณ','See your career map'],pt:['ดูงานพาร์ทไทม์ด่วน','See quick part-time jobs'],salary:['เช็กเงินเดือนจริง','Check real salaries'],mentor:['ปัดหารุ่นพี่','Swipe for mentors'],browse:['สำรวจบริษัท','Explore companies']};
-function startCard(){if(!welcomed())return '';const g=OB_GOALS.find(v=>v[0]===S.ob.goal);
- if(!g)return `<section class="card start-card"><img class="sc-pup" src="${PUP()}" alt=""><div class="sc-t"><small>${t('เริ่มตรงนี้เลย','Start here')}</small><b>${t('บอกน้องมาดูหน่อย มาหาอะไร?','Tell Maadoo what you’re looking for')}</b></div><button class="btn orange" data-obopen>${t('เลือกเป้าหมาย','Pick a goal')}</button></section>`;
+function startCard(){if(!welcomed()||S.ob.startClosed)return '';const X=`<button class="x sm sc-x" data-scclose aria-label="${t('ปิดการ์ดนี้','Close this card')}">×</button>`;const g=OB_GOALS.find(v=>v[0]===S.ob.goal);
+ if(!g)return `<section class="card start-card"><img class="sc-pup" src="${PUP()}" alt=""><div class="sc-t"><small>${t('เริ่มตรงนี้เลย','Start here')}</small><b>${t('บอกน้องมาดูหน่อย มาหาอะไร?','Tell Maadoo what you’re looking for')}</b></div><button class="btn orange" data-obopen>${t('เลือกเป้าหมาย','Pick a goal')}</button>${X}</section>`;
  const inds=(g[0]==='first'&&FAC[S.ob.fac]?[facName()]:[]).concat(S.ob.inds.map(k=>x(IND[k])));
  return `<section class="card start-card"><span class="sc-ic" aria-hidden="true">${g[1]}</span><div class="sc-t"><small>${t('เริ่มตรงนี้เลย','Start here')}</small><b>${x(g[2])}</b>${inds.length?`<span class="muted">${inds.slice(0,3).join(' · ')}${inds.length>3?` +${inds.length-3}`:''}</span>`:''}</div>
- <button class="btn orange big sc-go" data-obstart>${x(OB_CTA[g[0]])} →</button><button class="link sc-change" data-obopen>${t('เปลี่ยนเป้าหมาย','Change goal')}</button></section>`}
+ <button class="btn orange big sc-go" data-obstart>${x(OB_CTA[g[0]])} →</button><button class="link sc-change" data-obopen>${t('เปลี่ยนเป้าหมาย','Change goal')}</button>${X}</section>`}
 function obStart(){const g=S.ob.goal;
  if(g==='first'){openMap();return}
  if(g==='intern'){const type='intern',ind=firstInd(j=>j.type===type);S.jobTab='full';S.jobF={type,ind,min:0};go('jobs');if(S.ob.inds.length&&ind==='all')toast(t('ยังไม่มีประกาศในสายที่เลือก แสดงทั้งหมดแทน','No posts in your fields yet, showing everything'));return}
@@ -2671,16 +2668,18 @@ function celebrate(){const rm=matchMedia('(prefers-reduced-motion: reduce)').mat
  document.body.appendChild(el);setTimeout(()=>el.remove(),rm?2600:3400);if(S.view==='home')render()}
 /* ---------- coach marks ---------- */
 const vis=sel=>{const e=document.querySelector(sel);if(!e)return null;const r=e.getBoundingClientRect();return r.width&&r.height&&getComputedStyle(e).visibility!=='hidden'?e:null};
-const TOURS={home:[[()=>vis('#bnav .write')||vis('#topnav [data-go="write"]'),['ปุ่มนี้ไว้เขียนรีวิวที่ทำงาน ได้แต้มและเหรียญด้วย','Write a workplace review here and earn points and coins']],[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],[()=>vis('#themeBtn'),['เปลี่ยนธีม เอฟเฟค และเสียงได้ตรงนี้','Change the theme, effects and sound here']]],
+const MAP_TIP=[()=>vis('#bnav [data-go="jobs"]')||vis('#topnav [data-go="jobs"]'),['🗺️ ยังไม่รู้ว่าอยากทำงานอะไร? ที่เมนู “งาน” มีแผนที่อาชีพ ช่วยวางแผนจากคณะที่เรียน ว่าไปทางไหนได้บ้าง','🗺️ Not sure what you want to do yet? “Jobs” has a career map that plans from your faculty and shows where it can take you']];
+const TOUR_VIEW={map:'home'},tourView=k=>TOUR_VIEW[k]||k;
+const TOURS={map:[MAP_TIP],home:[MAP_TIP,[()=>vis('#bnav .write')||vis('#topnav [data-go="write"]'),['ปุ่มนี้ไว้เขียนรีวิวที่ทำงาน ได้แต้มและเหรียญด้วย','Write a workplace review here and earn points and coins']],[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],[()=>vis('#themeBtn'),['เปลี่ยนธีม เอฟเฟค และเสียงได้ตรงนี้','Change the theme, effects and sound here']]],
  ask:[[()=>vis('.scard.top'),['ปัดขวา = สนใจ · ปัดซ้าย = ข้าม (หรือกดปุ่มด้านล่าง)','Swipe right to like, left to skip (or use the buttons below)']],[()=>vis('.scard.top .s-rate'),['ดาวมาจากคนที่ปรึกษาจริง แตะเพื่ออ่านรีวิว','Stars come from real sessions. Tap to read the reviews']],[()=>vis('.scard.top .s-ask'),['ถามรุ่นพี่ฟรีได้เดือนละ 5 คำถามกับ Plus','Ask mentors for free: 5 questions a month with Plus']]]};
 function coachSeen(){const v=store.get('maadoo-coach');if(v==='1')return {home:1,ask:1};try{const o=JSON.parse(v||'{}');return o&&typeof o==='object'?o:{}}catch(e){return {}}}
 const setSeen=o=>store.set('maadoo-coach',JSON.stringify(o));
-function maybeTour(){if(S.tour||S.modal||!welcomed())return;const p=S.view==='ask'&&S.askTab!=='swipe'?null:S.view;if(!p||!TOURS[p]||coachSeen()[p])return;
- setTimeout(()=>{if(S.tour||S.modal||S.view!==p||coachSeen()[p])return;S.tour={p,i:0};tourStep()},450)}
+function maybeTour(){if(S.tour||S.modal||!welcomed())return;const v=S.view==='ask'&&S.askTab!=='swipe'?null:S.view,seen=coachSeen();const p=v==='home'&&seen.home?'map':v;if(!p||!TOURS[p]||seen[p])return;
+ setTimeout(()=>{if(S.tour||S.modal||S.view!==v||coachSeen()[p])return;S.tour={p,i:0};tourStep()},450)}
 function tourStep(){const T=S.tour;if(!T)return;const steps=TOURS[T.p];while(T.i<steps.length&&!steps[T.i][0]())T.i++;
- if(T.i>=steps.length||S.view!==T.p){tourEnd(false);return}const el=steps[T.i][0];const e=el(),r=e.getBoundingClientRect();
+ if(T.i>=steps.length||S.view!==tourView(T.p)){tourEnd(false);return}const el=steps[T.i][0];const e=el(),r=e.getBoundingClientRect();
  if(r.top<70||r.bottom>innerHeight-90){e.scrollIntoView({block:'center',behavior:'auto'})}tourRender()}
-function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour)o[S.tour.p]=1;setSeen(o);S.tour=null;tourRender()}
+function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour){o[S.tour.p]=1;if(S.tour.p==='home')o.map=1}setSeen(o);S.tour=null;tourRender()}
 function tourRender(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="tour"></div>');el=$('#tour')}const T=S.tour;if(!T){el.innerHTML='';return}
  const steps=TOURS[T.p],st=steps[T.i],tg=st&&st[0]();if(!tg){el.innerHTML='';return}const r=tg.getBoundingClientRect(),W=Math.min(300,innerWidth-24),pad=6;
  const below=r.bottom+170<innerHeight||r.top<200,top=below?r.bottom+14:Math.max(8,r.top-14),left=Math.max(12,Math.min(innerWidth-W-12,r.left+r.width/2-W/2)),ax=Math.max(18,Math.min(W-18,r.left+r.width/2-left));
@@ -2693,12 +2692,13 @@ function tourNext(){if(!S.tour)return;S.tour.i++;tourStep()}
 addEventListener('resize',()=>{if(S.tour)tourRender()});addEventListener('scroll',()=>{if(S.tour)tourRender()},{passive:true});
 document.addEventListener('keydown',e=>{if(S.tour&&e.key==='Escape'){e.preventDefault();tourEnd(true)}});
 /* ---------- events ---------- */
-document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obnext],[data-fpick],[data-obopen],[data-obstart],[data-obclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
+document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obnext],[data-fpick],[data-obopen],[data-obstart],[data-obclose],[data-scclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
  if(d.tournext!==undefined){e.preventDefault();e.stopPropagation();tourNext();return}
  if(d.tourskip!==undefined){e.preventDefault();e.stopPropagation();tourEnd(true);return}
  if(d.tourreplay!==undefined){setSeen({});S.themeOpen=false;renderThemePop();S.q='';go('home');maybeTour();return}
  if(d.obopen!==undefined){openOnboard();return}
  if(d.obstart!==undefined){obStart();return}
+ if(d.scclose!==undefined){S.ob.startClosed=true;obSave();render();toast(t('ซ่อนแล้ว เปลี่ยนเป้าหมายได้ที่เมนูธีม','Hidden. You can change your goal from the theme menu'));return}
  if(d.obclose!==undefined){S.ob.closed=true;obSave();render();toast(t('ซ่อนการ์ดก้าวแรกแล้ว','First-steps card hidden'));return}
  if(!m||m.type!=='onboard')return;
  if(d.obgoal){m.goal=d.obgoal;m.step=2;renderModal();const f=document.querySelector('.ob [data-obind]');if(f)f.focus({preventScroll:true});return}
@@ -2709,9 +2709,8 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[
  if(d.obskip!==undefined){if(m.step<3){m.step++;renderModal()}else obFinish(m);return}
  if(d.obdone!==undefined){obFinish(m);return}},true);
 /* career map events */
-document.addEventListener('click',e=>{const el=e.target.closest('[data-cmw],[data-cmg],[data-cmr],[data-cmup],[data-cmfac],[data-cmmore],[data-cmfollow],[data-cmswipe],[data-cmopen],[data-cmhintx],[data-fsave]');if(!el){const f=e.target.closest('[data-fpick]');if(f&&S.modal&&S.modal.type==='fac'){S.modal.fac=f.dataset.fpick;S.modal.major=f.dataset.fmaj||null;if(f.dataset.fmaj)S.modal.q='';renderModal()}return}const d=el.dataset;
+document.addEventListener('click',e=>{const el=e.target.closest('[data-cmw],[data-cmg],[data-cmr],[data-cmup],[data-cmfac],[data-cmmore],[data-cmfollow],[data-cmswipe],[data-cmopen],[data-fsave]');if(!el){const f=e.target.closest('[data-fpick]');if(f&&S.modal&&S.modal.type==='fac'){S.modal.fac=f.dataset.fpick;S.modal.major=f.dataset.fmaj||null;if(f.dataset.fmaj)S.modal.q='';renderModal()}return}const d=el.dataset;
  if(d.cmopen!==undefined){openMap();return}
- if(d.cmhintx!==undefined){S.ob.mapSeen=true;obSave();render();toast(t('ซ่อนแล้ว เปิดแผนที่ได้จากแท็บ 🗺️ เสมอ','Hidden. The 🗺️ tab is always there'));return}
  if(d.cmw){S.cm.more=false;cmNav({w:d.cmw,g:null,r:null},e,1);return}
  if(d.cmg){S.cm.more=false;cmNav({g:d.cmg,r:null},e,1);return}
  if(d.cmr){const g=ROLES[d.cmr].g;cmNav({w:GROUPS[g][0],g,r:d.cmr},e,1);return}
@@ -3002,7 +3001,7 @@ function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen)
   <button class="fx-row" data-fx="amb" role="switch" aria-checked="${S.fxAmb}"><span><b>✨ ${t('เอฟเฟคพื้นหลัง','Background effect')}</b><small>${x(FXINFO[S.skin].n)}</small></span><i class="tg ${S.fxAmb?'on':''}"></i></button>
   <button class="fx-row" data-fx="tap" role="switch" aria-checked="${S.fxTap}"><span><b>👆 ${t('เอฟเฟคตอนกด','Tap effect')}</b><small>${t('มีอนิเมชันเด้งออกมาทุกครั้งที่กด','A little burst every time you tap')}</small></span><i class="tg ${S.fxTap?'on':''}"></i></button>
   <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(SNDINFO[S.skin])}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
-  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}<button class="fx-row tour-again" data-tourreplay><span><b>❓ ${t('พาเที่ยวอีกครั้ง','Show me around again')}</b><small>${t('น้องมาดูชี้ปุ่มสำคัญให้ดูใหม่','Maadoo points out the key buttons again')}</small></span><span aria-hidden="true">→</span></button></div>
+  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(S.sndVol*100)}" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(S.sndVol*100)}%"><span aria-hidden="true">🔊</span></label>`:''}<button class="fx-row tour-again" data-obopen><span><b>🎯 ${t('เปลี่ยนเป้าหมาย / คณะ','Change goal / faculty')}</b><small>${t('ตอบคำถามต้อนรับใหม่','Answer the welcome questions again')}</small></span><span aria-hidden="true">→</span></button><button class="fx-row tour-again" data-tourreplay><span><b>❓ ${t('พาเที่ยวอีกครั้ง','Show me around again')}</b><small>${t('น้องมาดูชี้ปุ่มสำคัญให้ดูใหม่','Maadoo points out the key buttons again')}</small></span><span aria-hidden="true">→</span></button></div>
  <div class="swatches">${SKINS.map(k=>`<button class="sw ${S.skin===k[0]?'on':''}" data-skin="${k[0]}"><span class="sw-prev" style="background:${k[3]}"><i style="background:${k[4]}"></i><i style="background:${k[5]}"></i><img src="${PUP(k[0])}" alt=""></span><span>${k[1]} ${x(k[2])}</span><small class="sw-fx">✨ ${x(FXINFO[k[0]].n)}</small></button>`).join('')}</div></div>`;
  const np=el.querySelector('.tpop');if(np)np.scrollTop=top}
 function renderCoach(){tourRender()}
@@ -3023,7 +3022,7 @@ function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
 function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
 function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
 addEventListener('resize',()=>{if(S.indOpen&&S.view==='explore'&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
-function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour&&S.tour.p!==S.view){S.tour=null}tourRender();maybeTour();}
+function render(){if(S.view!=='explore')S.indOpen=false;applyPrefs();nav();$('#app').innerHTML={home,explore,company,write,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='home')bindPromo();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour&&tourView(S.tour.p)!==S.view){S.tour=null}tourRender();maybeTour();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
