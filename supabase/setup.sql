@@ -1944,6 +1944,38 @@ create trigger coin_ledger_guard_profile
   before insert on public.coin_ledger
   for each row execute function public.coin_ledger_guard_profile();
 
+-- =====================================================================
+-- 13) แจ้งข้อมูลไม่ถูกต้อง (แผนที่อาชีพ) / "report incorrect info" (career map)
+--     ใครก็ส่งได้ (รวมคนที่ยังไม่ล็อกอิน) แต่อ่านได้เฉพาะแอดมิน / anyone may send; only admins can read
+--     ดูรายการ / list:  select * from public.feedback order by created_at desc;
+--     รหัสคณะเปลี่ยนแล้ว: health แยกเป็น medtech, nurse, pubh, allied (เว็บแปลงค่าเก่าให้เอง)
+--     Faculty codes changed: health became medtech, nurse, pubh, allied (the site converts old values).
+-- =====================================================================
+create table if not exists public.feedback (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid default auth.uid() references auth.users (id) on delete set null,
+  kind        text not null default 'career_map' check (kind in ('career_map')),
+  target      text not null check (target ~ '^[a-z]{2,20}$'),
+  faculty     text check (faculty is null or faculty ~ '^[a-z]{2,12}$'),
+  major       text check (major is null or major ~ '^[a-z]{2,12}$'),
+  reason      text not null check (reason in ('fit', 'skill', 'lic', 'sal', 'other')),
+  message     text check (message is null or char_length(message) <= 500),
+  status      text not null default 'new' check (status in ('new', 'done', 'ignored')),
+  created_at  timestamptz not null default now()
+);
+create index if not exists feedback_created_idx on public.feedback (created_at desc);
+alter table public.feedback enable row level security;
+drop policy if exists "feedback: anyone sends" on public.feedback;
+drop policy if exists "feedback: admins read"  on public.feedback;
+create policy "feedback: anyone sends" on public.feedback
+  for insert to anon, authenticated
+  with check (user_id is null or user_id = (select auth.uid()));
+create policy "feedback: admins read" on public.feedback
+  for select to authenticated using (public.is_admin());
+revoke all on public.feedback from anon, authenticated;
+grant insert (kind, target, faculty, major, reason, message) on public.feedback to anon, authenticated;
+grant select on public.feedback to authenticated;
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';
