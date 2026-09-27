@@ -143,8 +143,9 @@ const T_WORLD=[()=>vis('.cm-w'),['แตะวงเพื่อซูมเข�
 const TOUR_VIEW={map:'home',nav2:'home',jobsmap:'jobs'},tourView=k=>TOUR_VIEW[k]||k;
 const REV_BTN=()=>vis('#bnav [data-go="reviews"]')||vis('#topnav [data-go="reviews"]');
 const T_REV=[REV_BTN,['รีวิวอยู่ตรงนี้ อ่านและเขียนรีวิวได้ในหน้าเดียว ได้แต้มและเหรียญด้วย','Reviews live here: read and write them on one page, and earn points and coins']];
-const TOURS={home:[[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],T_REV,
-  [JOBS_BTN,['“งาน” มีทั้งงาน/ฝึกงาน บริษัท งานด่วน เงินเดือน และ 🗺️ แผนที่อาชีพ แตะเพื่อไปดูกัน','“Jobs” holds jobs & internships, companies, part-time, salaries and a 🗺️ career map. Tap to have a look'],'home',1],T_MAPTAB,T_WORLD],
+/* Home: search → start card → the Reviews tab (bottom nav on phones, top nav on desktop): 3 targets, the most a page may have */
+const TOURS={home:[[()=>vis('#q'),['ค้นหาบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน','Search for companies, roles or areas']],
+  [()=>vis('.start-card'),['เริ่มตรงนี้! ปุ่มนี้พาไปยังสิ่งที่คุณบอกว่าอยากหา เปลี่ยนเป้าหมายได้ทุกเมื่อ','Start here! This button takes you straight to what you said you’re looking for. Change your goal anytime']],T_REV],
  nav2:[T_REV,[JOBS_BTN,['บริษัท งานด่วน และเงินเดือน ย้ายมาเป็นแท็บในหน้า “งาน” แล้ว','Companies, part-time and salaries are now tabs in “Jobs”']]],
  reviews:[[()=>vis('.rv-in'),['แตะตรงนี้เพื่อเขียนรีวิว 5 ข้อ ไม่ถึง 1 นาที','Tap here to write a 5-question review in under a minute']],[()=>vis('.rv-filters'),['กรองรีวิว: มีประโยชน์ ล่าสุด ฝึกงาน หรือสายของคุณ','Filter reviews: helpful, latest, internships or your fields']]],
  map:[[JOBS_BTN,['🗺️ ยังไม่รู้ว่าอยากทำงานอะไร? ที่เมนู “งาน” มีแผนที่อาชีพ ช่วยวางแผนจากคณะที่เรียน ว่าไปทางไหนได้บ้าง','🗺️ Not sure what you want to do yet? “Jobs” has a career map that plans from your faculty and shows where it can take you'],'home',1],T_MAPTAB,T_WORLD],
@@ -155,24 +156,46 @@ function coachSeen(){const v=store.get('maadoo-coach');if(v==='1')return {home:1
 const setSeen=o=>store.set('maadoo-coach',JSON.stringify(o));
 function maybeTour(){if(S.tour||S.modal||!welcomed())return;const v=S.view==='ask'&&S.askTab!=='swipe'?null:S.view,seen=coachSeen();const p=v==='home'?(!seen.home?'home':!seen.map?'map':'nav2'):v==='jobs'?(S.jobTab==='map'||S.ob.mapSeen?null:'jobsmap'):v;if(!p||!TOURS[p]||seen[p])return;
  setTimeout(()=>{if(S.tour||S.modal||S.view!==v||coachSeen()[p])return;S.tour={p,i:0};tourStep()},450)}
+/* the free band between the sticky header and the bottom nav: targets are scrolled into it and the tip never covers either bar */
+function tourBand(){const h=document.querySelector('header.top'),bn=vis('#bnav');return {top:h?Math.max(0,h.getBoundingClientRect().bottom):0,bottom:bn?bn.getBoundingClientRect().top:innerHeight}}
+const inBar=e=>!!e.closest('header.top,#bnav');
 function tourStep(){const T=S.tour;if(!T)return;const steps=TOURS[T.p];while(T.i<steps.length&&stView(T.p,steps[T.i])===S.view&&!steps[T.i][0]())T.i++;
- if(T.i>=steps.length||S.view!==stView(T.p,steps[T.i])){tourEnd(false);return}const e=steps[T.i][0](),r=e.getBoundingClientRect();
- if(r.top<70||r.bottom>innerHeight-90){e.scrollIntoView({block:'center',behavior:'auto'})}tourRender()}
-function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour){o[S.tour.p]=1;if(S.tour.p==='home'||S.tour.p==='map'){o.map=1;o.jobsmap=1}if(S.tour.p==='home')o.nav2=1}setSeen(o);S.tour=null;tourRender()}
-function tourRender(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="tour"></div>');el=$('#tour')}const T=S.tour;if(!T||S.modal){el.innerHTML='';return}
- const steps=TOURS[T.p],st=steps[T.i],tg=st&&stView(T.p,st)===S.view&&st[0]();if(!tg){el.innerHTML='';return}const r=tg.getBoundingClientRect(),W=Math.min(300,innerWidth-24),pad=6;
- const below=r.bottom+170<innerHeight||r.top<200,top=below?r.bottom+14:Math.max(8,r.top-14),left=Math.max(12,Math.min(innerWidth-W-12,r.left+r.width/2-W/2)),ax=Math.max(18,Math.min(W-18,r.left+r.width/2-left));
- const last=T.i>=steps.length-1;
- el.innerHTML=`<div class="tour-catch" data-tournext aria-hidden="true"></div><div class="tour-ring" style="left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px"></div>
- <div class="tour-tip ${below?'below':'above'}" role="dialog" aria-live="polite" aria-label="${t('คำแนะนำ','Tip')}" style="left:${left}px;${below?`top:${top}px`:`bottom:${innerHeight-top}px`};width:${W}px;--ax:${ax}px"><img src="${PUP()}" alt=""><div><small>${T.i+1}/${steps.length}</small><p>${x(st[1])}</p>
- <div class="row"><button class="btn y sm" data-tournext>${last?t('เข้าใจแล้ว','Got it'):st[3]?t('ไปกันเลย →','Let’s go →'):t('ถัดไป','Next')}</button><button class="link" data-tourskip>${t('ข้ามทั้งหมด','Skip all')}</button></div></div></div>`;
- const b=el.querySelector('.tour-tip [data-tournext]');if(b)b.focus({preventScroll:true})}
+ if(T.i>=steps.length||S.view!==stView(T.p,steps[T.i])){tourEnd(false);return}const e=steps[T.i][0]();
+ /* bring the target into the free band first (instant scroll), then measure on the next frames */
+ if(!inBar(e)){const B=tourBand(),r=e.getBoundingClientRect(),room=B.bottom-B.top;if(r.top<B.top+8||r.bottom>B.bottom-8){const want=r.height>room-16?r.top-B.top-8:r.top-(B.top+(room-r.height)/2);window.scrollBy({top:want,behavior:'instant'})}}
+ el0().innerHTML='';requestAnimationFrame(()=>requestAnimationFrame(tourRender))}
+function tourEnd(all){const o=coachSeen();if(all)Object.keys(TOURS).forEach(k=>o[k]=1);else if(S.tour){o[S.tour.p]=1;if(S.tour.p==='home'){o.nav2=1;o.map=1}if(S.tour.p==='map')o.jobsmap=1}setSeen(o);S.tour=null;tourRender()}
+function el0(){let el=$('#tour');if(!el){document.body.insertAdjacentHTML('beforeend','<div id="tour"></div>');el=$('#tour')}return el}
+function tourRender(){const el=el0(),T=S.tour;if(!T||S.modal){el.innerHTML='';return}
+ const steps=TOURS[T.p],st=steps[T.i];if(!st||stView(T.p,st)!==S.view){el.innerHTML='';return}
+ const tg=st[0]();if(!tg){el.innerHTML='';clearTimeout(tourRender.skip);tourRender.skip=setTimeout(()=>{if(S.tour===T&&!st[0]())tourStep()},250);return}   // target gone: skip this step
+ const r=tg.getBoundingClientRect(),B=tourBand(),W=Math.min(300,innerWidth-24),pad=6,last=T.i>=steps.length-1;
+ const same=el.firstElementChild&&el.dataset.k===T.p+T.i+S.lang+S.skin;
+ if(!same){el.dataset.k=T.p+T.i+S.lang+S.skin;
+  el.innerHTML=`<div class="tour-catch" data-tournext aria-hidden="true"></div><div class="tour-ring"></div>
+ <div class="tour-tip" role="dialog" aria-live="polite" aria-label="${t('คำแนะนำ','Tip')}" style="width:${W}px"><img src="${PUP()}" alt=""><div><small>${T.i+1}/${steps.length}</small><p>${x(st[1])}</p>
+ <div class="row"><button class="btn y sm" data-tournext>${last?t('เข้าใจแล้ว','Got it'):st[3]?t('ไปกันเลย →','Let’s go →'):t('ถัดไป','Next')}</button><button class="link" data-tourskip>${t('ข้ามทั้งหมด','Skip all')}</button></div></div></div>`}
+ const ring=el.querySelector('.tour-ring'),tip=el.querySelector('.tour-tip');
+ Object.assign(ring.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px'});
+ tip.style.width=W+'px';const h=tip.offsetHeight,gap=14;
+ /* side with room: below the target, else above it; always inside the band (never over the header or bottom nav) */
+ const lo=B.top+8,hi=B.bottom-8,spB=hi-(r.bottom+gap),spA=(r.top-gap)-lo;
+ const below=inBar(tg)&&tg.closest('#bnav')?false:spB>=h||spB>=spA;
+ let top=below?r.bottom+gap:r.top-gap-h;top=Math.max(lo,Math.min(hi-h,top));
+ const left=Math.max(12,Math.min(innerWidth-W-12,r.left+r.width/2-W/2)),ax=Math.max(18,Math.min(W-18,r.left+r.width/2-left));
+ tip.classList.toggle('below',below);tip.classList.toggle('above',!below);
+ Object.assign(tip.style,{left:left+'px',top:top+'px',bottom:'auto'});tip.style.setProperty('--ax',ax+'px');
+ if(!same){const b=tip.querySelector('[data-tournext]');if(b)b.focus({preventScroll:true})}}
+/* re-measure on resize/scroll and when the layout shifts (images, fonts, bars appearing) */
+function tourSched(){if(!S.tour||tourSched.f)return;tourSched.f=requestAnimationFrame(()=>{tourSched.f=0;tourRender()})}
+try{new ResizeObserver(tourSched).observe(document.body)}catch(e){}
+setInterval(()=>{if(S.tour&&!document.hidden)tourSched()},600);
 function tourHit(e){const T=S.tour,st=T&&TOURS[T.p][T.i],tg=st&&st[0]();if(!tg)return false;const r=tg.getBoundingClientRect(),p=8;return e.clientX>=r.left-p&&e.clientX<=r.right+p&&e.clientY>=r.top-p&&e.clientY<=r.bottom+p}
 /* hit = the tap landed on the highlighted target. A "go" step (or a tap on the last step's target) opens the target; the walk goes on. */
 function tourNext(hit){const T=S.tour;if(!T)return;const steps=TOURS[T.p],st=steps[T.i],tg=st&&st[0](),last=T.i>=steps.length-1;
  if(tg&&(st[3]||(hit&&last))){if(last)tourEnd(false);else T.i++;tg.click();if(!last)setTimeout(tourStep,350);return}
  if(last){tourEnd(false);return}T.i++;tourStep()}
-addEventListener('resize',()=>{if(S.tour)tourRender()});addEventListener('scroll',()=>{if(S.tour)tourRender()},{passive:true});
+addEventListener('resize',tourSched);addEventListener('scroll',tourSched,{passive:true});
 document.addEventListener('keydown',e=>{if(S.tour&&e.key==='Escape'){e.preventDefault();tourEnd(true)}});
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obnext],[data-fpick],[data-obopen],[data-obstart],[data-fstoggle],[data-scclose],[data-obclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;

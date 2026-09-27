@@ -18,7 +18,7 @@ function initSB(){
 function mkUser(u,prev){
  const anon=!!u.is_anonymous,em=u.email||'',dn=u.user_metadata&&u.user_metadata.display_name;
  const o={id:u.id,anon,email:em,verified:!anon&&!!em&&!isFreeMail(em),points:prev?prev.points:20,plus:prev?prev.plus:false};
- Object.defineProperty(o,'name',{enumerable:true,get:()=>anon?t('ผู้ใช้ชั่วคราว','Guest'):(dn||em.split('@')[0]||t('ผู้ใช้','User'))});
+ Object.defineProperty(o,'name',{enumerable:true,get:()=>anon?t('ผู้ใช้ชั่วคราว','Guest'):((S.prof&&S.prof.uid===u.id&&S.prof.name)||dn||em.split('@')[0]||t('ผู้ใช้','User'))});
  return o;
 }
 async function sbUser(ev,session){
