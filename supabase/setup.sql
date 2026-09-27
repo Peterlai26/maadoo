@@ -592,7 +592,10 @@ create trigger coin_ledger_guard_referral
   before insert on public.coin_ledger
   for each row execute function public.coin_ledger_guard_referral();
 
--- ใช้โค้ดของเพื่อน (ครั้งเดียว ห้ามใช้โค้ดตัวเอง) / use a friend's code (once, not your own)
+-- ใช้โค้ดของเพื่อน (ครั้งเดียว ห้ามใช้โค้ดตัวเอง) → ได้คนละ 10 เหรียญทันที
+-- Use a friend's code (once, not your own) → 10 coins each right away.
+--   ref ของโบนัสนี้ = 'referral:<friend id>:join' (ทั้งสองฝั่งใช้ ref เดียวกัน, unique ต่อ user_id)
+--   The join bonus uses ref 'referral:<friend id>:join' on both sides (unique per user_id).
 create or replace function public.use_invite_code(code text)
 returns boolean
 language plpgsql
@@ -602,6 +605,7 @@ as $$
 declare
   me uuid := auth.uid();
   inviter uuid;
+  linked boolean;
 begin
   if me is null or coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) then
     raise exception 'login required' using errcode = 'check_violation';
@@ -611,11 +615,21 @@ begin
   if inviter = me then raise exception 'own code' using errcode = 'check_violation'; end if;
   insert into public.profiles (id) values (me) on conflict (id) do nothing;
   update public.profiles set referred_by = inviter where id = me and referred_by is null;
-  return found;
+  linked := found;
+  if linked then
+    perform set_config('maadoo.referral', 'on', true);
+    insert into public.coin_ledger (user_id, delta, kind, ref) values (me, 10, 'referral', 'referral:' || me::text || ':join')
+      on conflict do nothing;
+    insert into public.coin_ledger (user_id, delta, kind, ref) values (inviter, 10, 'referral', 'referral:' || me::text || ':join')
+      on conflict do nothing;
+    perform set_config('maadoo.referral', '', true);
+  end if;
+  return linked;
 end;
 $$;
 
--- เพื่อนเขียนรีวิวแรกแล้ว → ได้คนละ 50 เหรียญ (ครั้งเดียว) / friend's first review → 50 coins each (once)
+-- เพื่อนเขียนรีวิวแรกแล้ว → ได้อีกคนละ 40 เหรียญ (รวม 50, ครั้งเดียว) / friend's first review → 40 more each (50 in total, once)
+--   ถ้าใช้โค้ดก่อนมีโบนัส 10 (ไม่มีแถว :join) จะได้ 50 เต็ม / linked before the 10-coin bonus existed (no :join row) → the full 50
 create or replace function public.claim_referral_reward()
 returns integer
 language plpgsql
@@ -625,17 +639,37 @@ as $$
 declare
   me uuid := auth.uid();
   inviter uuid;
+  amount integer;
 begin
   select referred_by into inviter from public.profiles where id = me;
   if inviter is null then return 0; end if;
   if not exists (select 1 from public.reviews r where r.user_id = me) then return 0; end if;
   if exists (select 1 from public.coin_ledger where user_id = me and ref = 'referral:' || me::text) then return 0; end if;
+  amount := case when exists (select 1 from public.coin_ledger where user_id = me and ref = 'referral:' || me::text || ':join') then 40 else 50 end;
   perform set_config('maadoo.referral', 'on', true);
-  insert into public.coin_ledger (user_id, delta, kind, ref) values (me, 50, 'referral', 'referral:' || me::text);
-  insert into public.coin_ledger (user_id, delta, kind, ref) values (inviter, 50, 'referral', 'referral:' || me::text)
+  insert into public.coin_ledger (user_id, delta, kind, ref) values (me, amount, 'referral', 'referral:' || me::text);
+  insert into public.coin_ledger (user_id, delta, kind, ref) values (inviter, amount, 'referral', 'referral:' || me::text)
     on conflict do nothing;
   perform set_config('maadoo.referral', '', true);
-  return 50;
+  return amount;
+end;
+$$;
+
+-- คนที่ใช้โค้ดไปแล้วแต่ยังไม่ได้เหรียญเลย → ให้โบนัส 10 ย้อนหลัง (รันซ้ำได้ ไม่จ่ายซ้ำ)
+-- People who already used a code but haven't received any invite coins get the 10-coin bonus now (safe to re-run).
+do $$
+declare r record;
+begin
+  perform set_config('maadoo.referral', 'on', true);
+  for r in
+    select p.id, p.referred_by from public.profiles p
+    where p.referred_by is not null
+      and not exists (select 1 from public.coin_ledger l where l.user_id = p.id and l.ref in ('referral:' || p.id::text, 'referral:' || p.id::text || ':join'))
+  loop
+    insert into public.coin_ledger (user_id, delta, kind, ref) values (r.id, 10, 'referral', 'referral:' || r.id::text || ':join') on conflict do nothing;
+    insert into public.coin_ledger (user_id, delta, kind, ref) values (r.referred_by, 10, 'referral', 'referral:' || r.id::text || ':join') on conflict do nothing;
+  end loop;
+  perform set_config('maadoo.referral', '', true);
 end;
 $$;
 
