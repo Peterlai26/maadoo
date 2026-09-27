@@ -885,3 +885,5 @@ header.top::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right
 .filters select{width:100%;min-width:0}
 .jf-n{grid-column:1/-1;margin:6px 0 0;font-family:var(--display);font-weight:600;font-size:17px;color:var(--navy)}
 @media(max-width:560px){.filters .jf-type{justify-self:stretch}}
+/* ask: the swipe / board toggle sits in the middle */
+.segs.ask-segs{display:flex;width:fit-content;max-width:100%;margin-left:auto;margin-right:auto}

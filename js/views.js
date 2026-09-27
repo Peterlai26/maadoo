@@ -128,7 +128,7 @@ function writeModal(m,head){const f=S.form,st=S.wStep||1,ok=wOk(f,st);
 function reviewSent(){S.form=blankForm();S.wStep=1;S.modal=null;S.rfN=6;go('reviews');toast(t('ส่งรีวิวแล้ว! แสดงหลังผ่านการตรวจ · ปลดล็อกรีวิวทุกบริษัทแล้ว','Review sent! It goes public after moderation · all reviews unlocked'))}
 function ask(){
  const top=`<h1 class="pg-t">${t('ปรึกษาเรื่องงาน','Ask about work')}${isPlus()?'<span class="plus-tag">✨ Plus</span>':''}</h1><p class="muted" style="margin-top:4px">${t('ปัดหารุ่นพี่คุยตัวต่อตัว หรือโพสต์ถามและแชร์ในบอร์ดที่ใครก็ตอบได้','Swipe for a 1:1 mentor, or post and share on a board anyone can answer.')}</p>
- <div class="segs">${[['swipe',PAW+t('ปัดหารุ่นพี่','Swipe mentors')],['threads',t('💬 บอร์ดพูดคุย','💬 Community board')]].map(([k,n])=>`<button class="${S.askTab===k?'on':''}" data-asktab="${k}">${n}</button>`).join('')}</div>`;
+ <div class="segs ask-segs">${[['swipe',PAW+t('ปัดหารุ่นพี่','Swipe mentors')],['threads',t('💬 บอร์ดพูดคุย','💬 Community board')]].map(([k,n])=>`<button class="${S.askTab===k?'on':''}" data-asktab="${k}">${n}</button>`).join('')}</div>`;
  if(S.askTab==='swipe')return top+chatStrip()+swipe();
  return top+chatStrip()+board()}
 const PAW='<svg class="paw" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="16" rx="5" ry="4.2"/><circle cx="6" cy="10.5" r="2.1"/><circle cx="18" cy="10.5" r="2.1"/><circle cx="9.3" cy="6.3" r="2.1"/><circle cx="14.7" cy="6.3" r="2.1"/></svg>';
