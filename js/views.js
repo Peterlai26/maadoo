@@ -8,7 +8,7 @@ function home(){
  const tot=POLL.o.reduce((a,o)=>a+o[1],0)+(S.poll!==null?1:0);
  const quick=[['QC','QC'],['สตาร์ทอัพ','startup'],['MRT','MRT'],['ยา','pharma'],['ฝึกงาน','intern']];
  const roles=allRoles();
- return `${q?'':startCard()+firstSteps()}<section class="hero"><div class="hero-txt">
+ return `<section class="hero"><div class="hero-txt">
   <h1>${t('ก่อนไปทำงาน <em>มาดู</em>ก่อน','Before you go, <em>Maadoo</em> first')}</h1>
   <p class="hero-sub">${t('รีวิวที่ทำงานจากคนในตัวจริง','Real workplace reviews from real insiders')}</p>
  </div><div class="hero-side"><div class="mascot"><img src="${PUP()}" alt="${t('น้องมาดู น้องหมาผู้ช่วยหางาน','Maadoo, the job-hunting pup')}"><svg class="m-say" viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(69 12) rotate(6)"><path d="M6 0H32Q38 0 38 6V17Q38 23 32 23H14L2.5 32.5L7.5 23H6Q0 23 0 17V6Q0 0 6 0Z"/><text x="19" y="12.2" text-anchor="middle" dominant-baseline="central">JOB!</text></g></svg><span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✦</span></div>
@@ -197,7 +197,7 @@ function swipe(){const sw=S.sw;const deck=deckList();const liked=MENTORS.filter(
  <p class="muted" style="text-align:center;margin-top:8px">${(matchMedia('(hover:hover) and (pointer:fine)').matches?t('ลากการ์ดด้วยเมาส์ · ปัดสองนิ้วบนทัชแพด · หรือกด ← →','Drag with the mouse · two-finger swipe on the trackpad · or press ← →'):t('ปัดขวา = สนใจ · ปัดซ้าย = ข้าม · 📅 = จองทันที','Swipe right to like · left to skip · 📅 to book now'))}</p>`:''}
  ${liked.length?`<section class="sec"><div class="sec-h"><h2>${t('รุ่นพี่ที่คุณปัดขวา','Mentors you liked')} (${liked.length})</h2></div><div class="list">${liked.map(m=>`<div class="li"><span class="ava" style="width:40px;height:40px;font-size:20px;background:${m.bg}">${m.ava}</span><div><b>${x(m.name)}</b><div class="muted">${x(m.role)}</div></div><button class="btn grow" data-book="${m.id}">${t('จองเวลา','Book')}</button></div>`).join('')}</div></section>`:''}
  <div class="sec">${plusBanner()}</div><p class="muted" style="margin-top:8px">${t('Maadoo หักค่าธรรมเนียม 15% จากแต่ละการจอง รุ่นพี่ได้รับ 85%','Maadoo keeps a 15% fee per booking; mentors receive 85%')}</p>`}
-function swipeGo(dir){const card=document.querySelector('.scard.top');if(!card||card.dataset.gone)return;const id=card.dataset.mid;if(dir!=='book')obMark('swipe');if(dir!=='book')card.dataset.gone='1';
+function swipeGo(dir){const card=document.querySelector('.scard.top');if(!card||card.dataset.gone)return;const id=card.dataset.mid;if(dir!=='book')card.dataset.gone='1';
  if(dir==='book'){openBook(id);return}
  card.style.transition='transform .35s ease, opacity .35s';card.style.transform=`translateX(${dir==='right'?600:-600}px) rotate(${dir==='right'?24:-24}deg)`;card.style.opacity='0';
  const st=card.querySelector(dir==='right'?'.stamp.like':'.stamp.nope');if(st)st.style.opacity=1;

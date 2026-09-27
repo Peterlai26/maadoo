@@ -17,7 +17,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
   5. `js/views.js` — the main pages: home, explore, company, write (+ done), ask (mentor swipe deck + community board), quiz, jobs (full-time list, job cards) and the mentor card pieces (`scard`, `mRevs`, `mStat`).
   6. `js/premium.js` — Maadoo Plus (`PLANS`, `isPlus`), coins + ledger + weekly missions, simulated payment (`payModal`), Plus page, wallet, ask-a-mentor questions; interview review; promotions (home carousel, Pioneer, invite codes, seasonal offer); and the Me page (`me`) + employer page (`employer`, `EMP`).
   7. `js/mentor.js` — mentor sessions & reviews, real mentors (applications, admin page, realtime chat room, contact masking, reports/blocks, mentor mode), live calls (availability, booking page, live room, reminders, session notes).
-  8. `js/onboard.js` — career-map view and faculty picker, first-visit welcome, "เริ่มตรงนี้เลย" start card, "ก้าวแรกของฉัน", coach-mark tours.
+  8. `js/onboard.js` — career-map view and faculty picker, first-visit welcome, coach-mark tours.
   9. `js/parttime.js` — ⚡ quick part-time jobs (`PT`, feed, post, apply, rate, minimum-wage warning) and the rules page (`rules`).
   10. `js/fx.js` — theme background/tap effects (`FX`, canvas; particle-kind registry `PK` and rare events `EV`, shared by all themes) and ambient sound (`SND`; named `SCENES` for the first 9 themes and reusable `LAYERS` that newer themes stack with `snd.mix`; `MUSIC_FILES`).
   11. `js/app.js` — modals and notifications (`openModal`, `renderModal`, bell, theme menu), explore category dropdown, `render()`, the main click/submit/input/keydown handlers, and at the end the start-up code (`render()`, timers, onboarding, Supabase init).
@@ -36,7 +36,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Everything user-facing is **bilingual Thai + English**. Use `t('ไทย','English')` for UI strings and `[th, en]` pairs with `x(...)` for data. Never add a string in only one language.
 - **All sample companies, people, reviews, salaries and sample mentors are fictional.** Never use real company names or real people in sample data. Sample mentors (m1–m9) carry a "ตัวอย่าง / Sample" chip and keep auto-replying.
 - **Real mentors (step 1) are the only real people:** users who applied and an admin approved. They appear by **nickname only** with a "✓ รุ่นพี่จริง / Real mentor" chip; their LinkedIn/work-email contact is for verification and only admins see it.
-- Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme, effect strengths per theme (`maadoo-fx`), ambient-sound on/off + volume, the "promotions hidden" timestamp (7 days), onboarding seen (`maadoo-welcome`), onboarding answers (goal, fields, faculty/major) + first-steps progress + career-map followed roles (`maadoo-onboard`) and which coach-mark tours were seen (`maadoo-coach`) (always wrapped in try/catch through `store`).
+- Keep the "เดโม · ข้อมูลตัวอย่าง" demo tag. Sample data and most state live in memory; our own `localStorage` keys are only language, theme, effect strengths per theme (`maadoo-fx`), ambient-sound on/off + volume, the "promotions hidden" timestamp (7 days), onboarding seen (`maadoo-welcome`), onboarding answers (goal, fields, faculty/major) + career-map followed roles (`maadoo-onboard`) and which coach-mark tours were seen (`maadoo-coach`) (always wrapped in try/catch through `store`).
 - Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email code/OTP, or "try without signing up" anonymous guest), the `reviews` and `mentor_reviews` tables, the premium tables `profiles`, `coin_ledger` and `questions`, `employer_signups`, the real-mentor tables `admins`, `mentor_applications`, `mentors`, `chat_rooms`, `messages`, `chat_reports`, `mentor_availability`, `mentor_days_off`, `bookings`, `session_notes`, the private Storage bucket `chat-files`, Realtime (messages, chat_rooms, bookings, session_notes, typing broadcast), and the RPCs `pioneer_stats`, `use_invite_code`, `claim_referral_reward`, `early_bird_left`, `is_admin`, `review_mentor_application`, `chat_mark_read`, `chat_confirm_live`, `chat_set_block`, `mentor_taken_slots`, `book_session`, `cancel_booking`, `report_noshow`, `complete_booking`, `set_meet_link`, `save_session_notes`, `toggle_note_saved`. supabase-js keeps its auth session in `localStorage`.
   - New reviews are `pending`; the public sees only `approved` ones via the `approved_reviews` view (no `user_id`, no `salary`). Users can never set or change `status`; moderation happens in the Supabase dashboard.
   - Guests (anonymous users) can browse, swipe and apply, but can't add reviews (blocked in the UI and by RLS); they can keep their account by adding an email (`updateUser`).
@@ -103,20 +103,8 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
   - Step 2: multi-select field chips from `IND`.
   - Step 3 (skippable): "เรียนคณะ/สาขาอะไร?" — the faculty picker (15 faculties + major search).
   - Answers go to `maadoo-onboard`, and to `profiles` when logged in (`onboard_goal`, `onboard_inds`, `onboard_fac`, `onboard_major`; pulled on login if the device has none).
-- **Home, top:** one "เริ่มตรงนี้เลย" card with a big button that routes by goal and filters by the first chosen field that has matching posts:
-  - intern → jobs filtered by type + field.
-  - first job → the career map.
-  - part-time → quick jobs.
-  - salary → the home salary checker, with a role preselected and focused.
-  - mentor → the swipe deck.
-  - just looking → explore filtered by field.
-  - "เปลี่ยนเป้าหมาย" reopens the welcome. Skipping shows "เลือกเป้าหมาย" instead.
-  - The card has a × (`startClosed` in `maadoo-onboard`); finishing the welcome again brings it back. The theme menu has "🎯 เปลี่ยนเป้าหมาย / คณะ" to reopen the welcome.
+- The theme menu has "🎯 เปลี่ยนเป้าหมาย / คณะ" to reopen the welcome. (The old home "เริ่มตรงนี้เลย" start card and "ก้าวแรกของฉัน" first-steps card were removed at the owner's request; don't bring them back unless asked.)
 - **First day after onboarding:** the promo block shows only the "รีวิวแรก แลก Plus ฟรี!" banner.
-- **"ก้าวแรกของฉัน" card** (below the start card): 4 auto-ticked steps with a progress bar.
-  - Steps: open a company (+5 points), follow a company (+5 points), swipe a mentor (+5 points), first review (+30 coins, a `review` ledger row with ref `onboard:first-review`, pending until moderation and counted in the monthly mission cap).
-  - Ticks work logged out; rewards are paid once, only for a logged-in non-guest (paid on login if ticked earlier).
-  - All 4 done → a pup + confetti celebration (static under reduced motion) and the card disappears. The × hides it.
 - **Coach marks:** a small pup bubble points at one target at a time (no dimming, kept inside the viewport). Shown once per tour after onboarding.
   - Home is one continuous walk (6 steps): search → theme menu → write button → (on the write page) the Jobs button → (on Jobs) the 🗺️ tab → (on the map) a world circle.
   - Steps that lead to another page open it on a tap on the highlighted target or on "ไปกันเลย →", and the walk carries on there. Other steps: any tap goes on. "ข้ามทั้งหมด" or Esc ends all tours.

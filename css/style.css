@@ -487,24 +487,8 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .ob-goal span{font-size:30px;line-height:1}.ob-goal b{font-size:14.5px;line-height:1.3}.ob-goal:hover{border-color:var(--blue);transform:translateY(-2px)}.ob-goal.on{border-color:var(--orange-btn);background:var(--orange-soft)}
 .ob-inds{display:flex;flex-wrap:wrap;gap:8px}.ob-note{text-align:center;font-size:12.5px;margin:0}
 @media (max-width:520px){.ob-goals{grid-template-columns:1fr 1fr;gap:8px}.ob-goal{min-height:88px;padding:10px 6px}.ob-goal span{font-size:26px}.ob-pup{width:62px;height:62px}}
-.start-card{position:relative;padding-right:44px!important;display:grid;grid-template-columns:auto 1fr auto;gap:12px 14px;align-items:center;padding:16px 18px;margin-top:10px;border:2px solid var(--orange-btn);background:linear-gradient(135deg,var(--orange-soft),var(--surface) 70%)}
-.sc-ic{font-size:38px;line-height:1}.sc-pup{width:52px;height:52px;border-radius:50%}.sc-t{display:grid;gap:2px;min-width:0}.sc-t small{font-weight:700;color:var(--orange-btn);font-size:12.5px;letter-spacing:.02em}.sc-t b{font-family:var(--display);font-size:20px;color:var(--navy)}.sc-t .muted{font-size:13px;overflow-wrap:anywhere}
-.sc-go{width:auto;white-space:nowrap}.sc-x{position:absolute;top:8px;right:8px;margin:0}.sc-change{grid-column:1/-1;justify-self:start;font-size:13px}
-@media (max-width:640px){.start-card{grid-template-columns:auto 1fr}.sc-go{grid-column:1/-1;width:100%;white-space:normal}}
-.fs-card{display:grid;gap:10px;padding:14px 16px;margin-top:12px}.fs-h{display:flex;align-items:center;gap:8px}.fs-h .x{margin-left:auto}
-.fs-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
-.fs-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
-.fs-item:hover{border-color:var(--blue)}.fs-l{flex:1;min-width:0;font-size:14px}.fs-chk{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--sky-2);font-size:15px}
-.fs-item.done{background:var(--good-bg);border-color:transparent;cursor:default}.fs-item.done .fs-chk{background:var(--good);color:var(--surface);font-weight:700}.fs-item.done .fs-l{text-decoration:line-through;color:var(--ink-2)}
 .chip.coin{background:var(--orange-soft);color:var(--ink)}
 .promo-solo .pslide{border-radius:24px}
-.ob-party{position:fixed;inset:0;z-index:90;pointer-events:none;overflow:hidden}
-.ob-party i{position:absolute;top:-16px;width:9px;height:14px;border-radius:3px;animation:obFall linear forwards}
-@keyframes obFall{to{transform:translateY(105vh) rotate(var(--r))}}
-.ob-cheer{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:8px;background:var(--surface);border:2px solid var(--orange-btn);border-radius:24px;padding:16px 22px;box-shadow:var(--shadow);animation:obPop .5s cubic-bezier(.3,1.6,.5,1)}
-.ob-cheer img{width:84px;height:84px;border-radius:50%;animation:obJump .6s ease-in-out 3}.ob-cheer b{font-family:var(--display);font-size:19px;color:var(--navy);text-align:center}
-@keyframes obPop{from{transform:translate(-50%,-50%) scale(.5);opacity:0}}@keyframes obJump{50%{transform:translateY(-14px)}}
-.ob-party.still .ob-cheer,.ob-party.still .ob-cheer img{animation:none}
 #tour{position:relative;z-index:80}
 .tour-catch{position:fixed;inset:0;z-index:80;background:transparent;cursor:pointer}
 .tour-ring{position:fixed;z-index:81;border-radius:16px;box-shadow:0 0 0 3px var(--orange-btn),0 0 0 7px var(--orange-soft);pointer-events:none;animation:tourPulse 1.6s ease-in-out infinite}
@@ -514,7 +498,7 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .tour-tip::before{content:"";position:absolute;left:calc(var(--ax) - 8px);border:8px solid transparent}
 .tour-tip.below::before{top:-16px;border-bottom-color:var(--orange-btn)}.tour-tip.above::before{bottom:-16px;border-top-color:var(--orange-btn)}
 .tour-again{margin-top:4px}
-@media (prefers-reduced-motion:reduce){.ob-pup,.tour-ring,.tour-tip,.ob-cheer,.ob-cheer img{animation:none}.ob-goal{transition:none}}
+@media (prefers-reduced-motion:reduce){.ob-pup,.tour-ring,.tour-tip{animation:none}.ob-goal{transition:none}}
 /* live-call booking, live room, availability editor */
 .bkv,.lvv{display:grid;gap:12px;max-width:760px;margin:8px auto 0}
 .bk-head{display:flex;align-items:center;gap:12px;padding:12px 14px;min-width:0}.bk-head .cv-t b{font-size:17px}
