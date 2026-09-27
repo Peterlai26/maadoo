@@ -815,6 +815,10 @@ html,body{overflow-x:clip}
 /* career map (แผนที่อาชีพ) */
 .jsegs .ls{display:none}@media (max-width:560px){.jsegs{display:flex;width:100%}.jsegs button{flex:1;padding:7px 8px}.jsegs .ll{display:none}.jsegs .ls{display:inline}}
 .cm{overflow-x:clip}
+.cm-new{font-style:normal;font-size:10.5px;font-weight:700;background:var(--orange-btn);color:var(--on-brand);border-radius:99px;padding:1px 6px;margin-left:5px;vertical-align:2px}
+.cm-hint{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;padding:12px 14px;border-radius:20px;border:2px dashed var(--orange-btn);background:linear-gradient(135deg,var(--orange-soft),var(--surface) 75%)}
+.cm-hint img{width:46px;height:46px;border-radius:50%;flex:none}.cm-hint div{display:grid;gap:2px;flex:1;min-width:180px}.cm-hint b{font-family:var(--display);color:var(--navy);font-size:16px}.cm-hint span{font-size:13.5px;color:var(--ink-2)}.cm-hint .x{margin-left:0;align-self:flex-start}
+@media (max-width:560px){.cm-hint{position:relative;padding-right:44px}.cm-hint .x{position:absolute;top:8px;right:8px}.cm-hint .btn{width:100%}.cm-new{font-size:0;width:8px;height:8px;padding:0;display:inline-block;margin-left:3px;vertical-align:4px}}
 .cm-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}.cm-head h1{font-size:28px}
 .cm-fac{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:10px 14px;margin-top:12px}
 .cm-fe{font-size:28px;line-height:1}.cm-ft{display:grid;flex:1;min-width:0}.cm-ft small{font-size:12px;color:var(--ink-3)}.cm-ft b{color:var(--navy);overflow-wrap:anywhere;font-size:15px}
@@ -1499,7 +1503,7 @@ function home(){
    <div class="row"><input class="field num" id="salV" inputmode="numeric" value="${esc(S.sal.v)}" style="flex:1;min-width:120px" aria-label="${t('เงินเดือน (บาท)','Salary (THB)')}"><span class="muted">${t('บาท/เดือน','THB/month')}</span></div>
    <button class="btn" data-salcheck>${t('เช็กเลย','Check')}</button><div id="salOut"></div></div>
  </section>
- ${q||S.ob.goal==='first'?'':`<section class="sec card cm-home"><span aria-hidden="true">🗺️</span><div><b>${t('คณะคุณไปได้ไกลกว่าที่คิด','Your faculty can take you further than you think')}</b><span class="muted">${FAC[S.ob.fac]?t(`ดูงานที่ ${facName()} เข้าได้ ทั้งตรงสายและข้ามสาย`,`See the roles ${facName()} can reach, direct and cross-over`):t('เลือกคณะ แล้วดูงานที่เข้าได้ ทั้งตรงสายและข้ามสาย','Pick your faculty and see the roles it can reach, direct and cross-over')}</span></div><button class="btn y" data-cmopen>${t('เปิดแผนที่อาชีพ →','Open the career map →')}</button></section>`}
+ ${q||S.ob.goal==='first'?'':`<section class="sec card cm-home"><span aria-hidden="true">🗺️</span><div><b>${t('คณะคุณไปได้ไกลกว่าที่คิด','Your faculty can take you further than you think')}</b><span class="muted">${t('ยังไม่รู้ว่าอยากทำอะไร? เริ่มจากแผนที่นี้ได้เลย','Still figuring out what you want? Start with this map')}</span><span class="muted">${FAC[S.ob.fac]?t(`ดูงานที่ ${facName()} เข้าได้ ทั้งตรงสายและข้ามสาย`,`See the roles ${facName()} can reach, direct and cross-over`):t('เลือกคณะ แล้วดูงานที่เข้าได้ ทั้งตรงสายและข้ามสาย','Pick your faculty and see the roles it can reach, direct and cross-over')}</span></div><button class="btn y" data-cmopen>${t('เปิดแผนที่อาชีพ →','Open the career map →')}</button></section>`}
  <section class="sec"><div class="sec-h"><h2>${t('ฝึกงานและงานใหม่','New internships & jobs')}</h2><button class="link" data-go="jobs">${t('ดูทั้งหมด','See all')}</button></div><div class="grid g2">${JOBS.slice().sort((a,b)=>(b.spon-a.spon)||(a.days-b.days)).slice(0,2).map(jobCard).join('')}</div></section>
  <section class="sec"><div class="sec-h"><h2>⚡ ${t('งานด่วนใกล้มหาลัย','Quick part-time near campus')}</h2><button class="link" data-gopt>${t('ดูทั้งหมด','See all')}</button></div><div class="grid g2">${ptSorted(PT).filter(p=>p.filled<p.need).slice(0,2).map(ptCard).join('')}</div></section>
  <section class="sec"><div class="sec-h"><h2>${t('รีวิวที่คนกดว่ามีประโยชน์','Most helpful reviews')}</h2></div><div class="grid g2">${latest.slice(0,4).map(v=>review(v[0],v[1],v[2])).join('')}</div></section>
@@ -1635,7 +1639,8 @@ function jobCard(j){const c=getCo(j.co);
   <div class="row" style="gap:6px">${j.tags.map(g=>`<span class="chip">${x(g)}</span>`).join('')}</div>
   <div class="job-foot"><span class="muted">${agoTxt(j.days)}</span><div class="grow"><button class="save ${S.saved[j.id]?'on':''}" data-save="${j.id}" aria-label="${t('บันทึกงาน','Save job')}">${S.saved[j.id]?'♥':'♡'}</button>
   ${S.applied[j.id]?`<button class="btn ghost" disabled>✓ ${t('สมัครแล้ว','Applied')}</button>`:`<button class="btn" data-apply="${j.id}">${t('สมัครเลย','Apply')}</button>`}</div></div></article>`}
-function jobs(){return `<div class="segs jsegs" style="margin-top:10px">${[['full',t('💼 งานประจำ / ฝึกงาน','💼 Jobs & internships'),t('💼 งาน','💼 Jobs')],['pt',t('⚡ งานด่วน พาร์ทไทม์','⚡ Quick part-time'),t('⚡ พาร์ทไทม์','⚡ Part-time')],['map',t('🗺️ แผนที่อาชีพ','🗺️ Career map'),t('🗺️ แผนที่','🗺️ Map')]].map(([k,n,sn])=>`<button class="${S.jobTab===k?'on':''}" data-jtab="${k}" aria-pressed="${S.jobTab===k}"><span class="ll">${n}</span><span class="ls">${sn}</span></button>`).join('')}</div>`+(S.jobTab==='pt'?ptFeed():S.jobTab==='map'?careerMap():jobsFull())}
+function jobs(){return `<div class="segs jsegs" style="margin-top:10px">${[['full',t('💼 งานประจำ / ฝึกงาน','💼 Jobs & internships'),t('💼 งาน','💼 Jobs')],['pt',t('⚡ งานด่วน พาร์ทไทม์','⚡ Quick part-time'),t('⚡ พาร์ทไทม์','⚡ Part-time')],['map',t('🗺️ แผนที่อาชีพ','🗺️ Career map'),t('🗺️ แผนที่','🗺️ Map')]].map(([k,n,sn])=>`<button class="${S.jobTab===k?'on':''}" data-jtab="${k}" aria-pressed="${S.jobTab===k}"><span class="ll">${n}</span><span class="ls">${sn}</span>${k==='map'&&!S.ob.mapSeen&&S.jobTab!=='map'?`<i class="cm-new">${t('ใหม่','New')}</i>`:''}</button>`).join('')}</div>`+(S.jobTab!=='map'&&!S.ob.mapSeen?mapHint():'')+(S.jobTab==='pt'?ptFeed():S.jobTab==='map'?careerMap():jobsFull())}
+function mapHint(){return `<section class="cm-hint" aria-label="${t('แผนที่อาชีพ','Career map')}"><img src="${PUP()}" alt=""><div><b>${t('ยังไม่รู้ว่าตัวเองชอบงานแบบไหน? ไม่เป็นไรเลย','Not sure what kind of work suits you yet? That’s okay')}</b><span>${t('ลอง 🗺️ แผนที่อาชีพ ดูว่าคณะคุณไปทางไหนได้บ้าง ทั้งตรงสายและข้ามสาย แล้วค่อย ๆ ซูมหาตำแหน่งที่ใช่','Try the 🗺️ career map to see where your faculty can take you, direct and cross-over, then zoom in to find your fit')}</span></div><button class="btn orange sm" data-cmopen>${t('ลองดูแผนที่ →','Try the map →')}</button><button class="x sm" data-cmhintx aria-label="${t('ปิดคำแนะนำนี้','Close this tip')}">×</button></section>`}
 function jobsFull(){
  const F=S.jobF;const keys=Object.keys(IND);
  let list=JOBS.filter(j=>(F.type==='all'||j.type===F.type)&&(F.ind==='all'||getCo(j.co).ind===F.ind)&&(!F.min||(j.unit==='month'&&j.pay[0]>=F.min)));
@@ -2584,8 +2589,8 @@ function cmRole(r){const R=ROLES[r],G=GROUPS[R.g],W=WORLDS.find(v=>v[0]===G[0]),
  <button class="link" data-cmswipe style="margin-top:10px">${t('ปัดหารุ่นพี่ทั้งหมด →','Swipe through all mentors →')}</button></section>`}
 function cmNav(to,e,dir){const C=S.cm;if(e){const b=e.target.closest('button'),box=$('.cm-body');if(b&&box){const a=b.getBoundingClientRect(),o=box.getBoundingClientRect();C.ox=Math.round((a.left+a.width/2-o.left)/o.width*100);C.oy=Math.round((a.top+a.height/2-o.top)/Math.max(o.height,1)*100)}}
  Object.assign(C,to);C.dir=matchMedia('(prefers-reduced-motion: reduce)').matches?0:dir;S.jobTab='map';if(S.view!=='jobs')go('jobs');else{render();const h=$('.cm');if(h&&h.getBoundingClientRect().top<0)h.scrollIntoView({block:'start'})}}
-function openRole(r){S.cm.w=GROUPS[ROLES[r].g][0];S.cm.g=ROLES[r].g;S.cm.r=r;S.cm.dir=0;S.jobTab='map';go('jobs')}
-function openMap(){Object.assign(S.cm,{w:null,g:null,r:null,dir:0});S.jobTab='map';go('jobs')}
+function openRole(r){if(!S.ob.mapSeen){S.ob.mapSeen=true;obSave()}S.cm.w=GROUPS[ROLES[r].g][0];S.cm.g=ROLES[r].g;S.cm.r=r;S.cm.dir=0;S.jobTab='map';go('jobs')}
+function openMap(){if(!S.ob.mapSeen){S.ob.mapSeen=true;obSave()}Object.assign(S.cm,{w:null,g:null,r:null,dir:0});S.jobTab='map';go('jobs')}
 function followRole(r){const L=S.ob.roles||(S.ob.roles=[]),i=L.indexOf(r);if(i>=0){L.splice(i,1);obSave();render();toast(t('เลิกติดตามตำแหน่งนี้แล้ว','Unfollowed this role'));return}
  L.push(r);obSave();render();const n=JOBS.filter(j=>ROLES[r].jobs.includes(j.id)).length,R=ROLES[r].n;
  toast(t('ติดตามแล้ว จะแจ้งเตือนเมื่อมีงานใหม่','Following. We’ll let you know about new jobs'));
@@ -2605,7 +2610,7 @@ const OB_STEPS=[['co','🏢',['ดูหน้าบริษัท 1 ที่'
 const OB_KEY='maadoo-onboard';
 function obLoad(){let v=null;try{v=JSON.parse(store.get(OB_KEY)||'null')}catch(e){}const o={goal:null,inds:[],fac:null,major:null,roles:[],at:0,steps:{},paid:{},closed:false,done:false};if(!v||typeof v!=='object')return o;
  if(OB_GOALS.some(g=>g[0]===v.goal))o.goal=v.goal;if(Array.isArray(v.inds))o.inds=v.inds.filter(k=>IND[k]).slice(0,12);o.at=+v.at||0;
- if(facOk(v.fac)){o.fac=v.fac;if(facOk(v.fac,v.major))o.major=v.major||null}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);
+ if(facOk(v.fac)){o.fac=v.fac;if(facOk(v.fac,v.major))o.major=v.major||null}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);o.mapSeen=!!v.mapSeen;
  ['steps','paid'].forEach(k=>{if(v[k]&&typeof v[k]==='object')OB_STEPS.forEach(s=>{if(v[k][s[0]])o[k][s[0]]=+v[k][s[0]]||1})});o.closed=!!v.closed;o.done=!!v.done;return o}
 S.ob=obLoad();S.tour=null;
 const obSave=()=>store.set(OB_KEY,JSON.stringify(S.ob));
@@ -2704,8 +2709,9 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[
  if(d.obskip!==undefined){if(m.step<3){m.step++;renderModal()}else obFinish(m);return}
  if(d.obdone!==undefined){obFinish(m);return}},true);
 /* career map events */
-document.addEventListener('click',e=>{const el=e.target.closest('[data-cmw],[data-cmg],[data-cmr],[data-cmup],[data-cmfac],[data-cmmore],[data-cmfollow],[data-cmswipe],[data-cmopen],[data-fsave]');if(!el){const f=e.target.closest('[data-fpick]');if(f&&S.modal&&S.modal.type==='fac'){S.modal.fac=f.dataset.fpick;S.modal.major=f.dataset.fmaj||null;if(f.dataset.fmaj)S.modal.q='';renderModal()}return}const d=el.dataset;
+document.addEventListener('click',e=>{const el=e.target.closest('[data-cmw],[data-cmg],[data-cmr],[data-cmup],[data-cmfac],[data-cmmore],[data-cmfollow],[data-cmswipe],[data-cmopen],[data-cmhintx],[data-fsave]');if(!el){const f=e.target.closest('[data-fpick]');if(f&&S.modal&&S.modal.type==='fac'){S.modal.fac=f.dataset.fpick;S.modal.major=f.dataset.fmaj||null;if(f.dataset.fmaj)S.modal.q='';renderModal()}return}const d=el.dataset;
  if(d.cmopen!==undefined){openMap();return}
+ if(d.cmhintx!==undefined){S.ob.mapSeen=true;obSave();render();toast(t('ซ่อนแล้ว เปิดแผนที่ได้จากแท็บ 🗺️ เสมอ','Hidden. The 🗺️ tab is always there'));return}
  if(d.cmw){S.cm.more=false;cmNav({w:d.cmw,g:null,r:null},e,1);return}
  if(d.cmg){S.cm.more=false;cmNav({g:d.cmg,r:null},e,1);return}
  if(d.cmr){const g=ROLES[d.cmr].g;cmNav({w:GROUPS[g][0],g,r:d.cmr},e,1);return}
@@ -3033,7 +3039,7 @@ document.addEventListener('click',e=>{
  if(d.ni!==undefined){const v=NOTIFS[+d.ni];v.read=true;S.notifOpen=false;if(v.go[0]==='company')go('company',{co:v.go[1],tab:'overview'});else if(v.go[0]==='chat'){S.chatDraft='';go('chat',{chat:v.go[1]})}else if(v.go[0]==='live'){go('live',{liveId:v.go[1]})}else if(v.go[0]==='map'){openRole(v.go[1])}else go(v.go[0]);return}
  if(d.close!==undefined){closeModal();return}
  if(d.gopt!==undefined){S.jobTab='pt';go('jobs');return}
- if(d.jtab){if(d.jtab==='map'&&S.jobTab!=='map')Object.assign(S.cm,{w:null,g:null,r:null,dir:0});S.jobTab=d.jtab;render();return}
+ if(d.jtab){if(d.jtab==='map'&&S.jobTab!=='map')Object.assign(S.cm,{w:null,g:null,r:null,dir:0});if(d.jtab==='map'&&!S.ob.mapSeen){S.ob.mapSeen=true;obSave()}S.jobTab=d.jtab;render();return}
  if(d.pt){openModal({type:'pt',id:d.pt});return}
  if(d.ptday){S.ptDay=d.ptday;render();return}
  if(d.ptpost!==undefined){openModal({type:'ptpost'});return}
