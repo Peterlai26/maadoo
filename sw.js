@@ -1,7 +1,7 @@
 /* Maadoo Job · sw.js — service worker (PWA). Precaches the app shell so the site opens fast and works offline.
    ⚠️ Bump VERSION on every change to the site's files, otherwise installed apps keep the old files.
    Never caches Supabase (data must always be fresh): only same-origin files and Google Fonts are handled. */
-const VERSION='2026-09-27.6';
+const VERSION='2026-09-27.7';
 const SHELL='maadoo-shell-'+VERSION,FONTS='maadoo-fonts-v1';
 const PUPS=['','-night','-sakura','-mint','-lavender','-sunset','-dino','-garden','-sea','-space','-galaxy','-japan','-china','-cafe','-rain','-pixel','-library'].map(k=>`/maadoo-icon${k}.webp`);
 const FILES=['/','/index.html','/offline.html','/manifest.webmanifest','/css/style.css',

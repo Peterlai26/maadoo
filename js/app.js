@@ -39,6 +39,7 @@ function renderModal(){const m=S.modal;const el=$('#modal');document.documentEle
  if(m.type==='write')body=writeModal(m,head);
  if(m.type==='pwaios')body=pwaIosModal(m,head);
  if(m.type==='fac')body=facModal(m,head);
+ if(m.type==='cmfb')body=cmfbModal(m,head);
  if(m.type==='crop')body=cropModal(m,head);
  if(m.type==='apply')body=applyModal(m,head);
  if(m.type==='emp'){const e=EMP[m.tier],pay=m.tier==='Pro'?proPrice():0;body=`${head(t(`แพ็กเกจ ${m.tier}`,`${m.tier} plan`),m.tier==='Enterprise'?t('ทีมมาดูจ็อบจะติดต่อกลับภายใน 1 วันทำการ','The Maadoo Job team will get back to you within 1 business day'):m.tier==='Pro'?t(`${fmt(pay)} บาท/เดือน${pay<3900?' · 3 เดือนแรก':''}`,`${fmt(pay)} THB/month${pay<3900?' · first 3 months':''}`):t('ฟรีตลอด','Free forever'))}

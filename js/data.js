@@ -318,7 +318,9 @@ const QRES={
 const MOODS=[['😊',['อยู่ยาว','Staying'],'good'],['😐',['พอไหว','It’s OK'],'mid'],['😵',['หนีด่วน','Run!'],'bad']];
 
 /* ---------- career map (แผนที่อาชีพ): faculty → 7 worlds → groups → roles → role page ----------
-   Sample guidance data only (labelled "ข้อมูลแนะนำเบื้องต้น"). Fit levels: d = direct 🟢, b = can cross over 🟡, s = needs new skills 🟠.
+   Sample guidance data only (labelled "ข้อมูลแนะนำเบื้องต้น"). Fit levels: d = direct 🟢, b = can cross over 🟡, s = needs new skills 🟠, x = 🔒 needs this exact degree (licensed jobs:
+   roles with `lic` — only faculties/majors marked d for them can get there; every other faculty sees 🔒, never "learn more ~12 months").
+   A role's optional `note` [th,en] shows special conditions on its page (licences, exams…).
    Skills in common between a faculty (+ major) and a role are "skills you already have"; the rest are "skills to add" with a rough time. */
 const SK={lab:['งานแล็บพื้นฐาน','Basic lab work',3],micro:['เทคนิคจุลชีววิทยา','Microbiology techniques',4],chem:['เคมีวิเคราะห์','Analytical chemistry',4],gmp:['GMP / HACCP / ISO','GMP / HACCP / ISO',1],
  stat:['สถิติ','Statistics',2],excel:['Excel ขั้นสูง','Advanced Excel',1],sql:['SQL','SQL',2],python:['Python','Python',3],viz:['Power BI / Tableau','Power BI / Tableau',1],code:['เขียนโปรแกรม','Programming',6],test:['ทดสอบซอฟต์แวร์','Software testing',2],
@@ -328,24 +330,38 @@ const SK={lab:['งานแล็บพื้นฐาน','Basic lab work',3],
  process:['กระบวนการผลิต','Production processes',4],cad:['CAD / เขียนแบบ','CAD drafting',3],care:['ดูแลผู้ป่วย','Patient care',12],license:['ใบประกอบวิชาชีพ','Professional licence',12],teach:['เทคนิคการสอน','Teaching methods',6],
  psych:['จิตวิทยาและการเข้าใจคน','Psychology & people skills',3],law:['กฎหมาย','Law',12],reg:['กฎระเบียบ อย. และมาตรฐาน','Regulations & standards',2],env:['สิ่งแวดล้อมและน้ำเสีย','Environment & wastewater',3],
  safety:['ความปลอดภัยในการทำงาน (จป.)','Workplace safety (OSH)',2],game:['เกมดีไซน์','Game design',4],unity:['Unity / C#','Unity / C#',4],plan:['วางแผนและจัดการงาน','Planning & organising',1],docs:['เขียนรายงานและเอกสาร','Reports & documentation',1],
- lang:['ภาษาที่ 3 (จีน/ญี่ปุ่น)','A third language',6],policy:['วิเคราะห์นโยบาย','Policy analysis',3],hr:['งาน HR และสรรหา','HR & recruiting',2]};
+ lang:['ภาษาที่ 3 (จีน/ญี่ปุ่น)','A third language',6],policy:['วิเคราะห์นโยบาย','Policy analysis',3],hr:['งาน HR และสรรหา','HR & recruiting',2],
+ tlic:['ใบอนุญาตประกอบวิชาชีพครู','Teaching licence',12],clin:['ความรู้ทางคลินิก','Clinical knowledge',12],net:['ระบบเครือข่ายและคลาวด์','Networks & cloud',4],music:['ทฤษฎีและการเล่นดนตรี','Music theory & performance',12],
+ audio:['บันทึกเสียงและมิกซ์','Recording & mixing',4],sport:['วิทยาศาสตร์การกีฬาและการออกกำลังกาย','Sport & exercise science',6],event:['จัดงานและอีเวนต์','Event planning',2],nutri:['โภชนาการ','Nutrition',4]};
 /* faculties: emoji, name, skills the faculty usually builds, majors {id:[name, extra skills, roles that are a direct fit for this major]} */
 const FAC={
  sci:{e:'🔬',n:['วิทยาศาสตร์','Science'],has:['lab','chem','micro','stat','research','docs'],mj:{micro:[['จุลชีววิทยา','Microbiology'],['micro'],['qcmicro']],chem:[['เคมี','Chemistry'],['chem'],['qc','formchem']],phys:[['ฟิสิกส์','Physics'],['stat','code'],[]],bio:[['ชีววิทยา','Biology'],['micro'],[]],cs:[['วิทยาการคอมพิวเตอร์','Computer science'],['code','sql','python','test'],['swe','da','qatest']],math:[['คณิตศาสตร์','Mathematics'],['stat','python'],['da']],stat:[['สถิติ','Statistics'],['stat','sql','excel'],['da','ba']],envsci:[['วิทยาศาสตร์สิ่งแวดล้อม','Environmental science'],['env'],['envoff']],biotech:[['เทคโนโลยีชีวภาพ','Biotechnology'],['micro','process'],['ferm']]}},
- eng:{e:'⚙️',n:['วิศวกรรมศาสตร์','Engineering'],has:['process','cad','plan','excel','safety','stat'],mj:{civil:[['วิศวกรรมโยธา','Civil engineering'],['cad'],[]],mech:[['วิศวกรรมเครื่องกล','Mechanical engineering'],['cad'],['maint']],elec:[['วิศวกรรมไฟฟ้า','Electrical engineering'],[],[]],cpe:[['วิศวกรรมคอมพิวเตอร์','Computer engineering'],['code','sql','test'],['swe','qatest']],ie:[['วิศวกรรมอุตสาหการ','Industrial engineering'],['scm'],['scm']],cheme:[['วิศวกรรมเคมี','Chemical engineering'],['chem','env'],['processeng']],enve:[['วิศวกรรมสิ่งแวดล้อม','Environmental engineering'],['env'],['envoff']]}},
+ eng:{e:'⚙️',n:['วิศวกรรมศาสตร์','Engineering'],has:['process','cad','plan','excel','safety','stat'],mj:{civil:[['วิศวกรรมโยธา','Civil engineering'],['cad'],['civileng']],mech:[['วิศวกรรมเครื่องกล','Mechanical engineering'],['cad'],['maint']],elec:[['วิศวกรรมไฟฟ้า','Electrical engineering'],[],['eleceng']],cpe:[['วิศวกรรมคอมพิวเตอร์','Computer engineering'],['code','sql','test'],['swe','qatest']],ie:[['วิศวกรรมอุตสาหการ','Industrial engineering'],['scm'],['scm']],cheme:[['วิศวกรรมเคมี','Chemical engineering'],['chem','env'],['processeng']],enve:[['วิศวกรรมสิ่งแวดล้อม','Environmental engineering'],['env'],['envoff']]}},
+ it:{e:'🖥️',n:['เทคโนโลยีสารสนเทศ','Information technology'],has:['code','sql','net','test','docs','english'],mj:{it:[['เทคโนโลยีสารสนเทศ','Information technology'],['service'],['sysadmin']],se:[['วิศวกรรมซอฟต์แวร์','Software engineering'],[],['swe','qatest']],ds:[['วิทยาการข้อมูล','Data science'],['python','stat','viz'],['da']],sec:[['ความมั่นคงปลอดภัยไซเบอร์','Cybersecurity'],[],['cyber']],mm:[['มัลติมีเดียและเกม','Multimedia & games'],['design','game','unity'],['gamedev']]}},
  agro:{e:'🌾',n:['อุตสาหกรรมเกษตร / เกษตร','Agro-industry / Agriculture'],has:['lab','micro','gmp','formul','process','research'],mj:{foodsci:[['วิทยาศาสตร์และเทคโนโลยีการอาหาร','Food science & technology'],['docs'],['rdfood','qa']],agri:[['เกษตรศาสตร์','Agriculture'],['plan'],[]],agbio:[['เทคโนโลยีชีวภาพเกษตร','Agricultural biotechnology'],[],['ferm']],foodbiz:[['ธุรกิจอาหาร','Food business'],['mkt','sales'],['cat']]}},
- health:{e:'🩺',n:['สหเวช / พยาบาล / สาธารณสุข','Allied health / Nursing / Public health'],has:['lab','micro','care','docs','service','license'],mj:{medtech:[['เทคนิคการแพทย์','Medical technology'],[],['medtech']],nurse:[['พยาบาลศาสตร์','Nursing'],[],['nurse']],pubhealth:[['สาธารณสุขศาสตร์','Public health'],['safety','env'],['safety']],physio:[['กายภาพบำบัด','Physical therapy'],['psych'],[]]}},
+ med:{e:'⚕️',n:['แพทยศาสตร์','Medicine'],has:['clin','care','license','research','docs','english'],mj:{md:[['แพทยศาสตร์ (แพทย์)','Doctor of Medicine'],[],['doctor']]}},
+ dent:{e:'🦷',n:['ทันตแพทยศาสตร์','Dentistry'],has:['clin','care','license','service','docs'],mj:{dds:[['ทันตแพทยศาสตร์ (ทันตแพทย์)','Doctor of Dental Surgery'],[],['dentist']]}},
+ vet:{e:'🐾',n:['สัตวแพทยศาสตร์','Veterinary medicine'],has:['clin','care','license','lab','micro','docs'],mj:{dvm:[['สัตวแพทยศาสตร์ (สัตวแพทย์)','Doctor of Veterinary Medicine'],[],['vet']],vtech:[['เทคนิคการสัตวแพทย์','Veterinary technology'],['gmp'],['qc']]}},
  pharm:{e:'💊',n:['เภสัชศาสตร์','Pharmacy'],has:['chem','gmp','reg','license','lab','docs'],mj:{pharmcare:[['เภสัชกรรมบริบาล','Pharmaceutical care'],['care'],['pharmacist']],pharmsci:[['วิทยาศาสตร์เภสัชกรรม','Pharmaceutical sciences'],['formul'],['formchem']]}},
+ medtech:{e:'🧫',n:['เทคนิคการแพทย์','Medical technology'],has:['lab','micro','chem','license','docs','stat'],mj:{mt:[['เทคนิคการแพทย์','Medical technology'],[],['medtech']],rt:[['รังสีเทคนิค','Radiologic technology'],['safety'],['radtech']]}},
+ nurse:{e:'🩺',n:['พยาบาลศาสตร์','Nursing'],has:['care','license','service','docs','psych'],mj:{ns:[['พยาบาลศาสตร์','Nursing'],[],['nurse']]}},
+ pubh:{e:'🏥',n:['สาธารณสุขศาสตร์','Public health'],has:['docs','research','policy','stat','env','service'],mj:{ph:[['สาธารณสุขศาสตร์','Public health'],[],['pubhoff']],ohs:[['อาชีวอนามัยและความปลอดภัย','Occupational health & safety'],['safety'],['safety']],envh:[['อนามัยสิ่งแวดล้อม','Environmental health'],['chem'],['envoff']]}},
+ allied:{e:'🦴',n:['สหเวชศาสตร์','Allied health sciences'],has:['care','clin','license','psych','docs','service'],mj:{pt:[['กายภาพบำบัด','Physical therapy'],[],['physio']],ot:[['กิจกรรมบำบัด','Occupational therapy'],[],['ot']],diet:[['โภชนาการและการกำหนดอาหาร','Nutrition & dietetics'],['nutri'],['dietitian']]}},
+ sport:{e:'🏃',n:['วิทยาศาสตร์การกีฬา','Sports science'],has:['sport','teach','psych','plan','service'],mj:{ss:[['วิทยาศาสตร์การกีฬาและการออกกำลังกาย','Sport & exercise science'],['research','stat'],['sportsci']],coach:[['การฝึกและการจัดการกีฬา','Coaching & sport management'],['event'],['trainer','eventco']],hp:[['ส่งเสริมสุขภาพ','Health promotion'],['nutri'],['trainer']]}},
  bus:{e:'📈',n:['บริหารธุรกิจ','Business administration'],has:['excel','mkt','present','plan','sales','scm'],mj:{mkt:[['การตลาด','Marketing'],['writing'],['mkt']],fin:[['การเงิน','Finance'],['finance'],['credit']],mgmt:[['การจัดการ','Management'],['hr'],[]],hrm:[['การจัดการทรัพยากรมนุษย์','Human resource management'],['hr','psych'],['hr']],log:[['โลจิสติกส์','Logistics'],['scm'],['scm']],ib:[['ธุรกิจระหว่างประเทศ','International business'],['english'],[]],bis:[['ระบบสารสนเทศทางธุรกิจ','Business information systems'],['sql'],['ba']]}},
- acc:{e:'🧾',n:['บัญชี','Accounting'],has:['acct','finance','excel','docs'],mj:{acc:[['การบัญชี','Accounting'],[],[]],audit:[['การสอบบัญชี','Auditing'],['reg'],['compliance']]}},
+ acc:{e:'🧾',n:['บัญชี','Accounting'],has:['acct','finance','excel','docs'],mj:{acc:[['การบัญชี','Accounting'],[],[]],ais:[['ระบบสารสนเทศทางการบัญชี','Accounting information systems'],['sql'],['ba']]}},
  econ:{e:'💹',n:['เศรษฐศาสตร์','Economics'],has:['stat','excel','finance','policy','present'],mj:{econ:[['เศรษฐศาสตร์','Economics'],[],[]],bizecon:[['เศรษฐศาสตร์ธุรกิจ','Business economics'],['sql'],['ba']]}},
  comm:{e:'🎬',n:['นิเทศศาสตร์','Communication arts'],has:['writing','video','mkt','present','design'],mj:{ad:[['การโฆษณา','Advertising'],['sales'],['ae']],pr:[['การประชาสัมพันธ์','Public relations'],['english'],['pr']],journ:[['วารสารศาสตร์','Journalism'],['docs'],[]],film:[['ภาพยนตร์','Film'],[],[]],digital:[['สื่อดิจิทัล','Digital media'],['figma'],['graphic']]}},
  arts:{e:'📚',n:['อักษรศาสตร์ / มนุษยศาสตร์','Arts / Humanities'],has:['english','writing','lang','present','docs'],mj:{english:[['ภาษาอังกฤษ','English'],[],[]],chinese:[['ภาษาจีน','Chinese'],[],[]],japanese:[['ภาษาญี่ปุ่น','Japanese'],[],[]],thai:[['ภาษาไทย','Thai'],[],[]],info:[['สารสนเทศศาสตร์ / บรรณารักษ์','Information science / Library'],['sql'],[]],hist:[['ประวัติศาสตร์','History'],['research'],[]]}},
  soc:{e:'🏛️',n:['รัฐศาสตร์ / สังคมศาสตร์','Political & social sciences'],has:['policy','writing','docs','present','psych'],mj:{pol:[['รัฐศาสตร์','Political science'],[],['civil','policy']],socio:[['สังคมวิทยา','Sociology'],['research'],[]],psy:[['จิตวิทยา','Psychology'],[],['hr']],ir:[['ความสัมพันธ์ระหว่างประเทศ','International relations'],['english'],[]]}},
  law:{e:'⚖️',n:['นิติศาสตร์','Law'],has:['law','reg','docs','writing','present'],mj:{law:[['นิติศาสตร์','Law'],[],[]]}},
- edu:{e:'🍎',n:['ครุศาสตร์ / ศึกษาศาสตร์','Education'],has:['teach','present','psych','license','writing'],mj:{early:[['การศึกษาปฐมวัย','Early childhood'],[],[]],scied:[['วิทยาศาสตร์ศึกษา','Science education'],['lab'],[]],englished:[['ภาษาอังกฤษศึกษา','English education'],['english'],[]],edtech:[['เทคโนโลยีการศึกษา','Educational technology'],['figma','video'],['instr']],counsel:[['จิตวิทยาการแนะแนว','Guidance & counselling'],['hr'],[]]}},
+ edu:{e:'🍎',n:['ครุศาสตร์ / ศึกษาศาสตร์','Education'],has:['teach','present','psych','tlic','writing'],mj:{early:[['การศึกษาปฐมวัย','Early childhood'],[],[]],scied:[['วิทยาศาสตร์ศึกษา','Science education'],['lab'],[]],englished:[['ภาษาอังกฤษศึกษา','English education'],['english'],[]],edtech:[['เทคโนโลยีการศึกษา','Educational technology'],['figma','video'],['instr']],counsel:[['จิตวิทยาการแนะแนว','Guidance & counselling'],['hr'],[]]}},
  arch:{e:'📐',n:['สถาปัตย์ / ศิลปกรรม','Architecture / Fine & applied arts'],has:['design','cad','figma','present'],mj:{arch:[['สถาปัตยกรรม','Architecture'],['plan'],[]],product:[['ออกแบบผลิตภัณฑ์','Product design'],['research'],[]],commdes:[['นิเทศศิลป์','Communication design'],['mkt'],['graphic','uxui']],fineart:[['ศิลปะ','Fine arts'],[],[]],interior:[['ออกแบบภายใน','Interior design'],[],[]]}},
- tour:{e:'✈️',n:['การท่องเที่ยวและการโรงแรม','Tourism & hospitality'],has:['service','english','lang','safety','plan'],mj:{hotel:[['การโรงแรม','Hotel management'],[],['fo']],tourism:[['การท่องเที่ยว','Tourism'],['mkt'],[]],aviation:[['ธุรกิจการบิน','Aviation business'],[],['ground','crew']],event:[['การจัดการอีเวนต์ (MICE)','Events (MICE)'],['sales'],[]]}}};
+ music:{e:'🎼',n:['ดุริยางคศิลป์ / ดนตรี','Music'],has:['music','present','teach','plan'],mj:{perf:[['การแสดงดนตรี','Music performance'],[],['musician']],comp:[['การประพันธ์เพลง','Composition'],['audio'],['soundeng']],mtech:[['เทคโนโลยีและธุรกิจดนตรี','Music technology & business'],['audio','mkt'],['soundeng','eventco']],mused:[['ดนตรีศึกษา','Music education'],['psych'],['musicteach']]}},
+ tour:{e:'✈️',n:['การท่องเที่ยวและการโรงแรม','Tourism & hospitality'],has:['service','english','lang','safety','plan'],mj:{hotel:[['การโรงแรม','Hotel management'],[],['fo']],tourism:[['การท่องเที่ยว','Tourism'],['mkt'],[]],aviation:[['ธุรกิจการบิน','Aviation business'],[],['ground','crew']],event:[['การจัดการอีเวนต์ (MICE)','Events (MICE)'],['sales'],['eventco']]}}};
+/* saved answers from before the faculty list changed: "health" was split into 4 faculties, auditing became AIS */
+function facFix(f,m){if(f==='health'){const M={medtech:['medtech','mt'],nurse:['nurse','ns'],pubhealth:['pubh','ph'],physio:['allied','pt']};return M[m]||['allied',null]}
+ if(f==='acc'&&m==='audit')return ['acc',null];return [f,m]}
 /* 7 worlds (the big circles), each drawn in a theme color token */
 const WORLDS=[['scih','🧪',['วิทย์และสุขภาพ','Science & health'],'--good'],['tech','💻',['ข้อมูลและเทค','Data & tech'],'--blue'],['biz','📊',['ธุรกิจและการขาย','Business & sales'],'--orange'],['crea','🎨',['ครีเอทีฟและสื่อ','Creative & media'],'--plus-c'],['serv','🛎️',['บริการและท่องเที่ยว','Service & travel'],'--mid'],['edu','🌱',['การศึกษาและพัฒนาคน','Education & people'],'--plus-b'],['gov','🏛️',['ภาครัฐและมาตรฐาน','Public sector & standards'],'--ink-2']];
 const GROUPS={lab:['scih','🔬',['แล็บและควบคุมคุณภาพ','Lab & quality control']],rnd:['scih','🧫',['วิจัยและพัฒนาผลิตภัณฑ์','R&D & product development']],care:['scih','🩺',['สุขภาพและคลินิก','Health & clinical']],plant:['scih','🏭',['โรงงานและวิศวกรรม','Plants & engineering']],
@@ -354,8 +370,11 @@ const GROUPS={lab:['scih','🔬',['แล็บและควบคุมคุ
  content:['crea','🎥',['คอนเทนต์และประชาสัมพันธ์','Content & PR']],design:['crea','🖌️',['ออกแบบและเกม','Design & games']],
  hotel:['serv','🏨',['โรงแรมและอาหาร','Hotels & F&B']],air:['serv','🛫',['สายการบิน','Airlines']],cx:['serv','💬',['ดูแลลูกค้า','Customer care']],
  teach:['edu','📖',['สอนและสื่อการเรียนรู้','Teaching & learning design']],people:['edu','🧑‍🤝‍🧑',['HR และพัฒนาบุคลากร','HR & people development']],
+ infra:['tech','🛡️',['ระบบไอทีและความปลอดภัย','IT systems & security']],music:['crea','🎵',['ดนตรีและเสียง','Music & audio']],sport:['scih','🏃',['กีฬาและการออกกำลังกาย','Sport & fitness']],events:['serv','🎪',['อีเวนต์และกิจกรรม','Events']],
  reg:['gov','📜',['มาตรฐานและกฎหมาย','Standards & law']],envs:['gov','🌿',['สิ่งแวดล้อมและความปลอดภัย','Environment & safety']],pub:['gov','🏢',['ราชการและนโยบาย','Government & policy']]};
-/* roles: group, name, skills used, salary-row names in CO (English), related job ids */
+/* roles: group, name, skills used, salary-row names in CO (English), related job ids; lic = licensed job (degree `deg` + licence exam), note = special conditions */
+const LIC_NOTE=['ต้องเรียนจบสาขานี้โดยตรงและสอบใบประกอบวิชาชีพ เรียนเพิ่มระยะสั้นแทนไม่ได้','You must graduate in this exact field and pass the licence exam; a short course can’t replace it'];
+const GV_NOTE=['งานบางประเภท (ออกแบบ คุมงาน ลงนามรับรองแบบ) ต้องมีใบอนุญาตประกอบวิชาชีพวิศวกรรมควบคุม (กว.)','Some work (designing, supervising or signing off plans) needs a Thai engineering licence (กว.)'];
 const ROLES={
  qc:{g:'lab',n:['นักวิเคราะห์ QC','QC Analyst'],u:['lab','chem','gmp','docs'],sal:['QC Analyst (new grad)','Lab Analyst (new grad)','QC Inspector'],jobs:['j5']},
  qcmicro:{g:'lab',n:['นักจุลชีววิทยา QC','QC Microbiologist'],u:['micro','lab','gmp','docs'],sal:['QC Microbiologist','Microbiologist','Cosmetic QC Microbiologist','Clinical Microbiologist'],jobs:['j3','j2','j6','j10','j17']},
@@ -363,22 +382,36 @@ const ROLES={
  rdfood:{g:'rnd',n:['นักวิจัยพัฒนาผลิตภัณฑ์อาหาร','R&D Food Scientist'],u:['research','formul','lab','present'],sal:['R&D Food Scientist'],jobs:['j8']},
  formchem:{g:'rnd',n:['นักเคมีตั้งสูตร','Formulation Chemist'],u:['chem','formul','research','reg'],sal:['Formulation Chemist'],jobs:[]},
  ferm:{g:'rnd',n:['เจ้าหน้าที่งานหมัก','Fermentation Technician'],u:['micro','process','lab','gmp'],sal:['Fermentation Technician'],jobs:['j4']},
- medtech:{g:'care',n:['นักเทคนิคการแพทย์','Medical Technologist'],u:['lab','micro','license','docs'],sal:['Medical Technologist'],jobs:[]},
- nurse:{g:'care',n:['พยาบาลวิชาชีพ','Registered Nurse'],u:['care','license','service','docs'],sal:['Registered Nurse'],jobs:[]},
- pharmacist:{g:'care',n:['เภสัชกร','Pharmacist'],u:['license','reg','chem','gmp'],sal:['Production Pharmacist'],jobs:[]},
+ medtech:{g:'care',n:['นักเทคนิคการแพทย์','Medical Technologist'],u:['lab','micro','license','docs'],sal:['Medical Technologist'],jobs:[],lic:['เทคนิคการแพทย์','Medical technology']},
+ nurse:{g:'care',n:['พยาบาลวิชาชีพ','Registered Nurse'],u:['care','license','service','docs'],sal:['Registered Nurse'],jobs:[],lic:['พยาบาลศาสตร์','Nursing']},
+ pharmacist:{g:'care',n:['เภสัชกร','Pharmacist'],u:['license','reg','chem','gmp'],sal:['Production Pharmacist'],jobs:[],lic:['เภสัชศาสตร์','Pharmacy']},
+ doctor:{g:'care',n:['แพทย์','Physician'],u:['clin','care','license','research'],sal:[],jobs:[],lic:['แพทยศาสตร์','Medicine']},
+ dentist:{g:'care',n:['ทันตแพทย์','Dentist'],u:['clin','care','license','service'],sal:[],jobs:[],lic:['ทันตแพทยศาสตร์','Dentistry']},
+ vet:{g:'care',n:['สัตวแพทย์','Veterinarian'],u:['clin','care','license','lab'],sal:[],jobs:[],lic:['สัตวแพทยศาสตร์','Veterinary medicine']},
+ physio:{g:'care',n:['นักกายภาพบำบัด','Physical Therapist'],u:['clin','care','license','psych'],sal:[],jobs:[],lic:['กายภาพบำบัด','Physical therapy']},
+ ot:{g:'care',n:['นักกิจกรรมบำบัด','Occupational Therapist'],u:['care','psych','license','docs'],sal:[],jobs:[],lic:['กิจกรรมบำบัด','Occupational therapy']},
+ radtech:{g:'care',n:['นักรังสีเทคนิค','Radiologic Technologist'],u:['clin','license','safety','docs'],sal:[],jobs:[],lic:['รังสีเทคนิค','Radiologic technology']},
+ dietitian:{g:'care',n:['นักโภชนาการ / นักกำหนดอาหาร','Nutritionist / Dietitian'],u:['nutri','care','docs','present'],sal:[],jobs:[],note:['นักกำหนดอาหารวิชาชีพ (CDT) ต้องสอบขึ้นทะเบียนเพิ่ม','A certified dietitian (CDT) needs an extra registration exam']},
+ pubhoff:{g:'care',n:['นักวิชาการสาธารณสุข','Public Health Officer'],u:['docs','research','policy','service'],sal:[],jobs:[]},
+ crc:{g:'rnd',n:['ผู้ประสานงานวิจัยทางคลินิก (CRC)','Clinical Research Coordinator'],u:['research','docs','english','reg'],sal:[],jobs:[]},
  prodeng:{g:'plant',n:['วิศวกรฝ่ายผลิต','Production Engineer'],u:['process','cad','plan','excel'],sal:['Production Engineer'],jobs:[]},
+ civileng:{g:'plant',n:['วิศวกรโยธา / วิศวกรไซต์งาน','Civil / Site Engineer'],u:['cad','plan','safety','docs'],sal:[],jobs:[],note:GV_NOTE},
+ eleceng:{g:'plant',n:['วิศวกรไฟฟ้า','Electrical Engineer'],u:['cad','process','safety','docs'],sal:[],jobs:[],note:GV_NOTE},
  processeng:{g:'plant',n:['วิศวกรกระบวนการ','Process Engineer'],u:['process','chem','env','excel'],sal:['Biogas Process Engineer'],jobs:['j16']},
  validation:{g:'plant',n:['เจ้าหน้าที่ Validation','Validation Officer'],u:['gmp','docs','stat','process'],sal:['Validation Officer'],jobs:[]},
- maint:{g:'plant',n:['ช่างซ่อมบำรุงอากาศยาน','Aircraft Maintenance Technician'],u:['process','license','safety','english'],sal:['Aircraft Maintenance Technician'],jobs:[]},
+ maint:{g:'plant',n:['วิศวกรซ่อมบำรุง','Maintenance Engineer'],u:['process','cad','safety','plan'],sal:[],jobs:[]},
  da:{g:'data',n:['นักวิเคราะห์ข้อมูล','Data Analyst'],u:['sql','python','viz','stat'],sal:['Data Analyst'],jobs:['j1']},
  ba:{g:'data',n:['นักวิเคราะห์ธุรกิจ','Business Analyst'],u:['excel','sql','present','plan'],sal:['Business Analyst'],jobs:[]},
  swe:{g:'dev',n:['นักพัฒนาซอฟต์แวร์','Software Engineer'],u:['code','test','sql','english'],sal:['Software Engineer'],jobs:[]},
  gamedev:{g:'dev',n:['นักพัฒนาเกม','Game Developer'],u:['unity','code','game','test'],sal:['Unity Developer'],jobs:[]},
+ sysadmin:{g:'infra',n:['ผู้ดูแลระบบไอที','IT System Administrator'],u:['net','service','docs','english'],sal:[],jobs:[]},
+ cyber:{g:'infra',n:['นักวิเคราะห์ความปลอดภัยไซเบอร์','Cybersecurity Analyst'],u:['net','code','docs','english'],sal:[],jobs:[]},
  qatest:{g:'dev',n:['นักทดสอบซอฟต์แวร์','QA Tester'],u:['test','docs','english'],sal:['QA Tester'],jobs:['j15']},
  uxui:{g:'prod',n:['นักออกแบบ UX/UI','Product Designer (UX/UI)'],u:['figma','research','present','design'],sal:['Product Designer'],jobs:[]},
  pm:{g:'prod',n:['ผู้จัดการผลิตภัณฑ์','Product Manager'],u:['plan','research','present','figma'],sal:['Product Manager'],jobs:[]},
  mkt:{g:'sales',n:['เจ้าหน้าที่การตลาด','Marketing Executive'],u:['mkt','writing','excel','present'],sal:['Marketing Executive'],jobs:[]},
  sales:{g:'sales',n:['เจ้าหน้าที่ฝ่ายขาย','Sales Executive'],u:['sales','present','service','english'],sal:['Sales Executive','Relationship Manager'],jobs:[]},
+ medrep:{g:'sales',n:['ผู้แทนยาและเวชภัณฑ์','Medical Representative'],u:['sales','present','reg','english'],sal:[],jobs:[]},
  ae:{g:'sales',n:['Account Executive (เอเจนซี่)','Account Executive'],u:['sales','present','plan','mkt'],sal:['Account Executive'],jobs:[]},
  credit:{g:'fin',n:['นักวิเคราะห์สินเชื่อ','Credit Analyst'],u:['finance','excel','acct','docs'],sal:['Credit Analyst'],jobs:[]},
  mt:{g:'fin',n:['Management Trainee','Management Trainee'],u:['present','plan','excel','english'],sal:['Management Trainee'],jobs:['j9']},
@@ -389,44 +422,63 @@ const ROLES={
  content:{g:'content',n:['คอนเทนต์ครีเอเตอร์','Content Creator'],u:['writing','video','mkt','present'],sal:['Content Creator'],jobs:['j14']},
  pr:{g:'content',n:['เจ้าหน้าที่ประชาสัมพันธ์','PR Executive'],u:['writing','present','english','mkt'],sal:['PR Executive'],jobs:[]},
  graphic:{g:'design',n:['กราฟิกดีไซเนอร์','Graphic Designer'],u:['design','mkt','present'],sal:['Graphic Designer'],jobs:[]},
+ musician:{g:'music',n:['นักดนตรี / ศิลปิน','Musician / Performer'],u:['music','present','mkt'],sal:[],jobs:[]},
+ soundeng:{g:'music',n:['ซาวด์เอนจิเนียร์ / โปรดิวเซอร์','Sound Engineer / Producer'],u:['audio','music','plan'],sal:[],jobs:[]},
  gamedesign:{g:'design',n:['เกมดีไซเนอร์','Game Designer'],u:['game','design','writing','present'],sal:['Game Designer'],jobs:[]},
  fo:{g:'hotel',n:['พนักงานต้อนรับส่วนหน้า','Front Office / Guest Service'],u:['service','english','lang','docs'],sal:['Front Office Agent','Guest Service Agent'],jobs:[]},
  hyg:{g:'hotel',n:['เจ้าหน้าที่สุขาภิบาลอาหาร','F&B Hygiene Officer'],u:['gmp','micro','docs','service'],sal:['F&B Hygiene Officer'],jobs:['j12']},
+ eventco:{g:'events',n:['เจ้าหน้าที่จัดอีเวนต์','Event Coordinator'],u:['event','plan','service','sales'],sal:[],jobs:[]},
  ground:{g:'air',n:['พนักงานภาคพื้น','Ground Staff'],u:['service','english','lang','safety'],sal:['Ground Staff (new grad)'],jobs:['j18']},
  crew:{g:'air',n:['พนักงานต้อนรับบนเครื่องบิน','Cabin Crew'],u:['service','english','safety','lang'],sal:['Cabin Crew'],jobs:[]},
  cs:{g:'cx',n:['Customer Success','Customer Success'],u:['service','english','excel','writing'],sal:['Customer Success'],jobs:[]},
- teacher:{g:'teach',n:['ครู / ติวเตอร์','Teacher / Tutor'],u:['teach','license','present','psych'],sal:[],jobs:[]},
+ teacher:{g:'teach',n:['ครู / ติวเตอร์','Teacher / Tutor'],u:['teach','tlic','present','psych'],sal:[],jobs:[],note:['ครูในโรงเรียนต้องมีใบอนุญาตประกอบวิชาชีพครู ถ้าไม่ได้จบครุ/ศึกษาศาสตร์ ต้องเรียน ป.บัณฑิตวิชาชีพครูเพิ่ม (ติวเตอร์ไม่ต้องมี)','School teachers need a Thai teaching licence; without an education degree you take the graduate diploma in teaching first (tutors don’t need one)']},
+ musicteach:{g:'teach',n:['ครูสอนดนตรี','Music Teacher'],u:['music','teach','present','psych'],sal:[],jobs:[],note:['สอนในโรงเรียนต้องมีใบอนุญาตครู ส่วนโรงเรียนดนตรีเอกชนไม่บังคับ','Teaching in a school needs a teaching licence; private music schools don’t require one']},
  instr:{g:'teach',n:['นักออกแบบสื่อการเรียนรู้','Instructional Designer'],u:['teach','writing','design','present'],sal:[],jobs:[]},
  hr:{g:'people',n:['เจ้าหน้าที่ HR / สรรหา','HR Officer / Recruiter'],u:['hr','psych','docs','english'],sal:['HR Officer'],jobs:[]},
  ld:{g:'people',n:['เจ้าหน้าที่พัฒนาบุคลากร','Learning & Development Officer'],u:['teach','present','psych','hr'],sal:['Learning & Development Officer'],jobs:[]},
  regaff:{g:'reg',n:['เจ้าหน้าที่ขึ้นทะเบียน อย.','Regulatory Affairs Officer'],u:['reg','docs','chem','english'],sal:['Regulatory Officer'],jobs:[]},
  legal:{g:'reg',n:['นิติกร','Legal Officer'],u:['law','docs','english','reg'],sal:['Legal Officer'],jobs:[]},
  compliance:{g:'reg',n:['เจ้าหน้าที่กำกับดูแล','Compliance Officer'],u:['reg','law','docs','finance'],sal:['Compliance Officer'],jobs:[]},
+ trainer:{g:'sport',n:['ผู้ฝึกสอนกีฬา / เทรนเนอร์','Coach / Fitness Trainer'],u:['sport','teach','service','psych'],sal:[],jobs:[]},
+ sportsci:{g:'sport',n:['นักวิทยาศาสตร์การกีฬา','Sport Scientist'],u:['sport','research','stat','docs'],sal:[],jobs:[]},
  envoff:{g:'envs',n:['เจ้าหน้าที่สิ่งแวดล้อม','Environmental Officer'],u:['env','chem','docs','safety'],sal:['Environmental Officer','Environmental Scientist'],jobs:['j13']},
- safety:{g:'envs',n:['เจ้าหน้าที่ความปลอดภัย (จป.)','Safety Officer'],u:['safety','docs','process','present'],sal:['Safety Officer'],jobs:[]},
+ safety:{g:'envs',n:['เจ้าหน้าที่ความปลอดภัย (จป.)','Safety Officer'],u:['safety','docs','process','present'],sal:['Safety Officer'],jobs:[],note:['จป.วิชาชีพ ต้องจบอาชีวอนามัยและความปลอดภัยโดยตรง ส่วน จป.ระดับอื่นเข้าอบรมเพิ่มได้','A professional safety officer (จป.วิชาชีพ) needs an OSH degree; other levels only need a training course']},
  civil:{g:'pub',n:['เจ้าหน้าที่รัฐ / ข้าราชการ','Government Officer'],u:['docs','policy','law','present'],sal:[],jobs:[]},
  policy:{g:'pub',n:['นักวิเคราะห์นโยบาย','Policy Analyst'],u:['policy','stat','writing','present'],sal:[],jobs:[]}};
 /* faculty → role → fit (the mapping table). Every faculty has 8+ roles and 3+ that cross over. */
 const FIT_SRC={
- sci:'qc:d qcmicro:d formchem:d rdfood:b ferm:b validation:b regaff:b envoff:b da:b medtech:s qatest:s uxui:s teacher:s content:s',
- eng:'prodeng:d processeng:d maint:d validation:d safety:d envoff:b swe:b da:b scm:b ba:b mt:b pm:s gamedev:s sales:s',
- agro:'rdfood:d qa:d qc:d ferm:d hyg:d qcmicro:b formchem:b regaff:b cat:b sales:b scm:s content:s',
- health:'medtech:d nurse:d qcmicro:b qc:b hyg:b regaff:b sales:b cs:b safety:b da:s teacher:s',
- pharm:'pharmacist:d regaff:d validation:d formchem:b qc:b qa:b sales:b pm:s content:s da:s',
+ sci:'qc:d qcmicro:d formchem:d rdfood:b ferm:b validation:b regaff:b envoff:b crc:b medrep:b da:b qatest:s uxui:s teacher:s content:s cs:s',
+ eng:'prodeng:d processeng:d maint:d validation:b safety:b envoff:b swe:b da:b scm:b ba:b mt:b sysadmin:b pm:s gamedev:s sales:s gamedesign:s cs:s teacher:s',
+ it:'swe:d qatest:d da:d sysadmin:d cyber:d gamedev:b uxui:b ba:b pm:b cs:b sales:b content:b graphic:s instr:s scm:s validation:s compliance:s',
+ agro:'rdfood:d qa:d qc:d ferm:d hyg:d qcmicro:b formchem:b regaff:b cat:b sales:b scm:s content:s da:s teacher:s',
+ med:'doctor:d crc:b medrep:b pubhoff:b regaff:b policy:b instr:b da:s content:s cs:s ld:s',
+ dent:'dentist:d crc:b medrep:b pubhoff:b sales:b cs:b regaff:s content:s instr:s da:s',
+ vet:'vet:d qc:b qcmicro:b hyg:b medrep:b crc:b rdfood:b regaff:b sales:b content:s da:s teacher:s cs:s',
+ pharm:'pharmacist:d regaff:d validation:d formchem:b qc:b qa:b sales:b medrep:b crc:b pm:s content:s da:s cs:s instr:s',
+ medtech:'medtech:d radtech:d qcmicro:b qc:b crc:b medrep:b regaff:b validation:b hyg:b da:s content:s teacher:s cs:s',
+ nurse:'nurse:d crc:b medrep:b pubhoff:b cs:b safety:b ld:b hr:s da:s content:s',
+ pubh:'pubhoff:d safety:b envoff:b hyg:b crc:b qa:b medrep:b policy:b civil:b da:s content:s ld:s cs:s',
+ allied:'physio:d ot:d crc:b medrep:b pubhoff:b trainer:b sportsci:b cs:b dietitian:s rdfood:s content:s da:s ld:s regaff:s',
+ sport:'trainer:d sportsci:d eventco:b sales:b storemgr:b content:b cs:b civil:b dietitian:s teacher:s hr:s pr:s da:s',
  bus:'mkt:d sales:d mt:d scm:d cat:d storemgr:d ba:b hr:b ae:b content:b cs:b da:s pm:s',
  acc:'acct:d credit:d compliance:b ba:b mt:b scm:b da:s sales:s',
  econ:'credit:d ba:d policy:d da:b mt:b scm:b cat:b compliance:b civil:b mkt:s',
  comm:'content:d pr:d mkt:d ae:d graphic:b cs:b instr:b hr:s uxui:s gamedesign:s',
- arts:'content:d cs:d pr:b fo:b ground:b crew:b teacher:b instr:b hr:b mkt:s uxui:s',
+ arts:'content:d cs:d pr:b fo:b ground:b crew:b instr:b hr:b teacher:s mkt:s uxui:s',
  soc:'civil:d policy:d hr:d pr:b cs:b content:b compliance:b ld:b mkt:s da:s',
  law:'legal:d compliance:d civil:d regaff:b hr:b policy:b credit:s pr:s',
  edu:'teacher:d instr:d ld:d hr:b content:b cs:b civil:b pr:s uxui:s',
- arch:'graphic:d uxui:d gamedesign:b content:b instr:b ae:s pm:s prodeng:s',
- tour:'fo:d ground:d crew:d cs:d sales:b hyg:b storemgr:b mkt:b hr:s content:s'};
+ arch:'graphic:d uxui:d gamedesign:b content:b instr:b ae:s pm:s',
+ music:'musician:d soundeng:d musicteach:d content:b eventco:b gamedesign:b pr:b civil:b uxui:s ae:s sales:s cs:s teacher:s trainer:s',
+ tour:'fo:d ground:d crew:d cs:d eventco:b sales:b hyg:b storemgr:b mkt:b hr:s content:s'};
 const FITM={};Object.keys(FIT_SRC).forEach(f=>{FITM[f]={};FIT_SRC[f].split(' ').forEach(p=>{const [r,l]=p.split(':');FITM[f][r]=l})});
-const LVF={d:['🟢',['ตรงสาย','Direct fit'],'good'],b:['🟡',['ข้ามสายได้','Can cross over'],'mid'],s:['🟠',['ต้องเพิ่มทักษะ','Needs new skills'],'cm-s']};
+const LVF={d:['🟢',['ตรงสาย','Direct fit'],'good'],b:['🟡',['ข้ามสายได้','Can cross over'],'mid'],s:['🟠',['ต้องเพิ่มทักษะ','Needs new skills'],'cm-s'],x:['🔒',['ต้องจบสาขานี้โดยตรง','Needs this exact degree'],'cm-x']};
 const facOk=(f,m)=>!!(FAC[f]&&(!m||FAC[f].mj[m]));
-function fitOf(r,f=S.ob.fac,m=S.ob.major){if(!FAC[f])return null;const mj=m&&FAC[f].mj[m];if(mj&&mj[2].includes(r))return 'd';return FITM[f][r]||null}
+function fitOf(r,f=S.ob.fac,m=S.ob.major){const F=FAC[f];if(!F)return null;const mj=m&&F.mj[m];if(mj&&mj[2].includes(r))return 'd';const l=FITM[f][r]||null;
+ /* licensed jobs: a direct fit only for that degree (and, inside a faculty, only for the major that leads to it); everyone else sees 🔒 */
+ if(ROLES[r]&&ROLES[r].lic){if(l!=='d')return 'x';if(mj&&Object.values(F.mj).some(v=>v!==mj&&v[2].includes(r)))return 'x'}
+ return l}
+const canReach=l=>l&&l!=='x';
 function facSkills(f=S.ob.fac,m=S.ob.major){const F=FAC[f];if(!F)return [];const mj=m&&F.mj[m];return [...new Set(F.has.concat(mj?mj[1]:[]))]}
 function roleGap(r,f=S.ob.fac,m=S.ob.major){const R=ROLES[r],has=facSkills(f,m);return {have:R.u.filter(k=>has.includes(k)),need:R.u.filter(k=>!has.includes(k)),mo:R.u.filter(k=>!has.includes(k)).reduce((a,k)=>a+SK[k][2],0)}}
 const moTxt=n=>n<1?t('ไม่กี่สัปดาห์','a few weeks'):t(`~${n} เดือน`,`~${n} mo`);

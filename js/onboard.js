@@ -4,7 +4,7 @@
 function roleOfField(s){s=String(s||'').toLowerCase();if(!s)return null;let best=null,bl=0;Object.keys(ROLES).forEach(r=>{ROLES[r].n.concat(ROLES[r].sal).forEach(n=>{const k=String(n).toLowerCase().replace(/\s*\(.*\)$/,'');if(k.length>bl&&s.includes(k)){best=r;bl=k.length}})});return best}
 const mRoles=m=>m.roles||(m.real&&m.field?[roleOfField(m.field)].filter(Boolean):[]);
 function roleMentors(r){const L=MENTORS.filter(m=>!m.off&&!(S.user&&m.id===S.user.id)&&mRoles(m).includes(r));return {cross:L.filter(m=>m.fac&&fitOf(r,m.fac,null)!=='d'),same:L.filter(m=>!m.fac||fitOf(r,m.fac,null)==='d')}}
-function worldInfo(w){const rs=worldRoles(w),f=S.ob.fac;if(!FAC[f])return {n:rs.length,tag:null};const L=rs.map(r=>fitOf(r)).filter(Boolean);return {n:L.length,tag:L.includes('d')?'d':L.length?'b':null}}
+function worldInfo(w){const rs=worldRoles(w),f=S.ob.fac;if(!FAC[f])return {n:rs.length,tag:null};const L=rs.map(r=>fitOf(r)).filter(canReach);return {n:L.length,tag:L.includes('d')?'d':L.length?'b':null}}
 /* ---------- career map view (jobs → 🗺️ tab) ---------- */
 S.cm={w:null,g:null,r:null,dir:0,ox:50,oy:40,more:false};
 function cmCrumbs(){const C=S.cm,L=[[t('ทั้งหมด','All'),'top']];if(C.w)L.push([x(WORLDS.find(v=>v[0]===C.w)[2]),'w']);if(C.g)L.push([x(GROUPS[C.g][2]),'g']);if(C.r)L.push([x(ROLES[C.r].n),'r']);
@@ -24,18 +24,21 @@ function cmWorlds(){const f=FAC[S.ob.fac],info=WORLDS.map(w=>[w,worldInfo(w[0])]
  <div class="cm-cloud" role="list">${order.map(([w,v],i)=>{const d=v.n?150+80*v.n/max:145,p=CM_POS[i];return `<button role="listitem" class="cm-w${v.n?'':' dim'}" data-cmw="${w[0]}" style="--x:${p[0]}%;--y:${p[1]}%;--d:${d/10}%;--tone:var(${w[3]});--k:${(.72+.28*v.n/max).toFixed(2)}" aria-label="${esc(x(w[2]))}: ${v.n} ${t('ตำแหน่ง','roles')}${v.tag?' · '+x(v.tag==='d'?['ตรงสาย','Direct fit']:['ข้ามสายได้','Can cross over']):''}">
   <span class="cm-dot"><span class="cm-e" aria-hidden="true">${w[1]}</span><b class="num">${v.n}</b></span><span class="cm-wn">${x(w[2])}</span>${f?(v.tag?`<span class="chip ${v.tag==='d'?'good':'mid'}">${v.tag==='d'?t('ตรงสาย','Direct fit'):t('ข้ามสายได้ 🌉','Cross over 🌉')}</span>`:`<span class="chip">${t('ยังไม่มีข้อมูล','No data yet')}</span>`):''}</button>`}).join('')}</div>
  ${fol.length?`<div class="cm-fol"><b>📌 ${t('ตำแหน่งที่ติดตาม','Roles you follow')}</b><div class="opts">${fol.map(r=>`<button class="opt sm cm-opt" data-cmr="${r}">${x(ROLES[r].n)}</button>`).join('')}</div></div>`:''}`}
-function lvCount(rs){const c={d:0,b:0,s:0};rs.forEach(r=>{const l=fitOf(r);if(l)c[l]++});return c}
+function lvCount(rs){const c={d:0,b:0,s:0,x:0};rs.forEach(r=>{const l=fitOf(r);if(l)c[l]++});return c}
 function cmWorld(w){const W=WORLDS.find(v=>v[0]===w),f=FAC[S.ob.fac];
  return `<div class="cm-title" style="--tone:var(${W[3]})"><span class="cm-dot sm"><span class="cm-e" aria-hidden="true">${W[1]}</span></span><h2>${x(W[2])}</h2></div>
  <div class="cm-groups">${groupsIn(w).map(g=>{const rs=rolesIn(g),c=lvCount(rs),n=c.d+c.b+c.s;return `<button class="cm-g" data-cmg="${g}" style="--tone:var(${W[3]})"><span class="cm-dot sm"><span class="cm-e" aria-hidden="true">${GROUPS[g][1]}</span></span><span class="cm-gt"><b>${x(GROUPS[g][2])}</b><span class="muted">${f?t(`คณะคุณเข้าได้ ${n} จาก ${rs.length} ตำแหน่ง`,`${n} of ${rs.length} roles open to you`):t(`${rs.length} ตำแหน่ง`,`${rs.length} roles`)}</span>
-  ${f&&n?`<span class="cm-lv">${['d','b','s'].filter(k=>c[k]).map(k=>`<span title="${esc(x(LVF[k][1]))}">${LVF[k][0]} ${c[k]}</span>`).join('')}</span>`:''}</span><span class="cm-go" aria-hidden="true">›</span></button>`}).join('')}</div>`}
-function cmSkills(r){const g=roleGap(r);return `<div class="cm-sk"><div><small>✅ ${t('ทักษะเดิมที่ใช้ได้','Skills you can reuse')}</small><div class="opts">${g.have.length?g.have.map(k=>`<span class="chip good">${x(SK[k])}</span>`).join(''):`<span class="chip">${t('เรียนรู้เร็ว ทำงานเป็นทีม','Fast learner, teamwork')}</span>`}</div></div>
+  ${f&&(n||c.x)?`<span class="cm-lv">${['d','b','s','x'].filter(k=>c[k]).map(k=>`<span title="${esc(x(LVF[k][1]))}">${LVF[k][0]} ${c[k]}</span>`).join('')}</span>`:''}</span><span class="cm-go" aria-hidden="true">›</span></button>`}).join('')}</div>`}
+function cmSkills(r){if(fitOf(r)==='x')return cmLock(r);const g=roleGap(r);return `<div class="cm-sk"><div><small>✅ ${t('ทักษะเดิมที่ใช้ได้','Skills you can reuse')}</small><div class="opts">${g.have.length?g.have.map(k=>`<span class="chip good">${x(SK[k])}</span>`).join(''):`<span class="chip">${t('เรียนรู้เร็ว ทำงานเป็นทีม','Fast learner, teamwork')}</span>`}</div></div>
  <div><small>➕ ${t('ทักษะที่ต้องเพิ่ม','Skills to add')}${g.need.length?` · ${t('รวม','total')} ${moTxt(g.mo)}`:''}</small><div class="opts">${g.need.length?g.need.map(k=>`<span class="chip cm-need">${x(SK[k])} · ${moTxt(SK[k][2])}</span>`).join(''):`<span class="chip good">${t('พร้อมสมัครได้เลย','Ready to apply')}</span>`}</div></div></div>`}
-function cmGroup(g){const W=WORLDS.find(v=>v[0]===GROUPS[g][0]),f=FAC[S.ob.fac],rs=rolesIn(g),ord={d:0,b:1,s:2};
+/* licensed job the user's faculty can't reach: say so plainly, never "learn ~12 months" */
+const cmLock=r=>`<div class="cm-lock">🔒 <span>${t(`ต้องเรียนจบ${ROLES[r].lic[0]}โดยตรงและสอบใบประกอบวิชาชีพ เรียนเพิ่มระยะสั้นแทนไม่ได้`,`Requires a degree in ${ROLES[r].lic[1].toLowerCase()} and passing the licence exam; a short course can’t replace it`)}</span></div>`;
+const cmNote=r=>ROLES[r].note?`<div class="cm-note-r">⚠️ <span>${x(ROLES[r].note)}</span></div>`:'';
+function cmGroup(g){const W=WORLDS.find(v=>v[0]===GROUPS[g][0]),f=FAC[S.ob.fac],rs=rolesIn(g),ord={d:0,b:1,s:2,x:3};
  const mine=f?rs.filter(r=>fitOf(r)).sort((a,b)=>ord[fitOf(a)]-ord[fitOf(b)]):[],rest=rs.filter(r=>!mine.includes(r));
- const card=r=>{const sal=roleSal(r),l=fitOf(r);return `<article class="card cm-role"><button class="cm-rh" data-cmr="${r}"><span class="cm-rt"><b>${x(ROLES[r].n)}</b>${sal?`<span class="muted">💰 ${fmt(sal.lo)}–${fmt(sal.mid)} ${t('บาท','THB')}</span>`:''}</span>${fitBadge(l)}<span class="cm-go" aria-hidden="true">›</span></button>${l?cmSkills(r):''}</article>`};
+ const card=r=>{const sal=roleSal(r),l=fitOf(r);return `<article class="card cm-role"><button class="cm-rh" data-cmr="${r}"><span class="cm-rt"><b>${x(ROLES[r].n)}</b>${sal?`<span class="muted">💰 ${fmt(sal.lo)}–${fmt(sal.mid)} ${t('บาท','THB')}</span>`:''}</span>${fitBadge(l)}<span class="cm-go" aria-hidden="true">›</span></button>${l&&l!=='x'?cmSkills(r):''}</article>`};
  return `<div class="cm-title" style="--tone:var(${W[3]})"><span class="cm-dot sm"><span class="cm-e" aria-hidden="true">${GROUPS[g][1]}</span></span><h2>${x(GROUPS[g][2])}</h2></div>
- ${f?`<div class="cm-legend">${['d','b','s'].map(k=>`<span>${LVF[k][0]} ${x(LVF[k][1])}</span>`).join('')}</div>`:''}
+ ${f?`<div class="cm-legend">${['d','b','s','x'].map(k=>`<span>${LVF[k][0]} ${x(LVF[k][1])}</span>`).join('')}</div>`:''}
  <div class="grid cm-roles">${(f?mine:rs).map(card).join('')||`<div class="card empty">${t('คณะของคุณยังไม่มีข้อมูลในกลุ่มนี้','No data for your faculty in this group yet')}</div>`}</div>
  ${f&&rest.length?`<div class="cm-more"><button class="link" data-cmmore aria-expanded="${S.cm.more}">${S.cm.more?'▾':'▸'} ${t(`ตำแหน่งอื่นในกลุ่มนี้ (${rest.length})`,`Other roles in this group (${rest.length})`)}</button>${S.cm.more?`<div class="opts">${rest.map(r=>`<button class="opt sm cm-opt" data-cmr="${r}">${x(ROLES[r].n)}</button>`).join('')}</div>`:''}</div>`:''}`}
 function cmMentor(m,cross){const F=FAC[m.fac];return `<div class="li cm-m"><span class="ava" style="width:42px;height:42px;font-size:21px;background:${m.bg}">${m.ava}</span><div class="cm-mt"><b>${x(m.name)} ${m.real?`<span class="chip ver">✓ ${t('รุ่นพี่จริง','Real mentor')}</span>`:`<span class="chip">${t('ตัวอย่าง','Sample')}</span>`}</b>
@@ -43,7 +46,7 @@ function cmMentor(m,cross){const F=FAC[m.fac];return `<div class="li cm-m"><span
 function cmRole(r){const R=ROLES[r],G=GROUPS[R.g],W=WORLDS.find(v=>v[0]===G[0]),l=fitOf(r),sal=roleSal(r),cos=roleCos(r),jobs=JOBS.filter(j=>R.jobs.includes(j.id)),M=roleMentors(r),fol=(S.ob.roles||[]).includes(r);
  return `<section class="card cm-rp" style="--tone:var(${W[3]})"><div class="cm-rph"><span class="cm-dot sm"><span class="cm-e" aria-hidden="true">${G[1]}</span></span><div class="cm-rt"><small class="muted">${x(W[2])} › ${x(G[2])}</small><h2>${x(R.n)}</h2></div></div>
  <div class="row" style="gap:8px">${l?fitBadge(l):FAC[S.ob.fac]?`<span class="chip">${t('ยังไม่มีข้อมูลสำหรับคณะคุณ','No data for your faculty yet')}</span>`:''}${FAC[S.ob.fac]?`<span class="muted">${t('สำหรับ','For')} ${esc(facName())}</span>`:`<button class="link" data-cmfac>${t('เลือกคณะเพื่อดูว่าเข้ากันแค่ไหน','Pick your faculty to see your fit')}</button>`}</div>
- ${FAC[S.ob.fac]?cmSkills(r):''}
+ ${FAC[S.ob.fac]?cmSkills(r):R.lic?cmLock(r):''}${cmNote(r)}
  <button class="btn ${fol?'ghost':'orange'} cm-follow" data-cmfollow="${r}" aria-pressed="${fol}">${fol?`✓ ${t('ติดตามตำแหน่งนี้แล้ว','Following this role')}`:`🔔 ${t('ติดตามตำแหน่งนี้','Follow this role')}`}</button>
  ${fol?`<small class="muted">${t('จะแจ้งเตือนที่กระดิ่งเมื่อมีงานใหม่ของตำแหน่งนี้','We’ll ring the bell when a new job for this role is posted')}</small>`:''}</section>
  <div class="grid g2 cm-grid">
@@ -54,7 +57,8 @@ function cmRole(r){const R=ROLES[r],G=GROUPS[R.g],W=WORLDS.find(v=>v[0]===G[0]),
  <section class="sec"><div class="sec-h"><h2>🌉 ${t('รุ่นพี่ที่ข้ามสายมา','Mentors who crossed over')}</h2></div>
  ${M.cross.length?`<div class="list">${M.cross.map(m=>cmMentor(m,true)).join('')}</div>`:`<div class="card empty">${t('ยังไม่มีรุ่นพี่ที่ข้ามสายมาในตำแหน่งนี้','No mentor has crossed over into this role yet')}</div>`}
  ${M.same.length?`<p class="muted" style="margin:12px 0 6px">${t('รุ่นพี่ในสายนี้โดยตรง','Mentors from this field')}</p><div class="list">${M.same.map(m=>cmMentor(m,false)).join('')}</div>`:''}
- <button class="link" data-cmswipe style="margin-top:10px">${t('ปัดหารุ่นพี่ทั้งหมด →','Swipe through all mentors →')}</button></section>`}
+ <button class="link" data-cmswipe style="margin-top:10px">${t('ปัดหารุ่นพี่ทั้งหมด →','Swipe through all mentors →')}</button></section>
+ <p class="cm-fb"><button class="link" data-cmfb="${r}">⚠️ ${t('แจ้งข้อมูลไม่ถูกต้อง','Report incorrect info')}</button></p>`}
 function cmNav(to,e,dir){const C=S.cm;if(e){const b=e.target.closest('button'),box=$('.cm-body');if(b&&box){const a=b.getBoundingClientRect(),o=box.getBoundingClientRect();C.ox=Math.round((a.left+a.width/2-o.left)/o.width*100);C.oy=Math.round((a.top+a.height/2-o.top)/Math.max(o.height,1)*100)}}
  Object.assign(C,to);C.dir=matchMedia('(prefers-reduced-motion: reduce)').matches?0:dir;S.jobTab='map';if(S.view!=='jobs')go('jobs');else{render();const h=$('.cm');if(h&&h.getBoundingClientRect().top<0)h.scrollIntoView({block:'start'})}}
 function openRole(r){if(!S.ob.mapSeen){S.ob.mapSeen=true;obSave()}S.cm.w=GROUPS[ROLES[r].g][0];S.cm.g=ROLES[r].g;S.cm.r=r;S.cm.dir=0;S.jobTab='map';go('jobs')}
@@ -78,7 +82,7 @@ const OB_STEPS=[['co','🏢',['ดูหน้าบริษัท 1 ที่'
 const OB_KEY='maadoo-onboard';
 function obLoad(){let v=null;try{v=JSON.parse(store.get(OB_KEY)||'null')}catch(e){}const o={goal:null,inds:[],fac:null,major:null,roles:[],at:0,steps:{},paid:{},closed:false,done:false};if(!v||typeof v!=='object')return o;
  if(OB_GOALS.some(g=>g[0]===v.goal))o.goal=v.goal;if(Array.isArray(v.inds))o.inds=v.inds.filter(k=>IND[k]).slice(0,12);o.at=+v.at||0;
- if(facOk(v.fac)){o.fac=v.fac;if(facOk(v.fac,v.major))o.major=v.major||null}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);o.mapSeen=!!v.mapSeen;o.startClosed=!!v.startClosed;
+ {const [ff,mm]=facFix(v.fac,v.major);if(facOk(ff)){o.fac=ff;if(facOk(ff,mm))o.major=mm||null}}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);o.mapSeen=!!v.mapSeen;o.startClosed=!!v.startClosed;
  ['steps','paid'].forEach(k=>{if(v[k]&&typeof v[k]==='object')OB_STEPS.forEach(s=>{if(v[k][s[0]])o[k][s[0]]=+v[k][s[0]]||1})});o.closed=!!v.closed;o.done=!!v.done;return o}
 S.ob=obLoad();S.tour=null;
 const obSave=()=>store.set(OB_KEY,JSON.stringify(S.ob));
@@ -104,7 +108,8 @@ async function obAfterLogin(){obPay();if(!sbLive())return;try{const {data,error}
  if(data&&data.onboard_goal&&!S.ob.goal){S.ob.goal=OB_GOALS.some(g=>g[0]===data.onboard_goal)?data.onboard_goal:null;S.ob.inds=(data.onboard_inds||[]).filter(k=>IND[k]);obSave();if(S.view==='home')render()}
  else if(S.ob.goal&&!(data&&data.onboard_goal))obSync();
  const f=await SB.from('profiles').select('onboard_fac,onboard_major').eq('id',S.user.id).maybeSingle();if(f.error){console.warn('[Maadoo Job] faculty not loaded (run the SQL, section 11):',f.error.code,f.error.message);return}
- if(f.data&&facOk(f.data.onboard_fac)&&!S.ob.fac){S.ob.fac=f.data.onboard_fac;S.ob.major=facOk(f.data.onboard_fac,f.data.onboard_major)?f.data.onboard_major||null:null;obSave();if(S.view==='home'||S.view==='jobs')render()}
+ const [ff,fm]=f.data?facFix(f.data.onboard_fac,f.data.onboard_major):[null,null];
+ if(facOk(ff)&&!S.ob.fac){S.ob.fac=ff;S.ob.major=facOk(ff,fm)?fm||null:null;obSave();if(ff!==f.data.onboard_fac||S.ob.major!==(f.data.onboard_major||null))obSync();if(S.view==='home'||S.view==='jobs')render()}
  else if(S.ob.fac&&!(f.data&&f.data.onboard_fac))obSync()}catch(e){}}
 /* ---------- home: start card (by goal) + compact first steps ---------- */
 function firstInd(pred){const hit=S.ob.inds.find(k=>JOBS.some(j=>pred(j)&&getCo(j.co).ind===k));return hit||'all'}
@@ -215,6 +220,22 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[
  if(d.obnext!==undefined){m.step=3;renderModal();return}
  if(d.obskip!==undefined){obFinish(m);return}
  if(d.obdone!==undefined){obFinish(m);return}},true);
+/* ---------- "report incorrect info" on a role page → Supabase `feedback` (anyone may send; only admins read) ---------- */
+const FB_WHY={fit:['ระดับความเข้ากันไม่ถูก','The fit level is wrong'],skill:['ทักษะไม่ถูกต้อง','The skills are wrong'],lic:['เงื่อนไข/ใบอนุญาตไม่ถูก','The licence/conditions are wrong'],sal:['เงินเดือนไม่ตรง','The salary is off'],other:['อื่น ๆ','Something else']};
+function cmfbModal(m,head){const R=ROLES[m.r];return head(t('แจ้งข้อมูลไม่ถูกต้อง','Report incorrect info'),`${esc(x(R.n))}${FAC[S.ob.fac]?` · ${esc(facName())}`:''}`)+
+ `<div class="opts" role="radiogroup" aria-label="${t('เรื่องที่ไม่ถูก','What’s wrong')}">${Object.keys(FB_WHY).map(k=>`<button type="button" role="radio" aria-checked="${m.why===k}" class="opt sm ${m.why===k?'on':''}" data-cmfbwhy="${k}">${x(FB_WHY[k])}</button>`).join('')}</div>
+ <textarea class="field" id="cmfbTxt" maxlength="500" rows="3" placeholder="${t('ข้อมูลที่ถูกต้องคืออะไร? (ไม่บังคับ)','What’s the correct info? (optional)')}">${esc(m.txt||'')}</textarea>
+ ${m.err?`<p class="form-err" role="alert">${x(m.err)}</p>`:''}
+ <div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close>${t('ยกเลิก','Cancel')}</button><button class="btn y" data-cmfbsend ${m.why&&!m.busy?'':'disabled'}>${m.busy?t('กำลังส่ง…','Sending…'):t('ส่ง','Send')}</button></div>`}
+async function cmfbSend(){const m=S.modal;if(!m||m.type!=='cmfb'||!m.why||m.busy)return;const el=$('#cmfbTxt');m.txt=el?el.value.trim().slice(0,500):'';
+ if(SB){m.busy=true;renderModal();try{const {error}=await SB.from('feedback').insert({kind:'career_map',target:m.r,faculty:S.ob.fac||null,major:S.ob.major||null,reason:m.why,message:m.txt||null});if(error)throw error}
+  catch(e){console.warn('[Maadoo Job] feedback not sent (run the SQL, section 13):',e&&e.code,e&&e.message);m.busy=false;m.err=['ส่งไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t send. Please try again'];if(S.modal===m)renderModal();return}}
+ S.modal=null;renderModal();toast(SB?t('ขอบคุณที่แจ้ง ทีมจะตรวจสอบข้อมูลนี้ 🙏','Thanks! The team will check this 🙏'):t('ขอบคุณที่แจ้ง (เดโม ไม่ได้ส่งจริง)','Thanks! (demo, not actually sent)'))}
+document.addEventListener('click',e=>{const el=e.target.closest('[data-cmfb],[data-cmfbwhy],[data-cmfbsend]');if(!el)return;const d=el.dataset,m=S.modal;
+ if(d.cmfb){if(ROLES[d.cmfb])openModal({type:'cmfb',r:d.cmfb,why:null,txt:''});return}
+ if(!m||m.type!=='cmfb')return;const tx=$('#cmfbTxt');if(tx)m.txt=tx.value;
+ if(d.cmfbwhy){m.why=d.cmfbwhy;m.err=null;renderModal();return}
+ if(d.cmfbsend!==undefined)cmfbSend()});
 /* career map events */
 document.addEventListener('click',e=>{const el=e.target.closest('[data-cmw],[data-cmg],[data-cmr],[data-cmup],[data-cmfac],[data-cmmore],[data-cmfollow],[data-cmswipe],[data-cmopen],[data-fsave]');if(!el){const f=e.target.closest('[data-fpick]');if(f&&S.modal&&S.modal.type==='fac'){S.modal.fac=f.dataset.fpick;S.modal.major=f.dataset.fmaj||null;if(f.dataset.fmaj)S.modal.q='';renderModal()}return}const d=el.dataset;
  if(d.cmopen!==undefined){openMap();return}
