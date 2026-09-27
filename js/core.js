@@ -46,7 +46,7 @@ function nav(){
  const act=S.view==='company'?'jobs':['chat','book'].includes(S.view)?'ask':['live','quiz'].includes(S.view)?'me':S.view;
  const cu=S.user&&S.rooms?chatUnread():0,dot=id=>id==='ask'&&cu?`<i class="ndot" aria-label="${t('ข้อความใหม่','New messages')}"></i>`:'';
  $('#topnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}">${x(n.t)}${dot(n.id)}</button>`).join('');
- $('#bnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}"><svg viewBox="0 0 24 24">${n.i}</svg>${x(n.t)}${dot(n.id)}</button>`).join('');
+ $('#bnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}${n.id==='reviews'?' mid':''}"><svg viewBox="0 0 24 24">${n.i}</svg>${x(n.t)}${dot(n.id)}</button>`).join('');
 }
 function moodBar(m){return `<div class="moodbar" aria-hidden="true"><i style="flex:${m[0]};background:var(--good)"></i><i style="flex:${m[1]};background:var(--mid)"></i><i style="flex:${m[2]};background:var(--bad)"></i></div>`}
 const trendTxt=n=>t(`+${n} รีวิวเดือนนี้`,`+${n} reviews this month`);
