@@ -120,7 +120,9 @@ function coinCard(compact){const P=S.prem,pend=pendingCoins();
  return `<section class="coin-card ${compact?'compact':''}"><div class="cc-top"><span class="cc-lbl">🪙 ${t('กระเป๋าเหรียญมาดู','Maadoo coin wallet')}</span>${isPlus()?`<span class="cc-plus">✨ Plus</span>`:''}</div>
   <div class="cc-bal"><b>${fmt(P.coins)}</b><span>${t('เหรียญ','coins')}</span></div><div class="cc-eq">= ${t(`ส่วนลด ${fmt(P.coins)} บาท`,`${fmt(P.coins)} THB off`)}${pend?` · ${t(`รอตรวจ +${pend}`,`+${pend} pending`)}`:''}</div>
   ${compact?`<button class="btn sm cc-btn" data-go="wallet">${t('เปิดกระเป๋า','Open wallet')} →</button>`:`${sbLive()?`<button class="link cc-sync" data-ccsync>🔄 ${t('ดึงยอดล่าสุดจากระบบ','Reload balance from the server')}</button>`:''}<div class="cc-acts"><button class="cc-act" data-ccbook><span>📅</span>${t('จองรุ่นพี่','Book a mentor')}</button><button class="cc-act" data-ccthemes><span>🎨</span>${t('ปลดล็อกธีม','Unlock themes')}</button><button class="cc-act" data-cctopup><span>➕</span>${t('เติมเหรียญ','Top up')}</button></div>`}</section>`}
-function wallet(){const P=S.prem,earned=missionEarned();
+/* wallet / invite pages re-read the ledger (at most every 30 s), so an inviter sees a friend's reward without reloading */
+function syncLedger(){if(!sbLive()||!S.prem.loaded||Date.now()-(syncLedger.at||0)<30000)return;syncLedger.at=Date.now();const P=S.prem,c0=P.coins,n0=P.ledger.length;refreshAll().then(()=>{if(S.prem===P&&(P.coins!==c0||P.ledger.length!==n0)&&['wallet','invite','me'].includes(S.view))rerender()})}
+function wallet(){const P=S.prem,earned=missionEarned();syncLedger();
  if(!S.user)return `<div class="wallet">${coinCard()}<div class="card" style="display:grid;gap:10px;justify-items:start"><b>${t('เข้าสู่ระบบเพื่อเก็บเหรียญ','Log in to collect coins')}</b><button class="btn y" data-login>${t('เข้าสู่ระบบ','Log in')}</button></div></div>`;
  return `<div class="wallet">${coinCard()}
  <section class="card"><div class="sec-h" style="margin:0"><h2>${t('ภารกิจสัปดาห์นี้','This week’s missions')}</h2><span class="muted" style="font-size:13px">${t(`เดือนนี้ ${earned}/${MISSION_CAP} เหรียญ`,`This month ${earned}/${MISSION_CAP} coins`)}</span></div>
@@ -207,7 +209,9 @@ function ivModal(m,head){const c=getCo(m.co);return head(t('รีวิวก�
 const PIONEER_MAX=1000,EARLY_MAX=50;
 S.pioneer=null;S.earlyLeft=null;S.promoIdx=0;S.refCode=null;S.empLocal=0;
 S.promoHidden=(()=>{const v=+store.get('maadoo-promo-hide');return v&&Date.now()-v<7*DAY})();
-try{const u=new URL(location.href),r=(u.searchParams.get('ref')||'').trim().toUpperCase();if(/^MAADOO-[A-Z0-9]{4,8}$/.test(r)){S.refCode=r;u.searchParams.delete('ref');history.replaceState(null,'',u.pathname+(u.search?u.search:'')+u.hash)}}catch(e){}
+/* a friend's code from ?ref= is kept in `maadoo-ref` until it is used, so it survives sign-up, the email-confirmation link, reloads and guest → email */
+const REF_RE=/^MAADOO-[A-Z0-9]{4,8}$/,setRef=c=>{S.refCode=c||null;store.set('maadoo-ref',c||'')};
+try{const u=new URL(location.href),r=(u.searchParams.get('ref')||'').trim().toUpperCase();if(REF_RE.test(r)){setRef(r);u.searchParams.delete('ref');history.replaceState(null,'',u.pathname+(u.search?u.search:'')+u.hash)}else{const k=(store.get('maadoo-ref')||'').toUpperCase();if(REF_RE.test(k))S.refCode=k}}catch(e){}
 const promoMonth=()=>{try{const m=+new URL(location.href).searchParams.get('promo_month');if(m>=1&&m<=12)return m}catch(e){}return new Date().getMonth()+1};
 const yearlyDeal=()=>promoMonth()===12;
 const planPrice=k=>k==='y'&&yearlyDeal()?Math.round(PLANS.y.price*.7):PLANS[k].price;
@@ -243,8 +247,8 @@ function pioneerCard(pi){return `<div class="card pcard" id="pioneerCard"><div c
    ${S.user?'':`<button class="btn y sm" data-login style="justify-self:start">${t('สมัครรับป้าย','Join to get it')}</button>`}</div>`}
 function inviteCard(code,full){return `<div class="card pcard" id="inviteCard"><div class="row" style="gap:10px;flex-wrap:nowrap"><span class="pc-ic">🤝</span><div style="min-width:0"><b>${t('ชวนเพื่อน ได้คนละ 50 เหรียญ','Invite friends: 50 coins each')}</b><div class="muted" style="font-size:13px">${t('เพื่อนสมัครด้วยโค้ดแล้วเขียนรีวิวแรก','When a friend joins with your code and writes a first review')}</div></div></div>
    ${code?`<div class="icode"><code>${esc(code)}</code><button class="btn sm" data-share>${t('แชร์','Share')}</button></div>${full?`<button class="link" data-copycode style="justify-self:start">📋 ${t('คัดลอกเฉพาะโค้ด','Copy the code only')}</button>`:`<button class="link" data-go="invite" style="justify-self:start">${t('ดูหน้าชวนเพื่อนของฉัน','Open my invite page')} →</button>`}`:`<button class="btn y sm" data-login style="justify-self:start">${t('เข้าสู่ระบบเพื่อรับโค้ด','Log in to get your code')}</button>`}
-   ${S.user&&!S.prem.referredBy?`<form id="refForm" class="row ref-form"><input class="field" id="refIn" maxlength="14" autocomplete="off" placeholder="${t('มีโค้ดจากเพื่อน? MAADOO-…','Got a friend’s code? MAADOO-…')}" value="${esc(S.refCode||'')}" aria-label="${t('โค้ดจากเพื่อน','Friend’s code')}"><button class="btn ghost sm">${t('ใช้โค้ด','Apply')}</button></form>`:S.prem.referredBy?`<span class="chip ver" style="justify-self:start">✓ ${t('ใช้โค้ดเพื่อนแล้ว','Friend’s code applied')}</span>`:''}</div>`}
-function invitePage(){const code=myCode(),pi=pioneerInfo(),mine=['referral:me',S.user?'referral:'+S.user.id:''];
+   ${S.user&&!S.prem.referredBy?`<form id="refForm" class="row ref-form"><input class="field" id="refIn" maxlength="14" autocomplete="off" placeholder="${t('มีโค้ดจากเพื่อน? MAADOO-…','Got a friend’s code? MAADOO-…')}" value="${esc(S.refCode||'')}" aria-label="${t('โค้ดจากเพื่อน','Friend’s code')}"><button class="btn ghost sm">${t('ใช้โค้ด','Apply')}</button></form>`:S.prem.referredBy?`<span class="chip ver" style="justify-self:start">✓ ${t('ใช้โค้ดเพื่อนแล้ว','Friend’s code applied')}</span>${S.myReviews.length?'':`<small class="muted">${t('เขียนรีวิวบริษัทแรก แล้วคุณกับเพื่อนจะได้คนละ 50 เหรียญ','Write your first company review and you and your friend each get 50 coins')}</small>`}`:''}</div>`}
+function invitePage(){syncLedger();const code=myCode(),pi=pioneerInfo(),mine=['referral:me',S.user?'referral:'+S.user.id:''];
  const refs=S.user?S.prem.ledger.filter(l=>l.kind==='referral'&&l.status==='ok'):[],coins=refs.reduce((a,l)=>a+l.delta,0),friends=refs.filter(l=>!mine.includes(l.ref)).length;
  const steps=[['🔗',['แชร์โค้ดหรือลิงก์ให้เพื่อน','Share your code or link'],['ส่งทางแชต โซเชียล หรือให้เพื่อนพิมพ์โค้ดเอง','Send it in a chat or on social, or let them type the code']],['✍️',['เพื่อนสมัครแล้วใส่โค้ด','Your friend joins with the code'],['จากนั้นเขียนรีวิวบริษัทแรก','then writes their first company review']],['🪙',['ได้คนละ 50 เหรียญ','You both get 50 coins'],['ครั้งเดียวต่อเพื่อน 1 คน ชวนได้ไม่จำกัด','Once per friend, invite as many as you like']]];
  return `<div class="inv-page"><section class="inv-head"><span class="chip" style="justify-self:start">🎉 ${t('โปรโมชัน','Promotions')}</span><h1>${t('ชวนเพื่อน & ผู้บุกเบิก','Invite friends & Pioneers')}</h1><p class="muted">${t('โค้ดชวนเพื่อนของคุณอยู่ที่นี่เสมอ แม้จะซ่อนแบนเนอร์บนหน้าแรกไว้','Your invite code always lives here, even when the home banners are hidden.')}</p></section>
@@ -263,11 +267,11 @@ async function shareInvite(){const code=myCode();if(!code)return;const url=locat
  try{if(navigator.share){await navigator.share({title:'Maadoo Job',text:t(`ใช้โค้ด ${code} สมัครมาดูจ็อบ แล้วเขียนรีวิวแรก รับ 50 เหรียญทั้งคู่`,`Use code ${code} to join Maadoo Job and write your first review. We both get 50 coins`),url});ok=true}}catch(e){if(e&&e.name==='AbortError')return}
  if(!ok){try{await navigator.clipboard.writeText(url);ok=true}catch(e){}}
  if(S.user)S.prem.invites.push(Date.now());render();toast(ok?t('คัดลอกลิงก์ชวนเพื่อนแล้ว','Invite link copied'):t('ลิงก์ชวนเพื่อน: ','Invite link: ')+url)}
-async function applyRef(code){code=String(code||'').trim().toUpperCase();if(!/^MAADOO-[A-Z0-9]{4,8}$/.test(code)){toast(t('รูปแบบโค้ดไม่ถูกต้อง เช่น MAADOO-1A2B3C','That code doesn’t look right, e.g. MAADOO-1A2B3C'));return false}
- if(code===myCode()){toast(t('ใช้โค้ดของตัวเองไม่ได้นะ','You can’t use your own code'));return false}
- if(sbLive()){try{const {error}=await SB.rpc('use_invite_code',{code});if(error)throw error}catch(e){const m=String(e&&e.message||'');toast(/invalid code/.test(m)?t('ไม่พบโค้ดนี้','We couldn’t find that code'):/own code/.test(m)?t('ใช้โค้ดของตัวเองไม่ได้นะ','You can’t use your own code'):premErr(e));return false}
+async function applyRef(code){code=String(code||'').trim().toUpperCase();if(!REF_RE.test(code)){toast(t('รูปแบบโค้ดไม่ถูกต้อง เช่น MAADOO-1A2B3C','That code doesn’t look right, e.g. MAADOO-1A2B3C'));return false}
+ if(code===myCode()){if(S.refCode===code)setRef(null);toast(t('ใช้โค้ดของตัวเองไม่ได้นะ','You can’t use your own code'));return false}
+ if(sbLive()){try{const {error}=await SB.rpc('use_invite_code',{code});if(error)throw error}catch(e){const m=String(e&&e.message||'');if(/invalid code|own code/.test(m)&&S.refCode===code)setRef(null);toast(/invalid code/.test(m)?t('ไม่พบโค้ดนี้','We couldn’t find that code'):/own code/.test(m)?t('ใช้โค้ดของตัวเองไม่ได้นะ','You can’t use your own code'):premErr(e));return false}
   S.prem.referredBy=code}else S.prem.referredBy=code;
- S.refCode=null;render();toast(t('ใช้โค้ดเพื่อนแล้ว! เขียนรีวิวแรกเพื่อรับ 50 เหรียญทั้งคู่','Code applied! Write your first review and you both get 50 coins'));claimReferral();return true}
+ setRef(null);render();toast(t('ใช้โค้ดเพื่อนแล้ว! เขียนรีวิวแรกเพื่อรับ 50 เหรียญทั้งคู่','Code applied! Write your first review and you both get 50 coins'));claimReferral();return true}
 async function claimReferral(){if(!S.user||!S.prem.referredBy||!S.myReviews.length)return;
  if(sbLive()){try{const {data,error}=await SB.rpc('claim_referral_reward');if(error)throw error;if(data>0){await refreshAll();render();toast(t('+50 เหรียญจากการชวนเพื่อน 🎉','+50 coins from your invite 🎉'))}}catch(e){console.warn('[Maadoo Job] referral reward:',e&&(e.message||e))}return}
  const ref='referral:me';if(claimed(ref))return;S.prem.ledger.unshift({id:'l-ref',delta:50,kind:'referral',ref,status:'ok',at:Date.now()});S.prem.coins+=50;render();toast(t('+50 เหรียญจากการชวนเพื่อน 🎉','+50 coins from your invite 🎉'))}
@@ -277,7 +281,7 @@ async function loadPromoStats(){
  if(!S.pioneer)S.pioneer={members:236,rank:0,sample:true};
  if(S.earlyLeft==null)S.earlyLeft=Math.max(0,EARLY_MAX-12-S.empLocal);
  if(['home','employer','me'].includes(S.view))rerender()}
-async function afterLoginPromo(){await loadPromoStats();if(S.refCode&&sbLive()&&!S.prem.referredBy)await applyRef(S.refCode);else claimReferral()}
+async function afterLoginPromo(){await loadPromoStats();if(S.refCode&&sbLive()&&S.prem.referredBy)setRef(null);if(S.refCode&&sbLive()&&!S.prem.referredBy)await applyRef(S.refCode);else claimReferral()}
 /* employer sign-ups (demo payment for Pro) */
 const EMP={Starter:{plan:'starter',price:0},Pro:{plan:'pro',price:3900,early:1950},Enterprise:{plan:'enterprise',price:15000}};
 const proPrice=()=>S.earlyLeft>0?EMP.Pro.early:EMP.Pro.price;
