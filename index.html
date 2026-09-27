@@ -600,6 +600,7 @@ footer.foot .brand-s img{width:26px;height:26px;border-radius:50%}
 .notif-ask{display:flex;gap:10px;align-items:center;text-align:left;padding:12px 14px;font:inherit;color:var(--ink);cursor:pointer;width:100%}.notif-ask>span:first-child{font-size:22px}.notif-ask span{display:grid;gap:2px}
 .room-li.unread b{color:var(--navy)}.room-li .chip.hot{font-weight:700}
 .mentor-box .segs{margin:10px 0}.mb-card{display:grid;gap:12px;padding:14px 16px}.mb-sw{width:100%;text-align:left;font:inherit;cursor:pointer}
+.mb-fac{display:grid;gap:6px}.mb-fac b{font-size:14px}
 .mb-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mb-stats>div{display:grid;gap:2px;padding:10px;border-radius:14px;background:var(--sky-2);min-width:0}.mb-stats b{font-family:var(--display);font-size:20px;color:var(--navy)}.mb-stats .muted{font-size:12px;line-height:1.3}
 .ma-status{display:flex;align-items:center;gap:12px;padding:14px 16px;flex-wrap:wrap}
 .ma-page{display:grid;gap:14px;max-width:760px;margin:0 auto}.ma-form{display:grid;gap:14px;padding:18px}.ma-form label{display:grid;gap:6px}.ma-form b{font-size:14px}
@@ -811,6 +812,59 @@ html,body{overflow-x:clip}
 .lang span{opacity:.4}.lang span.on{opacity:1;color:var(--blue)}
 .lang i{font-style:normal;opacity:.3}
 @media(max-width:760px){.tools{margin-left:auto}.demo-tag{display:none}}
+/* career map (แผนที่อาชีพ) */
+.jsegs .ls{display:none}@media (max-width:560px){.jsegs{display:flex;width:100%}.jsegs button{flex:1;padding:7px 8px}.jsegs .ll{display:none}.jsegs .ls{display:inline}}
+.cm{overflow-x:clip}
+.cm-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}.cm-head h1{font-size:28px}
+.cm-fac{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:10px 14px;margin-top:12px}
+.cm-fe{font-size:28px;line-height:1}.cm-ft{display:grid;flex:1;min-width:0}.cm-ft small{font-size:12px;color:var(--ink-3)}.cm-ft b{color:var(--navy);overflow-wrap:anywhere;font-size:15px}
+.cm-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:14px;font-size:14px}.cm-crumbs b{color:var(--navy)}.cm-crumbs span{color:var(--ink-3)}
+.cm-body{margin-top:14px}.cm-lead{margin:0 0 10px;font-size:13.5px}
+.cm-anim.cm-in{animation:cmIn .45s cubic-bezier(.2,.8,.2,1) both;transform-origin:var(--ox) var(--oy)}
+.cm-anim.cm-out{animation:cmOut .35s ease-out both}
+@keyframes cmIn{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:none}}
+@keyframes cmOut{from{opacity:0;transform:scale(1.12)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.cm-anim.cm-in,.cm-anim.cm-out{animation:none}}
+.cm-dot{width:calc(92px*var(--k,1));aspect-ratio:1;border-radius:50%;display:grid;place-items:center;align-content:center;gap:0;background:color-mix(in srgb,var(--tone) 18%,var(--surface));border:2.5px solid color-mix(in srgb,var(--tone) 55%,var(--surface));flex:none}
+.cm-dot.sm{width:48px}.cm-e{font-size:26px;line-height:1.1}.cm-dot.sm .cm-e{font-size:22px}.cm-dot b{font-family:var(--display);font-size:18px;color:var(--navy);line-height:1.2}
+.cm-cloud{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.cm-w{display:grid;justify-items:center;align-content:start;gap:6px;padding:14px 8px;border-radius:26px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:center;cursor:pointer;transition:transform .2s,border-color .2s;min-width:0}
+.cm-w:hover{border-color:var(--tone);transform:translateY(-2px)}.cm-w.dim{opacity:.62}
+.cm-wn{font-family:var(--display);font-weight:600;font-size:14.5px;line-height:1.3;color:var(--navy)}.cm-w .chip{white-space:normal}
+@media (min-width:1021px){
+ .cm-cloud{display:block;position:relative;max-width:860px;margin:0 auto;aspect-ratio:1000/780}
+ .cm-w{position:absolute;left:var(--x);top:var(--y);width:var(--d);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;padding:10px 14px;align-content:center;overflow:visible;gap:2px;background:color-mix(in srgb,var(--tone) 15%,var(--surface));border:2.5px solid color-mix(in srgb,var(--tone) 55%,var(--surface))}
+ .cm-w:hover{transform:translate(-50%,-50%) scale(1.05);border-color:var(--tone)}
+ .cm-w .cm-dot{width:auto;background:none;border:0;aspect-ratio:auto}
+ .cm-w .cm-e{font-size:28px}.cm-w .cm-dot b{font-size:20px}.cm-wn{font-size:13.5px}
+ .cm-w .chip{position:absolute;bottom:0;left:50%;transform:translate(-50%,40%);white-space:nowrap;box-shadow:0 0 0 2px var(--surface)}}
+.cm-fol{margin-top:18px;display:grid;gap:8px}.cm-opt{white-space:normal!important;flex:initial!important;text-align:left}
+.cm-title{display:flex;align-items:center;gap:10px;margin-bottom:12px}.cm-title h2{font-size:22px}
+.cm-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.cm-g{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:14px;font:inherit;color:var(--ink);cursor:pointer;min-width:0}
+.cm-g:hover{border-color:var(--tone)}.cm-gt{display:grid;gap:2px;flex:1;min-width:0}.cm-gt b{font-family:var(--display);color:var(--navy);font-size:16px}
+.cm-lv{display:flex;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--ink-2)}.cm-go{font-size:24px;color:var(--ink-3);line-height:1}
+.cm-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--ink-2);margin-bottom:10px}
+.cm-roles{grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))}
+.cm-role{display:grid;gap:12px;padding:14px 16px;align-content:start}
+.cm-rh{display:flex;align-items:center;gap:8px;background:none;border:0;padding:0;text-align:left;font:inherit;color:var(--ink);cursor:pointer;flex-wrap:wrap;width:100%}
+.cm-rt{display:grid;gap:2px;flex:1;min-width:0}.cm-rt b{font-family:var(--display);color:var(--navy);font-size:16.5px;line-height:1.3}.cm-rh:hover b{text-decoration:underline}
+.cm-sk{display:grid;gap:8px}.cm-sk small{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:4px}.cm-sk .opts{gap:6px}.cm-sk .chip{white-space:normal}
+.chip.cm-s{background:var(--orange-soft);color:var(--ink)}.chip.cm-need{background:var(--surface-2);color:var(--ink)}
+.cm-more{margin-top:14px;display:grid;gap:8px;justify-items:start}
+.cm-rp{display:grid;gap:12px;border-top:5px solid var(--tone)}.cm-rph{display:flex;gap:12px;align-items:center}.cm-rph h2{font-size:24px}.cm-rph small{font-size:12.5px}
+.cm-follow{justify-self:start}.cm-grid{margin-top:14px}.cm-box{display:grid;gap:8px;align-content:start}.cm-box h3{font-size:17px}
+.cm-sal{font-family:var(--display);font-size:26px;color:var(--navy);line-height:1.2}.cm-sal small{font-size:13px;color:var(--ink-3);font-family:var(--body);font-weight:500}
+.cm-co{display:inline-flex;align-items:center;gap:6px}.cm-co .mark{width:24px;height:24px;font-size:10px;border-radius:8px}
+.cm-m .cm-mt{display:grid;flex:1;min-width:150px;gap:2px}.cm-mt b{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.cm-mb{gap:6px;margin-left:auto}
+.cm-note{margin-top:22px;font-size:12.5px}
+.cm-home{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 18px}.cm-home>span{font-size:34px;line-height:1}.cm-home div{flex:1;min-width:200px;display:grid;gap:2px}.cm-home b{font-family:var(--display);font-size:18px;color:var(--navy)}
+@media (max-width:520px){.cm-home .btn{width:100%}}
+.fp{display:grid;gap:12px}.fp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fp-f{display:grid;justify-items:center;align-content:center;gap:4px;padding:10px 6px;border-radius:16px;border:2px solid var(--line);background:var(--surface);font:inherit;color:var(--ink);text-align:center;cursor:pointer;min-width:0}
+.fp-f span{font-size:24px;line-height:1}.fp-f b{font-size:12.5px;line-height:1.3;font-weight:600;overflow-wrap:anywhere}.fp-f:hover{border-color:var(--blue)}.fp-f.on{border-color:var(--orange-btn);background:var(--orange-soft)}
+.fp-mj{display:grid;gap:8px}.fp-hits{display:flex;flex-wrap:wrap;gap:8px}.fp .opt.on .muted{color:inherit;opacity:.85}
+@media (max-width:520px){.fp-grid{grid-template-columns:1fr 1fr}}
 </style>
 
 <div class="wrap">
@@ -1077,15 +1131,15 @@ const JOBS=[
 ];
 const TOPICS={intern:['ฝึกงาน','Internships'],resume:['เรซูเม่ & สัมภาษณ์','Resume & interviews'],salary:['เงินเดือน','Salary'],switch:['ย้ายสาย','Career switch'],rights:['สิทธิแรงงาน','Labor rights']};
 const MENTORS=[
- {id:'m1',name:['พี่มิ้นท์','Mint'],role:['QA Officer · 4 ปี','QA Officer · 4 yrs'],at:['ไบโอเฟรช ฟู้ดส์','BioFresh Foods'],ava:'🧪',bg:'#FFE08A',n:86,price:129,top:['intern','resume'],tags:[['ฝึกงาน QC','QC internships'],['HACCP','HACCP'],['เรซูเม่','Resume']],bio:['เคยเป็นเด็กฝึกงานที่นี่มาก่อน ช่วยเตรียมตัวฝึกงานสายอาหารได้ทุกขั้นตอน','I started here as an intern. I can walk you through food-industry internships step by step.']},
- {id:'m2',name:['พี่ต้น','Ton'],role:['QC Microbiologist · 6 ปี','QC Microbiologist · 6 yrs'],at:['นอร์ธสตาร์ ฟาร์มา','Northstar Pharma'],ava:'💊',bg:'#C9DBFF',n:54,price:179,top:['salary','switch'],tags:[['สายยา','Pharma careers'],['ต่อรองเงินเดือน','Salary talks']],bio:['ย้ายจากสายอาหารมาสายยา เงินเดือนขึ้น 40% เล่าให้ฟังได้หมดว่าทำยังไง','Moved from food to pharma with a 40% raise. Happy to share exactly how.']},
- {id:'m3',name:['พี่แพร','Prae'],role:['Data Analyst · 3 ปี','Data Analyst · 3 yrs'],at:['คลาวด์บัน เทค','Cloudbun Tech'],ava:'📊',bg:'#FFD0BE',n:41,price:99,top:['switch','resume'],tags:[['ย้ายสายไป Data','Switching to data'],['ซ้อมสัมภาษณ์','Mock interviews']],bio:['จบวิทย์แต่ย้ายมาทำ Data ได้ในปีเดียว มีแผนเรียนให้ดูเลย','Science grad who moved into data within a year. I’ll share my study plan.']},
- {id:'m4',name:['พี่โอม','Ohm'],role:['HR Business Partner · 8 ปี','HR Business Partner · 8 yrs'],at:['บริษัทค้าปลีก','Retail company'],ava:'🤝',bg:'#DDF0B5',n:120,price:249,top:['resume','rights','salary'],tags:[['ตรวจเรซูเม่','Resume review'],['สิทธิแรงงาน','Labor rights']],bio:['อ่านเรซูเม่มาแล้วกว่า 5,000 ฉบับ รู้ว่า HR มองหาอะไรใน 10 วินาทีแรก','I’ve read 5,000+ resumes and know what HR looks for in the first 10 seconds.']},
- {id:'m5',name:['พี่เฟิร์น','Fern'],role:['Fermentation Lead · 5 ปี','Fermentation Lead · 5 yrs'],at:['กรีนแคป บริวอรี่','Greencap Brewery'],ava:'🍺',bg:'#FFE3B8',n:33,price:149,top:['intern','switch'],tags:[['งานหมัก','Fermentation'],['สตาร์ทอัพเครื่องดื่ม','Drink startups']],bio:['ชอบงานหมักแต่ไม่รู้จะเริ่มตรงไหน? มาคุยกัน ตั้งแต่ฝึกงานถึงเปิดแบรนด์','Love fermentation but not sure where to start? From internships to launching a brand.']},
- {id:'m6',name:['พี่บอส','Boss'],role:['Lab Supervisor · 7 ปี','Lab Supervisor · 7 yrs'],at:['สยามแล็บ อนาลิติกส์','Siam Lab Analytics'],ava:'🔬',bg:'#BDEBDD',n:72,price:199,top:['intern','rights'],tags:[['ISO 17025','ISO 17025'],['ชีวิตคนแล็บ','Lab life']],bio:['คุมแล็บมา 7 ปี ถามได้ทั้งเรื่องงาน OT และการรับมือหัวหน้า','7 years running a lab. Ask me about the work, overtime and handling bosses.']},
- {id:'m7',name:['พี่จูน','June'],role:['Product Designer · 4 ปี','Product Designer · 4 yrs'],at:['คลาวด์บัน เทค','Cloudbun Tech'],ava:'🎨',bg:'#FFD3E2',n:28,price:129,top:['switch','resume'],tags:[['พอร์ตโฟลิโอ','Portfolio'],['UX/UI','UX/UI']],bio:['จากนักศึกษาชีวะสู่ดีไซเนอร์ ช่วยทำพอร์ตให้ดูโปรได้','From biology student to designer. I’ll help your portfolio look pro.']},
- {id:'m8',name:['พี่นัท','Nut'],role:['Recruiter · 5 ปี','Recruiter · 5 yrs'],at:['บริษัทจัดหางาน','Recruitment agency'],ava:'🎯',bg:'#D9D3FF',n:95,price:179,top:['salary','resume'],tags:[['ต่อรองเงินเดือน','Negotiation'],['หางานจบใหม่','First job hunt']],bio:['อยู่ฝั่งคนจ้างมาตลอด บอกได้ว่าควรขอเงินเดือนเท่าไหร่ถึงไม่ขาดทุน','I’ve always sat on the hiring side. I’ll tell you what to ask for.']},
- {id:'m9',name:['พี่ฝน','Fon'],role:['QA Associate · 1 ปี','QA Associate · 1 yr'],at:['เมกะมาร์ท รีเทล','Megamart Retail'],ava:'🌱',bg:'#D4F2C4',n:3,price:89,top:['intern','switch'],tags:[['เพิ่งเริ่มงาน','Just started'],['QA อาหารสด','Fresh food QA']],bio:['เพิ่งจบมาปีเดียว ยังจำได้ทุกขั้นตอนตอนหางานแรก','Graduated a year ago and still remember every step of the first job hunt.']},
+ {id:'m1',fac:'agro',roles:['qa'],name:['พี่มิ้นท์','Mint'],role:['QA Officer · 4 ปี','QA Officer · 4 yrs'],at:['ไบโอเฟรช ฟู้ดส์','BioFresh Foods'],ava:'🧪',bg:'#FFE08A',n:86,price:129,top:['intern','resume'],tags:[['ฝึกงาน QC','QC internships'],['HACCP','HACCP'],['เรซูเม่','Resume']],bio:['เคยเป็นเด็กฝึกงานที่นี่มาก่อน ช่วยเตรียมตัวฝึกงานสายอาหารได้ทุกขั้นตอน','I started here as an intern. I can walk you through food-industry internships step by step.']},
+ {id:'m2',fac:'agro',roles:['qcmicro'],name:['พี่ต้น','Ton'],role:['QC Microbiologist · 6 ปี','QC Microbiologist · 6 yrs'],at:['นอร์ธสตาร์ ฟาร์มา','Northstar Pharma'],ava:'💊',bg:'#C9DBFF',n:54,price:179,top:['salary','switch'],tags:[['สายยา','Pharma careers'],['ต่อรองเงินเดือน','Salary talks']],bio:['ย้ายจากสายอาหารมาสายยา เงินเดือนขึ้น 40% เล่าให้ฟังได้หมดว่าทำยังไง','Moved from food to pharma with a 40% raise. Happy to share exactly how.']},
+ {id:'m3',fac:'sci',roles:['da'],name:['พี่แพร','Prae'],role:['Data Analyst · 3 ปี','Data Analyst · 3 yrs'],at:['คลาวด์บัน เทค','Cloudbun Tech'],ava:'📊',bg:'#FFD0BE',n:41,price:99,top:['switch','resume'],tags:[['ย้ายสายไป Data','Switching to data'],['ซ้อมสัมภาษณ์','Mock interviews']],bio:['จบวิทย์แต่ย้ายมาทำ Data ได้ในปีเดียว มีแผนเรียนให้ดูเลย','Science grad who moved into data within a year. I’ll share my study plan.']},
+ {id:'m4',fac:'arts',roles:['hr'],name:['พี่โอม','Ohm'],role:['HR Business Partner · 8 ปี','HR Business Partner · 8 yrs'],at:['บริษัทค้าปลีก','Retail company'],ava:'🤝',bg:'#DDF0B5',n:120,price:249,top:['resume','rights','salary'],tags:[['ตรวจเรซูเม่','Resume review'],['สิทธิแรงงาน','Labor rights']],bio:['อ่านเรซูเม่มาแล้วกว่า 5,000 ฉบับ รู้ว่า HR มองหาอะไรใน 10 วินาทีแรก','I’ve read 5,000+ resumes and know what HR looks for in the first 10 seconds.']},
+ {id:'m5',fac:'sci',roles:['ferm'],name:['พี่เฟิร์น','Fern'],role:['Fermentation Lead · 5 ปี','Fermentation Lead · 5 yrs'],at:['กรีนแคป บริวอรี่','Greencap Brewery'],ava:'🍺',bg:'#FFE3B8',n:33,price:149,top:['intern','switch'],tags:[['งานหมัก','Fermentation'],['สตาร์ทอัพเครื่องดื่ม','Drink startups']],bio:['ชอบงานหมักแต่ไม่รู้จะเริ่มตรงไหน? มาคุยกัน ตั้งแต่ฝึกงานถึงเปิดแบรนด์','Love fermentation but not sure where to start? From internships to launching a brand.']},
+ {id:'m6',fac:'sci',roles:['qc'],name:['พี่บอส','Boss'],role:['Lab Supervisor · 7 ปี','Lab Supervisor · 7 yrs'],at:['สยามแล็บ อนาลิติกส์','Siam Lab Analytics'],ava:'🔬',bg:'#BDEBDD',n:72,price:199,top:['intern','rights'],tags:[['ISO 17025','ISO 17025'],['ชีวิตคนแล็บ','Lab life']],bio:['คุมแล็บมา 7 ปี ถามได้ทั้งเรื่องงาน OT และการรับมือหัวหน้า','7 years running a lab. Ask me about the work, overtime and handling bosses.']},
+ {id:'m7',fac:'sci',roles:['uxui'],name:['พี่จูน','June'],role:['Product Designer · 4 ปี','Product Designer · 4 yrs'],at:['คลาวด์บัน เทค','Cloudbun Tech'],ava:'🎨',bg:'#FFD3E2',n:28,price:129,top:['switch','resume'],tags:[['พอร์ตโฟลิโอ','Portfolio'],['UX/UI','UX/UI']],bio:['จากนักศึกษาชีวะสู่ดีไซเนอร์ ช่วยทำพอร์ตให้ดูโปรได้','From biology student to designer. I’ll help your portfolio look pro.']},
+ {id:'m8',fac:'comm',roles:['hr'],name:['พี่นัท','Nut'],role:['Recruiter · 5 ปี','Recruiter · 5 yrs'],at:['บริษัทจัดหางาน','Recruitment agency'],ava:'🎯',bg:'#D9D3FF',n:95,price:179,top:['salary','resume'],tags:[['ต่อรองเงินเดือน','Negotiation'],['หางานจบใหม่','First job hunt']],bio:['อยู่ฝั่งคนจ้างมาตลอด บอกได้ว่าควรขอเงินเดือนเท่าไหร่ถึงไม่ขาดทุน','I’ve always sat on the hiring side. I’ll tell you what to ask for.']},
+ {id:'m9',fac:'agro',roles:['qa'],name:['พี่ฝน','Fon'],role:['QA Associate · 1 ปี','QA Associate · 1 yr'],at:['เมกะมาร์ท รีเทล','Megamart Retail'],ava:'🌱',bg:'#D4F2C4',n:3,price:89,top:['intern','switch'],tags:[['เพิ่งเริ่มงาน','Just started'],['QA อาหารสด','Fresh food QA']],bio:['เพิ่งจบมาปีเดียว ยังจำได้ทุกขั้นตอนตอนหางานแรก','Graduated a year ago and still remember every step of the first job hunt.']},
 ];
 /* mentor reviews (fictional samples). The rating on every card is computed from these + real reviews, so it always matches. */
 const MTAGS={direct:['ตรงประเด็น','To the point','ตรงประเด็น','To the point'],kind:['ใจดีเป็นกันเอง','Kind & friendly','ใจดี','Kind'],real:['ให้ข้อมูลจริง','Honest, real info','ข้อมูลจริง','Real info'],ontime:['ตรงเวลา','On time','ตรงเวลา','On time'],resume:['ช่วยเรื่องเรซูเม่','Resume help','ช่วยเรซูเม่','Resume help'],recommend:['แนะนำต่อได้','Would recommend','แนะนำต่อ','Recommend']};
@@ -1187,7 +1241,7 @@ const CO=[
   ai:{pros:[['ทำงานไฮบริด เข้าออฟฟิศ 2 วันต่อสัปดาห์','Hybrid: 2 office days a week'],['หัวหน้าฟังความเห็นจริง','Managers really listen'],['มีงบเรียนคอร์สออนไลน์ปีละ 20,000 บาท','20,000 baht yearly learning budget']],
       cons:[['สตาร์ทอัพ เป้าเปลี่ยนเร็ว','Startup goals change fast'],['โบนัสไม่แน่นอน','Bonus is uncertain'],['บางทีมงานเยอะช่วงออกฟีเจอร์ใหม่','Crunch before feature launches']]},
   reality:[[['ไฮบริด','Hybrid'],['เข้าออฟฟิศ 2 วันจริง','Really 2 office days'],'ok'],[['วันลาไม่จำกัด','Unlimited leave'],['ใช้ได้จริงเฉลี่ย 18 วัน','About 18 days used on average'],'ok'],[['โบนัส','Bonus'],['ปีนี้งด','Skipped this year'],'no'],[['ขึ้นเงินเดือนทุกปี','Annual raise'],['8–12%','8–12%'],'ok']],
-  salary:[[['Data Analyst','Data Analyst'],32000,38000,48000,14],[['Product Designer','Product Designer'],35000,42000,55000,9],[['Software Engineer','Software Engineer'],40000,55000,80000,23]],
+  salary:[[['Data Analyst','Data Analyst'],32000,38000,48000,14],[['Product Designer','Product Designer'],35000,42000,55000,9],[['Software Engineer','Software Engineer'],40000,55000,80000,23],[['Customer Success','Customer Success'],22000,26000,32000,9],[['Product Manager','Product Manager'],40000,48000,60000,5]],
   interview:{rounds:3,days:['10 วัน','10 days'],diff:'mid',qs:[['ทำ Take-home assignment 3 วัน','3-day take-home assignment'],['เล่าโปรเจกต์ที่ภูมิใจที่สุด','Tell us about your proudest project'],['Culture fit กับ CEO','Culture-fit chat with the CEO']]},
   reviews:[
    {role:['Data Analyst','Data Analyst'],type:'emp',mood:0,r:5,t:['ที่ทำงานที่ไม่อยากตื่นมาเกลียดวันจันทร์','A job that does not make you dread Mondays'],p:['ทีมเก่ง หัวหน้าใจดี ไฮบริดจริง','Smart team, kind boss, real hybrid'],c:['โบนัสปีนี้ไม่มี','No bonus this year'],d:'Q3 2026',v:true,h:57},
@@ -1198,7 +1252,7 @@ const CO=[
   ai:{pros:[['องค์กรใหญ่ มั่นคง','Large and stable'],['ส่วนลดพนักงาน 10%','10% staff discount'],['ย้ายแผนกภายในได้','Internal transfers possible']],
       cons:[['ประชุมเยอะ ตัดสินใจช้า','Many meetings, slow decisions'],['หัวหน้าบางคนสั่งงานนอกเวลา','Some bosses message after hours'],['เป้ายอดขายกดดัน','High sales pressure']]},
   reality:[[['ทำงาน 5 วัน','5-day week'],['สาขาทำ 6 วัน','Stores work 6 days'],'no'],[['OT จ่ายตามกฎหมาย','OT paid by law'],['สำนักงานใหญ่ไม่มี OT','No OT pay at HQ'],'no'],[['โบนัส 1–3 เดือน','1–3 month bonus'],['ส่วนใหญ่ 1.5 เดือน','Usually 1.5 months'],'meh']],
-  salary:[[['Category Analyst','Category Analyst'],25000,30000,38000,33],[['Store Manager','Store Manager'],35000,42000,55000,18],[['QA อาหารสด','Fresh Food QA'],22000,26000,32000,12]],
+  salary:[[['Category Analyst','Category Analyst'],25000,30000,38000,33],[['Store Manager','Store Manager'],35000,42000,55000,18],[['QA อาหารสด','Fresh Food QA'],22000,26000,32000,12],[['เจ้าหน้าที่การตลาด','Marketing Executive'],21000,25000,32000,14],[['เจ้าหน้าที่ HR','HR Officer'],19000,23500,30000,9],[['นักบัญชี','Accountant'],18000,22000,28000,12]],
   interview:{rounds:2,days:['2 สัปดาห์','2 weeks'],diff:'easy',qs:[['ถ้ายอดขายตกจะทำอย่างไร','What would you do if sales dropped?'],['เข้างานวันหยุดได้ไหม','Can you work on holidays?']]},
   reviews:[
    {role:['QA อาหารสด','Fresh Food QA'],type:'emp',mood:2,r:2,t:['LINE หัวหน้าเด้งตอนสี่ทุ่ม','Boss messages at 10 p.m.'],p:['ได้เรียนรู้ระบบห่วงโซ่ความเย็น','Learned cold-chain systems'],c:['ไม่มีเส้นแบ่งเวลางานกับเวลาส่วนตัว','No line between work and personal time'],d:'Q3 2026',v:true,h:73,reply:['เราออกนโยบาย “ไม่ส่งงานหลัง 19:00” แล้ว หากยังพบ แจ้ง HR ได้โดยไม่ระบุตัวตน — ฝ่ายบุคคล','We introduced a “no messages after 19:00” policy. If it still happens, report it to HR anonymously. — People team']},
@@ -1219,7 +1273,7 @@ const CO=[
   ai:{pros:[['สวัสดิการแน่น ดอกเบี้ยบ้านพนักงานต่ำ','Strong benefits, including low staff mortgage rates'],['โบนัสสม่ำเสมอ 3–5 เดือน','Reliable 3–5 month bonus'],['มีโครงการ Management Trainee','Management trainee program']],
       cons:[['ลำดับขั้นเยอะ อนุมัติช้า','Many layers; slow approvals'],['ปิดงบสิ้นเดือนกลับดึก','Late nights at month-end close'],['แต่งตัวทางการทุกวัน','Formal dress every day']]},
   reality:[[['โบนัส 3–6 เดือน','3–6 month bonus'],['ส่วนใหญ่ได้ 4 เดือน','Usually 4 months'],'ok'],[['ทำงานไฮบริด','Hybrid work'],['เฉพาะบางฝ่าย','Only some departments'],'meh'],[['เลิกงาน 17:30','Finish at 17:30'],['ช่วงปิดงบถึง 21:00','Until 21:00 at month-end'],'no']],
-  salary:[[['Management Trainee','Management Trainee'],30000,35000,42000,36],[['Credit Analyst','Credit Analyst'],28000,34000,45000,22],[['Relationship Manager','Relationship Manager'],35000,45000,65000,18]],
+  salary:[[['Management Trainee','Management Trainee'],30000,35000,42000,36],[['Credit Analyst','Credit Analyst'],28000,34000,45000,22],[['Relationship Manager','Relationship Manager'],35000,45000,65000,18],[['นิติกร','Legal Officer'],25000,30000,38000,8],[['เจ้าหน้าที่กำกับดูแล','Compliance Officer'],26000,31000,40000,10],[['เจ้าหน้าที่พัฒนาบุคลากร','Learning & Development Officer'],24000,28000,35000,6]],
   interview:{rounds:4,days:['3–4 สัปดาห์','3–4 weeks'],diff:'hard',qs:[['สอบ Aptitude test ออนไลน์','Online aptitude test'],['Case study วิเคราะห์สินเชื่อ','Credit analysis case study'],['Group discussion กับผู้สมัครคนอื่น','Group discussion with other candidates']]},
   reviews:[
    {role:['Management Trainee','Management Trainee'],type:'emp',mood:0,r:4,t:['ได้หมุนงานหลายฝ่าย เปิดโลกมาก','Rotating through teams really opens your eyes'],p:['ได้เจอผู้บริหารระดับสูงบ่อย','Frequent access to senior leaders'],c:['เป้าหมายสูง กดดันตลอดโปรแกรม','High targets and pressure throughout'],d:'Q3 2026',v:true,h:39},
@@ -1272,7 +1326,7 @@ const CO=[
   ai:{pros:[['โบนัสสูงและสม่ำเสมอ','High, consistent bonuses'],['ระบบ Kaizen เรียนรู้ได้เยอะ','Learn a lot from kaizen culture'],['มีหอพักและรถรับส่ง','Dorms and shuttles']],
       cons:[['วัฒนธรรมแบบญี่ปุ่น เป๊ะทุกอย่าง','Strict Japanese-style culture'],['อยู่ต่างจังหวัด','Outside Bangkok'],['เลื่อนตำแหน่งตามอายุงาน','Promotion by seniority']]},
   reality:[[['โบนัส 5+ เดือน','5+ month bonus'],['ปีล่าสุด 6.5 เดือน','6.5 months last year'],'ok'],[['OT ตามความสมัครใจ','Voluntary OT'],['แทบทุกคนต้องทำ','Almost everyone does it'],'meh'],[['ภาษาญี่ปุ่นไม่จำเป็น','Japanese not required'],['มีช่วยมาก ได้ค่าภาษา','A plus, with a language allowance'],'ok']],
-  salary:[[['Production Engineer','Production Engineer'],28000,33000,42000,40],[['QC Inspector','QC Inspector'],18000,21000,26000,33],[['Environmental Officer','Environmental Officer'],24000,28000,34000,9]],
+  salary:[[['Production Engineer','Production Engineer'],28000,33000,42000,40],[['QC Inspector','QC Inspector'],18000,21000,26000,33],[['Environmental Officer','Environmental Officer'],24000,28000,34000,9],[['เจ้าหน้าที่ความปลอดภัย (จป.)','Safety Officer'],22000,26000,32000,13]],
   interview:{rounds:3,days:['2 สัปดาห์','2 weeks'],diff:'mid',qs:[['อธิบาย 5ส และ Kaizen','Explain 5S and kaizen'],['สอบวัดความถนัดเชิงช่าง','Mechanical aptitude test'],['สัมภาษณ์กับผู้จัดการชาวญี่ปุ่น','Interview with a Japanese manager']]},
   reviews:[
    {role:['Environmental Officer','Environmental Officer'],type:'emp',mood:0,r:4,t:['สายสิ่งแวดล้อมมีที่ยืน','Real room for environmental roles'],p:['ได้ดูแลระบบบำบัดน้ำเสีย ใช้ความรู้จุลชีวะจริง','Run wastewater treatment; real microbiology'],c:['ต้องเข้าไลน์ผลิตบ่อย','Often on the production floor'],d:'Q3 2026',v:true,h:19},
@@ -1282,7 +1336,7 @@ const CO=[
   ai:{pros:[['งานสนุก ได้ทำแคมเปญแบรนด์ดัง','Fun work on big-brand campaigns'],['ออฟฟิศสวย บรรยากาศดี','Beautiful office, great vibe'],['ได้พอร์ตเร็ว','Build a portfolio fast']],
       cons:[['ลูกค้าแก้งานดึก','Late-night client revisions'],['สวัสดิการพื้นฐาน','Basic benefits only'],['เงินเดือนเริ่มต้นต่ำ','Low starting pay']]},
   reality:[[['เวลาทำงานยืดหยุ่น','Flexible hours'],['ยืดหยุ่นแต่เลิกดึก','Flexible, but late finishes'],'meh'],[['ประกันสุขภาพ','Health insurance'],['มีแค่ประกันสังคม','Social security only'],'no'],[['ปาร์ตี้ทีมทุกเดือน','Monthly team parties'],['มีจริง สนุกมาก','Real, and fun'],'ok']],
-  salary:[[['Content Creator','Content Creator'],18000,22000,28000,17],[['Graphic Designer','Graphic Designer'],18000,23000,30000,21],[['Account Executive','Account Executive'],20000,25000,32000,13]],
+  salary:[[['Content Creator','Content Creator'],18000,22000,28000,17],[['Graphic Designer','Graphic Designer'],18000,23000,30000,21],[['Account Executive','Account Executive'],20000,25000,32000,13],[['เจ้าหน้าที่ประชาสัมพันธ์','PR Executive'],20000,23000,28000,11]],
   interview:{rounds:2,days:['1 สัปดาห์','1 week'],diff:'mid',qs:[['ส่งพอร์ตและเล่างานที่ชอบที่สุด','Walk us through your portfolio'],['ทำโจทย์ไอเดียแคมเปญใน 48 ชม.','48-hour campaign idea challenge']]},
   reviews:[
    {role:['Content Creator','Content Creator'],type:'emp',mood:0,r:4,t:['ครีเอทีฟสายเลือดต้องชอบ','Creatives will love it'],p:['ไอเดียเราได้ขึ้นจอจริง','Your ideas actually go live'],c:['ลูกค้าแก้งานตีสอง','Client edits at 2 a.m.'],d:'Q3 2026',v:true,h:29},
@@ -1445,6 +1499,7 @@ function home(){
    <div class="row"><input class="field num" id="salV" inputmode="numeric" value="${esc(S.sal.v)}" style="flex:1;min-width:120px" aria-label="${t('เงินเดือน (บาท)','Salary (THB)')}"><span class="muted">${t('บาท/เดือน','THB/month')}</span></div>
    <button class="btn" data-salcheck>${t('เช็กเลย','Check')}</button><div id="salOut"></div></div>
  </section>
+ ${q||S.ob.goal==='first'?'':`<section class="sec card cm-home"><span aria-hidden="true">🗺️</span><div><b>${t('คณะคุณไปได้ไกลกว่าที่คิด','Your faculty can take you further than you think')}</b><span class="muted">${FAC[S.ob.fac]?t(`ดูงานที่ ${facName()} เข้าได้ ทั้งตรงสายและข้ามสาย`,`See the roles ${facName()} can reach, direct and cross-over`):t('เลือกคณะ แล้วดูงานที่เข้าได้ ทั้งตรงสายและข้ามสาย','Pick your faculty and see the roles it can reach, direct and cross-over')}</span></div><button class="btn y" data-cmopen>${t('เปิดแผนที่อาชีพ →','Open the career map →')}</button></section>`}
  <section class="sec"><div class="sec-h"><h2>${t('ฝึกงานและงานใหม่','New internships & jobs')}</h2><button class="link" data-go="jobs">${t('ดูทั้งหมด','See all')}</button></div><div class="grid g2">${JOBS.slice().sort((a,b)=>(b.spon-a.spon)||(a.days-b.days)).slice(0,2).map(jobCard).join('')}</div></section>
  <section class="sec"><div class="sec-h"><h2>⚡ ${t('งานด่วนใกล้มหาลัย','Quick part-time near campus')}</h2><button class="link" data-gopt>${t('ดูทั้งหมด','See all')}</button></div><div class="grid g2">${ptSorted(PT).filter(p=>p.filled<p.need).slice(0,2).map(ptCard).join('')}</div></section>
  <section class="sec"><div class="sec-h"><h2>${t('รีวิวที่คนกดว่ามีประโยชน์','Most helpful reviews')}</h2></div><div class="grid g2">${latest.slice(0,4).map(v=>review(v[0],v[1],v[2])).join('')}</div></section>
@@ -1580,7 +1635,7 @@ function jobCard(j){const c=getCo(j.co);
   <div class="row" style="gap:6px">${j.tags.map(g=>`<span class="chip">${x(g)}</span>`).join('')}</div>
   <div class="job-foot"><span class="muted">${agoTxt(j.days)}</span><div class="grow"><button class="save ${S.saved[j.id]?'on':''}" data-save="${j.id}" aria-label="${t('บันทึกงาน','Save job')}">${S.saved[j.id]?'♥':'♡'}</button>
   ${S.applied[j.id]?`<button class="btn ghost" disabled>✓ ${t('สมัครแล้ว','Applied')}</button>`:`<button class="btn" data-apply="${j.id}">${t('สมัครเลย','Apply')}</button>`}</div></div></article>`}
-function jobs(){return `<div class="segs" style="margin-top:10px">${[['full',t('💼 งานประจำ / ฝึกงาน','💼 Jobs & internships')],['pt',t('⚡ งานด่วน พาร์ทไทม์','⚡ Quick part-time')]].map(([k,n])=>`<button class="${S.jobTab===k?'on':''}" data-jtab="${k}">${n}</button>`).join('')}</div>`+(S.jobTab==='pt'?ptFeed():jobsFull())}
+function jobs(){return `<div class="segs jsegs" style="margin-top:10px">${[['full',t('💼 งานประจำ / ฝึกงาน','💼 Jobs & internships'),t('💼 งาน','💼 Jobs')],['pt',t('⚡ งานด่วน พาร์ทไทม์','⚡ Quick part-time'),t('⚡ พาร์ทไทม์','⚡ Part-time')],['map',t('🗺️ แผนที่อาชีพ','🗺️ Career map'),t('🗺️ แผนที่','🗺️ Map')]].map(([k,n,sn])=>`<button class="${S.jobTab===k?'on':''}" data-jtab="${k}" aria-pressed="${S.jobTab===k}"><span class="ll">${n}</span><span class="ls">${sn}</span></button>`).join('')}</div>`+(S.jobTab==='pt'?ptFeed():S.jobTab==='map'?careerMap():jobsFull())}
 function jobsFull(){
  const F=S.jobF;const keys=Object.keys(IND);
  let list=JOBS.filter(j=>(F.type==='all'||j.type===F.type)&&(F.ind==='all'||getCo(j.co).ind===F.ind)&&(!F.min||(j.unit==='month'&&j.pay[0]>=F.min)));
@@ -1605,7 +1660,7 @@ function mBadge(m,cls){const st=mStat(m),nw=st.n<3;
 const mTopTags=m=>{const tp=mStat(m).top.slice(0,2);return tp.length?`<div class="s-top">${tp.map(g=>x([MTAGS[g][2],MTAGS[g][3]])).join(' · ')}</div>`:''};
 function mprice(m){return isPlus()?Math.round(m.price*.8):m.price}
 function scard(m,cls){const g=isPlus(),price=`<span class="s-price">${mprice(m)} ${t('บาท','THB')}/30 ${t('นาที','min')}</span>`;return `<div class="scard ${cls}${g?' gold':''}" data-mid="${m.id}"><div class="s-hero" style="background:linear-gradient(160deg,${m.bg},var(--surface))"><span class="stamp like">${t('สนใจ','LIKE')}</span><span class="stamp nope">${t('ข้าม','NOPE')}</span>${mBadge(m)}${g?'<span class="g-spark a" aria-hidden="true">✦</span><span class="g-spark b" aria-hidden="true">✦</span>':''}<span class="s-ava">${m.ava}</span>${g?`<div class="s-foot">${askBtn(m)}${price}</div>`:askBtn(m)+price}</div>
- <div class="s-info"><h2>${x(m.name)} ${m.real?`<span class="chip ver">✓ ${t('รุ่นพี่จริง','Real mentor')}</span>`:`<span class="chip">${t('ตัวอย่าง','Sample')}</span>`}</h2>${mTopTags(m)}<div class="muted" style="font-size:14px">${x(m.role)} · ${x(m.at)}</div><p class="s-bio">“${x(m.bio)}”</p>
+ <div class="s-info"><h2>${x(m.name)} ${m.real?`<span class="chip ver">✓ ${t('รุ่นพี่จริง','Real mentor')}</span>`:`<span class="chip">${t('ตัวอย่าง','Sample')}</span>`}</h2>${mTopTags(m)}<div class="muted" style="font-size:14px">${x(m.role)} · ${x(m.at)}${FAC[m.fac]?`<br>🎓 ${t('จบ','Studied')} ${x(FAC[m.fac].n)}`:''}</div><p class="s-bio">“${x(m.bio)}”</p>
  <div class="row" style="gap:6px">${m.tags.map(g=>`<span class="chip">${x(g)}</span>`).join('')}</div><span class="corate">${m.real?`🛡️ ${t('ตรวจสอบตัวตนโดยทีมมาดูจ็อบ','Verified by the Maadoo Job team')}`:`🗓️ ${m.n} ${t('ครั้งที่ให้คำปรึกษา','sessions')} · ${t('รุ่นพี่ตัวอย่าง ตอบอัตโนมัติ','sample mentor, auto-replies')}`}</span></div></div>`}
 function swipe(){const sw=S.sw;const deck=deckList();const liked=MENTORS.filter(m=>sw.liked.includes(m.id));
  return `<div class="opts" style="margin-top:14px;justify-content:center"><button class="opt ${sw.topic==='all'?'on':''}" data-topic="all">${t('ทุกเรื่อง','Everything')}</button>${Object.keys(TOPICS).map(k=>`<button class="opt ${sw.topic===k?'on':''}" data-topic="${k}">${x(TOPICS[k])}</button>`).join('')}</div>
@@ -1910,7 +1965,7 @@ function myQuestions(){const qs=S.prem.qs;if(!qs.length)return '';
 const RM={rows:[],loaded:false,p:null};
 let chatCh=null,roomCh=null,roomChId=null,lastTyping=0;
 const PRICE_MIN=99,PRICE_MAX=249,FILE_MAX=5*1024*1024,FILE_TYPES=['image/png','image/jpeg','image/webp','image/gif','application/pdf'],REPLY_H=48,PAYOUT=40;
-const blankMform=()=>({nick:'',field:'',company:'',years:'',topics:[],contact:'',price:149,bio:'',rules:false,age:false});
+const blankMform=()=>({nick:'',field:'',company:'',years:'',fac:'',topics:[],contact:'',price:149,bio:'',rules:false,age:false});
 function resetChat(){unsubscribeChat();Object.assign(S,{mApp:null,isAdmin:false,myMentor:null,adminApps:[],adminReports:[],rooms:[],msgs:{},typing:{},chat:null,chatDraft:'',chatBusy:false,fileUrls:{},adminMsgs:null,bookings:[],notes:{},availEdit:null,bk:null})}
 S.mform=blankMform();S.inboxTab='waiting';S.adminTab='pending';resetChat();
 const isUuid=s=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(String(s||''));
@@ -1918,11 +1973,11 @@ const MRULES=[['ใช้ชื่อเล่นเท่านั้น ไม
 const QUICK=[[['📄 ช่วยดูเรซูเม่','📄 Resume check'],['รบกวนช่วยดูเรซูเม่ให้หน่อยได้ไหม แนบไฟล์ไว้ให้แล้ว','Could you take a look at my resume? I’ve attached it.']],[['🎤 สัมภาษณ์ถามอะไร','🎤 Interview questions'],['ตอนสัมภาษณ์ตำแหน่งนี้ มักโดนถามอะไรบ้าง ควรเตรียมตัวยังไง','What do they usually ask in interviews for this role, and how should I prepare?']],[['💰 เงินเดือนเริ่มต้น','💰 Starting salary'],['เงินเดือนเริ่มต้นของเด็กจบใหม่สายนี้ประมาณเท่าไหร่ และขอได้แค่ไหน','What’s a typical starting salary for new grads in this field, and how much can I ask for?']]];
 const REPORT_WHY={spam:['สแปม / โฆษณา','Spam / ads'],harass:['คุกคาม / ไม่สุภาพ','Harassment / rude'],scam:['หลอกลวง / ขอเงิน','Scam / asking for money'],contact:['ขอข้อมูลติดต่อส่วนตัว','Asking for personal contacts'],other:['อื่น ๆ','Something else']};
 function mentorName(nick){nick=String(nick||'').trim();return [/^พี่/.test(nick)?nick:'พี่'+nick,nick]}
-function realMentor(r){const tp=(r.topics||[]).filter(k=>TOPICS[k]);return {id:r.id,real:true,off:!r.available,name:mentorName(r.nickname),role:[`${r.field} · ${r.years} ปี`,`${r.field} · ${r.years} yrs`],at:r.company?[r.company,r.company]:['ไม่ระบุบริษัท','Company not listed'],ava:'🧑‍💼',bg:'var(--sky)',n:0,price:r.price,top:tp.length?tp:['intern'],tags:tp.map(k=>TOPICS[k]),bio:r.bio?[r.bio,r.bio]:['รุ่นพี่จริงที่ผ่านการตรวจสอบจากทีมมาดูจ็อบ','A real mentor checked by the Maadoo Job team']}}
+function realMentor(r){const tp=(r.topics||[]).filter(k=>TOPICS[k]);return {id:r.id,real:true,off:!r.available,fac:FAC[r.faculty]?r.faculty:null,field:r.field,name:mentorName(r.nickname),role:[`${r.field} · ${r.years} ปี`,`${r.field} · ${r.years} yrs`],at:r.company?[r.company,r.company]:['ไม่ระบุบริษัท','Company not listed'],ava:'🧑‍💼',bg:'var(--sky)',n:0,price:r.price,top:tp.length?tp:['intern'],tags:tp.map(k=>TOPICS[k]),bio:r.bio?[r.bio,r.bio]:['รุ่นพี่จริงที่ผ่านการตรวจสอบจากทีมมาดูจ็อบ','A real mentor checked by the Maadoo Job team']}}
 function ensureMentor(id){let m=MENTORS.find(v=>v.id===id);if(m)return m;
  m=S.myMentor&&S.myMentor.id===id?realMentor(S.myMentor):{id,real:true,name:['รุ่นพี่','Mentor'],role:['รุ่นพี่','Mentor'],at:['',''],ava:'🧑‍💼',bg:'var(--sky)',n:0,price:0,top:['intern'],tags:[],bio:['','']};
  m.off=true;MENTORS.push(m);return m}
-function loadRealMentors(){if(!SB)return Promise.resolve();RM.p=(async()=>{try{const {data,error}=await SB.from('mentors').select('id,nickname,field,company,years,topics,price,bio,available,active').eq('active',true).order('approved_at',{ascending:false}).limit(200);if(error)throw error;
+function loadRealMentors(){if(!SB)return Promise.resolve();RM.p=(async()=>{try{const q=cols=>SB.from('mentors').select(cols).eq('active',true).order('approved_at',{ascending:false}).limit(200);let {data,error}=await q('id,nickname,field,company,years,topics,price,bio,available,active,faculty');if(error&&(error.code==='42703'||/faculty/.test(error.message||'')))({data,error}=await q('id,nickname,field,company,years,topics,price,bio,available,active'));if(error)throw error;
   RM.rows=data||[];for(let i=MENTORS.length-1;i>=0;i--)if(MENTORS[i].real)MENTORS.splice(i,1);MENTORS.unshift(...RM.rows.map(realMentor));RM.loaded=true;if(S.view==='ask')rerender()}
  catch(e){console.warn('[Maadoo Job] could not load real mentors (mentors table):',e&&(e.message||e))}})();return RM.p}
 /* contact masking (the server does the same on save; this keeps the optimistic bubble honest) */
@@ -2059,6 +2114,7 @@ function mentorInbox(){const mm=S.myMentor,me=S.user.id,rooms=S.rooms.filter(r=>
  return `<section class="sec mentor-box"><div class="sec-h"><h2>📥 ${t('โหมดรุ่นพี่','Mentor mode')}</h2><span class="chip ver">✓ ${t('รุ่นพี่จริง','Real mentor')}</span></div>
  <div class="card mb-card"><button class="fx-row mb-sw" data-mavail role="switch" aria-checked="${mm.available}"><span><b>${mm.available?t('🟢 ว่าง รับคำถาม','🟢 Available for questions'):t('⚪ ไม่ว่าง','⚪ Not available')}</b><small>${mm.available?t('น้อง ๆ เห็นการ์ดของคุณในหน้าปรึกษา','Students can see your card on the Ask page'):t('ซ่อนการ์ดไว้ชั่วคราว คำถามที่เปิดอยู่ยังตอบได้','Your card is hidden; open questions can still be answered')}</small></span><i class="tg ${mm.available?'on':''}"></i></button>
   <div class="mb-stats"><div><b>฿${fmt(closedM*PAYOUT+liveEarned())}</b><span class="muted">${t('รายได้เดือนนี้ (จำลอง)','Earned this month (simulated)')}</span></div><div><b>${stt.n<3?'✨':'★ '+stt.avg.toFixed(1)}</b><span class="muted">${stt.n<3?t('รุ่นพี่ใหม่','New mentor'):t(`คะแนน (${stt.n} รีวิว)`,`Rating (${stt.n} reviews)`)}</span></div><div><b>${avgTxt}</b><span class="muted">${t('เวลาตอบเฉลี่ย','Avg. reply time')}</span></div></div>
+  <label class="mb-fac"><b>🎓 ${t('คณะที่จบ','Faculty you graduated from')}</b>${facSelect('mbFac',mm.faculty||'',t('คณะที่จบ','Faculty you graduated from'))}</label>
   <p class="demo-note" style="margin:0">${t(`เดโม: คำถามที่ปิดแล้วข้อละ ${PAYOUT} บาท + คุยสด 80% ของราคาหลังหักส่วนลด Plus (ส่วนที่จ่ายด้วยเหรียญ แพลตฟอร์มจ่ายแทน) ยังไม่มีการจ่ายเงินจริง`,`Demo: ${PAYOUT} THB per closed question + 80% of each live call’s Plus price (the platform covers the coin part). No real payouts yet`)}</p></div>
  ${mentorBookings()}${availEditor()}
  <div class="segs" role="tablist">${Object.keys(TN).map(k=>`<button role="tab" aria-selected="${S.inboxTab===k}" class="${S.inboxTab===k?'on':''}" data-inbox="${k}">${x(TN[k])} (${tabs[k].length})${tabs[k].some(roomUnread)?'<i class="ndot"></i>':''}</button>`).join('')}</div>
@@ -2070,6 +2126,7 @@ function mentorCta(){if(!S.user||S.user.anon)return '';if(S.myMentor)return ment
   `<div class="card ma-status"><span class="pc-ic">🎓</span><div class="inv-lt"><b>${t('ใบสมัครรุ่นพี่','Mentor application')}${a.demo?` · ${t('เดโม','demo')}`:''}</b><span>${a.status==='pending'?`<span class="chip mid">⏳ ${t('รออนุมัติ','Pending review')}</span>`:a.status==='approved'?`<span class="chip ver">✓ ${t('อนุมัติแล้ว','Approved')}</span>`:`<span class="chip bad">✕ ${t('ไม่ผ่าน','Not approved')}</span>`}</span>${a.admin_note&&a.status==='rejected'?`<span class="muted">${esc(a.admin_note)}</span>`:''}</div>${a.status==='rejected'?`<button class="btn ghost sm" data-go="mentorApply">${t('สมัครใหม่','Apply again')}</button>`:''}</div>`;
  return `<section class="sec" style="display:grid;gap:10px">${card}${admin}</section>`}
 /* ---------- mentor application form ---------- */
+const facSelect=(id,v,lbl)=>`<select class="field" id="${id}" aria-label="${lbl}"><option value="">${t('— ไม่ระบุ —','— Not set —')}</option>${Object.keys(FAC).map(f=>`<option value="${f}" ${v===f?'selected':''}>${FAC[f].e} ${x(FAC[f].n)}</option>`).join('')}</select>`;
 function mentorApply(){const f=S.mform;
  if(!S.user||S.user.anon)return `<div class="card" style="max-width:520px;margin:24px auto 0;display:grid;gap:12px;justify-items:center;text-align:center"><h1 style="font-size:24px">🎓 ${t('สมัครเป็นรุ่นพี่','Become a mentor')}</h1><p class="muted">${t('ต้องเข้าสู่ระบบด้วยอีเมลก่อนสมัคร','Log in with an email to apply')}</p><button class="btn y" data-mlogin>${t('เข้าสู่ระบบ','Log in')}</button></div>`;
  if(S.myMentor)return `<div class="card" style="max-width:520px;margin:24px auto 0;display:grid;gap:12px;justify-items:center;text-align:center"><h1 style="font-size:24px">✓ ${t('คุณเป็นรุ่นพี่แล้ว','You’re already a mentor')}</h1><button class="btn y" data-go="me">${t('ไปที่กล่องข้อความรุ่นพี่','Open the mentor inbox')}</button></div>`;
@@ -2079,7 +2136,8 @@ function mentorApply(){const f=S.mform;
   <div class="ma-grid"><label><b>${t('ชื่อเล่น','Nickname')} *</b><input class="field" id="ma-nick" maxlength="30" value="${esc(f.nick)}" placeholder="${t('เช่น มิ้นท์','e.g. Mint')}" autocomplete="nickname"></label>
   <label><b>${t('สายงาน / ตำแหน่ง','Field / role')} *</b><input class="field" id="ma-field" maxlength="60" value="${esc(f.field)}" placeholder="${t('เช่น QA Officer','e.g. QA Officer')}"></label>
   <label><b>${t('บริษัท','Company')} <span class="muted">(${t('ไม่บังคับ','optional')})</span></b><input class="field" id="ma-company" maxlength="60" value="${esc(f.company)}" placeholder="${t('เว้นว่างได้','You can leave this blank')}"></label>
-  <label><b>${t('ประสบการณ์ (ปี)','Experience (years)')} *</b><input class="field" id="ma-years" type="number" inputmode="numeric" min="0" max="50" value="${esc(f.years)}" placeholder="3"></label></div>
+  <label><b>${t('ประสบการณ์ (ปี)','Experience (years)')} *</b><input class="field" id="ma-years" type="number" inputmode="numeric" min="0" max="50" value="${esc(f.years)}" placeholder="3"></label>
+  <label><b>🎓 ${t('คณะที่จบ','Faculty you graduated from')} <span class="muted">(${t('ไม่บังคับ','optional')})</span></b>${facSelect('ma-fac',f.fac,t('คณะที่จบ','Faculty you graduated from'))}<small class="muted">${t('ใช้โชว์ในแผนที่อาชีพ ถ้าคุณข้ามสายมา น้อง ๆ จะเจอคุณในหัวข้อ “รุ่นพี่ที่ข้ามสายมา”','Shown on the career map. If you crossed over, students find you under “Mentors who crossed over”')}</small></label></div>
   <div class="grid" style="gap:6px"><b>${t('หัวข้อที่ช่วยได้','Topics you can help with')} *</b><div class="opts">${Object.keys(TOPICS).map(k=>`<button type="button" class="opt sm ${f.topics.includes(k)?'on':''}" data-matopic="${k}" aria-pressed="${f.topics.includes(k)}">${x(TOPICS[k])}</button>`).join('')}</div></div>
   <label><b>${t('ลิงก์ LinkedIn หรืออีเมลบริษัท','LinkedIn link or work email')} *</b><input class="field" id="ma-contact" maxlength="200" value="${esc(f.contact)}" placeholder="linkedin.com/in/… · name@company.co.th" autocomplete="off"><small class="muted">${t('ใช้ตรวจสอบตัวตนเท่านั้น ไม่แสดงบนเว็บ','Only used to verify you, never shown on the site')}</small></label>
   <label><b>${t('ราคาคุยสด 30 นาที','Live call price, 30 min')} * <span class="ma-price" id="ma-pv">${fmt(f.price)} ${t('บาท','THB')}</span></b><input type="range" id="ma-price" min="${PRICE_MIN}" max="${PRICE_MAX}" step="10" value="${f.price}" aria-valuetext="${f.price} THB"><small class="muted">${PRICE_MIN}–${PRICE_MAX} ${t('บาท · มาดูจ็อบหัก 15% รุ่นพี่ได้ 85%','THB · Maadoo Job keeps 15%, you get 85%')}</small></label>
@@ -2091,7 +2149,7 @@ function mentorApply(){const f=S.mform;
   <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-go="me">${t('ยกเลิก','Cancel')}</button><button class="btn y" ${f.busy?'disabled':''}>${f.busy?t('กำลังส่ง…','Sending…'):t('ส่งใบสมัคร','Send application')}</button></div>
   ${SB?'':`<p class="demo-note">${t('เดโม: ยังไม่ได้เชื่อมฐานข้อมูล ใบสมัครเก็บไว้ในเครื่องนี้เท่านั้น','Demo: no database connected, the application stays on this device')}</p>`}</form></div>`}
 function readMform(){const f=S.mform,v=id=>(document.getElementById(id)||{}).value;if(!$('#mApplyForm'))return f;
- Object.assign(f,{nick:v('ma-nick')||'',field:v('ma-field')||'',company:v('ma-company')||'',years:v('ma-years')||'',contact:(v('ma-contact')||'').trim(),price:+v('ma-price')||149,bio:v('ma-bio')||'',rules:$('#ma-rules').checked,age:$('#ma-age').checked});return f}
+ Object.assign(f,{nick:v('ma-nick')||'',field:v('ma-field')||'',company:v('ma-company')||'',years:v('ma-years')||'',fac:FAC[v('ma-fac')]?v('ma-fac'):'',contact:(v('ma-contact')||'').trim(),price:+v('ma-price')||149,bio:v('ma-bio')||'',rules:$('#ma-rules').checked,age:$('#ma-age').checked});return f}
 const LI_RE=/^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/\S+$/i;
 async function sendMApply(){const f=readMform();f.err=null;const yr=+f.years;
  if(!f.nick.trim()||f.nick.trim().length>30)f.err=['ใส่ชื่อเล่น (ไม่เกิน 30 ตัว)','Add a nickname (up to 30 characters)'];
@@ -2104,7 +2162,9 @@ async function sendMApply(){const f=readMform();f.err=null;const yr=+f.years;
  else if(!f.rules||!f.age)f.err=['ติ๊กยอมรับกฎรุ่นพี่ และยืนยันว่าอายุ 18 ปีขึ้นไป','Accept the mentor rules and confirm you’re 18 or older'];
  if(f.err){render();const e=$('.ma-form .form-err');if(e)e.scrollIntoView({block:'center'});return}
  if(!sbLive()){S.mApp={status:'pending',nickname:f.nick.trim(),demo:true};S.mform=blankMform();go('me');toast(t('ส่งใบสมัครแล้ว (เดโม)','Application sent (demo)'));return}
- f.busy=true;render();try{const {data,error}=await SB.from('mentor_applications').insert({nickname:f.nick.trim(),field:f.field.trim(),company:f.company.trim()||null,years:yr,topics:f.topics,contact:f.contact,price:f.price,bio:f.bio.trim()||null,rules_ok:true,age18:true}).select('id,status,nickname,admin_note,created_at').single();if(error)throw error;
+ f.busy=true;render();try{const row={nickname:f.nick.trim(),field:f.field.trim(),company:f.company.trim()||null,years:yr,topics:f.topics,contact:f.contact,price:f.price,bio:f.bio.trim()||null,rules_ok:true,age18:true};if(f.fac)row.faculty=f.fac;
+  const ins=r=>SB.from('mentor_applications').insert(r).select('id,status,nickname,admin_note,created_at').single();let {data,error}=await ins(row);
+  if(error&&row.faculty&&(error.code==='PGRST204'||error.code==='42703'||/faculty/.test(error.message||''))){console.warn('[Maadoo Job] faculty column missing (run the SQL, section 11); sending without it');delete row.faculty;({data,error}=await ins(row))}if(error)throw error;
   S.mApp=data;S.mform=blankMform();go('me');toast(t('ส่งใบสมัครแล้ว รอทีมงานอนุมัตินะ','Application sent. We’ll review it soon'))}
  catch(e){f.busy=false;const m=String(e&&e.message||'');f.err=/one_pending|duplicate/.test(m)?['คุณมีใบสมัครที่รออนุมัติอยู่แล้ว','You already have an application waiting for review']:e&&(e.code==='PGRST205'||e.code==='42P01')?[premErr(e),premErr(e)]:['ส่งไม่สำเร็จ ลองใหม่อีกครั้ง','Couldn’t send. Please try again'];console.warn('[Maadoo Job] mentor application:',e&&e.code,m);render()}}
 /* ---------- admin ---------- */
@@ -2117,7 +2177,7 @@ function admin(){if(!S.isAdmin)return `<div class="card empty" style="margin-top
  <div class="segs">${Object.keys(TN).map(k=>`<button class="${S.adminTab===k?'on':''}" data-admtab="${k}">${x(TN[k])} (${tabs[k].length})</button>`).join('')}<button data-admreload aria-label="${t('โหลดใหม่','Reload')}">🔄</button></div>
  <div class="grid" style="gap:12px;margin-top:12px">${!L.length?`<p class="muted">${t('ยังไม่มีรายการ','Nothing here yet')}</p>`:S.adminTab==='reports'?L.map(r=>`<div class="card adm-card"><div class="row" style="gap:8px"><b>⚑ ${x(REPORT_WHY[r.reason]||['',''])}</b><span class="muted" style="margin-left:auto">${fmtDate(Date.parse(r.created_at))}</span></div>${r.note?`<p style="margin:0">${esc(r.note)}</p>`:''}<span class="muted" style="font-size:12px;overflow-wrap:anywhere">${t('ห้อง','Room')} ${esc(r.room_id)}</span><button class="btn ghost sm" data-admmsgs="${esc(r.room_id)}" style="justify-self:start">${t('อ่านข้อความในห้อง','Read the chat')}</button></div>`).join(''):
   L.map(a=>`<div class="card adm-card"><div class="row" style="gap:8px"><b>${esc(mentorName(a.nickname)[0])}</b><span class="chip ${a.status==='pending'?'mid':a.status==='approved'?'ver':'bad'}">${a.status==='pending'?t('รออนุมัติ','Pending'):a.status==='approved'?t('อนุมัติแล้ว','Approved'):t('ไม่ผ่าน','Rejected')}</span><span class="muted" style="margin-left:auto">${fmtDate(Date.parse(a.created_at))}</span></div>
-  <div class="muted">${esc(a.field)} · ${a.years} ${t('ปี','yrs')}${a.company?` · ${esc(a.company)}`:''} · ${fmt(a.price)} ${t('บาท/30 นาที','THB/30 min')}</div>
+  <div class="muted">${esc(a.field)} · ${a.years} ${t('ปี','yrs')}${a.company?` · ${esc(a.company)}`:''}${FAC[a.faculty]?` · 🎓 ${x(FAC[a.faculty].n)}`:''} · ${fmt(a.price)} ${t('บาท/30 นาที','THB/30 min')}</div>
   <div class="row" style="gap:6px">${(a.topics||[]).filter(k=>TOPICS[k]).map(k=>`<span class="chip">${x(TOPICS[k])}</span>`).join('')}</div>
   ${a.bio?`<p style="margin:0">“${esc(a.bio)}”</p>`:''}<div class="adm-contact">🔎 ${LI_RE.test(a.contact)?`<a href="${esc(/^https?:/i.test(a.contact)?a.contact:'https://'+a.contact)}" target="_blank" rel="noopener noreferrer">${esc(a.contact)}</a>`:esc(a.contact)}</div>
   ${a.status==='pending'?`<input class="field" id="an-${a.id}" maxlength="300" placeholder="${t('หมายเหตุถึงผู้สมัคร (ไม่บังคับ)','Note to the applicant (optional)')}"><div class="row" style="justify-content:flex-end"><button class="btn ghost sm" data-admrev="${a.id}:0">✕ ${t('ปฏิเสธ','Reject')}</button><button class="btn y sm" data-admrev="${a.id}:1">✓ ${t('อนุมัติ','Approve')}</button></div>`:a.admin_note?`<span class="muted">📝 ${esc(a.admin_note)}</span>`:''}</div>`).join('')}</div></div>`}
@@ -2146,6 +2206,9 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-chat],[dat
  if(d.admmsgs){adminMsgs(d.admmsgs);return}
  if(d.notifask!==undefined){try{Notification.requestPermission().then(p=>{toast(p==='granted'?t('เปิดแจ้งเตือนแล้ว 🔔','Notifications on 🔔'):t('ไม่ได้เปิดแจ้งเตือน','Notifications stay off'));render()})}catch(e){}return}});
 document.addEventListener('submit',e=>{if(e.target.id==='chatForm'){e.preventDefault();const i=$('#chatIn');chatSend(i?i.value:'');return}if(e.target.id==='mApplyForm'){e.preventDefault();sendMApply()}});
+document.addEventListener('change',e=>{if(e.target.id!=='mbFac'||!S.myMentor)return;const mm=S.myMentor,old=mm.faculty||null,v=FAC[e.target.value]?e.target.value:null;mm.faculty=v;
+ const sync=()=>{const m=MENTORS.find(x2=>x2.id===mm.id);if(m)m.fac=mm.faculty};sync();if(!sbLive()){toast(t('บันทึกแล้ว (เดโม)','Saved (demo)'));return}
+ SB.from('mentors').update({faculty:v}).eq('id',mm.id).then(({error})=>{if(error){mm.faculty=old;sync();render();toast(/faculty/.test(error.message||'')||error.code==='PGRST204'?t('ยังบันทึกไม่ได้ ต้องรัน SQL ส่วนที่ 11 ก่อน','Can’t save yet: run SQL section 11 first'):chatErr(error))}else toast(t('บันทึกคณะที่จบแล้ว','Faculty saved'))})});
 document.addEventListener('input',e=>{if(e.target.id==='ma-price'){const v=+e.target.value,o=$('#ma-pv');S.mform.price=v;e.target.setAttribute('aria-valuetext',v+' THB');if(o)o.textContent=`${fmt(v)} ${t('บาท','THB')}`}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.view==='chat'){const r=S.rooms.find(v=>v.id===S.chat);if(r&&roomUnread(r))markRead(r)}});
 /* ---------- real mentors, step 2: availability · booking page · live call room · session notes ---------- */
@@ -2343,42 +2406,244 @@ document.addEventListener('submit',e=>{if(e.target.id==='meetForm'){e.preventDef
  if(e.target.id==='noteForm'){e.preventDefault();const b=S.bookings.find(v=>v.id===S.liveId);if(b)bkSaveNote(b)}});
 document.addEventListener('input',e=>{if(e.target.id==='bkCoins')bkCoinsInput(e.target.value);if(e.target.id==='bkTopic'&&S.bk)S.bk.topic=e.target.value});
 /* ---------- onboarding: welcome (goal + fields) · start card · first steps · coach marks ---------- */
+/* ---------- career map (แผนที่อาชีพ): faculty → 7 worlds → groups → roles → role page ----------
+   Sample guidance data only (labelled "ข้อมูลแนะนำเบื้องต้น"). Fit levels: d = direct 🟢, b = can cross over 🟡, s = needs new skills 🟠.
+   Skills in common between a faculty (+ major) and a role are "skills you already have"; the rest are "skills to add" with a rough time. */
+const SK={lab:['งานแล็บพื้นฐาน','Basic lab work',3],micro:['เทคนิคจุลชีววิทยา','Microbiology techniques',4],chem:['เคมีวิเคราะห์','Analytical chemistry',4],gmp:['GMP / HACCP / ISO','GMP / HACCP / ISO',1],
+ stat:['สถิติ','Statistics',2],excel:['Excel ขั้นสูง','Advanced Excel',1],sql:['SQL','SQL',2],python:['Python','Python',3],viz:['Power BI / Tableau','Power BI / Tableau',1],code:['เขียนโปรแกรม','Programming',6],test:['ทดสอบซอฟต์แวร์','Software testing',2],
+ figma:['Figma / UX','Figma / UX',3],design:['ออกแบบกราฟิก','Graphic design',4],writing:['เขียนคอนเทนต์','Content writing',1],video:['ตัดต่อวิดีโอ','Video editing',2],mkt:['การตลาดดิจิทัล','Digital marketing',2],
+ sales:['การขายและเจรจา','Sales & negotiation',2],present:['การนำเสนอ','Presenting',1],english:['ภาษาอังกฤษสื่อสาร','Business English',3],service:['บริการลูกค้า','Customer service',1],acct:['บัญชีและงบการเงิน','Accounting',6],
+ finance:['วิเคราะห์การเงิน','Financial analysis',3],scm:['ซัพพลายเชน','Supply chain basics',2],research:['วิจัยและออกแบบการทดลอง','Research & experiments',4],formul:['ตั้งสูตรผลิตภัณฑ์','Product formulation',4],
+ process:['กระบวนการผลิต','Production processes',4],cad:['CAD / เขียนแบบ','CAD drafting',3],care:['ดูแลผู้ป่วย','Patient care',12],license:['ใบประกอบวิชาชีพ','Professional licence',12],teach:['เทคนิคการสอน','Teaching methods',6],
+ psych:['จิตวิทยาและการเข้าใจคน','Psychology & people skills',3],law:['กฎหมาย','Law',12],reg:['กฎระเบียบ อย. และมาตรฐาน','Regulations & standards',2],env:['สิ่งแวดล้อมและน้ำเสีย','Environment & wastewater',3],
+ safety:['ความปลอดภัยในการทำงาน (จป.)','Workplace safety (OSH)',2],game:['เกมดีไซน์','Game design',4],unity:['Unity / C#','Unity / C#',4],plan:['วางแผนและจัดการงาน','Planning & organising',1],docs:['เขียนรายงานและเอกสาร','Reports & documentation',1],
+ lang:['ภาษาที่ 3 (จีน/ญี่ปุ่น)','A third language',6],policy:['วิเคราะห์นโยบาย','Policy analysis',3],hr:['งาน HR และสรรหา','HR & recruiting',2]};
+/* faculties: emoji, name, skills the faculty usually builds, majors {id:[name, extra skills, roles that are a direct fit for this major]} */
+const FAC={
+ sci:{e:'🔬',n:['วิทยาศาสตร์','Science'],has:['lab','chem','micro','stat','research','docs'],mj:{micro:[['จุลชีววิทยา','Microbiology'],['micro'],['qcmicro']],chem:[['เคมี','Chemistry'],['chem'],['qc','formchem']],phys:[['ฟิสิกส์','Physics'],['stat','code'],[]],bio:[['ชีววิทยา','Biology'],['micro'],[]],cs:[['วิทยาการคอมพิวเตอร์','Computer science'],['code','sql','python','test'],['swe','da','qatest']],math:[['คณิตศาสตร์','Mathematics'],['stat','python'],['da']],stat:[['สถิติ','Statistics'],['stat','sql','excel'],['da','ba']],envsci:[['วิทยาศาสตร์สิ่งแวดล้อม','Environmental science'],['env'],['envoff']],biotech:[['เทคโนโลยีชีวภาพ','Biotechnology'],['micro','process'],['ferm']]}},
+ eng:{e:'⚙️',n:['วิศวกรรมศาสตร์','Engineering'],has:['process','cad','plan','excel','safety','stat'],mj:{civil:[['วิศวกรรมโยธา','Civil engineering'],['cad'],[]],mech:[['วิศวกรรมเครื่องกล','Mechanical engineering'],['cad'],['maint']],elec:[['วิศวกรรมไฟฟ้า','Electrical engineering'],[],[]],cpe:[['วิศวกรรมคอมพิวเตอร์','Computer engineering'],['code','sql','test'],['swe','qatest']],ie:[['วิศวกรรมอุตสาหการ','Industrial engineering'],['scm'],['scm']],cheme:[['วิศวกรรมเคมี','Chemical engineering'],['chem','env'],['processeng']],enve:[['วิศวกรรมสิ่งแวดล้อม','Environmental engineering'],['env'],['envoff']]}},
+ agro:{e:'🌾',n:['อุตสาหกรรมเกษตร / เกษตร','Agro-industry / Agriculture'],has:['lab','micro','gmp','formul','process','research'],mj:{foodsci:[['วิทยาศาสตร์และเทคโนโลยีการอาหาร','Food science & technology'],['docs'],['rdfood','qa']],agri:[['เกษตรศาสตร์','Agriculture'],['plan'],[]],agbio:[['เทคโนโลยีชีวภาพเกษตร','Agricultural biotechnology'],[],['ferm']],foodbiz:[['ธุรกิจอาหาร','Food business'],['mkt','sales'],['cat']]}},
+ health:{e:'🩺',n:['สหเวช / พยาบาล / สาธารณสุข','Allied health / Nursing / Public health'],has:['lab','micro','care','docs','service','license'],mj:{medtech:[['เทคนิคการแพทย์','Medical technology'],[],['medtech']],nurse:[['พยาบาลศาสตร์','Nursing'],[],['nurse']],pubhealth:[['สาธารณสุขศาสตร์','Public health'],['safety','env'],['safety']],physio:[['กายภาพบำบัด','Physical therapy'],['psych'],[]]}},
+ pharm:{e:'💊',n:['เภสัชศาสตร์','Pharmacy'],has:['chem','gmp','reg','license','lab','docs'],mj:{pharmcare:[['เภสัชกรรมบริบาล','Pharmaceutical care'],['care'],['pharmacist']],pharmsci:[['วิทยาศาสตร์เภสัชกรรม','Pharmaceutical sciences'],['formul'],['formchem']]}},
+ bus:{e:'📈',n:['บริหารธุรกิจ','Business administration'],has:['excel','mkt','present','plan','sales','scm'],mj:{mkt:[['การตลาด','Marketing'],['writing'],['mkt']],fin:[['การเงิน','Finance'],['finance'],['credit']],mgmt:[['การจัดการ','Management'],['hr'],[]],hrm:[['การจัดการทรัพยากรมนุษย์','Human resource management'],['hr','psych'],['hr']],log:[['โลจิสติกส์','Logistics'],['scm'],['scm']],ib:[['ธุรกิจระหว่างประเทศ','International business'],['english'],[]],bis:[['ระบบสารสนเทศทางธุรกิจ','Business information systems'],['sql'],['ba']]}},
+ acc:{e:'🧾',n:['บัญชี','Accounting'],has:['acct','finance','excel','docs'],mj:{acc:[['การบัญชี','Accounting'],[],[]],audit:[['การสอบบัญชี','Auditing'],['reg'],['compliance']]}},
+ econ:{e:'💹',n:['เศรษฐศาสตร์','Economics'],has:['stat','excel','finance','policy','present'],mj:{econ:[['เศรษฐศาสตร์','Economics'],[],[]],bizecon:[['เศรษฐศาสตร์ธุรกิจ','Business economics'],['sql'],['ba']]}},
+ comm:{e:'🎬',n:['นิเทศศาสตร์','Communication arts'],has:['writing','video','mkt','present','design'],mj:{ad:[['การโฆษณา','Advertising'],['sales'],['ae']],pr:[['การประชาสัมพันธ์','Public relations'],['english'],['pr']],journ:[['วารสารศาสตร์','Journalism'],['docs'],[]],film:[['ภาพยนตร์','Film'],[],[]],digital:[['สื่อดิจิทัล','Digital media'],['figma'],['graphic']]}},
+ arts:{e:'📚',n:['อักษรศาสตร์ / มนุษยศาสตร์','Arts / Humanities'],has:['english','writing','lang','present','docs'],mj:{english:[['ภาษาอังกฤษ','English'],[],[]],chinese:[['ภาษาจีน','Chinese'],[],[]],japanese:[['ภาษาญี่ปุ่น','Japanese'],[],[]],thai:[['ภาษาไทย','Thai'],[],[]],info:[['สารสนเทศศาสตร์ / บรรณารักษ์','Information science / Library'],['sql'],[]],hist:[['ประวัติศาสตร์','History'],['research'],[]]}},
+ soc:{e:'🏛️',n:['รัฐศาสตร์ / สังคมศาสตร์','Political & social sciences'],has:['policy','writing','docs','present','psych'],mj:{pol:[['รัฐศาสตร์','Political science'],[],['civil','policy']],socio:[['สังคมวิทยา','Sociology'],['research'],[]],psy:[['จิตวิทยา','Psychology'],[],['hr']],ir:[['ความสัมพันธ์ระหว่างประเทศ','International relations'],['english'],[]]}},
+ law:{e:'⚖️',n:['นิติศาสตร์','Law'],has:['law','reg','docs','writing','present'],mj:{law:[['นิติศาสตร์','Law'],[],[]]}},
+ edu:{e:'🍎',n:['ครุศาสตร์ / ศึกษาศาสตร์','Education'],has:['teach','present','psych','license','writing'],mj:{early:[['การศึกษาปฐมวัย','Early childhood'],[],[]],scied:[['วิทยาศาสตร์ศึกษา','Science education'],['lab'],[]],englished:[['ภาษาอังกฤษศึกษา','English education'],['english'],[]],edtech:[['เทคโนโลยีการศึกษา','Educational technology'],['figma','video'],['instr']],counsel:[['จิตวิทยาการแนะแนว','Guidance & counselling'],['hr'],[]]}},
+ arch:{e:'📐',n:['สถาปัตย์ / ศิลปกรรม','Architecture / Fine & applied arts'],has:['design','cad','figma','present'],mj:{arch:[['สถาปัตยกรรม','Architecture'],['plan'],[]],product:[['ออกแบบผลิตภัณฑ์','Product design'],['research'],[]],commdes:[['นิเทศศิลป์','Communication design'],['mkt'],['graphic','uxui']],fineart:[['ศิลปะ','Fine arts'],[],[]],interior:[['ออกแบบภายใน','Interior design'],[],[]]}},
+ tour:{e:'✈️',n:['การท่องเที่ยวและการโรงแรม','Tourism & hospitality'],has:['service','english','lang','safety','plan'],mj:{hotel:[['การโรงแรม','Hotel management'],[],['fo']],tourism:[['การท่องเที่ยว','Tourism'],['mkt'],[]],aviation:[['ธุรกิจการบิน','Aviation business'],[],['ground','crew']],event:[['การจัดการอีเวนต์ (MICE)','Events (MICE)'],['sales'],[]]}}};
+/* 7 worlds (the big circles), each drawn in a theme color token */
+const WORLDS=[['scih','🧪',['วิทย์และสุขภาพ','Science & health'],'--good'],['tech','💻',['ข้อมูลและเทค','Data & tech'],'--blue'],['biz','📊',['ธุรกิจและการขาย','Business & sales'],'--orange'],['crea','🎨',['ครีเอทีฟและสื่อ','Creative & media'],'--plus-c'],['serv','🛎️',['บริการและท่องเที่ยว','Service & travel'],'--mid'],['edu','🌱',['การศึกษาและพัฒนาคน','Education & people'],'--plus-b'],['gov','🏛️',['ภาครัฐและมาตรฐาน','Public sector & standards'],'--ink-2']];
+const GROUPS={lab:['scih','🔬',['แล็บและควบคุมคุณภาพ','Lab & quality control']],rnd:['scih','🧫',['วิจัยและพัฒนาผลิตภัณฑ์','R&D & product development']],care:['scih','🩺',['สุขภาพและคลินิก','Health & clinical']],plant:['scih','🏭',['โรงงานและวิศวกรรม','Plants & engineering']],
+ data:['tech','📊',['วิเคราะห์ข้อมูล','Data analysis']],dev:['tech','👩‍💻',['พัฒนาซอฟต์แวร์และเกม','Software & game development']],prod:['tech','🧩',['โปรดักต์และ UX','Product & UX']],
+ sales:['biz','🤝',['การตลาดและการขาย','Marketing & sales']],fin:['biz','💰',['การเงินและบัญชี','Finance & accounting']],ops:['biz','🚚',['ซัพพลายเชนและค้าปลีก','Supply chain & retail']],
+ content:['crea','🎥',['คอนเทนต์และประชาสัมพันธ์','Content & PR']],design:['crea','🖌️',['ออกแบบและเกม','Design & games']],
+ hotel:['serv','🏨',['โรงแรมและอาหาร','Hotels & F&B']],air:['serv','🛫',['สายการบิน','Airlines']],cx:['serv','💬',['ดูแลลูกค้า','Customer care']],
+ teach:['edu','📖',['สอนและสื่อการเรียนรู้','Teaching & learning design']],people:['edu','🧑‍🤝‍🧑',['HR และพัฒนาบุคลากร','HR & people development']],
+ reg:['gov','📜',['มาตรฐานและกฎหมาย','Standards & law']],envs:['gov','🌿',['สิ่งแวดล้อมและความปลอดภัย','Environment & safety']],pub:['gov','🏢',['ราชการและนโยบาย','Government & policy']]};
+/* roles: group, name, skills used, salary-row names in CO (English), related job ids */
+const ROLES={
+ qc:{g:'lab',n:['นักวิเคราะห์ QC','QC Analyst'],u:['lab','chem','gmp','docs'],sal:['QC Analyst (new grad)','Lab Analyst (new grad)','QC Inspector'],jobs:['j5']},
+ qcmicro:{g:'lab',n:['นักจุลชีววิทยา QC','QC Microbiologist'],u:['micro','lab','gmp','docs'],sal:['QC Microbiologist','Microbiologist','Cosmetic QC Microbiologist','Clinical Microbiologist'],jobs:['j3','j2','j6','j10','j17']},
+ qa:{g:'lab',n:['เจ้าหน้าที่ประกันคุณภาพ (QA)','QA Officer'],u:['gmp','docs','plan','present'],sal:['QA Officer','Fresh Food QA'],jobs:['j7']},
+ rdfood:{g:'rnd',n:['นักวิจัยพัฒนาผลิตภัณฑ์อาหาร','R&D Food Scientist'],u:['research','formul','lab','present'],sal:['R&D Food Scientist'],jobs:['j8']},
+ formchem:{g:'rnd',n:['นักเคมีตั้งสูตร','Formulation Chemist'],u:['chem','formul','research','reg'],sal:['Formulation Chemist'],jobs:[]},
+ ferm:{g:'rnd',n:['เจ้าหน้าที่งานหมัก','Fermentation Technician'],u:['micro','process','lab','gmp'],sal:['Fermentation Technician'],jobs:['j4']},
+ medtech:{g:'care',n:['นักเทคนิคการแพทย์','Medical Technologist'],u:['lab','micro','license','docs'],sal:['Medical Technologist'],jobs:[]},
+ nurse:{g:'care',n:['พยาบาลวิชาชีพ','Registered Nurse'],u:['care','license','service','docs'],sal:['Registered Nurse'],jobs:[]},
+ pharmacist:{g:'care',n:['เภสัชกร','Pharmacist'],u:['license','reg','chem','gmp'],sal:['Production Pharmacist'],jobs:[]},
+ prodeng:{g:'plant',n:['วิศวกรฝ่ายผลิต','Production Engineer'],u:['process','cad','plan','excel'],sal:['Production Engineer'],jobs:[]},
+ processeng:{g:'plant',n:['วิศวกรกระบวนการ','Process Engineer'],u:['process','chem','env','excel'],sal:['Biogas Process Engineer'],jobs:['j16']},
+ validation:{g:'plant',n:['เจ้าหน้าที่ Validation','Validation Officer'],u:['gmp','docs','stat','process'],sal:['Validation Officer'],jobs:[]},
+ maint:{g:'plant',n:['ช่างซ่อมบำรุงอากาศยาน','Aircraft Maintenance Technician'],u:['process','license','safety','english'],sal:['Aircraft Maintenance Technician'],jobs:[]},
+ da:{g:'data',n:['นักวิเคราะห์ข้อมูล','Data Analyst'],u:['sql','python','viz','stat'],sal:['Data Analyst'],jobs:['j1']},
+ ba:{g:'data',n:['นักวิเคราะห์ธุรกิจ','Business Analyst'],u:['excel','sql','present','plan'],sal:['Business Analyst'],jobs:[]},
+ swe:{g:'dev',n:['นักพัฒนาซอฟต์แวร์','Software Engineer'],u:['code','test','sql','english'],sal:['Software Engineer'],jobs:[]},
+ gamedev:{g:'dev',n:['นักพัฒนาเกม','Game Developer'],u:['unity','code','game','test'],sal:['Unity Developer'],jobs:[]},
+ qatest:{g:'dev',n:['นักทดสอบซอฟต์แวร์','QA Tester'],u:['test','docs','english'],sal:['QA Tester'],jobs:['j15']},
+ uxui:{g:'prod',n:['นักออกแบบ UX/UI','Product Designer (UX/UI)'],u:['figma','research','present','design'],sal:['Product Designer'],jobs:[]},
+ pm:{g:'prod',n:['ผู้จัดการผลิตภัณฑ์','Product Manager'],u:['plan','research','present','figma'],sal:['Product Manager'],jobs:[]},
+ mkt:{g:'sales',n:['เจ้าหน้าที่การตลาด','Marketing Executive'],u:['mkt','writing','excel','present'],sal:['Marketing Executive'],jobs:[]},
+ sales:{g:'sales',n:['เจ้าหน้าที่ฝ่ายขาย','Sales Executive'],u:['sales','present','service','english'],sal:['Sales Executive','Relationship Manager'],jobs:[]},
+ ae:{g:'sales',n:['Account Executive (เอเจนซี่)','Account Executive'],u:['sales','present','plan','mkt'],sal:['Account Executive'],jobs:[]},
+ credit:{g:'fin',n:['นักวิเคราะห์สินเชื่อ','Credit Analyst'],u:['finance','excel','acct','docs'],sal:['Credit Analyst'],jobs:[]},
+ mt:{g:'fin',n:['Management Trainee','Management Trainee'],u:['present','plan','excel','english'],sal:['Management Trainee'],jobs:['j9']},
+ acct:{g:'fin',n:['นักบัญชี','Accountant'],u:['acct','excel','docs','finance'],sal:['Accountant'],jobs:[]},
+ scm:{g:'ops',n:['นักวิเคราะห์ซัพพลายเชน','Supply Chain Analyst'],u:['scm','excel','plan','sql'],sal:['Supply Chain Analyst','Transport Planner','Warehouse Supervisor'],jobs:['j11']},
+ cat:{g:'ops',n:['นักวิเคราะห์หมวดสินค้า','Category Analyst'],u:['excel','mkt','scm','present'],sal:['Category Analyst'],jobs:[]},
+ storemgr:{g:'ops',n:['ผู้จัดการสาขา','Store Manager'],u:['service','plan','sales','hr'],sal:['Store Manager'],jobs:[]},
+ content:{g:'content',n:['คอนเทนต์ครีเอเตอร์','Content Creator'],u:['writing','video','mkt','present'],sal:['Content Creator'],jobs:['j14']},
+ pr:{g:'content',n:['เจ้าหน้าที่ประชาสัมพันธ์','PR Executive'],u:['writing','present','english','mkt'],sal:['PR Executive'],jobs:[]},
+ graphic:{g:'design',n:['กราฟิกดีไซเนอร์','Graphic Designer'],u:['design','mkt','present'],sal:['Graphic Designer'],jobs:[]},
+ gamedesign:{g:'design',n:['เกมดีไซเนอร์','Game Designer'],u:['game','design','writing','present'],sal:['Game Designer'],jobs:[]},
+ fo:{g:'hotel',n:['พนักงานต้อนรับส่วนหน้า','Front Office / Guest Service'],u:['service','english','lang','docs'],sal:['Front Office Agent','Guest Service Agent'],jobs:[]},
+ hyg:{g:'hotel',n:['เจ้าหน้าที่สุขาภิบาลอาหาร','F&B Hygiene Officer'],u:['gmp','micro','docs','service'],sal:['F&B Hygiene Officer'],jobs:['j12']},
+ ground:{g:'air',n:['พนักงานภาคพื้น','Ground Staff'],u:['service','english','lang','safety'],sal:['Ground Staff (new grad)'],jobs:['j18']},
+ crew:{g:'air',n:['พนักงานต้อนรับบนเครื่องบิน','Cabin Crew'],u:['service','english','safety','lang'],sal:['Cabin Crew'],jobs:[]},
+ cs:{g:'cx',n:['Customer Success','Customer Success'],u:['service','english','excel','writing'],sal:['Customer Success'],jobs:[]},
+ teacher:{g:'teach',n:['ครู / ติวเตอร์','Teacher / Tutor'],u:['teach','license','present','psych'],sal:[],jobs:[]},
+ instr:{g:'teach',n:['นักออกแบบสื่อการเรียนรู้','Instructional Designer'],u:['teach','writing','design','present'],sal:[],jobs:[]},
+ hr:{g:'people',n:['เจ้าหน้าที่ HR / สรรหา','HR Officer / Recruiter'],u:['hr','psych','docs','english'],sal:['HR Officer'],jobs:[]},
+ ld:{g:'people',n:['เจ้าหน้าที่พัฒนาบุคลากร','Learning & Development Officer'],u:['teach','present','psych','hr'],sal:['Learning & Development Officer'],jobs:[]},
+ regaff:{g:'reg',n:['เจ้าหน้าที่ขึ้นทะเบียน อย.','Regulatory Affairs Officer'],u:['reg','docs','chem','english'],sal:['Regulatory Officer'],jobs:[]},
+ legal:{g:'reg',n:['นิติกร','Legal Officer'],u:['law','docs','english','reg'],sal:['Legal Officer'],jobs:[]},
+ compliance:{g:'reg',n:['เจ้าหน้าที่กำกับดูแล','Compliance Officer'],u:['reg','law','docs','finance'],sal:['Compliance Officer'],jobs:[]},
+ envoff:{g:'envs',n:['เจ้าหน้าที่สิ่งแวดล้อม','Environmental Officer'],u:['env','chem','docs','safety'],sal:['Environmental Officer','Environmental Scientist'],jobs:['j13']},
+ safety:{g:'envs',n:['เจ้าหน้าที่ความปลอดภัย (จป.)','Safety Officer'],u:['safety','docs','process','present'],sal:['Safety Officer'],jobs:[]},
+ civil:{g:'pub',n:['เจ้าหน้าที่รัฐ / ข้าราชการ','Government Officer'],u:['docs','policy','law','present'],sal:[],jobs:[]},
+ policy:{g:'pub',n:['นักวิเคราะห์นโยบาย','Policy Analyst'],u:['policy','stat','writing','present'],sal:[],jobs:[]}};
+/* faculty → role → fit (the mapping table). Every faculty has 8+ roles and 3+ that cross over. */
+const FIT_SRC={
+ sci:'qc:d qcmicro:d formchem:d rdfood:b ferm:b validation:b regaff:b envoff:b da:b medtech:s qatest:s uxui:s teacher:s content:s',
+ eng:'prodeng:d processeng:d maint:d validation:d safety:d envoff:b swe:b da:b scm:b ba:b mt:b pm:s gamedev:s sales:s',
+ agro:'rdfood:d qa:d qc:d ferm:d hyg:d qcmicro:b formchem:b regaff:b cat:b sales:b scm:s content:s',
+ health:'medtech:d nurse:d qcmicro:b qc:b hyg:b regaff:b sales:b cs:b safety:b da:s teacher:s',
+ pharm:'pharmacist:d regaff:d validation:d formchem:b qc:b qa:b sales:b pm:s content:s da:s',
+ bus:'mkt:d sales:d mt:d scm:d cat:d storemgr:d ba:b hr:b ae:b content:b cs:b da:s pm:s',
+ acc:'acct:d credit:d compliance:b ba:b mt:b scm:b da:s sales:s',
+ econ:'credit:d ba:d policy:d da:b mt:b scm:b cat:b compliance:b civil:b mkt:s',
+ comm:'content:d pr:d mkt:d ae:d graphic:b cs:b instr:b hr:s uxui:s gamedesign:s',
+ arts:'content:d cs:d pr:b fo:b ground:b crew:b teacher:b instr:b hr:b mkt:s uxui:s',
+ soc:'civil:d policy:d hr:d pr:b cs:b content:b compliance:b ld:b mkt:s da:s',
+ law:'legal:d compliance:d civil:d regaff:b hr:b policy:b credit:s pr:s',
+ edu:'teacher:d instr:d ld:d hr:b content:b cs:b civil:b pr:s uxui:s',
+ arch:'graphic:d uxui:d gamedesign:b content:b instr:b ae:s pm:s prodeng:s',
+ tour:'fo:d ground:d crew:d cs:d sales:b hyg:b storemgr:b mkt:b hr:s content:s'};
+const FITM={};Object.keys(FIT_SRC).forEach(f=>{FITM[f]={};FIT_SRC[f].split(' ').forEach(p=>{const [r,l]=p.split(':');FITM[f][r]=l})});
+const LVF={d:['🟢',['ตรงสาย','Direct fit'],'good'],b:['🟡',['ข้ามสายได้','Can cross over'],'mid'],s:['🟠',['ต้องเพิ่มทักษะ','Needs new skills'],'cm-s']};
+const facOk=(f,m)=>!!(FAC[f]&&(!m||FAC[f].mj[m]));
+function fitOf(r,f=S.ob.fac,m=S.ob.major){if(!FAC[f])return null;const mj=m&&FAC[f].mj[m];if(mj&&mj[2].includes(r))return 'd';return FITM[f][r]||null}
+function facSkills(f=S.ob.fac,m=S.ob.major){const F=FAC[f];if(!F)return [];const mj=m&&F.mj[m];return [...new Set(F.has.concat(mj?mj[1]:[]))]}
+function roleGap(r,f=S.ob.fac,m=S.ob.major){const R=ROLES[r],has=facSkills(f,m);return {have:R.u.filter(k=>has.includes(k)),need:R.u.filter(k=>!has.includes(k)),mo:R.u.filter(k=>!has.includes(k)).reduce((a,k)=>a+SK[k][2],0)}}
+const moTxt=n=>n<1?t('ไม่กี่สัปดาห์','a few weeks'):t(`~${n} เดือน`,`~${n} mo`);
+const facName=(f=S.ob.fac,m=S.ob.major)=>FAC[f]?x(FAC[f].n)+(m&&FAC[f].mj[m]?` · ${x(FAC[f].mj[m][0])}`:''):'';
+const fitBadge=l=>l?`<span class="chip ${LVF[l][2]}">${LVF[l][0]} ${x(LVF[l][1])}</span>`:'';
+const rolesIn=g=>Object.keys(ROLES).filter(r=>ROLES[r].g===g);
+const groupsIn=w=>Object.keys(GROUPS).filter(g=>GROUPS[g][0]===w);
+const worldRoles=w=>groupsIn(w).flatMap(rolesIn);
+function roleSal(r){const names=ROLES[r].sal,rows=CO.flatMap(c=>c.salary.filter(s=>!s[5]&&names.includes(s[0][1])).map(s=>[c,s]));if(!rows.length)return null;
+ return {lo:Math.min(...rows.map(v=>v[1][1])),mid:Math.round(rows.reduce((a,v)=>a+v[1][2]*v[1][4],0)/rows.reduce((a,v)=>a+v[1][4],0)/500)*500,hi:Math.max(...rows.map(v=>v[1][3])),n:rows.reduce((a,v)=>a+v[1][4],0)}}
+function roleCos(r){const R=ROLES[r],ids=new Set(CO.filter(c=>c.salary.some(s=>R.sal.includes(s[0][1]))).map(c=>c.id));JOBS.filter(j=>R.jobs.includes(j.id)).forEach(j=>ids.add(j.co));return CO.filter(c=>ids.has(c.id))}
+/* which role a mentor works in: samples carry `roles`; real mentors are matched from the free-text field */
+function roleOfField(s){s=String(s||'').toLowerCase();if(!s)return null;let best=null,bl=0;Object.keys(ROLES).forEach(r=>{ROLES[r].n.concat(ROLES[r].sal).forEach(n=>{const k=String(n).toLowerCase().replace(/\s*\(.*\)$/,'');if(k.length>bl&&s.includes(k)){best=r;bl=k.length}})});return best}
+const mRoles=m=>m.roles||(m.real&&m.field?[roleOfField(m.field)].filter(Boolean):[]);
+function roleMentors(r){const L=MENTORS.filter(m=>!m.off&&!(S.user&&m.id===S.user.id)&&mRoles(m).includes(r));return {cross:L.filter(m=>m.fac&&fitOf(r,m.fac,null)!=='d'),same:L.filter(m=>!m.fac||fitOf(r,m.fac,null)==='d')}}
+function worldInfo(w){const rs=worldRoles(w),f=S.ob.fac;if(!FAC[f])return {n:rs.length,tag:null};const L=rs.map(r=>fitOf(r)).filter(Boolean);return {n:L.length,tag:L.includes('d')?'d':L.length?'b':null}}
+/* ---------- career map view (jobs → 🗺️ tab) ---------- */
+S.cm={w:null,g:null,r:null,dir:0,ox:50,oy:40,more:false};
+function cmCrumbs(){const C=S.cm,L=[[t('ทั้งหมด','All'),'top']];if(C.w)L.push([x(WORLDS.find(v=>v[0]===C.w)[2]),'w']);if(C.g)L.push([x(GROUPS[C.g][2]),'g']);if(C.r)L.push([x(ROLES[C.r].n),'r']);
+ return `<nav class="cm-crumbs" aria-label="${t('ตำแหน่งในแผนที่','Where you are on the map')}">${L.map((v,i)=>i===L.length-1?`<b aria-current="page">${esc(v[0])}</b>`:`<button class="link" data-cmup="${v[1]}">${esc(v[0])}</button><span aria-hidden="true">›</span>`).join('')}</nav>`}
+function cmFacBar(){const f=S.ob.fac;return `<div class="cm-fac">${FAC[f]?`<span class="cm-fe" aria-hidden="true">${FAC[f].e}</span><span class="cm-ft"><small>${t('คณะของคุณ','Your faculty')}</small><b>${esc(facName())}</b></span><button class="btn ghost sm" data-cmfac>${t('เปลี่ยน','Change')}</button>`:
+ `<span class="cm-fe" aria-hidden="true">🎓</span><span class="cm-ft"><small>${t('ยังไม่ได้เลือกคณะ','No faculty picked yet')}</small><b>${t('เลือกคณะ แล้วดูว่าไปทางไหนได้บ้าง','Pick your faculty to see where it can take you')}</b></span><button class="btn orange sm" data-cmfac>${t('เลือกคณะ','Pick faculty')}</button>`}</div>`}
+function careerMap(){const C=S.cm;if(C.r&&!ROLES[C.r])C.r=null;if(C.g&&!GROUPS[C.g])C.g=null;
+ const body=C.r?cmRole(C.r):C.g?cmGroup(C.g):C.w?cmWorld(C.w):cmWorlds();
+ const anim=C.dir?` cm-anim ${C.dir>0?'cm-in':'cm-out'}`:'';C.dir=0;
+ return `<div class="cm"><div class="cm-head"><h1>🗺️ ${t('แผนที่อาชีพ','Career map')}</h1><span class="chip">💡 ${t('ข้อมูลแนะนำเบื้องต้น','Starter guidance')}</span></div>
+ ${C.r?'':cmFacBar()}${C.w||C.r?cmCrumbs():''}<div class="cm-body${anim}" style="--ox:${C.ox}%;--oy:${C.oy}%">${body}</div>
+ <p class="muted cm-note">${t('ข้อมูลตัวอย่างเพื่อเป็นแนวทาง ความเข้ากันและเวลาที่ใช้ขึ้นกับแต่ละคน ลองถามรุ่นพี่ในสายนั้นก่อนตัดสินใจ','Sample guidance only. Fit and learning time vary by person, so ask a mentor in that field before you decide')}</p></div>`}
+const CM_POS=[[50,50],[76,50],[24,50],[63,17],[37,17],[63,83],[37,83]];
+function cmWorlds(){const f=FAC[S.ob.fac],info=WORLDS.map(w=>[w,worldInfo(w[0])]),max=Math.max(...info.map(v=>v[1].n),1),order=info.slice().sort((a,b)=>b[1].n-a[1].n);
+ const fol=(S.ob.roles||[]).filter(r=>ROLES[r]);
+ return `<p class="muted cm-lead">${f?t('วงยิ่งใหญ่ = ตำแหน่งที่คณะคุณเข้าได้ยิ่งเยอะ แตะวงเพื่อซูมเข้าไปดู','Bigger circle = more roles your faculty can reach. Tap a circle to zoom in'):t('7 โลกของงาน แตะวงเพื่อซูมเข้าไปดูกลุ่มงานและตำแหน่ง','7 worlds of work. Tap a circle to zoom into its job groups and roles')}</p>
+ <div class="cm-cloud" role="list">${order.map(([w,v],i)=>{const d=v.n?150+80*v.n/max:145,p=CM_POS[i];return `<button role="listitem" class="cm-w${v.n?'':' dim'}" data-cmw="${w[0]}" style="--x:${p[0]}%;--y:${p[1]}%;--d:${d/10}%;--tone:var(${w[3]});--k:${(.72+.28*v.n/max).toFixed(2)}" aria-label="${esc(x(w[2]))}: ${v.n} ${t('ตำแหน่ง','roles')}${v.tag?' · '+x(v.tag==='d'?['ตรงสาย','Direct fit']:['ข้ามสายได้','Can cross over']):''}">
+  <span class="cm-dot"><span class="cm-e" aria-hidden="true">${w[1]}</span><b class="num">${v.n}</b></span><span class="cm-wn">${x(w[2])}</span>${f?(v.tag?`<span class="chip ${v.tag==='d'?'good':'mid'}">${v.tag==='d'?t('ตรงสาย','Direct fit'):t('ข้ามสายได้ 🌉','Cross over 🌉')}</span>`:`<span class="chip">${t('ยังไม่มีข้อมูล','No data yet')}</span>`):''}</button>`}).join('')}</div>
+ ${fol.length?`<div class="cm-fol"><b>📌 ${t('ตำแหน่งที่ติดตาม','Roles you follow')}</b><div class="opts">${fol.map(r=>`<button class="opt sm cm-opt" data-cmr="${r}">${x(ROLES[r].n)}</button>`).join('')}</div></div>`:''}`}
+function lvCount(rs){const c={d:0,b:0,s:0};rs.forEach(r=>{const l=fitOf(r);if(l)c[l]++});return c}
+function cmWorld(w){const W=WORLDS.find(v=>v[0]===w),f=FAC[S.ob.fac];
+ return `<div class="cm-title" style="--tone:var(${W[3]})"><span class="cm-dot sm"><span class="cm-e" aria-hidden="true">${W[1]}</span></span><h2>${x(W[2])}</h2></div>
+ <div class="cm-groups">${groupsIn(w).map(g=>{const rs=rolesIn(g),c=lvCount(rs),n=c.d+c.b+c.s;return `<button class="cm-g" data-cmg="${g}" style="--tone:var(${W[3]})"><span class="cm-dot sm"><span class="cm-e" aria-hidden="true">${GROUPS[g][1]}</span></span><span class="cm-gt"><b>${x(GROUPS[g][2])}</b><span class="muted">${f?t(`คณะคุณเข้าได้ ${n} จาก ${rs.length} ตำแหน่ง`,`${n} of ${rs.length} roles open to you`):t(`${rs.length} ตำแหน่ง`,`${rs.length} roles`)}</span>
+  ${f&&n?`<span class="cm-lv">${['d','b','s'].filter(k=>c[k]).map(k=>`<span title="${esc(x(LVF[k][1]))}">${LVF[k][0]} ${c[k]}</span>`).join('')}</span>`:''}</span><span class="cm-go" aria-hidden="true">›</span></button>`}).join('')}</div>`}
+function cmSkills(r){const g=roleGap(r);return `<div class="cm-sk"><div><small>✅ ${t('ทักษะเดิมที่ใช้ได้','Skills you can reuse')}</small><div class="opts">${g.have.length?g.have.map(k=>`<span class="chip good">${x(SK[k])}</span>`).join(''):`<span class="chip">${t('เรียนรู้เร็ว ทำงานเป็นทีม','Fast learner, teamwork')}</span>`}</div></div>
+ <div><small>➕ ${t('ทักษะที่ต้องเพิ่ม','Skills to add')}${g.need.length?` · ${t('รวม','total')} ${moTxt(g.mo)}`:''}</small><div class="opts">${g.need.length?g.need.map(k=>`<span class="chip cm-need">${x(SK[k])} · ${moTxt(SK[k][2])}</span>`).join(''):`<span class="chip good">${t('พร้อมสมัครได้เลย','Ready to apply')}</span>`}</div></div></div>`}
+function cmGroup(g){const W=WORLDS.find(v=>v[0]===GROUPS[g][0]),f=FAC[S.ob.fac],rs=rolesIn(g),ord={d:0,b:1,s:2};
+ const mine=f?rs.filter(r=>fitOf(r)).sort((a,b)=>ord[fitOf(a)]-ord[fitOf(b)]):[],rest=rs.filter(r=>!mine.includes(r));
+ const card=r=>{const sal=roleSal(r),l=fitOf(r);return `<article class="card cm-role"><button class="cm-rh" data-cmr="${r}"><span class="cm-rt"><b>${x(ROLES[r].n)}</b>${sal?`<span class="muted">💰 ${fmt(sal.lo)}–${fmt(sal.mid)} ${t('บาท','THB')}</span>`:''}</span>${fitBadge(l)}<span class="cm-go" aria-hidden="true">›</span></button>${l?cmSkills(r):''}</article>`};
+ return `<div class="cm-title" style="--tone:var(${W[3]})"><span class="cm-dot sm"><span class="cm-e" aria-hidden="true">${GROUPS[g][1]}</span></span><h2>${x(GROUPS[g][2])}</h2></div>
+ ${f?`<div class="cm-legend">${['d','b','s'].map(k=>`<span>${LVF[k][0]} ${x(LVF[k][1])}</span>`).join('')}</div>`:''}
+ <div class="grid cm-roles">${(f?mine:rs).map(card).join('')||`<div class="card empty">${t('คณะของคุณยังไม่มีข้อมูลในกลุ่มนี้','No data for your faculty in this group yet')}</div>`}</div>
+ ${f&&rest.length?`<div class="cm-more"><button class="link" data-cmmore aria-expanded="${S.cm.more}">${S.cm.more?'▾':'▸'} ${t(`ตำแหน่งอื่นในกลุ่มนี้ (${rest.length})`,`Other roles in this group (${rest.length})`)}</button>${S.cm.more?`<div class="opts">${rest.map(r=>`<button class="opt sm cm-opt" data-cmr="${r}">${x(ROLES[r].n)}</button>`).join('')}</div>`:''}</div>`:''}`}
+function cmMentor(m,cross){const F=FAC[m.fac];return `<div class="li cm-m"><span class="ava" style="width:42px;height:42px;font-size:21px;background:${m.bg}">${m.ava}</span><div class="cm-mt"><b>${x(m.name)} ${m.real?`<span class="chip ver">✓ ${t('รุ่นพี่จริง','Real mentor')}</span>`:`<span class="chip">${t('ตัวอย่าง','Sample')}</span>`}</b>
+ <span class="muted">${F?`🎓 ${t('จบ','Studied')} ${x(F.n)}${cross?' → 🌉':''} · `:''}${x(m.role)}</span></div><div class="row cm-mb"><button class="btn ghost sm" data-askm="${m.id}">💬 ${t('ถาม','Ask')}</button><button class="btn sm" data-book="${m.id}">📅 ${t('จองคุย','Book')}</button></div></div>`}
+function cmRole(r){const R=ROLES[r],G=GROUPS[R.g],W=WORLDS.find(v=>v[0]===G[0]),l=fitOf(r),sal=roleSal(r),cos=roleCos(r),jobs=JOBS.filter(j=>R.jobs.includes(j.id)),M=roleMentors(r),fol=(S.ob.roles||[]).includes(r);
+ return `<section class="card cm-rp" style="--tone:var(${W[3]})"><div class="cm-rph"><span class="cm-dot sm"><span class="cm-e" aria-hidden="true">${G[1]}</span></span><div class="cm-rt"><small class="muted">${x(W[2])} › ${x(G[2])}</small><h2>${x(R.n)}</h2></div></div>
+ <div class="row" style="gap:8px">${l?fitBadge(l):FAC[S.ob.fac]?`<span class="chip">${t('ยังไม่มีข้อมูลสำหรับคณะคุณ','No data for your faculty yet')}</span>`:''}${FAC[S.ob.fac]?`<span class="muted">${t('สำหรับ','For')} ${esc(facName())}</span>`:`<button class="link" data-cmfac>${t('เลือกคณะเพื่อดูว่าเข้ากันแค่ไหน','Pick your faculty to see your fit')}</button>`}</div>
+ ${FAC[S.ob.fac]?cmSkills(r):''}
+ <button class="btn ${fol?'ghost':'orange'} cm-follow" data-cmfollow="${r}" aria-pressed="${fol}">${fol?`✓ ${t('ติดตามตำแหน่งนี้แล้ว','Following this role')}`:`🔔 ${t('ติดตามตำแหน่งนี้','Follow this role')}`}</button>
+ ${fol?`<small class="muted">${t('จะแจ้งเตือนที่กระดิ่งเมื่อมีงานใหม่ของตำแหน่งนี้','We’ll ring the bell when a new job for this role is posted')}</small>`:''}</section>
+ <div class="grid g2 cm-grid">
+ <section class="card cm-box"><h3>💰 ${t('เงินเดือนเริ่มต้น','Starting salary')}</h3>${sal?`<b class="cm-sal num">${fmt(sal.lo)}–${fmt(sal.mid)} <small>${t('บาท/เดือน','THB/month')}</small></b><span class="muted">${t(`สูงสุดที่เห็น ${fmt(sal.hi)} บาท · จากข้อมูลเงินเดือน ${fmt(sal.n)} รายการในเว็บ`,`Up to ${fmt(sal.hi)} THB seen · from ${fmt(sal.n)} salary reports on the site`)}</span>`:
+  `<span class="muted">${t('ยังไม่มีข้อมูลเงินเดือนตำแหน่งนี้ในเว็บ','No salary data for this role on the site yet')}</span><button class="link" data-go="write" style="justify-self:start">${t('แชร์เงินเดือนของคุณ','Share your salary')}</button>`}</section>
+ <section class="card cm-box"><h3>🏢 ${t('บริษัทที่มีตำแหน่งนี้','Companies with this role')}</h3>${cos.length?`<div class="opts">${cos.map(c=>`<button class="opt sm cm-opt cm-co" data-co="${c.id}"><span class="mark" style="background:${c.hue}">${x(c.mk)}</span>${x(c.name)}</button>`).join('')}</div>`:`<span class="muted">${t('ยังไม่มีบริษัทในเว็บที่มีตำแหน่งนี้','No company on the site lists this role yet')}</span>`}</section></div>
+ <section class="sec"><div class="sec-h"><h2>${t('งานที่ประกาศอยู่','Open jobs')} (${jobs.length})</h2></div>${jobs.length?`<div class="grid g2">${jobs.map(jobCard).join('')}</div>`:`<div class="card empty">${t('ตอนนี้ยังไม่มีประกาศ กด “ติดตามตำแหน่งนี้” แล้วเราจะแจ้งเมื่อมีงานใหม่','No posts right now. Follow this role and we’ll tell you when one comes up')}</div>`}</section>
+ <section class="sec"><div class="sec-h"><h2>🌉 ${t('รุ่นพี่ที่ข้ามสายมา','Mentors who crossed over')}</h2></div>
+ ${M.cross.length?`<div class="list">${M.cross.map(m=>cmMentor(m,true)).join('')}</div>`:`<div class="card empty">${t('ยังไม่มีรุ่นพี่ที่ข้ามสายมาในตำแหน่งนี้','No mentor has crossed over into this role yet')}</div>`}
+ ${M.same.length?`<p class="muted" style="margin:12px 0 6px">${t('รุ่นพี่ในสายนี้โดยตรง','Mentors from this field')}</p><div class="list">${M.same.map(m=>cmMentor(m,false)).join('')}</div>`:''}
+ <button class="link" data-cmswipe style="margin-top:10px">${t('ปัดหารุ่นพี่ทั้งหมด →','Swipe through all mentors →')}</button></section>`}
+function cmNav(to,e,dir){const C=S.cm;if(e){const b=e.target.closest('button'),box=$('.cm-body');if(b&&box){const a=b.getBoundingClientRect(),o=box.getBoundingClientRect();C.ox=Math.round((a.left+a.width/2-o.left)/o.width*100);C.oy=Math.round((a.top+a.height/2-o.top)/Math.max(o.height,1)*100)}}
+ Object.assign(C,to);C.dir=matchMedia('(prefers-reduced-motion: reduce)').matches?0:dir;S.jobTab='map';if(S.view!=='jobs')go('jobs');else{render();const h=$('.cm');if(h&&h.getBoundingClientRect().top<0)h.scrollIntoView({block:'start'})}}
+function openRole(r){S.cm.w=GROUPS[ROLES[r].g][0];S.cm.g=ROLES[r].g;S.cm.r=r;S.cm.dir=0;S.jobTab='map';go('jobs')}
+function openMap(){Object.assign(S.cm,{w:null,g:null,r:null,dir:0});S.jobTab='map';go('jobs')}
+function followRole(r){const L=S.ob.roles||(S.ob.roles=[]),i=L.indexOf(r);if(i>=0){L.splice(i,1);obSave();render();toast(t('เลิกติดตามตำแหน่งนี้แล้ว','Unfollowed this role'));return}
+ L.push(r);obSave();render();const n=JOBS.filter(j=>ROLES[r].jobs.includes(j.id)).length,R=ROLES[r].n;
+ toast(t('ติดตามแล้ว จะแจ้งเตือนเมื่อมีงานใหม่','Following. We’ll let you know about new jobs'));
+ pushNotif('📌',n?`${R[0]}: ตอนนี้เปิดรับอยู่ ${n} ตำแหน่ง จะแจ้งเมื่อมีงานใหม่`:`ติดตาม ${R[0]} แล้ว จะแจ้งเมื่อมีงานใหม่`,n?`${R[1]}: ${n} open now. We’ll tell you about new ones`:`Following ${R[1]}. We’ll tell you about new jobs`,['map',r])}
+/* faculty picker (used in the welcome step 3 and in the map's "change") */
+function facPicker(m){return `<div class="fp"><input class="field" id="facQ" type="search" value="${esc(m.q||'')}" placeholder="${t('ค้นหาสาขา เช่น จุลชีว เคมี คอมพิวเตอร์','Search majors, e.g. microbiology, chemistry')}" aria-label="${t('ค้นหาสาขา','Search majors')}" autocomplete="off"><div id="facRes">${facResults(m)}</div></div>`}
+function facResults(m){const q=(m.q||'').trim().toLowerCase();
+ if(q){const hits=[];Object.keys(FAC).forEach(f=>{const F=FAC[f];if(F.n.some(s=>s.toLowerCase().includes(q)))hits.push([f,null]);Object.keys(F.mj).forEach(k=>{if(F.mj[k][0].some(s=>s.toLowerCase().includes(q)))hits.push([f,k])})});
+  return hits.length?`<div class="fp-hits" role="group" aria-label="${t('ผลการค้นหา','Results')}">${hits.slice(0,14).map(([f,k])=>{const on=m.fac===f&&(m.major||null)===k;return `<button class="opt sm cm-opt ${on?'on':''}" data-fpick="${f}" data-fmaj="${k||''}" aria-pressed="${on}">${FAC[f].e} ${k?`${x(FAC[f].mj[k][0])} <span class="muted">· ${x(FAC[f].n)}</span>`:x(FAC[f].n)}</button>`}).join('')}</div>`:`<p class="muted">${t('ไม่พบสาขานี้ ลองเลือกคณะที่ใกล้เคียงด้านล่างแทน','No match. Pick the closest faculty instead')}</p>${facGrid(m)}`}
+ return facGrid(m)+(FAC[m.fac]?`<div class="fp-mj"><b>${FAC[m.fac].e} ${t('สาขา','Major')} <span class="muted">(${t('ไม่บังคับ','optional')})</span></b><div class="opts">${Object.keys(FAC[m.fac].mj).map(k=>`<button class="opt sm cm-opt ${m.major===k?'on':''}" data-fpick="${m.fac}" data-fmaj="${k}" aria-pressed="${m.major===k}">${x(FAC[m.fac].mj[k][0])}</button>`).join('')}</div></div>`:'')}
+const facGrid=m=>`<div class="fp-grid" role="group" aria-label="${t('คณะ','Faculty')}">${Object.keys(FAC).map(f=>`<button class="fp-f ${m.fac===f?'on':''}" data-fpick="${f}" data-fmaj="" aria-pressed="${m.fac===f}"><span aria-hidden="true">${FAC[f].e}</span><b>${x(FAC[f].n)}</b></button>`).join('')}</div>`;
+function facModal(m,head){return head(t('เรียนคณะ/สาขาอะไร?','What do you study?'),t('ใช้แสดงงานที่คณะคุณเข้าได้ในแผนที่อาชีพ','Used to show the roles your faculty can reach'))+facPicker(m)+
+ `<div class="row" style="justify-content:flex-end"><button class="btn ghost" data-close>${t('ยกเลิก','Cancel')}</button><button class="btn y" data-fsave ${m.fac?'':'disabled'}>${t('บันทึก','Save')}</button></div>`}
+function facSet(fac,major){S.ob.fac=FAC[fac]?fac:null;S.ob.major=S.ob.fac&&major&&FAC[fac].mj[major]?major:null;obSave();obSync()}
 const OB_GOALS=[['intern','🎓',['หาที่ฝึกงาน','Find an internship']],['first','💼',['หางานแรกหลังจบ','Find my first job']],['pt','⚡',['หางานพาร์ทไทม์','Find part-time work']],['salary','💰',['อยากรู้เงินเดือนจริง','See real salaries']],['mentor','💬',['อยากปรึกษารุ่นพี่','Talk to a mentor']],['browse','👀',['แค่มาดูเฉยๆ','Just looking around']]];
 const OB_STEPS=[['co','🏢',['ดูหน้าบริษัท 1 ที่','Open a company page'],5,'explore'],['follow','➕',['ติดตามบริษัท 1 ที่','Follow a company'],5,'explore'],['swipe','🐾',['ลองปัดหารุ่นพี่','Try swiping mentors'],5,'ask'],['review','✍️',['เขียนรีวิวแรก','Write your first review'],30,'write']];
 const OB_KEY='maadoo-onboard';
-function obLoad(){let v=null;try{v=JSON.parse(store.get(OB_KEY)||'null')}catch(e){}const o={goal:null,inds:[],at:0,steps:{},paid:{},closed:false,done:false};if(!v||typeof v!=='object')return o;
+function obLoad(){let v=null;try{v=JSON.parse(store.get(OB_KEY)||'null')}catch(e){}const o={goal:null,inds:[],fac:null,major:null,roles:[],at:0,steps:{},paid:{},closed:false,done:false};if(!v||typeof v!=='object')return o;
  if(OB_GOALS.some(g=>g[0]===v.goal))o.goal=v.goal;if(Array.isArray(v.inds))o.inds=v.inds.filter(k=>IND[k]).slice(0,12);o.at=+v.at||0;
+ if(facOk(v.fac)){o.fac=v.fac;if(facOk(v.fac,v.major))o.major=v.major||null}if(Array.isArray(v.roles))o.roles=v.roles.filter(r=>ROLES[r]).slice(0,30);
  ['steps','paid'].forEach(k=>{if(v[k]&&typeof v[k]==='object')OB_STEPS.forEach(s=>{if(v[k][s[0]])o[k][s[0]]=+v[k][s[0]]||1})});o.closed=!!v.closed;o.done=!!v.done;return o}
 S.ob=obLoad();S.tour=null;
 const obSave=()=>store.set(OB_KEY,JSON.stringify(S.ob));
 const obNewDay=()=>!!(S.ob.at&&Date.now()-S.ob.at<DAY);
 const welcomed=()=>!!store.get('maadoo-welcome');
-function openOnboard(){S.tour=null;tourRender();openModal({type:'onboard',step:1,goal:S.ob.goal,inds:S.ob.inds.slice()})}
-function onboardModal(m){const dots=`<div class="ob-dots" role="img" aria-label="${t(`ขั้นที่ ${m.step} จาก 2`,`Step ${m.step} of 2`)}"><i class="${m.step===1?'on':''}"></i><i class="${m.step===2?'on':''}"></i></div>`;
- const top=`<div class="ob-top">${m.step===2?`<button class="link" data-obback>← ${t('ย้อน','Back')}</button>`:`<span class="ob-brand"><img src="maadoo-job-round.png" width="1182" height="1231" decoding="async" alt="">${t('มาดูจ็อบ','Maadoo Job')}</span>`}${dots}<span class="ob-n">${m.step}/2</span><button class="link" data-obskip>${t('ข้าม','Skip')}</button></div>`;
+function openOnboard(){S.tour=null;tourRender();openModal({type:'onboard',step:1,goal:S.ob.goal,inds:S.ob.inds.slice(),fac:S.ob.fac,major:S.ob.major,q:''})}
+function onboardModal(m){const dots=`<div class="ob-dots" role="img" aria-label="${t(`ขั้นที่ ${m.step} จาก 3`,`Step ${m.step} of 3`)}">${[1,2,3].map(i=>`<i class="${m.step===i?'on':''}"></i>`).join('')}</div>`;
+ const top=`<div class="ob-top">${m.step>1?`<button class="link" data-obback>← ${t('ย้อน','Back')}</button>`:`<span class="ob-brand"><img src="maadoo-job-round.png" width="1182" height="1231" decoding="async" alt="">${t('มาดูจ็อบ','Maadoo Job')}</span>`}${dots}<span class="ob-n">${m.step}/3</span><button class="link" data-obskip>${t('ข้าม','Skip')}</button></div>`;
  if(m.step===1)return `<div class="ob">${top}<div class="ob-hero"><img class="ob-pup" src="${PUP()}" alt="${t('น้องมาดู','Maadoo the pup')}"><div class="ob-bubble"><b>${t('มาหาอะไรที่ Maadoo Job?','What brings you to Maadoo Job?')}</b><small>${t('เลือก 1 อย่าง น้องมาดูจะพาไปถูกที่','Pick one and Maadoo will take you to the right place')}</small></div></div>
   <div class="ob-goals" role="group" aria-label="${t('เป้าหมาย','Goal')}">${OB_GOALS.map(g=>`<button class="ob-goal ${m.goal===g[0]?'on':''}" data-obgoal="${g[0]}" aria-pressed="${m.goal===g[0]}"><span aria-hidden="true">${g[1]}</span><b>${x(g[2])}</b></button>`).join('')}</div>
   <p class="muted ob-note">${t('ไม่ต้องล็อกอิน เปลี่ยนทีหลังได้เสมอ','No login needed. You can change this any time')}</p></div>`;
  const G=OB_GOALS.find(g=>g[0]===m.goal);
+ if(m.step===3)return `<div class="ob">${top}<div class="ob-hero"><img class="ob-pup" src="${PUP()}" alt=""><div class="ob-bubble"><b>${t('เรียนคณะ/สาขาอะไร?','What do you study?')}</b><small>${t('น้องมาดูจะวาดแผนที่อาชีพให้ว่าคณะคุณไปทางไหนได้บ้าง · ข้ามได้','Maadoo will draw a career map of where your faculty can go · you can skip this')}</small></div></div>
+  ${facPicker(m)}<button class="btn orange big" data-obdone>${m.fac?t('เสร็จแล้ว ไปกันเลย','Done, let’s go'):t('ไปกันเลย','Let’s go')}</button></div>`;
  return `<div class="ob">${top}<div class="ob-hero"><img class="ob-pup" src="${PUP()}" alt=""><div class="ob-bubble"><b>${t('สนใจสายไหน?','Which fields interest you?')}</b><small>${G?`${G[1]} ${x(G[2])} · `:''}${t('เลือกได้หลายอัน','Pick as many as you like')}</small></div></div>
   <div class="ob-inds" role="group" aria-label="${t('สายงาน','Fields')}">${Object.keys(IND).map(k=>`<button class="opt ${m.inds.includes(k)?'on':''}" data-obind="${k}" aria-pressed="${m.inds.includes(k)}">${m.inds.includes(k)?'✓ ':''}${x(IND[k])}</button>`).join('')}</div>
-  <button class="btn orange big" data-obdone>${m.inds.length?t(`เสร็จแล้ว ไปกันเลย (${m.inds.length})`,`Done, let’s go (${m.inds.length})`):t('ไปกันเลย','Let’s go')}</button></div>`}
-function obFinish(goal,inds){const first=!S.ob.at;S.ob.goal=goal||S.ob.goal||null;S.ob.inds=(inds||[]).filter(k=>IND[k]);if(first)S.ob.at=Date.now();obSave();store.set('maadoo-welcome','1');
+  <button class="btn orange big" data-obnext>${m.inds.length?t(`ถัดไป (${m.inds.length})`,`Next (${m.inds.length})`):t('ถัดไป','Next')}</button></div>`}
+function obFinish(m){const first=!S.ob.at;S.ob.goal=m.goal||S.ob.goal||null;S.ob.inds=(m.inds||[]).filter(k=>IND[k]);if(facOk(m.fac)){S.ob.fac=m.fac;S.ob.major=facOk(m.fac,m.major)?m.major||null:null}if(first)S.ob.at=Date.now();obSave();store.set('maadoo-welcome','1');
  S.modal=null;renderModal();obSync();S.q='';go('home');setTimeout(maybeTour,500)}
-async function obSync(){if(!sbLive())return;try{await ensureProfile();const {error}=await SB.from('profiles').update({onboard_goal:S.ob.goal,onboard_inds:S.ob.inds}).eq('id',S.user.id);if(error)console.warn('[Maadoo Job] onboarding answers not saved (run the SQL, section 10):',error.code,error.message)}catch(e){}}
+async function obSync(){if(!sbLive())return;try{await ensureProfile();const {error}=await SB.from('profiles').update({onboard_goal:S.ob.goal,onboard_inds:S.ob.inds}).eq('id',S.user.id);if(error)console.warn('[Maadoo Job] onboarding answers not saved (run the SQL, section 10):',error.code,error.message);
+ const r=await SB.from('profiles').update({onboard_fac:S.ob.fac,onboard_major:S.ob.major}).eq('id',S.user.id);if(r.error)console.warn('[Maadoo Job] faculty not saved (run the SQL, section 11):',r.error.code,r.error.message)}catch(e){}}
 async function obAfterLogin(){obPay();if(!sbLive())return;try{const {data,error}=await SB.from('profiles').select('onboard_goal,onboard_inds').eq('id',S.user.id).maybeSingle();if(error){console.warn('[Maadoo Job] onboarding answers not loaded (run the SQL, section 10):',error.code,error.message);return}
  if(data&&data.onboard_goal&&!S.ob.goal){S.ob.goal=OB_GOALS.some(g=>g[0]===data.onboard_goal)?data.onboard_goal:null;S.ob.inds=(data.onboard_inds||[]).filter(k=>IND[k]);obSave();if(S.view==='home')render()}
- else if(S.ob.goal&&!(data&&data.onboard_goal))obSync()}catch(e){}}
+ else if(S.ob.goal&&!(data&&data.onboard_goal))obSync();
+ const f=await SB.from('profiles').select('onboard_fac,onboard_major').eq('id',S.user.id).maybeSingle();if(f.error){console.warn('[Maadoo Job] faculty not loaded (run the SQL, section 11):',f.error.code,f.error.message);return}
+ if(f.data&&facOk(f.data.onboard_fac)&&!S.ob.fac){S.ob.fac=f.data.onboard_fac;S.ob.major=facOk(f.data.onboard_fac,f.data.onboard_major)?f.data.onboard_major||null:null;obSave();if(S.view==='home'||S.view==='jobs')render()}
+ else if(S.ob.fac&&!(f.data&&f.data.onboard_fac))obSync()}catch(e){}}
 /* ---------- home: start card + first steps ---------- */
 function firstInd(pred){const hit=S.ob.inds.find(k=>JOBS.some(j=>pred(j)&&getCo(j.co).ind===k));return hit||'all'}
-const OB_CTA={intern:['ดูที่ฝึกงาน','See internships'],first:['ดูงานสำหรับเด็กจบใหม่','See jobs for new grads'],pt:['ดูงานพาร์ทไทม์ด่วน','See quick part-time jobs'],salary:['เช็กเงินเดือนจริง','Check real salaries'],mentor:['ปัดหารุ่นพี่','Swipe for mentors'],browse:['สำรวจบริษัท','Explore companies']};
+const OB_CTA={intern:['ดูที่ฝึกงาน','See internships'],first:['ดูแผนที่อาชีพของคณะคุณ','See your career map'],pt:['ดูงานพาร์ทไทม์ด่วน','See quick part-time jobs'],salary:['เช็กเงินเดือนจริง','Check real salaries'],mentor:['ปัดหารุ่นพี่','Swipe for mentors'],browse:['สำรวจบริษัท','Explore companies']};
 function startCard(){if(!welcomed())return '';const g=OB_GOALS.find(v=>v[0]===S.ob.goal);
  if(!g)return `<section class="card start-card"><img class="sc-pup" src="${PUP()}" alt=""><div class="sc-t"><small>${t('เริ่มตรงนี้เลย','Start here')}</small><b>${t('บอกน้องมาดูหน่อย มาหาอะไร?','Tell Maadoo what you’re looking for')}</b></div><button class="btn orange" data-obopen>${t('เลือกเป้าหมาย','Pick a goal')}</button></section>`;
- const inds=S.ob.inds.map(k=>x(IND[k]));
+ const inds=(g[0]==='first'&&FAC[S.ob.fac]?[facName()]:[]).concat(S.ob.inds.map(k=>x(IND[k])));
  return `<section class="card start-card"><span class="sc-ic" aria-hidden="true">${g[1]}</span><div class="sc-t"><small>${t('เริ่มตรงนี้เลย','Start here')}</small><b>${x(g[2])}</b>${inds.length?`<span class="muted">${inds.slice(0,3).join(' · ')}${inds.length>3?` +${inds.length-3}`:''}</span>`:''}</div>
  <button class="btn orange big sc-go" data-obstart>${x(OB_CTA[g[0]])} →</button><button class="link sc-change" data-obopen>${t('เปลี่ยนเป้าหมาย','Change goal')}</button></section>`}
 function obStart(){const g=S.ob.goal;
- if(g==='intern'||g==='first'){const type=g==='intern'?'intern':'full',ind=firstInd(j=>j.type===type);S.jobTab='full';S.jobF={type,ind,min:0};go('jobs');if(S.ob.inds.length&&ind==='all')toast(t('ยังไม่มีประกาศในสายที่เลือก แสดงทั้งหมดแทน','No posts in your fields yet, showing everything'));return}
+ if(g==='first'){openMap();return}
+ if(g==='intern'){const type='intern',ind=firstInd(j=>j.type===type);S.jobTab='full';S.jobF={type,ind,min:0};go('jobs');if(S.ob.inds.length&&ind==='all')toast(t('ยังไม่มีประกาศในสายที่เลือก แสดงทั้งหมดแทน','No posts in your fields yet, showing everything'));return}
  if(g==='pt'){S.jobTab='pt';go('jobs');return}
  if(g==='mentor'){S.askTab='swipe';go('ask');return}
  if(g==='browse'){const keys=Object.keys(IND),k=S.ob.inds.find(v=>CO.some(c=>c.ind===v));S.filter=k?keys.indexOf(k):-1;go('explore');return}
@@ -2423,7 +2688,7 @@ function tourNext(){if(!S.tour)return;S.tour.i++;tourStep()}
 addEventListener('resize',()=>{if(S.tour)tourRender()});addEventListener('scroll',()=>{if(S.tour)tourRender()},{passive:true});
 document.addEventListener('keydown',e=>{if(S.tour&&e.key==='Escape'){e.preventDefault();tourEnd(true)}});
 /* ---------- events ---------- */
-document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obopen],[data-obstart],[data-obclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
+document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[data-obind],[data-obback],[data-obskip],[data-obdone],[data-obnext],[data-fpick],[data-obopen],[data-obstart],[data-obclose],[data-tournext],[data-tourskip],[data-tourreplay]');if(!el)return;const d=el.dataset,m=S.modal;
  if(d.tournext!==undefined){e.preventDefault();e.stopPropagation();tourNext();return}
  if(d.tourskip!==undefined){e.preventDefault();e.stopPropagation();tourEnd(true);return}
  if(d.tourreplay!==undefined){setSeen({});S.themeOpen=false;renderThemePop();S.q='';go('home');maybeTour();return}
@@ -2433,9 +2698,24 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[
  if(!m||m.type!=='onboard')return;
  if(d.obgoal){m.goal=d.obgoal;m.step=2;renderModal();const f=document.querySelector('.ob [data-obind]');if(f)f.focus({preventScroll:true});return}
  if(d.obind){const i=m.inds.indexOf(d.obind);if(i>=0)m.inds.splice(i,1);else m.inds.push(d.obind);renderModal();return}
- if(d.obback!==undefined){m.step=1;renderModal();return}
- if(d.obskip!==undefined){if(m.step===1){m.step=2;renderModal()}else obFinish(m.goal,m.inds);return}
- if(d.obdone!==undefined){obFinish(m.goal,m.inds);return}},true);
+ if(d.fpick){m.fac=d.fpick;m.major=d.fmaj||null;if(d.fmaj)m.q='';renderModal();return}
+ if(d.obback!==undefined){m.step--;renderModal();return}
+ if(d.obnext!==undefined){m.step=3;renderModal();return}
+ if(d.obskip!==undefined){if(m.step<3){m.step++;renderModal()}else obFinish(m);return}
+ if(d.obdone!==undefined){obFinish(m);return}},true);
+/* career map events */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-cmw],[data-cmg],[data-cmr],[data-cmup],[data-cmfac],[data-cmmore],[data-cmfollow],[data-cmswipe],[data-cmopen],[data-fsave]');if(!el){const f=e.target.closest('[data-fpick]');if(f&&S.modal&&S.modal.type==='fac'){S.modal.fac=f.dataset.fpick;S.modal.major=f.dataset.fmaj||null;if(f.dataset.fmaj)S.modal.q='';renderModal()}return}const d=el.dataset;
+ if(d.cmopen!==undefined){openMap();return}
+ if(d.cmw){S.cm.more=false;cmNav({w:d.cmw,g:null,r:null},e,1);return}
+ if(d.cmg){S.cm.more=false;cmNav({g:d.cmg,r:null},e,1);return}
+ if(d.cmr){const g=ROLES[d.cmr].g;cmNav({w:GROUPS[g][0],g,r:d.cmr},e,1);return}
+ if(d.cmup){const u=d.cmup;cmNav(u==='top'?{w:null,g:null,r:null}:u==='w'?{g:null,r:null}:{r:null},null,-1);return}
+ if(d.cmmore!==undefined){S.cm.more=!S.cm.more;render();return}
+ if(d.cmfollow){followRole(d.cmfollow);return}
+ if(d.cmswipe!==undefined){S.askTab='swipe';go('ask');return}
+ if(d.cmfac!==undefined){openModal({type:'fac',fac:S.ob.fac,major:S.ob.major,q:''});return}
+ if(d.fsave!==undefined){const m=S.modal;if(!m||!m.fac)return;facSet(m.fac,m.major);S.modal=null;renderModal();render();toast(t(`บันทึกแล้ว: ${facName()}`,`Saved: ${facName()}`));return}});
+document.addEventListener('input',e=>{if(e.target.id!=='facQ'||!S.modal||!['fac','onboard'].includes(S.modal.type))return;S.modal.q=e.target.value;const r=$('#facRes');if(r)r.innerHTML=facResults(S.modal)});
 /* ---------- interview review (for the weekly mission) ---------- */
 function ivModal(m,head){const c=getCo(m.co);return head(t('รีวิวการสัมภาษณ์','Review your interview'),x(c.name))+
  `<b style="font-size:14px">${t('ความยาก','Difficulty')}</b><div class="opts">${Object.keys(DIFF).map(k=>`<button type="button" class="opt ${m.diff===k?'on':''}" data-ivdiff="${k}">${x(DIFF[k])}</button>`).join('')}</div>
@@ -2660,7 +2940,7 @@ function rules(){return `<div class="rules" style="margin-top:8px"><h1 style="fo
 
 /* ---------- modals & notifications ---------- */
 function openModal(m){S.modal=m;renderModal()}
-function closeModal(){const m=S.modal;if(m&&m.type==='onboard'){obFinish(m.goal,m.inds);return}S.modal=null;renderModal()}
+function closeModal(){const m=S.modal;if(m&&m.type==='onboard'){obFinish(m);return}S.modal=null;renderModal()}
 function needLogin(fn){if(S.user){fn();return}S.after=fn;openModal({type:'login'})}
 function pushNotif(ic,th,en,go){NOTIFS.unshift({ic,t:[th,en],w:['เมื่อสักครู่','Just now'],go,read:false});renderBell()}
 function addPoints(n){if(S.user)S.user.points+=n}
@@ -2695,12 +2975,13 @@ function renderModal(){const m=S.modal;const el=$('#modal');if(!m){el.innerHTML=
  if(m.type==='match'){const mt=MENTORS.find(v=>v.id===m.id);const ini=S.user?esc(S.user.name.slice(0,1).toUpperCase()):'🙂';
   body=`<div class="match"><button class="x" data-close aria-label="${t('ปิด','Close')}" style="justify-self:end">×</button><div class="match-t">${t('แมตช์แล้ว!','It’s a match!')}</div><div class="match-av"><span class="me-ava">${ini}</span><span class="me-ava" style="background:${mt.bg};font-size:38px">${mt.ava}</span></div><p>${t(`${x(mt.name)}พร้อมให้คำปรึกษาคุณแล้ว 🎉`,`${x(mt.name)} is ready to chat with you 🎉`)}</p><button class="btn y" data-book="${mt.id}">${t('จองเวลาคุยเลย','Book a session')}</button><button class="link" data-close>${t('ปัดต่อ','Keep swiping')}</button></div>`}
  if(m.type==='onboard')body=onboardModal(m);
+ if(m.type==='fac')body=facModal(m,head);
  if(m.type==='emp'){const e=EMP[m.tier],pay=m.tier==='Pro'?proPrice():0;body=`${head(t(`แพ็กเกจ ${m.tier}`,`${m.tier} plan`),m.tier==='Enterprise'?t('ทีมมาดูจ็อบจะติดต่อกลับภายใน 1 วันทำการ','The Maadoo Job team will get back to you within 1 business day'):m.tier==='Pro'?t(`${fmt(pay)} บาท/เดือน${pay<3900?' · 3 เดือนแรก':''}`,`${fmt(pay)} THB/month${pay<3900?' · first 3 months':''}`):t('ฟรีตลอด','Free forever'))}
   <form id="empForm" class="grid"><input class="field" id="ecn" maxlength="120" placeholder="${t('ชื่อบริษัท','Company name')}" required><input class="field" id="eem" type="email" placeholder="${t('อีเมลที่ทำงาน','Work email')}" required>${m.tier==='Enterprise'?`<input class="field" id="eph" placeholder="${t('เบอร์โทร (ไม่บังคับ)','Phone (optional)')}">`:''}
   <button class="btn ${m.tier==='Pro'?'orange':''}">${m.tier==='Pro'?t('ไปหน้าชำระเงิน (จำลอง)','Continue to checkout (simulated)'):m.tier==='Starter'?t('เริ่มใช้ฟรี','Start free'):t('ส่งข้อมูล','Send')}</button></form>
   <p class="demo-note">${t('เดโม: ไม่มีการตัดเงินจริง','Demo: no money is taken')}</p>`}
  const fresh=el._m!==m;el._m=m;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview','qchat','qnew','creport','amsgs'].includes(m.type)?'sheet-m':''} ${m.type==='onboard'?'ob-bg':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''} ${m.type==='onboard'?'ob-m':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}if(m.type==='qchat'){const cb=$('#chatBox');if(cb)cb.scrollTop=cb.scrollHeight;const qi=$('#qmsg');if(qi&&matchMedia('(hover:hover)').matches)qi.focus({preventScroll:true});return}
- const f=el.querySelector('input');if(f)f.focus();
+ const f=el.querySelector('input');if(f&&!['onboard','fac'].includes(m.type))f.focus();
 }
 function renderBell(){const n=NOTIFS.filter(v=>!v.read).length;
  $('#bellBtn').innerHTML=`<svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>${n?`<span class="dot">${n}</span>`:''}`;
@@ -2749,10 +3030,10 @@ document.addEventListener('click',e=>{
  if(!b)return;const d=b.dataset;
  if(b.id==='bellBtn'){S.notifOpen=!S.notifOpen;S.themeOpen=false;renderThemePop();renderBell();return}
  if(d.readall!==undefined){NOTIFS.forEach(v=>v.read=true);renderBell();return}
- if(d.ni!==undefined){const v=NOTIFS[+d.ni];v.read=true;S.notifOpen=false;if(v.go[0]==='company')go('company',{co:v.go[1],tab:'overview'});else if(v.go[0]==='chat'){S.chatDraft='';go('chat',{chat:v.go[1]})}else if(v.go[0]==='live'){go('live',{liveId:v.go[1]})}else go(v.go[0]);return}
+ if(d.ni!==undefined){const v=NOTIFS[+d.ni];v.read=true;S.notifOpen=false;if(v.go[0]==='company')go('company',{co:v.go[1],tab:'overview'});else if(v.go[0]==='chat'){S.chatDraft='';go('chat',{chat:v.go[1]})}else if(v.go[0]==='live'){go('live',{liveId:v.go[1]})}else if(v.go[0]==='map'){openRole(v.go[1])}else go(v.go[0]);return}
  if(d.close!==undefined){closeModal();return}
  if(d.gopt!==undefined){S.jobTab='pt';go('jobs');return}
- if(d.jtab){S.jobTab=d.jtab;render();return}
+ if(d.jtab){if(d.jtab==='map'&&S.jobTab!=='map')Object.assign(S.cm,{w:null,g:null,r:null,dir:0});S.jobTab=d.jtab;render();return}
  if(d.pt){openModal({type:'pt',id:d.pt});return}
  if(d.ptday){S.ptDay=d.ptday;render();return}
  if(d.ptpost!==undefined){openModal({type:'ptpost'});return}
