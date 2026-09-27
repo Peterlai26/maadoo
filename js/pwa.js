@@ -62,9 +62,14 @@ function pwaInit(){try{if(!sessionStorage.getItem('maadoo-pwa-s')){sessionStorag
  let reloading=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloading||!S.pwa.asked)return;reloading=true;location.reload()});
  navigator.serviceWorker.register('/sw.js').then(reg=>{
   const waiting=w=>{if(w&&navigator.serviceWorker.controller){S.pwa.update=w;pwaBars()}};
-  waiting(reg.waiting);
-  reg.addEventListener('updatefound',()=>{const w=reg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed')waiting(w)})});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update().catch(()=>{})});
+  /* a new worker may already be installing when this runs (the browser checks sw.js on launch, and "updatefound" has fired by then):
+     follow it too, otherwise the installed app never shows the bar */
+  const track=w=>{if(!w)return;if(w.state==='installed'){waiting(w);return}w.addEventListener('statechange',()=>{if(w.state==='installed')waiting(w)})};
+  waiting(reg.waiting);track(reg.installing);
+  reg.addEventListener('updatefound',()=>track(reg.installing));
+  /* installed apps resume instead of reloading: look for a new version on resume, on focus and every 30 minutes while open */
+  const check=()=>{if(document.visibilityState==='visible'&&!S.pwa.update&&Date.now()-(check.at||0)>15000){check.at=Date.now();reg.update().catch(()=>{})}};
+  document.addEventListener('visibilitychange',check);addEventListener('focus',check);addEventListener('pageshow',check);addEventListener('online',check);setInterval(check,30*60000);
  }).catch(e=>console.warn('[Maadoo Job] service worker not registered:',e&&e.message))}
 
 /* Chrome only fires this when the app is NOT installed, so it also clears a stale "installed" (the app was removed) */
