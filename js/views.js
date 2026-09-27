@@ -24,7 +24,7 @@ function forYou(){const inds=S.ob.inds||[],tab=fyTab();let body='',all='';
  if(tab==='intern'){body=`<div class="grid g3 fy-list">${fyPick(JOBS.filter(j=>j.type==='intern').sort((a,b)=>(b.spon-a.spon)||(a.days-b.days)),j=>inds.includes(getCo(j.co).ind)).map(jobRow).join('')}</div>`;all='data-fyall="intern"'}
  if(tab==='pt'){body=`<div class="grid g3 fy-list">${ptSorted(PT).filter(p=>p.filled<p.need).slice(0,3).map(ptRow).join('')}</div>`;all='data-gopt'}
  return `<section class="sec"><div class="sec-h"><h2>${t('สำหรับคุณ','For you')}</h2><button class="link" ${all}>${t('ดูทั้งหมด','See all')}</button></div>
- <div class="segs fy-segs" role="tablist">${[['co',t('🏢 บริษัท','🏢 Companies')],['intern',t('🎓 ฝึกงาน','🎓 Internships')],['pt',t('⚡ งานด่วน','⚡ Part-time')]].map(([k,n])=>`<button role="tab" class="${tab===k?'on':''}" aria-selected="${tab===k}" data-htab="${k}">${n}</button>`).join('')}</div>
+ <div class="segs fy-segs" role="tablist">${[['co','🏢',t('บริษัท','Companies')],['intern','🎓',t('ฝึกงาน','Internships')],['pt','⚡',t('งานด่วน','Part-time')]].map(([k,i,n])=>`<button role="tab" class="${tab===k?'on':''}" aria-selected="${tab===k}" data-htab="${k}"><span class="fy-i" aria-hidden="true">${i}</span><span class="fy-l">${n}</span></button>`).join('')}</div>
  ${body}</section>`}
 function explore(){
  const keys=Object.keys(IND);

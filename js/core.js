@@ -43,10 +43,12 @@ function applyPrefs(){
  $('#demoTag').textContent=t('เดโม · ข้อมูลตัวอย่าง','Demo · sample data');
 }
 function nav(){
- const act=S.view==='company'?'jobs':['chat','book'].includes(S.view)?'ask':['live','quiz'].includes(S.view)?'me':S.view;
+ const act=S.view==='company'?'jobs':['chat','book'].includes(S.view)?'ask':['live','quiz','profile'].includes(S.view)?'me':S.view;
+ /* "Me" shows my profile photo once I've set one (top nav in the header on desktop, bottom nav on phones) */
+ const av=S.user&&typeof myAvaSrc==='function'?myAvaSrc():'',avi=c=>`<img class="${c}" src="${esc(av)}" alt="">`;
  const cu=S.user&&S.rooms?chatUnread():0,dot=id=>id==='ask'&&cu?`<i class="ndot" aria-label="${t('ข้อความใหม่','New messages')}"></i>`:'';
- $('#topnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}">${x(n.t)}${dot(n.id)}</button>`).join('');
- $('#bnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}"><svg viewBox="0 0 24 24">${n.i}</svg>${x(n.t)}${dot(n.id)}</button>`).join('');
+ $('#topnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}">${n.id==='me'&&av?avi('nav-ava'):''}${x(n.t)}${dot(n.id)}</button>`).join('');
+ $('#bnav').innerHTML=NAV.map(n=>`<button data-go="${n.id}" class="${act===n.id?'on':''}">${n.id==='me'&&av?avi('bn-ava'):`<svg viewBox="0 0 24 24">${n.i}</svg>`}<span class="bl">${x(n.t)}</span>${dot(n.id)}</button>`).join('');
 }
 function moodBar(m){return `<div class="moodbar" aria-hidden="true"><i style="flex:${m[0]};background:var(--good)"></i><i style="flex:${m[1]};background:var(--mid)"></i><i style="flex:${m[2]};background:var(--bad)"></i></div>`}
 const trendTxt=n=>t(`+${n} รีวิวเดือนนี้`,`+${n} reviews this month`);

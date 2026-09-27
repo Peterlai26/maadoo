@@ -831,7 +831,10 @@ header.top::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right
 .fs-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
 .fs-item:hover{border-color:var(--blue)}.fs-l{flex:1;min-width:0;font-size:14px}.fs-p{font-size:12.5px;white-space:nowrap}.fs-chk{width:28px;height:28px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--sky-2);font-size:14px}
 .fs-item.done{background:var(--good-bg);border-color:transparent;cursor:default}.fs-item.done .fs-chk{background:var(--good);color:var(--surface);font-weight:700}.fs-item.done .fs-l{text-decoration:line-through;color:var(--ink-2)}
-.fy-segs{margin:0 0 14px}
+.fy-segs{margin:0 0 14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+.fy-segs button{justify-content:center;min-width:0;padding:7px 6px;overflow:hidden;text-overflow:ellipsis}
+.fy-segs button .fy-i{flex:none}.fy-segs button .fy-l{min-width:0;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:400px){.fy-segs button{font-size:13px;gap:4px;padding:7px 4px}}
 .fy-row{display:flex;align-items:center;gap:12px;width:100%;min-width:0;background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:12px 14px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;transition:border-color .15s}
 .fy-row:hover{border-color:var(--blue)}.fy-row .mark{width:42px;height:42px;font-size:15px;border-radius:13px}
 .fy-t{display:grid;gap:2px;min-width:0;flex:1}.fy-t b{font-size:15px;line-height:1.35;color:var(--navy)}.fy-t .muted{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -874,10 +877,15 @@ header.top::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right
 .w-more summary{cursor:pointer;font-weight:500;color:var(--blue)}
 .sal-check{display:grid;gap:12px;max-width:620px}
 /* bottom nav: the current page's button is the raised yellow one */
-.bnav button{transition:transform .2s,background-color .2s,box-shadow .2s}
-.bnav button.on{background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:8px 14px;transform:translateY(-14px);box-shadow:0 6px 16px rgba(255,197,61,.5);font-weight:600}
+/* 5 equal columns; the yellow pill is drawn inside each button (::before) and lifts only 3px, so it never leaves the bar */
+.bnav{justify-content:stretch;gap:2px}
+.bnav button{flex:1 1 0;min-width:0;padding:6px 2px 5px;border-radius:16px;isolation:isolate;transition:transform .2s}
+.bnav button::before{content:"";position:absolute;inset:0 2px;border-radius:16px;background:var(--accent);opacity:0;z-index:-1;transition:opacity .2s,box-shadow .2s}
+.bnav button .bl{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3}
+.bnav button.on{color:var(--accent-ink);transform:translateY(-3px);font-weight:600}
+.bnav button.on::before{opacity:1;box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 45%,transparent)}
 .bnav button.on svg{stroke:var(--accent-ink)}
-@media(prefers-reduced-motion:reduce){.bnav button{transition:none}}
+@media(prefers-reduced-motion:reduce){.bnav button,.bnav button::before{transition:none}}
 /* jobs › jobs & internships: type toggle on its own row, the two dropdowns side by side, then the count */
 .filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:560px;align-items:center}
 .filters .jf-type{grid-column:1/-1;display:flex;margin:0;justify-self:start}
@@ -917,10 +925,40 @@ html.modal-open,html.modal-open body{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.pwa-arrow{animation:none}}
 /* app-like touches: no double-tap zoom on controls (pinch zoom still works), room for the notch / home bar */
 button,a,input,select,textarea,label,summary,[role="button"]{touch-action:manipulation}
+html{scroll-padding-top:calc(80px + env(safe-area-inset-top,0px))}
+@media(max-width:1020px){html{scroll-padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 header.top{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 body{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .bnav{padding-left:max(4px,env(safe-area-inset-left,0px));padding-right:max(4px,env(safe-area-inset-right,0px))}
 .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+@media(max-width:1020px){body{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}}
 /* opened as an installed app: no browser pull-to-refresh / bounce */
 @media (display-mode: standalone){html,body{overscroll-behavior-y:none}}
 .fx-row.pwa-ok{cursor:default}.fx-row.pwa-ok small{color:var(--good)}
+/* ---------- profile: photo, edit page, completeness, crop, resume ---------- */
+.ava-img{object-fit:cover;background:var(--surface);padding:0}
+.nav-ava{width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:-6px;margin-right:6px;box-shadow:0 0 0 2px var(--surface)}
+.bnav .bn-ava{width:24px;height:24px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--surface)}
+.me-head .me-ava{flex:none}.me-id{display:grid;gap:4px;min-width:0;flex:1 1 220px;justify-items:start}.me-id h1{overflow-wrap:anywhere}
+.me-bio{margin:2px 0 0;color:var(--ink-2);overflow-wrap:anywhere}.me-meta{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:13.5px}.me-meta .link{font-size:13.5px}
+.me-edit{margin-top:4px}
+.pf-card{display:grid;gap:8px}
+.pf{display:grid;gap:14px;max-width:640px;margin:0 auto}.pf .pg-t{margin-top:4px}.pf-back{justify-self:start;margin-top:14px}
+.pf-sec{display:grid;gap:14px}.pf-f{display:grid;gap:6px;min-width:0}.pf-f>b{font-size:15px;color:var(--navy)}.pf-f .opts{gap:6px}
+.pf-cnt{display:flex;justify-content:space-between;gap:10px;font-size:12.5px}
+.pf-ava-sec{grid-template-columns:auto 1fr;align-items:center}.pf-ava-acts{display:grid;gap:6px;min-width:0}
+.pf-ava{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:var(--sky);color:var(--navy);font-family:var(--display);font-size:38px;font-weight:700;border:3px solid var(--surface);box-shadow:var(--shadow)}
+.pf-up{cursor:pointer;display:inline-flex;align-items:center;gap:6px}.pf-up:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+.pf-pups{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px}
+.pf-pup{border:2px solid var(--line);background:var(--surface);border-radius:50%;padding:2px;aspect-ratio:1;cursor:pointer}.pf-pup img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.pf-pup.on{border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 30%,transparent)}
+.pf-fac{justify-content:space-between;gap:10px;flex-wrap:wrap}.pf-fac>span{min-width:0;overflow-wrap:anywhere}
+.pf-res{display:flex;align-items:center;gap:10px;background:var(--surface-2);border-radius:16px;padding:10px 12px;min-width:0}.pf-res-ic{font-size:24px}
+.pf-res-t{display:grid;min-width:0;flex:1}.pf-res-t b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pf-res-t small{font-size:12.5px}
+.pf-save{justify-content:flex-end;gap:10px}.pf-save .btn{min-width:110px}
+@media(max-width:480px){.pf-ava-sec{grid-template-columns:1fr;justify-items:center;text-align:center}.pf-ava-acts{justify-items:center}.pf-ava-acts .row{justify-content:center}.pf-save .btn{flex:1}}
+.crop-st{position:relative;width:min(256px,100%);aspect-ratio:1;margin:0 auto;border-radius:18px;overflow:hidden;background:var(--surface-2);touch-action:none}
+.crop-st canvas{width:100%;height:100%;display:block;cursor:grab}.crop-st canvas:active{cursor:grabbing}
+.crop-ring{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 999px rgba(0,0,0,.45);border:2px solid var(--surface);pointer-events:none}
+.crop-z{display:flex;align-items:center;gap:10px}.crop-z input{flex:1;min-width:0}
+.pf-att{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border-radius:16px;padding:12px;cursor:pointer}.pf-att input{margin-top:4px;width:18px;height:18px;flex:none}.pf-att span{display:grid;gap:2px;min-width:0}.pf-att small{overflow-wrap:anywhere}

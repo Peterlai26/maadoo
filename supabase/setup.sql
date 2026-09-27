@@ -1776,6 +1776,174 @@ alter table public.mentor_applications drop constraint if exists mentor_applicat
 alter table public.mentor_applications add constraint mentor_applications_contact_check
   check (char_length(contact) <= 200 and contact ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$') not valid;
 
+-- =====================================================================
+-- 12) โปรไฟล์: รูป ชื่อ แนะนำตัว ชั้นปี ลิงก์ เรซูเม่ / profile: photo, name, bio, year, links, resume
+--     คณะ/สาขา และสายงานที่สนใจ ใช้คอลัมน์เดิม onboard_fac, onboard_major, onboard_inds (ข้อมูลเดียวกับแผนที่อาชีพ)
+--     Faculty/major and fields reuse onboard_fac, onboard_major, onboard_inds (the same data as the career map).
+--     ⚠️ ห้ามแสดงชื่อ/รูป/โปรไฟล์บนรีวิว: approved_reviews ไม่มี user_id จึงโยงกลับมาที่นี่ไม่ได้
+--     Never shown on reviews: approved_reviews has no user_id, so a review can't be linked to a profile.
+--     อ่าน/แก้ได้เฉพาะของตัวเอง (policy ในส่วน 6.1) / read + edit own row only (policies in 6.1)
+-- =====================================================================
+alter table public.profiles add column if not exists display_name text;
+alter table public.profiles add column if not exists avatar_url   text;
+alter table public.profiles add column if not exists bio          text;
+alter table public.profiles add column if not exists year         text;
+alter table public.profiles add column if not exists links        jsonb not null default '{}'::jsonb;
+alter table public.profiles add column if not exists resume_path  text;
+alter table public.profiles add column if not exists resume_name  text;
+alter table public.profiles add column if not exists resume_size  integer;
+alter table public.profiles add column if not exists resume_at    timestamptz;
+
+alter table public.profiles drop constraint if exists profiles_display_name_check;
+alter table public.profiles add constraint profiles_display_name_check
+  check (display_name is null or char_length(btrim(display_name)) between 2 and 30);
+-- รูป: รูปน้องหมาตามธีม (pup:<ธีม>) หรือไฟล์ในโฟลเดอร์ของตัวเองใน bucket avatars เท่านั้น
+-- Photo: a theme pup (pup:<theme>) or a file in your own folder of the avatars bucket, nothing else.
+alter table public.profiles drop constraint if exists profiles_avatar_url_check;
+alter table public.profiles add constraint profiles_avatar_url_check
+  check (avatar_url is null or avatar_url ~ '^pup:[a-z]{2,12}$'
+         or (char_length(avatar_url) <= 400
+             and avatar_url like 'https://%/storage/v1/object/public/avatars/' || id::text || '/%'));
+alter table public.profiles drop constraint if exists profiles_bio_check;
+alter table public.profiles add constraint profiles_bio_check
+  check (bio is null or char_length(bio) <= 160);
+alter table public.profiles drop constraint if exists profiles_year_check;
+alter table public.profiles add constraint profiles_year_check
+  check (year is null or year in ('1', '2', '3', '4', '5', '6', 'grad'));
+alter table public.profiles drop constraint if exists profiles_links_check;
+alter table public.profiles add constraint profiles_links_check
+  check (jsonb_typeof(links) = 'object'
+         and (links ->> 'portfolio' is null or (links ->> 'portfolio') ~ '^https://\S{3,190}$')
+         and (links ->> 'linkedin'  is null or (links ->> 'linkedin')  ~* '^https://([a-z0-9-]+\.)*linkedin\.com/\S{0,170}$'));
+alter table public.profiles drop constraint if exists profiles_resume_check;
+alter table public.profiles add constraint profiles_resume_check
+  check ((resume_path is null or resume_path = id::text || '/resume.pdf')
+         and (resume_name is null or char_length(resume_name) <= 120)
+         and (resume_size is null or resume_size between 1 and 5242880));
+grant update (display_name, avatar_url, bio, year, links, resume_path, resume_name, resume_size, resume_at)
+  on public.profiles to authenticated;
+
+-- ---------- 12.1 ห้องแชทรุ่นพี่ใช้ชื่อและรูปล่าสุดของผู้ถาม / mentor chats use the asker's current name + photo ----------
+alter table public.chat_rooms add column if not exists student_avatar text;
+create or replace function public.chat_rooms_student_profile()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  p public.profiles;
+begin
+  select * into p from public.profiles where id = new.student_id;
+  if found then
+    if p.display_name is not null then new.student_name := left(p.display_name, 30); end if;
+    new.student_avatar := p.avatar_url;
+  end if;
+  return new;
+end;
+$$;
+revoke execute on function public.chat_rooms_student_profile() from public, anon, authenticated;
+drop trigger if exists chat_rooms_student_profile on public.chat_rooms;
+create trigger chat_rooms_student_profile
+  before insert on public.chat_rooms
+  for each row execute function public.chat_rooms_student_profile();
+
+-- เปลี่ยนชื่อ/รูปแล้ว ห้องที่เป็นผู้ถามเปลี่ยนตามทันที (รุ่นพี่เห็นผ่าน Realtime) / rename or new photo updates my rooms right away
+create or replace function public.profiles_sync_rooms()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.display_name is distinct from old.display_name or new.avatar_url is distinct from old.avatar_url then
+    update public.chat_rooms
+       set student_name = coalesce(left(new.display_name, 30), ''), student_avatar = new.avatar_url
+     where student_id = new.id;
+  end if;
+  return new;
+end;
+$$;
+revoke execute on function public.profiles_sync_rooms() from public, anon, authenticated;
+drop trigger if exists profiles_sync_rooms on public.profiles;
+create trigger profiles_sync_rooms
+  after update on public.profiles
+  for each row execute function public.profiles_sync_rooms();
+
+-- ---------- 12.2 Storage: avatars (อ่านได้ทุกคน) + resumes (ส่วนตัว) / avatars (public read) + resumes (private) ----------
+--   avatars/<user id>/avatar.webp|png — รูปที่บีบเหลือ 256px แล้ว / already shrunk to 256 px
+--   resumes/<user id>/resume.pdf     — เปิดผ่าน signed URL อายุ 1 ชม. เฉพาะเจ้าของ / owner only, 1-hour signed URLs
+--   ส่งเรซูเม่ในแชท = คัดลอกไฟล์ไปไว้ใน chat-files/<room id>/ (เปิดได้เฉพาะ 2 คนในห้อง ตามส่วน 8.7)
+--   Sending it in a chat copies it into chat-files/<room id>/ (only the two room members can open it, section 8.7).
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('avatars', 'avatars', true, 2097152, array['image/webp', 'image/png', 'image/jpeg'])
+on conflict (id) do update
+  set public = true, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('resumes', 'resumes', false, 5242880, array['application/pdf'])
+on conflict (id) do update
+  set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "avatars: own folder read"   on storage.objects;
+drop policy if exists "avatars: own folder upload" on storage.objects;
+drop policy if exists "avatars: own folder update" on storage.objects;
+drop policy if exists "avatars: own folder delete" on storage.objects;
+create policy "avatars: own folder read" on storage.objects
+  for select to authenticated using (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy "avatars: own folder upload" on storage.objects
+  for insert to authenticated with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy "avatars: own folder update" on storage.objects
+  for update to authenticated using (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid())::text)
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy "avatars: own folder delete" on storage.objects
+  for delete to authenticated using (bucket_id = 'avatars' and (storage.foldername(name))[1] = (select auth.uid())::text);
+
+drop policy if exists "resumes: owner read"   on storage.objects;
+drop policy if exists "resumes: owner upload" on storage.objects;
+drop policy if exists "resumes: owner update" on storage.objects;
+drop policy if exists "resumes: owner delete" on storage.objects;
+create policy "resumes: owner read" on storage.objects
+  for select to authenticated using (bucket_id = 'resumes' and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy "resumes: owner upload" on storage.objects
+  for insert to authenticated with check (bucket_id = 'resumes' and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy "resumes: owner update" on storage.objects
+  for update to authenticated using (bucket_id = 'resumes' and (storage.foldername(name))[1] = (select auth.uid())::text)
+  with check (bucket_id = 'resumes' and (storage.foldername(name))[1] = (select auth.uid())::text);
+create policy "resumes: owner delete" on storage.objects
+  for delete to authenticated using (bucket_id = 'resumes' and (storage.foldername(name))[1] = (select auth.uid())::text);
+
+-- ---------- 12.3 ภารกิจ "ทำโปรไฟล์ให้ครบ +10" (ครั้งเดียว) / one-time "complete your profile +10" ----------
+alter table public.coin_ledger drop constraint if exists coin_ledger_kind_check;
+alter table public.coin_ledger add constraint coin_ledger_kind_check
+  check (kind in ('mission', 'review', 'topup', 'plus', 'spend', 'referral', 'refund', 'profile'));
+create or replace function public.coin_ledger_guard_profile()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.kind = 'profile' then
+    if new.delta <> 10 or new.ref is distinct from 'profile:complete' then
+      raise exception 'invalid profile reward' using errcode = 'check_violation';
+    end if;
+    if not exists (select 1 from public.profiles p
+                   where p.id = new.user_id and p.display_name is not null and p.avatar_url is not null
+                     and p.bio is not null and p.onboard_fac is not null and p.year is not null
+                     and cardinality(p.onboard_inds) > 0 and p.resume_path is not null) then
+      raise exception 'profile incomplete' using errcode = 'check_violation';
+    end if;
+    new.status := 'ok';
+  end if;
+  return new;
+end;
+$$;
+revoke execute on function public.coin_ledger_guard_profile() from public, anon, authenticated;
+drop trigger if exists coin_ledger_guard_profile on public.coin_ledger;
+create trigger coin_ledger_guard_profile
+  before insert on public.coin_ledger
+  for each row execute function public.coin_ledger_guard_profile();
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';
