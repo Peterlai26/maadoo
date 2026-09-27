@@ -873,10 +873,11 @@ header.top::before{content:"";position:absolute;top:0;bottom:0;left:-100vw;right
 .w-nav{display:flex;justify-content:space-between;gap:10px}.w-nav .btn{min-width:110px}
 .w-more summary{cursor:pointer;font-weight:500;color:var(--blue)}
 .sal-check{display:grid;gap:12px;max-width:620px}
-/* bottom nav: Reviews is the raised yellow middle button */
-.bnav .mid{background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:8px 14px;transform:translateY(-14px);box-shadow:0 6px 16px rgba(255,197,61,.5);font-weight:600}
-.bnav .mid.on{color:var(--accent-ink);box-shadow:0 0 0 3px var(--surface),0 6px 16px rgba(255,197,61,.55)}
-.bnav .mid svg,.bnav .mid.on svg{stroke:var(--accent-ink)}
+/* bottom nav: the current page's button is the raised yellow one */
+.bnav button{transition:transform .2s,background-color .2s,box-shadow .2s}
+.bnav button.on{background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:8px 14px;transform:translateY(-14px);box-shadow:0 6px 16px rgba(255,197,61,.5);font-weight:600}
+.bnav button.on svg{stroke:var(--accent-ink)}
+@media(prefers-reduced-motion:reduce){.bnav button{transition:none}}
 /* jobs › jobs & internships: type toggle on its own row, the two dropdowns side by side, then the count */
 .filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:560px;align-items:center}
 .filters .jf-type{grid-column:1/-1;display:flex;margin:0;justify-self:start}
