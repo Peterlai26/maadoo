@@ -16,7 +16,7 @@ function initSB(){
  loadApproved();loadRealMentors();loadMentorReviews();loadPromoStats();rerender();
 }
 function mkUser(u,prev){
- const anon=!!u.is_anonymous,em=u.email||'',dn=u.user_metadata&&u.user_metadata.display_name;
+ const anon=!!u.is_anonymous,em=u.email||'',md=u.user_metadata||{},dn=md.display_name||md.name||md.full_name||[md.given_name,md.family_name].filter(Boolean).join(' ');
  const o={id:u.id,anon,email:em,verified:!anon&&!!em&&!isFreeMail(em),points:prev?prev.points:20,plus:prev?prev.plus:false};
  Object.defineProperty(o,'name',{enumerable:true,get:()=>anon?t('ผู้ใช้ชั่วคราว','Guest'):(dn||em.split('@')[0]||t('ผู้ใช้','User'))});
  return o;
@@ -49,6 +49,7 @@ function authErr(e,ctx){
  if(c==='email_address_invalid'||(m.includes('email')&&m.includes('invalid')))return ERR_EMAIL;
  if(c==='email_not_confirmed')return ['ยังไม่ได้ยืนยันอีเมล เช็กกล่องจดหมายของคุณ','Your email isn’t confirmed yet. Check your inbox.'];
  if(c==='anonymous_provider_disabled')return ['ตอนนี้ยังลองใช้แบบไม่สมัครไม่ได้ ลองสมัครด้วยอีเมลแทน','Guest mode is off right now. Sign up with email instead.'];
+ if(ctx==='linkedin'&&(c==='validation_failed'||c==='provider_disabled'||m.includes('provider is not enabled')||m.includes('unsupported provider')))return ['ตอนนี้ยังล็อกอินด้วย LinkedIn ไม่ได้ ลองใช้อีเมลแทน','LinkedIn login isn’t switched on yet. Use email instead.'];
  if(c==='signup_disabled'||c==='email_provider_disabled')return ['ตอนนี้ปิดรับสมัครชั่วคราว','Sign-ups are turned off right now.'];
  if(!s||(e&&e.name==='AuthRetryableFetchError'))return ['เชื่อมต่อไม่ได้ เช็กอินเทอร์เน็ตแล้วลองใหม่','Can’t connect. Check your internet and try again.'];
  return ['เกิดข้อผิดพลาด ลองใหม่อีกครั้ง','Something went wrong. Please try again.'];
@@ -63,6 +64,9 @@ async function authRun(fn,ctx){
 }
 const pwField=(id,ac,val)=>`<div class="pw"><input class="field" id="${id}" type="password" autocomplete="${ac}" placeholder="${t('รหัสผ่าน','Password')}" aria-describedby="${id}-hint" value="${esc(val||'')}"><button type="button" class="pw-t" data-pwtoggle="${id}" aria-controls="${id}" aria-pressed="false">${t('แสดง','Show')}</button></div><small class="muted" id="${id}-hint" style="margin-top:-6px">${t('อย่างน้อย 6 ตัว','At least 6 characters')}</small>`;
 const authFormErr=m=>m.err?`<p class="form-err" role="alert">${esc(x(m.err))}</p>`:'';
+/* LinkedIn (Supabase provider "linkedin_oidc"): the page goes to LinkedIn and comes back here; onAuthStateChange then logs the user in */
+const LI_LOGO='<svg class="li-logo" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4"/><path d="M7 10h2.6v7.5H7zM8.3 6.2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM11.2 10h2.5v1c.4-.7 1.3-1.2 2.5-1.2 2.4 0 2.9 1.5 2.9 3.6v4.1h-2.6v-3.6c0-.9 0-2-1.2-2s-1.4.9-1.4 1.9v3.7h-2.7z"/></svg>';
+function linkedinLogin(){if(!SB)return;authRun(()=>SB.auth.signInWithOAuth({provider:'linkedin_oidc',options:{redirectTo:location.origin+location.pathname}}),'linkedin')}
 function sbLoginModal(m,head){
  const H=head(t('เข้าสู่ระบบมาดูจ็อบ','Log in to Maadoo Job'),t('ใช้อีเมลมหาลัยหรือบริษัทเพื่อรับป้าย ✓','Use a university or work email to get the ✓ badge'));
  if(m.sent)return H+`<p>${m.sentKind==='confirm'?t(`ส่งอีเมลยืนยันไปที่ <b>${esc(m.sent)}</b> แล้ว กดยืนยันในอีเมล แล้วกลับมาเข้าสู่ระบบ`,`We sent a confirmation email to <b>${esc(m.sent)}</b>. Confirm it, then come back and log in.`):t(`ส่งลิงก์เข้าสู่ระบบไปที่ <b>${esc(m.sent)}</b> แล้ว กดลิงก์ในอีเมลเพื่อเข้าสู่ระบบ ไม่ต้องใช้รหัสผ่าน`,`We sent a login link to <b>${esc(m.sent)}</b>. Tap the link in the email to log in. No password needed.`)}</p>
@@ -70,6 +74,8 @@ function sbLoginModal(m,head){
   <div class="row"><button class="btn ghost" data-resend>${t('ใช้อีเมลอื่น','Use another email')}</button><button class="btn y" data-close>${t('ตกลง','OK')}</button></div>`;
  const up=m.mode==='up',dis=m.busy?'disabled':'';
  return H+`<div class="segs" role="tablist" style="margin-top:0;justify-self:start">${[['in',t('เข้าสู่ระบบ','Log in')],['up',t('สมัครใหม่','Sign up')]].map(([k,n])=>`<button type="button" role="tab" aria-selected="${(up?'up':'in')===k}" class="${(up?'up':'in')===k?'on':''}" data-lmode="${k}" ${dis}>${n}</button>`).join('')}</div>
+  <button type="button" class="btn li-btn" data-linkedin ${dis}>${LI_LOGO}${up?t('สมัครด้วย LinkedIn','Sign up with LinkedIn'):t('เข้าสู่ระบบด้วย LinkedIn','Log in with LinkedIn')}</button>
+  <div class="or">${t('หรือใช้อีเมล','or use email')}</div>
   <form id="loginForm" class="grid" novalidate>
    ${up?`<input class="field" id="lname" autocomplete="nickname" maxlength="40" placeholder="${t('ชื่อที่ใช้แสดง','Display name')}" value="${esc(m.name||'')}">`:''}
    <input class="field" id="lemail" type="email" autocomplete="email" inputmode="email" placeholder="you@kmutt.ac.th" value="${esc(m.email||'')}">
