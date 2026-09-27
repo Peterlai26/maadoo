@@ -6,7 +6,21 @@ Brand name: **Maadoo Job** (Thai: **มาดูจ็อบ**). Use it only whe
 Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`).
 
 ## Files
-- `index.html` — the whole app in one file: HTML + CSS + vanilla JS, no build step, no framework.
+- No build step, no framework: plain HTML + CSS + vanilla JS files served as they are.
+- `index.html` — only the page shell: `<head>` meta tags, the header/logo markup, the empty containers the JS fills (`#app`, `#modal`, `#sheet`, `#bnav`, `#toast`…) and the `<script>` tags.
+- `css/style.css` — all the site's CSS (themes and their CSS variables, layout, every component, responsive rules).
+- `js/` — classic scripts (not modules) that share one global scope. They load **in this order** and the order matters; only `js/app.js` runs the start-up code, at its very end, so every other file only declares things (plus a few `S.x=…` defaults and event listeners). Keep it that way: don't call a function from another file at load time.
+  1. `js/core.js` — `store` (localStorage wrapper), the app state `S`, `t()` / `x()` for Thai/English, helpers (`$`, `esc`, `fmt`, `getCo`, `toast`, `go`), the theme list `SKINS` + `applyPrefs()`, the nav bars (`nav()`), and shared pieces (`coCard`, `review`, `brand`).
+  2. `js/data.js` — all fictional sample data: nav items `NAV`, jobs `JOBS`, sample mentors `MENTORS` + their reviews `MREV`, notifications, industries `IND`, companies `CO` (reviews, salaries, interviews), board posts `POSTS`, levels, `QUIZ`; then the career-map data (skills `SK`, faculties `FAC`, `WORLDS`, `GROUPS`, `ROLES`, fit table `FIT_SRC`/`FITM`) and its small lookup helpers (`fitOf`, `roleGap`…).
+  3. `js/auth.js` — Supabase setup (`SB`, publishable key, `initSB()`), login modals (password · email code/OTP · guest · add email), loading reviews, deleting your own review.
+  4. `js/views.js` — the main pages: home, explore, company, write (+ done), ask (mentor swipe deck + community board), quiz, jobs (full-time list, job cards) and the mentor card pieces (`scard`, `mRevs`, `mStat`).
+  5. `js/premium.js` — Maadoo Plus (`PLANS`, `isPlus`), coins + ledger + weekly missions, simulated payment (`payModal`), Plus page, wallet, ask-a-mentor questions; interview review; promotions (home carousel, Pioneer, invite codes, seasonal offer); and the Me page (`me`) + employer page (`employer`, `EMP`).
+  6. `js/mentor.js` — mentor sessions & reviews, real mentors (applications, admin page, realtime chat room, contact masking, reports/blocks, mentor mode), live calls (availability, booking page, live room, reminders, session notes).
+  7. `js/onboard.js` — career-map view and faculty picker, first-visit welcome, "เริ่มตรงนี้เลย" start card, "ก้าวแรกของฉัน", coach-mark tours.
+  8. `js/parttime.js` — ⚡ quick part-time jobs (`PT`, feed, post, apply, rate, minimum-wage warning) and the rules page (`rules`).
+  9. `js/fx.js` — theme background/tap effects (`FXINFO`, `FX`, canvas) and ambient sound (`SND`, `SCENES`, `MUSIC_FILES`).
+  10. `js/app.js` — modals and notifications (`openModal`, `renderModal`, bell, theme menu), explore category dropdown, `render()`, the main click/submit/input/keydown handlers, and at the end the start-up code (`render()`, timers, onboarding, Supabase init).
+- To add a new file: put a `<script src="js/….js"></script>` before `js/app.js` in `index.html`, and list it here.
 - Header logo = mascot circle + "Maadoo" wordmark + an orange "JOB" tag hung through the last "o", built in HTML/CSS/SVG (no image). It is a fixed brand mark: always the Classic pup (`maadoo-icon.webp`) and `--logo-ink` (brand navy; light blue only in the night theme for readability) — it does not follow the theme. Tag colors come from `--tag`, `--tag-shade`, `--tag-ink`. At ≤350px only the circle and a small JOB badge show.
 - Home hero mascot (theme image) has a "JOB!" speech bubble in inline SVG (`.m-say`, colors from `--surface`, `--navy`, `--tag`).
 - `maadoo-job-icon-512.png` — favicon and apple-touch-icon.
@@ -25,7 +39,7 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Supabase (supabase-js v2 from cdn.jsdelivr.net, loaded `async`) handles only: login (email + password, email code/OTP, or "try without signing up" anonymous guest), the `reviews` and `mentor_reviews` tables, the premium tables `profiles`, `coin_ledger` and `questions`, `employer_signups`, the real-mentor tables `admins`, `mentor_applications`, `mentors`, `chat_rooms`, `messages`, `chat_reports`, `mentor_availability`, `mentor_days_off`, `bookings`, `session_notes`, the private Storage bucket `chat-files`, Realtime (messages, chat_rooms, bookings, session_notes, typing broadcast), and the RPCs `pioneer_stats`, `use_invite_code`, `claim_referral_reward`, `early_bird_left`, `is_admin`, `review_mentor_application`, `chat_mark_read`, `chat_confirm_live`, `chat_set_block`, `mentor_taken_slots`, `book_session`, `cancel_booking`, `report_noshow`, `complete_booking`, `set_meet_link`, `save_session_notes`, `toggle_note_saved`. supabase-js keeps its auth session in `localStorage`.
   - New reviews are `pending`; the public sees only `approved` ones via the `approved_reviews` view (no `user_id`, no `salary`). Users can never set or change `status`; moderation happens in the Supabase dashboard.
   - Guests (anonymous users) can browse, swipe and apply, but can't add reviews (blocked in the UI and by RLS); they can keep their account by adding an email (`updateUser`).
-  - Only the publishable key goes in `index.html`. Never add a secret / `service_role` key.
+  - Only the publishable key goes in `js/auth.js`. Never add a secret / `service_role` key.
   - If Supabase can't load (`SB` is `null`), everything must keep working as the in-memory demo.
 - Paying can **never** remove, hide or edit reviews, not even with Plus or employer plans. Companies may only reply publicly.
 - Mentor reviews: only after a session (1 booking = 1 review, marked "✓ ปรึกษาจริง / Real session"); the author can edit or delete their own. Mentors may **reply** but can **never delete or hide** reviews. Everyone reads them through the `mentor_reviews_public` view (no `user_id`); the `reply` column is set by admins only. A mentor's rating and count are always computed from the reviews (samples in `MREV` + real ones), never typed in; fewer than 3 reviews shows "✨ รุ่นพี่ใหม่ / New mentor".
@@ -34,10 +48,10 @@ Live site: https://maadoo.pages.dev (Cloudflare Pages, auto-deploys from `main`)
 - Every theme must look right: default, night (dark), sakura, mint, lavender, sunset, dino, garden, sea. Style through CSS variables (`--bg`, `--surface`, `--ink`, `--blue`, `--navy`, `--orange`…), never hard-coded colors in components.
 - Each theme has its own background effect and tap effect (canvas). The theme menu has two sliders, "เอฟเฟกต์พื้นหลัง" and "เอฟเฟกต์ตอนแตะ", 0–100% (0 = off; 60% = the original look) that scale particle count, speed and size live, remembered per theme in `maadoo-fx`. Default 60%, or 0 under `prefers-reduced-motion`.
 - The header's CSS is scoped to `header.top` because the top swipe card also has the class `top`.
-- Each theme also has an ambient sound scene (`SND` + `SCENES` in `index.html`), synthesized with the Web Audio API — no audio files, no licensing. It is off by default and must never start without a user gesture (a remembered "on" waits for the first tap/click/key). Theme changes crossfade; the tab being hidden suspends it. To use a real recording, add `music/<theme>.mp3` and put the theme name in `MUSIC_FILES`.
+- Each theme also has an ambient sound scene (`SND` + `SCENES` in `js/fx.js`), synthesized with the Web Audio API — no audio files, no licensing. It is off by default and must never start without a user gesture (a remembered "on" waits for the first tap/click/key). Theme changes crossfade; the tab being hidden suspends it. To use a real recording, add `music/<theme>.mp3` and put the theme name in `MUSIC_FILES`.
 - Style: cute, rounded, friendly. Fonts are Mali (display) and Anuphan (body).
 
-## Main areas (views in `index.html`)
+## Main areas (views, drawn by `render()` in `js/app.js`)
 home · explore (companies) · company (overview / reviews / salaries / interviews / open jobs) · jobs (tabs: full-time/internships, ⚡ quick part-time and 🗺️ career map) · write (5-question quick review) · ask (Tinder-style mentor swipe + community board) · me (profile, Plus + coin cards, level, badges, my questions, mentor sessions, applications) · plus (Maadoo Plus page) · wallet (coin wallet + weekly missions) · invite (my invite code, invite stats, how it works, Pioneer card; linked from Me so the code stays reachable after the home promo block is hidden) · chat (1:1 room with a real mentor) · book (live-call booking page) · live (live-call room) · mentorApply (mentor application form) · admin (approve mentors, read chat reports; only users in `admins`) · employer (plans) · rules (guidelines, PDPA, part-time safety) · quiz.
 
 ## Premium (decided) — Maadoo Plus, Maadoo coins, Ask a mentor
@@ -121,7 +135,9 @@ home · explore (companies) · company (overview / reviews / salaries / intervie
 - Special themes/music for Plus and coin theme unlocks (shown as "coming soon").
 
 ## Before every commit
-Open the page at 360px, 768px and 1280px widths, in Thai and English, and in at least the default and night themes. Check there are no console errors and nothing overflows horizontally.
+- **Small change** (text, colour, price): test only the page you changed at 360px and 1280px in the default theme. That's enough.
+- **Big change** (new feature, layout, logic, anything touching several pages): open the page at 360px, 768px and 1280px widths, in Thai and English, and in at least the default and night themes.
+- Either way: no console errors and nothing overflows horizontally.
 
 ## Workflow กับ Hb
 - ทุกครั้งที่แก้เสร็จ ให้ push ขึ้น branch ของ session แล้วส่งลิงก์ Preview ของ Cloudflare ให้ Hb
