@@ -34,6 +34,9 @@ function applyPrefs(){
  if(S.skin==='default'||S.skin==='night')r.removeAttribute('data-skin');else r.setAttribute('data-skin',S.skin);
  (applyPrefs.vars||[]).forEach(v=>r.style.removeProperty(v));applyPrefs.vars=Object.keys(th.vars||{}).map(v=>'--'+v);
  applyPrefs.vars.forEach((v,i)=>r.style.setProperty(v,th.vars[v.slice(2)]));
+ /* festival themes (js/festivals.js): data-fest turns on the gradient page, card rings, header strip and the festival pup in the logo */
+ if(th.fest)r.setAttribute('data-fest',th.k);else r.removeAttribute('data-fest');
+ const lg=$('#logoImg'),ls=th.fest?PUP(th.k):'maadoo-icon.webp';if(lg&&lg.getAttribute('src')!==ls)lg.setAttribute('src',ls);
  r.lang=S.lang;document.title=t('มาดูจ็อบ · ก่อนไปทำงาน มาดูก่อน','Maadoo Job · Before you go, Maadoo first');
  $('#themeBtn').innerHTML=PALETTE+`<span class="tlabel">${t('ธีม','Theme')}</span>`;
  $('#themeBtn').setAttribute('aria-label',t('เลือกธีม','Choose a theme'));

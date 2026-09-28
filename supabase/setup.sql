@@ -1976,6 +1976,65 @@ revoke all on public.feedback from anon, authenticated;
 grant insert (kind, target, faculty, major, reason, message) on public.feedback to anon, authenticated;
 grant select on public.feedback to authenticated;
 
+-- =====================================================================
+-- 14) ธีมเทศกาล: ปลดล็อกถาวรด้วยเหรียญ / festival themes unlocked for good with coins
+--     ช่วงใช้ฟรีกำหนดในเว็บ (js/festivals.js) ตารางนี้เก็บเฉพาะธีมที่ปลดล็อกแล้ว
+--     Free windows live in the site (js/festivals.js); this table only keeps unlocked themes.
+--     อ่านได้เฉพาะของตัวเอง เขียนผ่าน unlock_theme() เท่านั้น (หักเหรียญ + บันทึกในครั้งเดียว กันหักซ้ำ)
+--     Own rows only; written only through unlock_theme() (coins + row in one go, never charged twice).
+-- =====================================================================
+create table if not exists public.user_themes (
+  user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  theme_key   text not null check (theme_key in ('halloween', 'loykrathong', 'fathersday', 'xmas', 'newyear',
+                                                 'childrensday', 'cny', 'valentine', 'songkran', 'mothersday')),
+  unlocked_at timestamptz not null default now(),
+  method      text not null default 'coins' check (method in ('coins', 'free')),
+  unique (user_id, theme_key)
+);
+alter table public.user_themes enable row level security;
+drop policy if exists "user_themes: read own"  on public.user_themes;
+drop policy if exists "user_themes: write own" on public.user_themes;
+create policy "user_themes: read own" on public.user_themes
+  for select to authenticated using (user_id = (select auth.uid()));
+-- เขียนได้เฉพาะแถวของตัวเอง แต่ไม่ให้สิทธิ์ insert ตรง ๆ เพื่อไม่ให้ข้ามการหักเหรียญ (ใช้ unlock_theme())
+-- Own rows only, but no direct insert grant, so nobody can skip paying (use unlock_theme()).
+create policy "user_themes: write own" on public.user_themes
+  for insert to authenticated with check (user_id = (select auth.uid()));
+revoke all on public.user_themes from anon, authenticated;
+grant select on public.user_themes to authenticated;
+
+-- ปลดล็อกธีม: 120 เหรียญ (spend, ref 'theme:<key>') + แถว user_themes ใน transaction เดียว
+-- Unlock a theme: 120 coins (spend, ref 'theme:<key>') + the user_themes row in one transaction.
+--   ถ้าเหรียญไม่พอ trigger ของ coin_ledger จะยกเลิกทั้งหมด / if coins run short, the coin_ledger trigger rolls it all back.
+create or replace function public.unlock_theme(p_theme text)
+returns boolean
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  me uuid := auth.uid();
+begin
+  if me is null or coalesce((auth.jwt() ->> 'is_anonymous')::boolean, false) then
+    raise exception 'members only' using errcode = 'check_violation';
+  end if;
+  if p_theme not in ('halloween', 'loykrathong', 'fathersday', 'xmas', 'newyear',
+                     'childrensday', 'cny', 'valentine', 'songkran', 'mothersday') then
+    raise exception 'unknown theme' using errcode = 'check_violation';
+  end if;
+  perform pg_advisory_xact_lock(hashtext('theme:' || me::text));
+  if exists (select 1 from public.user_themes where user_id = me and theme_key = p_theme) then
+    raise exception 'already unlocked' using errcode = 'unique_violation';
+  end if;
+  insert into public.profiles (id) values (me) on conflict (id) do nothing;
+  insert into public.coin_ledger (user_id, delta, kind, ref) values (me, -120, 'spend', 'theme:' || p_theme);
+  insert into public.user_themes (user_id, theme_key, method) values (me, p_theme, 'coins');
+  return true;
+end;
+$$;
+revoke execute on function public.unlock_theme(text) from public, anon;
+grant execute on function public.unlock_theme(text) to authenticated;
+
 -- ให้ Data API (PostgREST) โหลดรายชื่อตาราง/view ใหม่ทันที
 -- Make the Data API (PostgREST) pick up new tables/views right away.
 notify pgrst, 'reload schema';
