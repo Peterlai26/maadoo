@@ -143,10 +143,10 @@ function festSettled(){if(!SB)return Date.now()-FEST_BOOT>6000;if(!S.authReady)r
 async function loadFestOwn(){S.festOwnLoaded=false;if(!sbLive()){S.festOwnLoaded=true;return}const uid=S.user.id;
  try{const r=await SB.from('user_themes').select('theme_key');if(!S.user||S.user.id!==uid)return;if(r.error)console.warn('[Maadoo Job] could not read user_themes:',r.error.code,r.error.message);else S.festOwn=(r.data||[]).map(v=>v.theme_key)}catch(e){}
  S.festOwnLoaded=true;rerender()}
-/* ---------- picking a theme (from the menu, the invite card or a preview link) ---------- */
+/* ---------- picking a theme (from the menu, the invite card or after unlocking): a festival pick always plays its welcome; on page load it plays once a day (festTick) ---------- */
 function festPick(k){if(!festOpen(k)){festBuy(k);return false}
  const F=FEST(k),cur=FEST(S.skin);if(F&&!cur){FST.prev=S.skin;festSave()}
- S.skin=k;if(festPreview()!==k)store.set('maadoo-skin',k);render();if(F)festWelcome(k);return true}
+ S.skin=k;if(festPreview()!==k)store.set('maadoo-skin',k);render();if(F)festWelcome(k,true);return true}
 function festWelcome(k,force){const F=FEST(k),d=festDay();if(!F||(!force&&FST.wel[k]===d))return;FST.wel[k]=d;festSave();setTimeout(()=>{try{FX.welcome(F.fx.wel)}catch(e){}},250)}
 /* unlock with coins (permanent) */
 function festBuy(k){needMember(()=>{S.themeOpen=false;renderThemePop();openModal({type:'festbuy',k})})}
