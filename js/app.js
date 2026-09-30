@@ -18,6 +18,7 @@ function renderModal(){const m=S.modal;const el=$('#modal');document.documentEle
  if(m.type==='topup')body=topupModal(m,head);
  if(m.type==='themes')body=themesModal(m,head);
  if(m.type==='festbuy')body=festBuyModal(m,head);
+ if(m.type==='fxset')body=fxSetModal(m,head);
  if(m.type==='qnew')body=qnewModal(m,head);
  if(m.type==='qchat')body=qchatModal(m,head);
  if(m.type==='creport')body=creportModal(m,head);
@@ -48,7 +49,7 @@ function renderModal(){const m=S.modal;const el=$('#modal');document.documentEle
   <button class="btn ${m.tier==='Pro'?'orange':''}">${m.tier==='Pro'?t('ไปหน้าชำระเงิน (จำลอง)','Continue to checkout (simulated)'):m.tier==='Starter'?t('เริ่มใช้ฟรี','Start free'):t('ส่งข้อมูล','Send')}</button></form>
   <p class="demo-note">${t('เดโม: ไม่มีการตัดเงินจริง','Demo: no money is taken')}</p>`}
  /* keep the scroll position when the same modal re-renders (picking a chip must not jump to the top) */
- const fresh=el._m!==m,pk=[m.step,m.mode,m.type==='write'?S.wStep:''].join('|'),oldBox=el.querySelector('.modal'),moved=fresh||el._pk!==pk,keep=!moved&&oldBox?oldBox.scrollTop:0;el._m=m;el._pk=pk;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview','qchat','qnew','creport','amsgs','write'].includes(m.type)?'sheet-m':''} ${m.type==='onboard'?'ob-bg':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''} ${m.type==='onboard'?'ob-m':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(keep){const nb=el.querySelector('.modal');if(nb)nb.scrollTop=keep}if(m.type==='crop')bindCrop();if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}if(m.type==='write'&&!fresh){const ab=el.querySelector('.w-nav .btn.y:not([disabled])');if(ab&&matchMedia('(hover:hover)').matches)ab.focus({preventScroll:true});return}if(m.type==='qchat'){const cb=$('#chatBox');if(cb)cb.scrollTop=cb.scrollHeight;const qi=$('#qmsg');if(qi&&matchMedia('(hover:hover)').matches)qi.focus({preventScroll:true});return}
+ const fresh=el._m!==m,pk=[m.step,m.mode,m.type==='write'?S.wStep:''].join('|'),oldBox=el.querySelector('.modal'),moved=fresh||el._pk!==pk,keep=!moved&&oldBox?oldBox.scrollTop:0;el._m=m;el._pk=pk;el.innerHTML=`<div class="modal-bg ${['mrevs','mreview','qchat','qnew','creport','amsgs','write','fxset'].includes(m.type)?'sheet-m':''} ${m.type==='onboard'?'ob-bg':''} ${fresh?'in':''}" data-bg><div class="modal ${m.type==='mrevs'?'wide':''} ${m.type==='onboard'?'ob-m':''}" role="dialog" aria-modal="true">${body}</div></div>`;if(keep){const nb=el.querySelector('.modal');if(nb)nb.scrollTop=keep}if(m.type==='crop')bindCrop();if(m.type==='mreview'){bindStars();const w=$('#rstars');if(w){w.focus({preventScroll:true});return}}if(m.type==='write'&&!fresh){const ab=el.querySelector('.w-nav .btn.y:not([disabled])');if(ab&&matchMedia('(hover:hover)').matches)ab.focus({preventScroll:true});return}if(m.type==='qchat'){const cb=$('#chatBox');if(cb)cb.scrollTop=cb.scrollHeight;const qi=$('#qmsg');if(qi&&matchMedia('(hover:hover)').matches)qi.focus({preventScroll:true});return}
  const f=el.querySelector('input,select');if(f&&moved&&!['onboard','fac','write'].includes(m.type))f.focus({preventScroll:true});else if(f&&m.type==='write'&&fresh&&matchMedia('(hover:hover)').matches)f.focus({preventScroll:true});
 }
 function renderBell(){const n=NOTIFS.filter(v=>!v.read).length;
@@ -60,14 +61,20 @@ function foot(){$('#foot').innerHTML=`<span class="brand-s"><img src="${PUP()}" 
 
 const fxPct=v=>v?`${v}%`:t('ปิด','Off');
 const fxSlider=(k,ic,name,sub)=>{const v=fxLevel(k);return `<label class="fx-row fx-sl"><span><b>${ic} ${name} <em class="fx-v" id="fxv-${k}">${fxPct(v)}</em></b><small>${sub}</small></span><input type="range" id="fx-${k}" min="0" max="100" step="5" value="${v}" style="--p:${v}%" aria-label="${name}" aria-valuetext="${fxPct(v)}"></label>`};
+/* ⚙️ effects & sound sheet (theme menu, header 🎵 long-press, Me › Settings) — same values and storage as before */
+function fxSetModal(m,head){const th=TH(S.skin),v=Math.round(sndVolNow()*100);
+ return head(t('เอฟเฟกต์และเสียง','Effects & sound'),`${th.ic} ${x(th.n)}`)+`<div class="fx-sec fxs">
+  ${fxSlider('amb','✨',t('เอฟเฟกต์พื้นหลัง','Background effect'),x(th.fx.n))}
+  ${fxSlider('tap','👆',t('เอฟเฟกต์ตอนแตะ','Tap effect'),t('อนิเมชันเด้งออกมาตอนแตะ','A little burst when you tap'))}
+  <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(th.snd.n)}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
+  <label class="fx-row fx-sl"><span><b>🔊 ${t('ระดับเสียง','Volume')} <em class="fx-v" id="sndv">${v}%</em></b><small>${S.snd?t('ปรับได้ทันที','Changes right away'):t('เปิดเสียงบรรยากาศก่อนถึงจะได้ยิน','Turn the ambient sound on to hear it')}</small></span><input type="range" id="sndVol" min="0" max="100" step="1" value="${v}" style="--p:${v}%" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${v}%"></label></div>
+  <button class="btn ghost" data-close>${t('เสร็จแล้ว','Done')}</button>`}
+function openFxSheet(){S.themeOpen=false;renderThemePop();openModal({type:'fxset'})}
 function renderThemePop(){const el=$('#themePop');if(!el)return;if(!S.themeOpen){el.innerHTML='';return}
  const old=el.querySelector('.tpop'),top=old?old.scrollTop:0,gs=old?old.querySelector('.sw-scroll'):null,gtop=gs?gs.scrollTop:null;
- el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')}</b><small class="muted">${THEMES.length} ${t('ธีม','themes')}</small></div>
- <div class="fx-sec"><b>${t('เอฟเฟคและเสียง','Effects & sound')} · ${TH(S.skin).ic} ${x(TH(S.skin).n)}</b>
-  ${fxSlider('amb','✨',t('เอฟเฟกต์พื้นหลัง','Background effect'),x(TH(S.skin).fx.n))}
-  ${fxSlider('tap','👆',t('เอฟเฟกต์ตอนแตะ','Tap effect'),t('อนิเมชันเด้งออกมาตอนแตะ','A little burst when you tap'))}
-  <button class="fx-row" data-snd role="switch" aria-checked="${S.snd}"><span><b>🎵 ${t('เสียงบรรยากาศ','Ambient sound')}</b><small>${x(TH(S.skin).snd.n)}</small></span><i class="tg ${S.snd?'on':''}"></i></button>
-  ${S.snd?`<label class="snd-vol"><span aria-hidden="true">🔈</span><input type="range" id="sndVol" min="0" max="100" step="1" value="${Math.round(sndVolNow()*100)}" style="--p:${Math.round(sndVolNow()*100)}%" aria-label="${t('ระดับเสียง','Volume')}" aria-valuetext="${Math.round(sndVolNow()*100)}%"><span aria-hidden="true">🔊</span></label>`:''}<button class="fx-row tour-again" data-obopen><span><b>🎯 ${t('เปลี่ยนเป้าหมาย / คณะ','Change goal / faculty')}</b><small>${t('ตอบคำถามต้อนรับใหม่','Answer the welcome questions again')}</small></span><span aria-hidden="true">→</span></button>${pwaMenuRow()}<button class="fx-row tour-again" data-tourreplay><span><b>❓ ${t('พาเที่ยวอีกครั้ง','Show me around again')}</b><small>${t('น้องมาดูชี้ปุ่มสำคัญให้ดูใหม่','Maadoo points out the key buttons again')}</small></span><span aria-hidden="true">→</span></button></div>
+ const fxOn=fxLevel('amb')>0||fxLevel('tap')>0,qb=(attr,on,ic,label)=>`<button class="tq-b ${on?'on':''}" ${attr} ${on==null?'':`role="switch" aria-checked="${on}"`}><span aria-hidden="true">${ic}</span>${label}</button>`;
+ el.innerHTML=`<div class="tpop"><div class="notif-h"><b>🎨 ${t('เลือกธีม','Choose a theme')} <small class="muted">· ${THEMES.length} ${t('ธีม','themes')}</small></b></div>
+ <div class="tq">${qb('data-fxtoggle',fxOn,'✨',t('เอฟเฟกต์','Effects'))}${qb('data-snd',S.snd,'🎵',t('เสียง','Sound'))}${qb(`data-fxsheet aria-label="${t('ปรับเอฟเฟกต์และเสียง','Adjust effects & sound')}"`,null,'⚙️','')}</div>
  ${themeGrids()}</div>`;
  const np=el.querySelector('.tpop');if(np){np.scrollTop=top;const g=np.querySelector('.sw-scroll');if(g){if(gtop!=null)g.scrollTop=gtop;else{const on=g.querySelector('.sw.on');if(on&&on.offsetTop>g.clientHeight-20)g.scrollTop=on.offsetTop-g.clientHeight/3}}}}
 function renderCoach(){tourRender()}
@@ -143,6 +150,7 @@ document.addEventListener('click',e=>{
  if(d.book){if(S.modal)closeModal();openBook(d.book);return}
  if(d.slot!==undefined){S.modal.slot=+d.slot;renderModal();return}
  if(d.emp){openModal({type:'emp',tier:d.emp});return}
+ if(b.id==='sndBtn'){if(sndHold.fired){sndHold.fired=false;return}SND.toggle();sndBtn();renderThemePop();toast(S.snd?`🎵 ${t('เปิดเสียงบรรยากาศ','Ambient sound on')}`:`🔇 ${t('ปิดเสียงบรรยากาศ','Ambient sound off')}`);return}
  if(b.id==='themeBtn'){S.themeOpen=!S.themeOpen;S.notifOpen=false;renderBell();applyPrefs();return}
  if(d.festbuy){festBuy(d.festbuy);return}
  if(b.hasAttribute('data-festwallet')){S.themeOpen=false;closeModal();go('wallet');return}
@@ -183,7 +191,11 @@ document.addEventListener('click',e=>{
  if(d.ivdiff){const m=S.modal;if(m&&m.type==='iv'){const v=$('#ivq');if(v)m.q=v.value;const ic=$('#ivco');if(ic)m.pick=ic.value;m.diff=d.ivdiff;renderModal()}return}
  if(d.ivsend!==undefined){const m=S.modal;if(!m||m.type!=='iv')return;const q=($('#ivq').value||'').trim().slice(0,140);const ic=$('#ivco');if(ic){m.pick=ic.value;m.q=q;if(!getCo(ic.value)){m.err=['เลือกบริษัทก่อนนะ','Pick the company first.'];renderModal();return}m.co=ic.value}if(!q){m.err=['พิมพ์คำถามที่เจอก่อนนะ','Type a question they asked first.'];renderModal();return}
   const c=getCo(m.co);c.interview.qs.push([q,q]);S.prem.interviews.push({co:m.co,at:Date.now()});addPoints(10);S.modal=null;render();toast(t('ขอบคุณที่แชร์! ภารกิจ “รีวิวการสัมภาษณ์” สำเร็จ','Thanks for sharing! “Review an interview” mission done'));return}
- if(d.snd!==undefined){SND.toggle();renderThemePop();return}
+ if(d.snd!==undefined){SND.toggle();renderThemePop();sndBtn();if(S.modal&&S.modal.type==='fxset')renderModal();return}
+ if(d.fxtoggle!==undefined){fxToggle();renderThemePop();return}
+ if(d.fxsheet!==undefined){openFxSheet();return}
+ if(d.setlang!==undefined){$('#langBtn').click();return}
+ if(d.settheme!==undefined){S.themeOpen=true;S.notifOpen=false;renderBell();window.scrollTo({top:0});applyPrefs();return}
  if(b.id==='annBtn'){S.themeOpen=false;renderThemePop();openModal({type:'welcome'});return}
  if(b.id==='langBtn'){if(S.modal&&S.modal.type==='write')syncForm();if(S.view==='ask'){const a=$('#askq');if(a)S.askText=a.value}S.lang=S.lang==='th'?'en':'th';store.set('maadoo-lang',S.lang);render();toast(t('เปลี่ยนเป็นภาษาไทยแล้ว','Switched to English'));return}
  if(d.go){go(d.go);return}
@@ -276,7 +288,7 @@ document.addEventListener('submit',e=>{e.preventDefault();
 });
 function syncPtForm(){const g=id=>document.getElementById(id);if(!g('pf-title'))return;const f=S.ptForm;f.title=g('pf-title').value;f.kind=g('pf-kind').value;f.day=g('pf-day').value;f.when=g('pf-when').value;f.pay=g('pf-pay').value;f.unit=g('pf-unit').value;f.need=g('pf-need').value;f.how=g('pf-how').value;f.req=g('pf-req').value;f.ok=g('pf-ok').checked}
 document.addEventListener('input',e=>{const fk=e.target.id==='fx-amb'?'amb':e.target.id==='fx-tap'?'tap':null;if(fk){fxSetLevel(fk,e.target.value);const v=fxLevel(fk),o=document.getElementById('fxv-'+fk);if(o)o.textContent=fxPct(v);e.target.style.setProperty('--p',v+'%');e.target.setAttribute('aria-valuetext',fxPct(v));if(fk==='tap'&&v){const r=e.target.getBoundingClientRect();FX.tap(r.left+r.width*v/100,r.top+r.height/2)}return}
- if(e.target.id==='mcomment'){if(S.modal)S.modal.comment=e.target.value;const c=$('#mcount');if(c)c.textContent=e.target.value.length+'/300';return}if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.style.setProperty('--p',v+'%');e.target.setAttribute('aria-valuetext',v+'%');return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
+ if(e.target.id==='mcomment'){if(S.modal)S.modal.comment=e.target.value;const c=$('#mcount');if(c)c.textContent=e.target.value.length+'/300';return}if(e.target.id==='sndVol'){const v=+e.target.value;SND.setVol(v/100);e.target.style.setProperty('--p',v+'%');e.target.setAttribute('aria-valuetext',v+'%');const o=$('#sndv');if(o)o.textContent=v+'%';return}if(e.target.id==='ocode'){const v=e.target.value.replace(/\D/g,'').slice(0,8);if(v!==e.target.value)e.target.value=v;if(S.modal)S.modal.code=v;return}if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}});
 document.addEventListener('change',e=>{if(e.target.id&&e.target.id.startsWith('pf-')){syncPtForm();const w=document.getElementById('pf-wage');if(w)w.innerHTML=wageMsg(S.ptForm)}const id=e.target.id;if(id==='fco'){syncForm();renderModal()}if(id==='rfCo'){S.rf.co=e.target.value;S.rfN=6;render()}
  if(id==='jInd'){S.jobF.ind=e.target.value;render()}if(id==='jMin'){S.jobF.min=+e.target.value;render()}if(id==='onlyJobs'){S.coOnlyJobs=e.target.checked;render()}});
 document.addEventListener('keydown',e=>{
@@ -290,6 +302,11 @@ document.addEventListener('keydown',e=>{
    if(e.key==='Tab'){indClose(false);return}}}if(!S.modal&&S.view==='ask'&&S.askTab==='swipe'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){if(e.key==='ArrowRight')swipeGo('right');if(e.key==='ArrowLeft')swipeGo('left')}if(e.key==='Escape'){if(S.modal)closeModal();if(S.notifOpen){S.notifOpen=false;renderBell()}}});
 document.addEventListener('toggle',e=>{if(e.target.id==='wmore')S.form.more=e.target.open},true);
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(!S.theme)applyPrefs()})}catch(e){}
+/* header 🎵 long-press (touch) / right-click → effects & sound sheet */
+function sndHold(){}
+document.addEventListener('pointerdown',e=>{if(!e.target.closest||!e.target.closest('#sndBtn')||e.button>0)return;clearTimeout(sndHold.t);sndHold.fired=false;sndHold.t=setTimeout(()=>{sndHold.fired=true;openFxSheet()},550)});
+['pointerup','pointercancel'].forEach(n=>document.addEventListener(n,()=>clearTimeout(sndHold.t)));
+document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('#sndBtn')){e.preventDefault();clearTimeout(sndHold.t);if(!sndHold.fired){sndHold.fired=true;openFxSheet()}}});
 /* ---------- start ---------- */
 render();
 setInterval(()=>{if(qTick())rerender()},60000);

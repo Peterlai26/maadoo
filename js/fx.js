@@ -10,6 +10,10 @@ S.fxLv=(()=>{try{const o=JSON.parse(store.get('maadoo-fx')||'{}');return o&&type
 const FX_DEF={amb:reduceMotion||store.get('maadoo-fx-amb')==='0'?0:60,tap:reduceMotion||store.get('maadoo-fx-tap')==='0'?0:60};
 function fxLevel(k,sk=S.skin){const o=S.fxLv[sk],v=o&&+o[k];return Number.isFinite(v)&&o[k]!==undefined?Math.min(100,Math.max(0,Math.round(v))):FX_DEF[k]}
 function fxSetLevel(k,v){const o=S.fxLv[S.skin]||(S.fxLv[S.skin]={});o[k]=Math.min(100,Math.max(0,Math.round(+v||0)));store.set('maadoo-fx',JSON.stringify(S.fxLv));FX.level()}
+/* quick on/off (theme menu "✨ เอฟเฟกต์"): off remembers this theme's levels in `maadoo-fx` (…{skin:{amb,tap,off:{amb,tap}}}) and sets both to 0; on brings them back (or 60%) */
+function fxToggle(){const o=S.fxLv[S.skin]||(S.fxLv[S.skin]={}),a=fxLevel('amb'),tp=fxLevel('tap');
+ if(a||tp){o.off={amb:a,tap:tp};o.amb=0;o.tap=0}else{const p=o.off||{};o.amb=p.amb||60;o.tap=p.tap||60;delete o.off}
+ store.set('maadoo-fx',JSON.stringify(S.fxLv));FX.level();toast(a||tp?t('ปิดเอฟเฟกต์ของธีมนี้แล้ว','Effects off for this theme'):t('เปิดเอฟเฟกต์แล้ว ✨','Effects on ✨'))}
 /* 60% = the original look; count, speed and size scale around it */
 const fxK=k=>fxLevel(k)/60;
 const FX=(()=>{

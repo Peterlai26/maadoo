@@ -41,10 +41,16 @@ function applyPrefs(){
  $('#themeBtn').innerHTML=PALETTE+`<span class="tlabel">${t('ธีม','Theme')}</span>`;
  $('#themeBtn').setAttribute('aria-label',t('เลือกธีม','Choose a theme'));
  renderThemePop();renderCoach();try{FX.setSkin(S.skin)}catch(e){}try{SND.setSkin(S.skin)}catch(e){}
+ sndBtn();
  $('#langBtn').innerHTML=`<span class="${S.lang==='th'?'on':''}">TH</span><i>/</i><span class="${S.lang==='en'?'on':''}">EN</span>`;
  $('#langBtn').setAttribute('aria-label',t('เปลี่ยนภาษาเป็นอังกฤษ','Switch language to Thai'));
  $('#demoTag').textContent=t('เดโม · ข้อมูลตัวอย่าง','Demo · sample data');
 }
+/* header 🎵: tap = sound on/off · long-press or right-click = the effects & sound sheet (handlers in js/app.js) */
+const NOTE='<svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>';
+function sndBtn(){const b=$('#sndBtn');if(!b)return;b.innerHTML=NOTE;b.classList.toggle('on',!!S.snd);b.setAttribute('aria-pressed',String(!!S.snd));
+ b.setAttribute('aria-label',S.snd?t('ปิดเสียงบรรยากาศ (กดค้างเพื่อปรับ)','Turn ambient sound off (hold to adjust)'):t('เปิดเสียงบรรยากาศ (กดค้างเพื่อปรับ)','Turn ambient sound on (hold to adjust)'));
+ b.title=t('เสียงบรรยากาศ · กดค้างเพื่อปรับ','Ambient sound · hold to adjust')}
 function nav(){
  const act=S.view==='company'?'jobs':['chat','book'].includes(S.view)?'ask':['live','quiz','profile'].includes(S.view)?'me':S.view;
  /* "Me" shows my profile photo once I've set one (top nav in the header on desktop, bottom nav on phones) */
