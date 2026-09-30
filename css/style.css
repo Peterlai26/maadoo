@@ -1006,3 +1006,42 @@ html[data-fest] .btn:not(.ghost):not(.danger):not(:disabled):hover::after,html[d
 .fest-card img{width:56px;height:56px;border-radius:50%;flex:none}
 .fc-t{display:grid;gap:4px;min-width:0;flex:1}.fc-t b{color:var(--navy);font-size:15px;line-height:1.35}.fc-t small{color:var(--ink-2);font-size:12.5px}.fc-t .row{gap:6px;margin-top:4px}
 .fest-card .x{flex:none;background:none;border:0;font-size:20px;line-height:1;color:var(--ink-3);padding:0 2px}
+/* ---------- theme menu: quick row (✨ effects · 🎵 sound · ⚙️ adjust) ---------- */
+.notif-h b small{font-family:var(--body);font-weight:500;font-size:12.5px}
+.tq{display:flex;gap:8px;padding:0 4px 10px;margin-bottom:6px;border-bottom:1.5px solid var(--line)}
+.tq-b{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface-2);color:var(--ink-3);font-size:13.5px;font-weight:600;opacity:.8}
+.tq-b.on{background:var(--blue);border-color:var(--blue);color:var(--blue-ink);opacity:1}
+.tq-b[data-fxsheet]{margin-left:auto;width:36px;padding:0;justify-content:center;opacity:1;color:var(--ink-2);background:var(--surface)}
+.tq-b:hover{border-color:var(--blue)}
+.fxs{border-bottom:0;margin:0;padding:0}
+/* header 🎵 (hidden on the smallest phones; still in the theme menu) */
+.tbtn.snd{color:var(--ink-3);-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.tbtn.snd.on{color:var(--blue);border-color:var(--blue)}
+/* phones: square 36px icon buttons so the header fits; 🎵 only where there's room (≥400px) */
+@media(max-width:480px){header.top .tools .tbtn:not(.lang){width:36px;min-width:36px;padding:0}header.top .tools .lang{padding:0 8px}}
+@media(max-width:399px){#sndBtn{display:none}}
+/* Me › profile actions + ⚙️ settings */
+.me-acts{gap:6px;margin-top:4px}.me-acts .me-edit{margin-top:0}
+.set-g{display:grid;gap:6px}.set-g+.set-g{margin-top:18px}
+.set-g h3{font-size:13px;font-family:var(--body);font-weight:600;color:var(--ink-2);padding-left:4px}
+.set-list{background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.set-row{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:10px 14px;background:none;border:0;text-align:left;color:var(--ink)}
+.set-row+.set-row{border-top:1.5px solid var(--line)}
+button.set-row:hover{background:var(--sky-2)}
+.set-ic{font-size:19px;width:24px;text-align:center;flex:none}
+.set-t{display:grid;flex:1;min-width:0}.set-t b{font-size:14.5px;font-weight:600;color:var(--navy)}.set-t small{font-size:12.5px;color:var(--ink-2);overflow-wrap:anywhere}
+.set-go{color:var(--ink-3);font-size:20px;line-height:1;flex:none}
+.set-lang{display:inline-flex;border:1.5px solid var(--line);border-radius:99px;overflow:hidden;flex:none;font-size:12.5px;font-weight:700}
+.set-lang span{padding:4px 10px;color:var(--ink-3)}.set-lang span.on{background:var(--blue);color:var(--blue-ink)}
+.set-row[data-out] b{color:var(--bad)}
+/* Me: fold-open sections (tap the heading) */
+.mf-h{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:6px 2px;text-align:left;color:inherit;border-radius:14px}
+.mf-h h2{font-size:20px;flex:0 1 auto;min-width:0}
+.mf-n{font-size:12.5px;font-weight:700;color:var(--ink-2);background:var(--surface-2);border:1.5px solid var(--line);border-radius:99px;padding:1px 9px;flex:none}
+.mf-car{margin-left:auto;flex:none;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:var(--surface);border:1.5px solid var(--line);color:var(--ink-2);font-size:14px;transition:transform .2s}
+.me-fold.open .mf-car{transform:rotate(180deg)}
+.mf-h:hover .mf-car{border-color:var(--blue);color:var(--blue)}
+.mf-b{margin-top:10px}
+.me-fold+.me-fold{margin-top:14px}
+@media(prefers-reduced-motion:reduce){.mf-car{transition:none}}
+.mf-h h2::before{content:"✦ ";color:var(--accent)}

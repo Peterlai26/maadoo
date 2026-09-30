@@ -13,9 +13,11 @@ const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matc
    'inapp' (open in a real browser first) */
 function pwaMode(anyway){if(isStandalone()||(S.pwa.installed&&!anyway))return null;if(inAppBrowser())return 'inapp';if(S.pwa.evt)return 'prompt';if(isIOS())return 'ios';if(isAndroid())return 'android';return null}
 const pwaOffer=()=>!S.pwa.hide&&pwaMode();
-/* theme menu row: always there — install (ignores the remembered "installed", which can be stale after the app was removed), or "installed" inside the app */
-function pwaMenuRow(){if(isStandalone())return `<div class="fx-row tour-again pwa-ok"><span><b>📲 ${t('เปิดแบบแอปอยู่','You’re in the app')}</b><small>✓ ${t('ติดตั้ง Maadoo Job แล้ว','Maadoo Job is installed')}</small></span></div>`;
- const m=pwaMode(true);return m?`<button class="fx-row tour-again" data-pwainstall="menu"><span><b>📲 ${t('ติดตั้งแอป Maadoo Job','Install the Maadoo Job app')}</b><small>${t('เปิดจากหน้าจอโฮมได้ เร็วขึ้น ใช้ได้ตอนเน็ตหลุด','Open it from your home screen: faster, works offline')}</small></span><span aria-hidden="true">→</span></button>`:''}
+/* Me › Settings row: always there — install (ignores the remembered "installed", which can be stale after the app was removed), "installed" inside the app, or where to install from */
+function pwaSetRow(){const R=(tag,attr,b,sm,go)=>`<${tag} class="set-row" ${attr}><span class="set-ic" aria-hidden="true">📲</span><span class="set-t"><b>${b}</b><small>${sm}</small></span>${go?'<span class="set-go" aria-hidden="true">›</span>':''}</${tag}>`;
+ if(isStandalone())return R('div','',t('ติดตั้งแอป Maadoo Job','Install the Maadoo Job app'),'✓ '+t('ติดตั้งแล้ว เปิดแบบแอปอยู่','Installed, you’re in the app'));
+ return pwaMode(true)?R('button','data-pwainstall="menu"',t('ติดตั้งแอป Maadoo Job','Install the Maadoo Job app'),t('เปิดจากหน้าจอโฮมได้ เร็วขึ้น ใช้ได้ตอนเน็ตหลุด','Open it from your home screen: faster, works offline'),1)
+  :R('div','',t('ติดตั้งแอป Maadoo Job','Install the Maadoo Job app'),t('เปิดเว็บนี้ใน Chrome หรือ Safari บนมือถือเพื่อติดตั้ง','Open this site in Chrome or Safari on your phone to install it'))}
 
 /* Me page card */
 function pwaCard(){const mode=pwaOffer();if(!mode)return '';

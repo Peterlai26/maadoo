@@ -210,7 +210,7 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-obgoal],[
  if(d.obopen!==undefined){openOnboard();return}
  if(d.obstart!==undefined){obStart();return}
  if(d.fstoggle!==undefined){S.fsOpen=!S.fsOpen;render();return}
- if(d.scclose!==undefined){S.ob.startClosed=true;obSave();render();toast(t('ซ่อนแล้ว เปลี่ยนเป้าหมายได้ที่เมนูธีม','Hidden. You can change your goal from the theme menu'));return}
+ if(d.scclose!==undefined){S.ob.startClosed=true;obSave();render();toast(t('ซ่อนแล้ว เปลี่ยนเป้าหมายได้ที่หน้า “ฉัน”','Hidden. You can change your goal on the “Me” page'));return}
  if(d.obclose!==undefined){S.ob.closed=true;obSave();render();toast(t('ซ่อนการ์ดก้าวแรกแล้ว','First-steps card hidden'));return}
  if(!m||m.type!=='onboard')return;
  if(d.obgoal){m.goal=d.obgoal;m.step=2;renderModal();const f=document.querySelector('.ob [data-obind]');if(f)f.focus({preventScroll:true});return}
