@@ -1034,3 +1034,14 @@ button.set-row:hover{background:var(--sky-2)}
 .set-lang{display:inline-flex;border:1.5px solid var(--line);border-radius:99px;overflow:hidden;flex:none;font-size:12.5px;font-weight:700}
 .set-lang span{padding:4px 10px;color:var(--ink-3)}.set-lang span.on{background:var(--blue);color:var(--blue-ink)}
 .set-row[data-out] b{color:var(--bad)}
+/* Me: fold-open sections (tap the heading) */
+.mf-h{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:6px 2px;text-align:left;color:inherit;border-radius:14px}
+.mf-h h2{font-size:20px;flex:0 1 auto;min-width:0}
+.mf-n{font-size:12.5px;font-weight:700;color:var(--ink-2);background:var(--surface-2);border:1.5px solid var(--line);border-radius:99px;padding:1px 9px;flex:none}
+.mf-car{margin-left:auto;flex:none;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:var(--surface);border:1.5px solid var(--line);color:var(--ink-2);font-size:14px;transition:transform .2s}
+.me-fold.open .mf-car{transform:rotate(180deg)}
+.mf-h:hover .mf-car{border-color:var(--blue);color:var(--blue)}
+.mf-b{margin-top:10px}
+.me-fold+.me-fold{margin-top:14px}
+@media(prefers-reduced-motion:reduce){.mf-car{transition:none}}
+.mf-h h2::before{content:"✦ ";color:var(--accent)}

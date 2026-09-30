@@ -192,6 +192,7 @@ document.addEventListener('click',e=>{
  if(d.ivsend!==undefined){const m=S.modal;if(!m||m.type!=='iv')return;const q=($('#ivq').value||'').trim().slice(0,140);const ic=$('#ivco');if(ic){m.pick=ic.value;m.q=q;if(!getCo(ic.value)){m.err=['เลือกบริษัทก่อนนะ','Pick the company first.'];renderModal();return}m.co=ic.value}if(!q){m.err=['พิมพ์คำถามที่เจอก่อนนะ','Type a question they asked first.'];renderModal();return}
   const c=getCo(m.co);c.interview.qs.push([q,q]);S.prem.interviews.push({co:m.co,at:Date.now()});addPoints(10);S.modal=null;render();toast(t('ขอบคุณที่แชร์! ภารกิจ “รีวิวการสัมภาษณ์” สำเร็จ','Thanks for sharing! “Review an interview” mission done'));return}
  if(d.snd!==undefined){SND.toggle();renderThemePop();sndBtn();if(S.modal&&S.modal.type==='fxset')renderModal();return}
+ if(d.mefold){const k=d.mefold;S.meOpen[k]=!S.meOpen[k];const sc=b.closest('.me-fold'),bd=sc&&sc.querySelector('.mf-b');if(sc){sc.classList.toggle('open',S.meOpen[k]);b.setAttribute('aria-expanded',String(S.meOpen[k]));bd.hidden=!S.meOpen[k]}return}
  if(d.fxtoggle!==undefined){fxToggle();renderThemePop();return}
  if(d.fxsheet!==undefined){openFxSheet();return}
  if(d.setlang!==undefined){$('#langBtn').click();return}
