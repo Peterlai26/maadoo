@@ -80,4 +80,4 @@ const THEMES=[
   snd:{n:['ฝน + พลิกกระดาษ','Rain + turning pages'],mix:[['rain',{v:.045}],['pages',{gap:[6,14]}]]}}
 ];
 const TH=k=>THEMES.find(v=>v.k===k)||THEMES[0];
-if(!THEMES.some(v=>v.k===S.skin))S.skin='default';
+/* festival themes are appended by js/festivals.js, which also checks the saved S.skin */

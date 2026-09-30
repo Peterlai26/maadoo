@@ -22,14 +22,14 @@ function mkUser(u,prev){
  return o;
 }
 async function sbUser(ev,session){
- const u=session&&session.user;
+ const u=session&&session.user;S.authReady=true;
  if(!u){if(S.user&&S.user.id){S.user=null;S.myReviews=[];forgetMine();resetPrem();rerender()}return}
  const same=S.user&&S.user.id===u.id;
  if(same&&S.user.anon===!!u.is_anonymous&&S.user.email===(u.email||''))return;
  const wasGuest=same&&S.user.anon;S.user=mkUser(u,same?S.user:null);
  /* a guest who just added an email is a member now: load their premium data and apply a pending friend's code */
- if(same){if(wasGuest&&!S.user.anon){resetPrem();loadPrem().then(afterLoginPromo)}rerender();return}
- await loadMine();loadApproved();loadMentorReviews();resetPrem();loadPrem().then(afterLoginPromo).then(obAfterLogin);loadChat();
+ if(same){if(wasGuest&&!S.user.anon){resetPrem();loadPrem().then(afterLoginPromo);loadFestOwn()}rerender();return}
+ await loadMine();loadApproved();loadMentorReviews();resetPrem();loadPrem().then(afterLoginPromo).then(obAfterLogin);loadFestOwn();loadChat();
  if(ev==='SIGNED_IN'){if(S.modal&&(S.modal.type==='login'||S.modal.type==='otp'))S.modal=null;const fn=S.after;S.after=null;rerender();
   toast(S.user.anon?t('เข้าใช้แบบชั่วคราวแล้ว · ถ้าออกจากระบบ บัญชีนี้จะหายไป','You’re in as a guest · this account is gone once you log out'):t(`สวัสดี ${S.user.name}! รับ 20 แต้มต้อนรับ`,`Hi ${S.user.name}! +20 welcome points`));if(fn)fn()}
  else rerender();

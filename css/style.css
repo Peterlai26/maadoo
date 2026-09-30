@@ -967,3 +967,42 @@ body{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px
 .cm-note-r{background:var(--orange-soft);color:var(--ink)}.cm-lock span,.cm-note-r span{min-width:0}
 .cm-fb{margin:18px 0 0;text-align:center}.cm-fb .link{color:var(--ink-3);font-size:13.5px}
 .cm-rh .cm-rt{flex:1 1 160px}.cm-rt b{overflow-wrap:anywhere}
+/* ---------- festival themes (js/festivals.js) · html[data-fest] + CSS variables --fest-* set per festival ---------- */
+html[data-fest] body{background:var(--bg)}
+html[data-fest] body::before,html[data-fest] body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
+html[data-fest] body::before{background:var(--fest-g)}
+html[data-fest] body::after{background-image:var(--fest-pat);background-size:auto;opacity:.07}
+/* header: strip along the bottom edge (bunting, lanterns, hearts, lights…) */
+html[data-fest] header.top{padding-bottom:20px}
+html[data-fest] header.top::after{content:"";position:absolute;left:-100vw;right:-100vw;bottom:0;height:18px;background:var(--fest-strip) repeat-x 0 0/auto 18px;pointer-events:none}
+/* logo: festival pup in a gold ring */
+html[data-fest] .logo img{padding:2px;background:linear-gradient(135deg,#FFF1B8,#D9A21B 35%,#FFE58C 60%,#B8860B);box-shadow:0 1px 4px rgba(120,80,0,.35)}
+/* cards: thin festival-gradient ring + a small sticker in the top-right corner */
+:where(html[data-fest]) .card{position:relative}
+html[data-fest] .card::before{content:"";position:absolute;inset:-1.5px;border-radius:inherit;padding:1.5px;background:var(--fest-ring);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
+html[data-fest] .card::after{content:var(--fest-stk);position:absolute;top:-9px;right:12px;font-size:15px;line-height:1;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.2))}
+/* main buttons: festival gradient + a little shine on hover / tap */
+html[data-fest] .btn:not(.ghost):not(.danger){background:var(--fest-btn);color:var(--fest-btn-ink);box-shadow:0 3px 0 var(--fest-btn-sh);position:relative;overflow:hidden;isolation:isolate}
+html[data-fest] .btn:not(.ghost):not(.danger)::after{content:"✦";position:absolute;inset:0;z-index:-1;display:grid;place-items:center end;padding-right:8px;font-size:11px;color:rgba(255,255,255,0);background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%) no-repeat -150% 0/60% 100%;pointer-events:none}
+html[data-fest] .btn:not(.ghost):not(.danger):not(:disabled):hover::after,html[data-fest] .btn:not(.ghost):not(.danger):not(:disabled):active::after{animation:festShine .7s ease-out;color:rgba(255,255,255,.95)}
+@keyframes festShine{from{background-position:-150% 0}to{background-position:250% 0}}
+@media (prefers-reduced-motion:reduce){html[data-fest] .btn:not(.ghost):not(.danger):not(:disabled):hover::after,html[data-fest] .btn:not(.ghost):not(.danger):not(:disabled):active::after{animation:none}}
+/* theme menu: 🎉 festivals (2 columns, lock + dates) above the everyday themes */
+.sw-scroll{max-height:min(48vh,380px);overflow-y:auto;overscroll-behavior:contain;padding:0 4px 2px 2px;position:relative}
+.sw-scroll .swatches{max-height:none;overflow:visible;padding:2px 0}
+.sw-h{font-size:13px;font-weight:600;color:var(--ink-2);padding:8px 4px 4px;position:sticky;top:0;background:var(--surface);z-index:1}
+.swatches.fest{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fsw{display:grid;gap:4px;align-content:start;min-width:0}
+.sw.sw-lk .sw-prev img{filter:saturate(.55);opacity:.85}
+.sw-lock{position:absolute;left:5px;bottom:4px;font-size:14px;line-height:1;background:rgba(255,255,255,.9);border-radius:99px;padding:3px 4px}
+.fsw-tag{display:block;font-size:11px;font-weight:600;color:var(--ink-2);line-height:1.3}
+.fsw-free{color:var(--good)!important}.fsw-own{color:var(--blue)!important}.fsw-plus{color:var(--plus-ink)!important}
+.fsw-buy{border:1.5px solid var(--line);background:var(--surface-2);color:var(--navy);border-radius:99px;padding:5px 8px;font-size:11.5px;font-weight:600;line-height:1.25}
+.fsw-buy:hover{border-color:var(--blue)}
+.fb-pup{display:grid;place-items:center}.fb-pup img{width:120px;height:120px;border-radius:50%}
+/* "try the festival theme?" card (once per festival) */
+.fest-card{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:70;width:min(330px,calc(100vw - 32px));display:flex;gap:10px;align-items:flex-start;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:20px;padding:12px 12px 12px 10px;box-shadow:var(--shadow);animation:pop .3s ease-out}
+@media(max-width:1020px){.fest-card{bottom:calc(92px + env(safe-area-inset-bottom,0px))}}
+.fest-card img{width:56px;height:56px;border-radius:50%;flex:none}
+.fc-t{display:grid;gap:4px;min-width:0;flex:1}.fc-t b{color:var(--navy);font-size:15px;line-height:1.35}.fc-t small{color:var(--ink-2);font-size:12.5px}.fc-t .row{gap:6px;margin-top:4px}
+.fest-card .x{flex:none;background:none;border:0;font-size:20px;line-height:1;color:var(--ink-3);padding:0 2px}
