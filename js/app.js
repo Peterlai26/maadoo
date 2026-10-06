@@ -96,7 +96,7 @@ function indOpen(){S.indOpen=true;render();indFocus(S.filter)}
 function indClose(focusBtn){if(!S.indOpen)return;S.indOpen=false;render();if(focusBtn){const b=$('#indBtn');if(b)b.focus({preventScroll:true})}}
 function indPick(i){S.filter=i;S.indOpen=false;render();const b=$('#indBtn');if(b)b.focus({preventScroll:true})}
 addEventListener('resize',()=>{if(S.indOpen&&isExp()&&!!document.querySelector('#sheet .dd-menu')!==isSheet())render()});
-function render(){if(!isExp())S.indOpen=false;if(S.view==='explore'){S.view='jobs';S.jobTab='co'}if(S.view==='write')S.view='reviews';applyPrefs();nav();$('#app').innerHTML={home,company,reviews,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView,profile:profilePage}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='reviews')bindFeed();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour){const st=TOURS[S.tour.p][S.tour.i];if(!st||stView(S.tour.p,st)!==S.view)S.tour=null}tourRender();maybeTour();pwaBars();festTick();}
+function render(){ldSync();if(!isExp())S.indOpen=false;if(S.view==='explore'){S.view='jobs';S.jobTab='co'}if(S.view==='write')S.view='reviews';applyPrefs();nav();$('#app').innerHTML={home,company,reviews,ask,quiz,jobs,me,employer,rules,plus:plusPage,wallet,invite:invitePage,chat:chatView,admin,mentorApply,book:bookView,live:liveView,profile:profilePage,landing}[S.view]();renderBell();foot();renderModal();if(S.view==='ask'&&S.askTab==='swipe')bindDeck();renderIndSheet();if(S.view==='reviews')bindFeed();if(S.view==='chat')bindChat();else if(roomChId)leaveRoomCh();obTrack();if(S.tour){const st=TOURS[S.tour.p][S.tour.i];if(!st||stView(S.tour.p,st)!==S.view)S.tour=null}tourRender();maybeTour();pwaBars();festTick();}
 function syncForm(){const m={co:'fco',role:'frole',title:'ftitle',pro:'fpro',con:'fcon',sal:'fsal'};for(const k in m){const e=document.getElementById(m[k]);if(e)S.form[k]=e.value}}
 
 document.addEventListener('click',e=>{
@@ -313,5 +313,5 @@ render();
 setInterval(()=>{if(qTick())rerender()},60000);
 setTimeout(loadPromoStats,SB?0:300);
 pwaInit();
-if(!welcomed())openOnboard();
+if(!welcomed()&&S.view!=='landing')openOnboard();
 if(window.supabase)initSB();else{const sbjs=document.getElementById('sbjs');if(sbjs)sbjs.addEventListener('load',initSB)}
