@@ -1052,7 +1052,7 @@ html.landing-on body{background:#F7F9FD;background-image:none;padding-bottom:0}
 html.landing-on main#app{min-height:0}
 .ld{--ld-navy:#0D3C94;--ld-ink:#14233F;--ld-ink2:#4A5878;--ld-ink3:#7A86A0;--ld-line:#E4EAF5;--ld-orange:#FF9A1F;--ld-green:#14996F;--ld-bg:#F7F9FD;
  --logo-ink:#0D3C94;--tag:#FF9A1F;--tag-shade:#D97A08;--tag-ink:#FFFFFF;--bg:#F7F9FD;
- width:100vw;margin-left:calc(50% - 50vw);background:var(--ld-bg);color:var(--ld-ink);font-family:"IBM Plex Sans Thai",var(--body);line-height:1.55;overflow:hidden;min-height:100vh;min-height:100dvh}
+ width:100vw;margin-left:calc(50% - 50vw);background:var(--ld-bg);color:var(--ld-ink);font-family:"IBM Plex Sans Thai",var(--body);line-height:1.55;overflow-x:clip;min-height:100vh;min-height:100dvh}
 .ld button{font-family:inherit}
 .ld-in{max-width:1200px;margin:0 auto;padding:0 max(24px,env(safe-area-inset-left,0px))}
 .ld-top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--ld-line);padding-top:env(safe-area-inset-top,0px)}
@@ -1144,3 +1144,18 @@ html[lang="en"] .ld-h{font-size:clamp(28px,3.6vw,48px)}html[lang="en"] .ld-h spa
 }
 @media (max-width:380px){.ld-r{gap:8px}.ld-r>b{font-size:15px}}
 .ld .nw{white-space:nowrap}
+/* landing: how it works (target of "วิธีใช้" / "ดูวิธีใช้") */
+.ld-how{position:relative;background:#fff;border-top:1px solid var(--ld-line);padding:72px 0 84px;scroll-margin-top:76px}
+.ld-how .ld-kicker{margin:0}
+.ld-h2{font-family:inherit;font-weight:700;font-size:clamp(26px,3.2vw,38px);color:var(--ld-ink);margin:6px 0 0;line-height:1.3}
+.ld-how-sub{margin:8px 0 0;color:var(--ld-ink2);font-size:16.5px}
+.ld-steps{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.ld-step{position:relative;display:grid;gap:8px;align-content:start;background:var(--ld-bg);border:1px solid var(--ld-line);border-radius:22px;padding:22px 20px 18px}
+.ld-num{position:absolute;top:16px;right:18px;font-weight:700;font-size:13px;color:var(--ld-navy);background:#E8EEFA;border-radius:99px;width:28px;height:28px;display:grid;place-items:center}
+.ld-ic{font-size:30px;line-height:1}
+.ld-step b{font-size:18px;color:var(--ld-ink);margin-top:4px}
+.ld-step p{margin:0;font-size:14.5px;color:var(--ld-ink2)}
+.ld-link{justify-self:start;background:none;border:0;padding:4px 0;margin-top:4px;color:var(--ld-navy);font-weight:600;font-size:14.5px}.ld-link:hover{text-decoration:underline}
+.ld-how-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+@media (max-width:980px){.ld-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:768px){.ld-how{padding:44px 0 56px;scroll-margin-top:64px}.ld-steps{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:22px}.ld-step{padding:18px 16px 14px}.ld-how-cta{display:grid}.ld-how-cta>button{width:100%;white-space:normal}}

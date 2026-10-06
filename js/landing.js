@@ -8,8 +8,9 @@ S.ldMenu=false;
 function ldFont(){if(document.getElementById('ldFont'))return;const l=document.createElement('link');l.id='ldFont';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@500;600;700&display=swap';document.head.appendChild(l)}
 /* nav: [key, th, en] — each opens the matching page of the app */
 const LD_NAV=[['how','วิธีใช้','How it works'],['reviews','รีวิวบริษัท','Company reviews'],['sal','เงินเดือน','Salaries'],['intern','ฝึกงาน','Internships'],['ask','ปรึกษารุ่นพี่','Ask a senior'],['plus','ราคา','Pricing']];
-function ldGo(k){S.ldMenu=false;
- if(k==='how'){openOnboard();return}
+function ldGo(k){const wasMenu=S.ldMenu;S.ldMenu=false;
+ if(k==='how'){if(wasMenu)render();const el=document.getElementById('ld-how');if(el)el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});return}
+ if(k==='goal'){openOnboard();return}
  if(k==='login'||k==='signup'){openModal(k==='signup'?{type:'login',mode:'up'}:{type:'login'});return}
  if(k==='reviews')go('reviews');else if(k==='sal')go('jobs',{jobTab:'sal'});else if(k==='intern'){S.jobF=Object.assign({},S.jobF,{type:'intern'});go('jobs',{jobTab:'full'})}
  else if(k==='ask')go('ask',{askTab:'swipe'});else if(k==='plus')go('plus');else go('home')}
@@ -50,7 +51,20 @@ function landing(){ldFont();const logo=`<button class="logo ld-logo" data-ld="ho
     <button class="ld-btn ld-ask" data-ld="ask">${t('ถามรุ่นพี่คนนี้','Ask this senior')} <span aria-hidden="true">→</span></button>
    </div>
   </div>
- </div></main></div>`}
+ </div></main>
+ <section class="ld-how" id="ld-how" aria-labelledby="ld-how-h"><div class="ld-in">
+  <p class="ld-kicker">${t('วิธีใช้','HOW IT WORKS')}</p>
+  <h2 class="ld-h2" id="ld-how-h">${t('ใช้ Maadoo Job ยังไง?','How do I use Maadoo Job?')}</h2>
+  <p class="ld-how-sub">${t('4 ขั้นง่าย ๆ ก่อนตัดสินใจไปฝึกงานหรือทำงานที่ไหน','4 simple steps before you decide where to intern or work')}</p>
+  <ol class="ld-steps">${LD_STEPS.map(([ic,th,en,dth,den,k,bth,ben],i)=>`<li class="ld-step"><span class="ld-num">${i+1}</span><span class="ld-ic" aria-hidden="true">${ic}</span><b>${t(th,en)}</b><p>${t(dth,den)}</p><button class="ld-link" data-ld="${k}">${t(bth,ben)} <span aria-hidden="true">→</span></button></li>`).join('')}</ol>
+  <div class="ld-how-cta"><button class="ld-btn big" data-ld="home">${t('เริ่มมาดูเลย','Start looking')} <span aria-hidden="true">→</span></button><button class="ld-ghost big" data-ld="goal">🎯 ${t('ให้น้องมาดูช่วยเลือกให้','Let Maadoo pick for me')}</button></div>
+ </div></section></div>`}
+/* how-it-works steps: [icon, title th/en, text th/en, where the button goes, button th/en] */
+const LD_STEPS=[
+ ['🔍','ค้นหาบริษัท','Find a company','พิมพ์ชื่อบริษัท ตำแหน่ง หรือย่านที่อยากทำงาน แล้วเปิดดูหน้าบริษัท','Search a company, role or area and open its page','reviews','ดูรีวิวบริษัท','See company reviews'],
+ ['⭐','อ่านรีวิวจากคนใน','Read insider reviews','ข้อดี ข้อเสีย บรรยากาศจริง จากคนที่เคยฝึกงานหรือทำงานที่นั่น ไม่ระบุตัวตน','Pros, cons and the real vibe from people who interned or worked there, anonymously','reviews','อ่านรีวิว','Read reviews'],
+ ['💰','เทียบเงินเดือนจริง','Compare real salaries','ดูว่าตำแหน่งนี้ได้เงินเท่าไหร่จริง ๆ ก่อนไปสัมภาษณ์หรือต่อรอง','See what the role really pays before you interview or negotiate','sal','ดูเงินเดือน','See salaries'],
+ ['💬','ปัดหารุ่นพี่ ถามได้เลย','Swipe to find a senior','ปัดหารุ่นพี่ที่ทำงานสายที่สนใจ แล้วถามเรื่องที่รีวิวไม่ได้บอก','Swipe to find seniors in your field and ask what reviews don’t say','ask','ปัดหารุ่นพี่','Find a senior']];
 document.addEventListener('click',e=>{if(S.view!=='landing')return;const b=e.target.closest('[data-ld],[data-ldmenu]');
  if(!b){if(S.ldMenu&&!e.target.closest('#ldMenu')){S.ldMenu=false;render()}return}
  e.stopPropagation();if(b.hasAttribute('data-ldmenu')){S.ldMenu=!S.ldMenu;render();return}ldGo(b.dataset.ld)},true);
