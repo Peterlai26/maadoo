@@ -537,3 +537,16 @@ body.is-en .lnav .lbtn{font-size:.9rem}
 @media (min-width:861px){.cats{grid-template-columns:repeat(8,minmax(0,1fr))}}
 .cats button{min-width:0;overflow-wrap:anywhere}
 main{overflow-x:clip}
+
+/* wordmark: "Maadoo" with an orange JOB tag hung through the last "o" */
+:root{--tag:#FF9A1F;--tag-shade:#D97A08;--tag-ink:#FFFFFF}
+.lw{position:relative;display:inline-block;line-height:1;padding-right:1.3em}
+.lo{position:relative;display:inline-block}
+.lo-c{position:relative;z-index:1}
+.lo-s{position:absolute;left:0;top:0;width:2em;height:2em;overflow:visible;pointer-events:none}
+.lo-b{z-index:0}.lo-f{z-index:2}
+.lo-b ellipse,.lo-f .str{fill:none;stroke:var(--tag-shade);stroke-width:5;stroke-linecap:round}
+.lo-f .jt{fill:var(--tag)}.lo-f .jt-sh{fill:var(--tag-shade)}
+.lo-f .jt-hole{fill:#fff;stroke:var(--tag-shade);stroke-width:3}
+.lo-f text{fill:var(--tag-ink);font-family:Mali,var(--display),sans-serif;font-weight:700;font-size:33px;letter-spacing:2px}
+@media(max-width:350px){.logo .lw{display:none}.logo{gap:0}}
