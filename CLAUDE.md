@@ -8,7 +8,7 @@ The site is the approved demo **v24** (hand-off package from Hb), split into pla
 - `index.html` — shell: meta tags, header/footer/bottom-nav markup, `<script src="js/app.js">`, service-worker registration.
 - `css/style.css` — all CSS (guards for 360px overflow are appended at the end).
 - `js/app.js` — the whole SPA (hash router, views in `V.*`, state `S`, `store` → localStorage keys `maadoo-demo-*`, embedded sample data, TH/EN runtime translator `EN8` + MutationObserver).
-- PWA: `manifest.webmanifest`, `icons/`, `sw.js`, `offline.html`. **Bump `VERSION` in `sw.js` on every commit that changes a site file** (and list new files in `FILES`).
+- PWA: `manifest.webmanifest`, `icons/`, `sw.js`, `offline.html`, `_headers` (no-cache for HTML/CSS/JS/sw.js). `sw.js` is **network-first** (falls back to the cache after 4 s or offline), takes over at once (`skipWaiting` + `clients.claim`) and the page reloads once when a new worker takes control, so visitors never see an old version. **Bump `VERSION` in `sw.js` on every commit that changes a site file** (and list new files in `FILES`).
 - `supabase/setup.sql` and the old Supabase setup are left untouched; the site does **not** call any backend.
 
 ## Decisions (from the team)
