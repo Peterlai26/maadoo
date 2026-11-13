@@ -554,3 +554,6 @@ main{overflow-x:clip}
 /* big home mascot: the pup with the JOB! bubble, transparent PNG (no frame, no background) */
 .mascot,.herox .mascot{border:0;border-radius:0;box-shadow:none;background:none;height:auto;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(8,30,90,.3))}
 .herox .mascot{width:240px;height:auto}
+
+/* Thai lower vowels/tone marks were clipped by the gradient text box */
+.shine{padding:.12em 0 .35em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
