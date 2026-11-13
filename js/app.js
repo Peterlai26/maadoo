@@ -404,7 +404,8 @@ function scramble(el,txt){if(matchMedia('(prefers-reduced-motion: reduce)').matc
 function openAuth(mode){const L=$('#land');if(!L)return;let o=$('#authHost');if(!o){o=document.createElement('div');o.id='authHost';L.appendChild(o)}
  o.innerHTML=authHTML(mode);L.classList.add('lmodalopen');const f=$('#authF');setTimeout(()=>f.querySelector('input').focus(),50)}
 function closeAuth(){const o=$('#authHost');if(o)o.innerHTML='';const L=$('#land');if(L){L.classList.remove('lmodalopen');const b=L.querySelector('[data-auth="up"]');b&&b.focus()}}
-function finishAuth(u){const g=$('#auGo');g.disabled=true;g.innerHTML='<span class="spin" style="width:18px;height:18px;border-width:2px;display:inline-block;vertical-align:-3px"></span> กำลังเข้าสู่ระบบ…';
+function forceLight(){document.documentElement.dataset.theme='light';const b=document.querySelector('#themeBtn');if(b)b.textContent='🌙'}
+function finishAuth(u){forceLight();const g=$('#auGo');g.disabled=true;g.innerHTML='<span class="spin" style="width:18px;height:18px;border-width:2px;display:inline-block;vertical-align:-3px"></span> กำลังเข้าสู่ระบบ…';
  setTimeout(()=>{setAuth(u);if(u.name&&u.name!=='ณัฐชา ใจดี'&&!store.get('resumeNamed',0)){S.resume.name=u.name;store.set('resumeNamed',1);save()}unlock(true)},700)}
 function unlock(anim){const L=$('#land');gateOff();document.body.classList.remove('noscroll');if(!L){render(true);return}
  L.classList.add('leave');setTimeout(()=>{L.remove();window.scrollTo(0,0);render(true);toast('ยินดีต้อนรับ '+(S.auth&&S.auth.name?S.auth.name.split(' ')[0]:'')+' · พร้อมดูงานแล้ว')},anim?900:0)}
@@ -434,7 +435,7 @@ function showLand(){const old=$('#land');if(old)old.remove();gateOn();document.b
 function initGate(){if(S.auth){gateOff();return}showLand()}
 document.addEventListener('click',e=>{if(e.target.closest('#logoutBtn,#logoutTop'))logout()});
 
-S.lang=store.get('lang','th');S.auth=store.get('auth',null);S.fsOpen=false;
+S.lang=store.get('lang','th');S.auth=store.get('auth',null);S.fsOpen=false;forceLight();
 applyA11y();render(false);initGate();
 
 (function(){function pick(e,p){const T=e.target;if(!T||!T.closest)return null;let v=T.closest('.cv,.gview');if(!v){const c=T.closest('.card');v=c&&c.querySelector('.cv')}if(!v)return null;const r=v.getBoundingClientRect();return(p.clientY>=r.top&&p.clientY<=r.bottom&&p.clientX>=r.left&&p.clientX<=r.right)?v:null}
