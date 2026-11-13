@@ -1,7 +1,7 @@
 /* Maadoo Job · sw.js — service worker (PWA). Precaches the app shell so the site opens fast and works offline.
    ⚠️ Bump VERSION on every change to the site's files, otherwise installed apps keep the old files.
    Never caches Supabase (data must always be fresh): only same-origin files and Google Fonts are handled. */
-const VERSION='2026-11-13.11';
+const VERSION='2026-11-13.12';
 const SHELL='maadoo-shell-'+VERSION,FONTS='maadoo-fonts-v1';
 const PUPS=['/maadoo-icon.webp'];
 const FILES=['/','/index.html','/offline.html','/manifest.webmanifest','/css/style.css',
@@ -9,7 +9,10 @@ const FILES=['/','/index.html','/offline.html','/manifest.webmanifest','/css/sty
  '/maadoo-job-icon-512.png','/maadoo-job-round.png','/icons/icon-192.png','/icons/icon-512.png','/icons/maskable-512.png','/icons/apple-touch-icon-180.png',...PUPS];
 
 self.addEventListener('install',e=>{e.waitUntil(caches.open(SHELL).then(c=>c.addAll(FILES.map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('maadoo-shell-')&&k!==SHELL).map(k=>caches.delete(k)));await self.clients.claim()})())});
+self.addEventListener('activate',e=>{e.waitUntil((async()=>{const keys=await caches.keys();const old=keys.filter(k=>k.startsWith('maadoo-shell-')&&k!==SHELL);
+ await Promise.all(old.map(k=>caches.delete(k)));await self.clients.claim();
+ /* upgrade from an older version: reload the open tabs/apps once so visitors land on the new site without refreshing by hand */
+ if(old.length||keys.some(k=>k.startsWith('maadoo-')&&k!==SHELL&&k!==FONTS)){const cs=await self.clients.matchAll({type:'window'});cs.forEach(c=>{try{c.navigate(c.url)}catch(err){}})}})())});
 /* the page shows "มีเวอร์ชันใหม่ · รีเฟรช"; tapping it tells the waiting worker to take over */
 self.addEventListener('message',e=>{if(e.data&&e.data.type==='SKIP_WAITING')self.skipWaiting()});
 

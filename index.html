@@ -70,6 +70,6 @@
 <div id="live" class="sr" aria-live="polite"></div>
 <div id="layer"></div>
 <script src="js/app.js"></script>
-<script>if("serviceWorker" in navigator){var had=!!navigator.serviceWorker.controller,rl=0;navigator.serviceWorker.addEventListener("controllerchange",function(){if(had&&!rl){rl=1;location.reload()}});addEventListener("load",function(){navigator.serviceWorker.register("/sw.js",{updateViaCache:"none"}).catch(function(){})})}</script>
+<script>if("serviceWorker" in navigator){addEventListener("load",function(){navigator.serviceWorker.register("/sw.js",{updateViaCache:"none"}).catch(function(){})})}</script>
 </body>
 </html>
