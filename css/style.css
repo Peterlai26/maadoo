@@ -557,3 +557,14 @@ main{overflow-x:clip}
 
 /* Thai lower vowels/tone marks were clipped by the gradient text box */
 .shine{padding:.12em 0 .35em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* landing scroll smoothness: these come last so they win over the base rules above */
+#land{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#land.scr *{animation-play-state:paused!important}
+@media (hover:none),(max-width:768px){
+ #land{scroll-behavior:auto}
+ #land .lfinal,#land .on,#land .dotp{animation:none!important}
+ #land .lnav{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,255,255,.96);transition:none}
+ #land .pci{will-change:auto}
+ #land .lr{will-change:auto}
+}
